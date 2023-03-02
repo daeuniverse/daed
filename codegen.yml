@@ -1,0 +1,6 @@
+overwrite: true
+schema: schema.graphql
+documents: src/**/*.tsx
+generates:
+  src/gql/:
+    preset: client

@@ -1,0 +1,26 @@
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: latest
+  sourceType: module
+
+plugins:
+  - "@typescript-eslint"
+  - react
+  - import
+
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/eslint-recommended
+  - plugin:@typescript-eslint/recommended
+  - plugin:prettier/recommended
+  - plugin:import/recommended
+
+settings:
+  import/resolver:
+    typescript: true
+    node: true
+
+rules:
+  import/order: [1, { newlines-between: always, groups: [builtin, external, internal, parent, sibling, index, object] }]
