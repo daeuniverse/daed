@@ -10,7 +10,7 @@ function App() {
     request(
       endpointURL.get(),
       graphql(/* GraphQL */ `
-        query configs {
+        query Configs {
           configs {
             selected
           }

@@ -27,6 +27,7 @@ export type Config = {
   __typename?: "Config";
   dns: Dns;
   global: Global;
+  id: Scalars["ID"];
   routing: Routing;
   selected: Scalars["Boolean"];
 };
@@ -85,31 +86,50 @@ export type ImportArgument = {
 
 export type Mutation = {
   __typename?: "Mutation";
+  /** createConfig create a config. Null arguments will be converted to default value. */
   createConfig: Config;
+  /** createGroup is to create a group. */
   createGroup: Group;
+  /** groupAddNodes is to add nodes to the group. Nodes will not be removed from its subscription when subscription update. */
   groupAddNodes: Scalars["Int"];
+  /** groupAddSubscriptions is to add subscriptions to the group. */
   groupAddSubscriptions: Scalars["Int"];
+  /** groupDelNodes is to remove nodes from the group. */
   groupDelNodes: Scalars["Int"];
+  /** groupDelSubscriptions is to remove subscriptions from the group. */
   groupDelSubscriptions: Scalars["Int"];
+  /** importNodes is to import nodes with no subscription ID. rollbackError means abort the import on error. */
   importNodes: Array<NodeImportResult>;
+  /** importSubscription is to fetch and resolve the subscription into nodes. */
   importSubscription: SubscriptionImportResult;
+  /** removeConfig is to remove a config with given config ID. */
   removeConfig: Scalars["Int"];
+  /** removeGroup is to remove a group. */
   removeGroup: Scalars["Int"];
+  /** removeNodes is to remove nodes that have no subscription ID. */
   removeNodes: Scalars["Int"];
+  /** removeSubscriptions is to remove subscriptions with given ID list. */
   removeSubscriptions: Scalars["Int"];
+  /** renameGroup is to rename a group. */
   renameGroup: Scalars["Int"];
+  /** run proxy with the current config. Dry-run can be used to stop the proxy. */
   run: Scalars["Int"];
+  /** selectConfig is to select a config as the current config. */
   selectConfig: Scalars["Int"];
+  /** tagNode is to give the node a tag. */
   tagNode: Scalars["Int"];
+  /** tagNode is to give the subscription a tag. */
   tagSubscription: Scalars["Int"];
+  /** updateConfig allows to partially update "global". */
   updateConfig: Config;
+  /** updateSubscription is to re-fetch subscription and resolve subscription into nodes. Old nodes that independently belong to any groups will not be removed. */
   updateSubscription: Subscription;
 };
 
 export type MutationCreateConfigArgs = {
-  dns: Scalars["String"];
-  global: Scalars["String"];
-  routing: Scalars["String"];
+  dns?: InputMaybe<Scalars["String"]>;
+  global?: InputMaybe<GlobalInput>;
+  routing?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationCreateGroupArgs = {
@@ -189,7 +209,7 @@ export type MutationTagSubscriptionArgs = {
 
 export type MutationUpdateConfigArgs = {
   dns?: InputMaybe<Scalars["String"]>;
-  global?: InputMaybe<Scalars["String"]>;
+  global?: InputMaybe<GlobalInput>;
   id: Scalars["ID"];
   routing?: InputMaybe<Scalars["String"]>;
 };
@@ -259,6 +279,7 @@ export type Query = {
   configs: Array<Config>;
   group: Group;
   groups: Array<Group>;
+  healthCheck: Scalars["Int"];
   nodes: NodesConnection;
   subscriptions: Array<Subscription>;
 };
@@ -322,6 +343,26 @@ export type SubscriptionImportResult = {
   sub: Subscription;
 };
 
+export type _Service = {
+  __typename?: "_Service";
+  sdl: Scalars["String"];
+};
+
+export type GlobalInput = {
+  allowInsecure?: InputMaybe<Scalars["Boolean"]>;
+  checkInterval?: InputMaybe<Scalars["Duration"]>;
+  checkTolerance?: InputMaybe<Scalars["Duration"]>;
+  dialMode?: InputMaybe<Scalars["String"]>;
+  dnsUpstream?: InputMaybe<Scalars["String"]>;
+  lanInterface?: InputMaybe<Array<Scalars["String"]>>;
+  lanNatDirect?: InputMaybe<Scalars["Boolean"]>;
+  logLevel?: InputMaybe<Scalars["String"]>;
+  tcpCheckUrl?: InputMaybe<Scalars["String"]>;
+  tproxyPort?: InputMaybe<Scalars["Int"]>;
+  udpCheckDns?: InputMaybe<Scalars["String"]>;
+  wanInterface?: InputMaybe<Array<Scalars["String"]>>;
+};
+
 export type ConfigsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigsQuery = { __typename?: "Query"; configs: Array<{ __typename?: "Config"; selected: boolean }> };
@@ -332,7 +373,7 @@ export const ConfigsDocument = {
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "configs" },
+      name: { kind: "Name", value: "Configs" },
       selectionSet: {
         kind: "SelectionSet",
         selections: [

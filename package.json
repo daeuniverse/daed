@@ -10,7 +10,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prepare": "husky install",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen -c codegen.cjs"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.5.1",

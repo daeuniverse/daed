@@ -4,6 +4,8 @@ parserOptions:
     jsx: true
   ecmaVersion: latest
   sourceType: module
+env:
+  node: true
 
 plugins:
   - "@typescript-eslint"
