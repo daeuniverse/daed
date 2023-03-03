@@ -16,14 +16,18 @@
     "@chakra-ui/react": "^2.5.1",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@graphiql/toolkit": "^0.8.2",
     "@nanostores/persistent": "^0.7.0",
     "@tanstack/react-query": "^4.24.10",
     "framer-motion": "^10.0.1",
+    "graphiql": "^2.4.0",
     "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
     "nanostores": "^0.7.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router": "^6.8.2",
+    "react-router-dom": "^6.8.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "3.2.1",
