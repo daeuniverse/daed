@@ -7,7 +7,7 @@ import { graphql } from "~/gql";
 export default () => {
   const { data: configQueryData } = useQuery(["configs"], async () =>
     gqlClient.request(
-      graphql(/* GraphQL */ `
+      graphql(`
         query Query {
           configs {
             selected

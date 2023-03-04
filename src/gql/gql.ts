@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
 const documents = {
   "\n        query Query {\n          configs {\n            selected\n          }\n        }\n      ":
     types.QueryDocument,
-  "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              selected\n            }\n          }\n        ":
+  "\n                mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n                  createConfig(global: $global, dns: $dns, routing: $routing) {\n                    selected\n                  }\n                }\n              ":
     types.CreateConfigDocument,
 };
 
@@ -43,8 +43,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              selected\n            }\n          }\n        "
-): (typeof documents)["\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              selected\n            }\n          }\n        "];
+  source: "\n                mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n                  createConfig(global: $global, dns: $dns, routing: $routing) {\n                    selected\n                  }\n                }\n              "
+): (typeof documents)["\n                mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n                  createConfig(global: $global, dns: $dns, routing: $routing) {\n                    selected\n                  }\n                }\n              "];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -9,9 +9,8 @@ import {
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
-import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { CiImport, CiSquarePlus } from "react-icons/ci";
 
 import { gqlClient } from "~/api";
 import { graphql } from "~/gql";
@@ -22,38 +21,25 @@ export default () => {
   const { t } = useTranslation();
   const { colorMode, setColorMode } = useColorMode();
   const { isOpen: isConfigModalOpen, onOpen: onConfigModalOpen, onClose: onConfigModalClose } = useDisclosure();
-  const createConfigMutation = useMutation({
-    mutationFn: (config: CreateConfigModalFormValues) => {
-      const { logLevel, ...global } = config;
-
-      return gqlClient.request(
-        graphql(/* GraphQL */ `
-          mutation createConfig($global: globalInput, $dns: String, $routing: String) {
-            createConfig(global: $global, dns: $dns, routing: $routing) {
-              selected
-            }
-          }
-        `),
-        {
-          global: {
-            logLevel: "info",
-            ...global,
-          },
-        }
-      );
-    },
-  });
-
-  const createConfigSubmitHandler = useCallback(async (values: CreateConfigModalFormValues) => {
-    createConfigMutation.mutate(values);
-  }, []);
 
   return (
     <>
-      <Flex alignItems="center" justifyContent="center" direction="column" h="full" p={6}>
-        <Heading p={10}>daed</Heading>
+      <Flex alignItems="center" justifyContent="center" direction="column" h="full" p={6} gap={4}>
+        <Heading p={10} rounded="full">
+          daed
+        </Heading>
 
-        <Button onClick={onConfigModalOpen}>{t("create config")}</Button>
+        <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigModalOpen}>
+          {t("config")}
+        </Button>
+
+        <Button w="full" leftIcon={<CiImport />} onClick={onConfigModalOpen}>
+          {t("group")}
+        </Button>
+
+        <Button w="full" leftIcon={<CiImport />} onClick={onConfigModalOpen}>
+          {t("subscription")}
+        </Button>
 
         <Spacer />
 
@@ -70,7 +56,35 @@ export default () => {
       <CreateConfigModal
         isOpen={isConfigModalOpen}
         onClose={onConfigModalClose}
-        submitHandler={createConfigSubmitHandler}
+        submitHandler={async (values: CreateConfigModalFormValues) => {
+          const { logLevel, checkInterval, checkTolerence, tproxyPort, ...global } = values;
+          console.log(values);
+
+          try {
+            await gqlClient.request(
+              graphql(`
+                mutation createConfig($global: globalInput, $dns: String, $routing: String) {
+                  createConfig(global: $global, dns: $dns, routing: $routing) {
+                    selected
+                  }
+                }
+              `),
+              {
+                global: {
+                  logLevel: "info",
+                  tproxyPort: Number(tproxyPort),
+                  checkInterval: `${checkInterval}ms`,
+                  checkTolerance: `${checkTolerence}ms`,
+                  ...global,
+                },
+                dns: null,
+                routing: null,
+              }
+            );
+          } catch {
+            //
+          }
+        }}
       />
     </>
   );

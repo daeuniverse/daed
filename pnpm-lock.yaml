@@ -4,6 +4,8 @@ specifiers:
   "@chakra-ui/react": ^2.5.1
   "@emotion/react": ^11.10.6
   "@emotion/styled": ^11.10.6
+  "@fontsource/open-sans": ^4.5.14
+  "@fontsource/raleway": ^4.5.12
   "@graphiql/toolkit": ^0.8.2
   "@graphql-codegen/cli": 3.2.1
   "@graphql-codegen/client-preset": 2.1.0
@@ -36,6 +38,7 @@ specifiers:
   react-dom: ^18.2.0
   react-hook-form: ^7.43.4
   react-i18next: ^12.2.0
+  react-icons: ^4.8.0
   react-router: ^6.8.2
   react-router-dom: ^6.8.2
   typescript: ^4.9.3
@@ -45,6 +48,8 @@ dependencies:
   "@chakra-ui/react": 2.5.1_llidv3byuxn3l2nsibklt32qgu
   "@emotion/react": 11.10.6_pmekkgnqduwlme35zpnqhenc34
   "@emotion/styled": 11.10.6_oouaibmszuch5k64ms7uxp2aia
+  "@fontsource/open-sans": 4.5.14
+  "@fontsource/raleway": 4.5.12
   "@graphiql/toolkit": 0.8.2_hx4xv653uq7zrgbdj6lyizcj3a
   "@nanostores/persistent": 0.7.0_nanostores@0.7.4
   "@tanstack/react-query": 4.24.10_biqbaboplfbrettd7655fr4n2y
@@ -58,6 +63,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.43.4_react@18.2.0
   react-i18next: 12.2.0_3yopsigl4h4eb2nqrqfsy65uwi
+  react-icons: 4.8.0_react@18.2.0
   react-router: 6.8.2_react@18.2.0
   react-router-dom: 6.8.2_biqbaboplfbrettd7655fr4n2y
 
@@ -2932,6 +2938,16 @@ packages:
       }
     engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
     dev: true
+
+  /@fontsource/open-sans/4.5.14:
+    resolution:
+      { integrity: sha512-mBXIIETBlW8q/ocuUN0hyGow2iuf75hQEHQt8R/RJ/HcphVbLg8KB7pHYGbFGDqs75W+SWvTC7JkVeAjT65BuQ== }
+    dev: false
+
+  /@fontsource/raleway/4.5.12:
+    resolution:
+      { integrity: sha512-uKs13d6NFWU4vf5LSDHK/cbaAw+UXkzz03fKjyvkKq8Nop+CeB6o8STEDkZD9/uOo3v3sgm59Wyw8uGWvxoCiA== }
+    dev: false
 
   /@graphiql/react/0.17.0_vwnjauiqbu7tl7plffqljatvhe:
     resolution:
@@ -9138,6 +9154,15 @@ packages:
       i18next: 22.4.10
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /react-icons/4.8.0_react@18.2.0:
+    resolution:
+      { integrity: sha512-N6+kOLcihDiAnj5Czu637waJqSnwlMNROzVZMhfX68V/9bu9qHaMIJC4UdozWoOk57gahFCNHwVvWzm0MTzRjg== }
+    peerDependencies:
+      react: "*"
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:

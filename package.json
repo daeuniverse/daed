@@ -16,6 +16,8 @@
     "@chakra-ui/react": "^2.5.1",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@fontsource/open-sans": "^4.5.14",
+    "@fontsource/raleway": "^4.5.12",
     "@graphiql/toolkit": "^0.8.2",
     "@nanostores/persistent": "^0.7.0",
     "@tanstack/react-query": "^4.24.10",
@@ -29,6 +31,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.4",
     "react-i18next": "^12.2.0",
+    "react-icons": "^4.8.0",
     "react-router": "^6.8.2",
     "react-router-dom": "^6.8.2"
   },
