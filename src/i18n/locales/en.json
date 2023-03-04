@@ -1,0 +1,17 @@
+{
+  "add": "Add",
+  "allowInsecure": "allowInsecure",
+  "checkInterval": "checkInterval",
+  "checkTolerance": "checkTolerance",
+  "create config": "Create Config",
+  "dark mode": "Dark Mode",
+  "dialMode": "dialMode",
+  "dnsUpstream": "dnsUpstream",
+  "lanInterface": "lanInterface",
+  "lanNatDirect": "lanNatDirect",
+  "logLevel": "logLevel",
+  "tcpCheckUrl": "tcpCheckUrl",
+  "tproxyPort": "tproxyPort",
+  "udpCheckDns": "udpCheckDns",
+  "wanInterface": "wanInterface"
+}

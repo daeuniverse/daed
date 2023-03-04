@@ -8,8 +8,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import App from "~/App";
 import { DEFAULT_ENDPOINT_URL } from "~/constants";
+import initI18n from "~/i18n";
 import "~/index.css";
 import { endpointURL } from "~/store";
+
+initI18n();
 
 const theme = extendTheme({
   initialColorMode: "system",

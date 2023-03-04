@@ -28,11 +28,13 @@ specifiers:
   graphql: ^16.6.0
   graphql-request: ^5.2.0
   husky: ^8.0.3
+  i18next: ^22.4.10
   lint-staged: ^13.1.2
   nanostores: ^0.7.4
   prettier: ^2.8.4
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-i18next: ^12.2.0
   react-router: ^6.8.2
   react-router-dom: ^6.8.2
   typescript: ^4.9.3
@@ -49,9 +51,11 @@ dependencies:
   graphiql: 2.4.0_vwnjauiqbu7tl7plffqljatvhe
   graphql: 16.6.0
   graphql-request: 5.2.0_graphql@16.6.0
+  i18next: 22.4.10
   nanostores: 0.7.4
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-i18next: 12.2.0_3yopsigl4h4eb2nqrqfsy65uwi
   react-router: 6.8.2_react@18.2.0
   react-router-dom: 6.8.2_biqbaboplfbrettd7655fr4n2y
 
@@ -922,11 +926,7 @@ packages:
 
   /@babel/runtime/7.21.0:
     resolution:
-      {
-        integrity: sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npm.taobao.org/@babel/runtime/-/runtime-7.21.0.tgz,
-      }
+      { integrity: sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw== }
     engines: { node: ">=6.9.0" }
     dependencies:
       regenerator-runtime: 0.13.11
@@ -7254,6 +7254,13 @@ packages:
       react-is: 16.13.1
     dev: false
 
+  /html-parse-stringify/3.0.1:
+    resolution:
+      { integrity: sha512-KknJ50kTInJ7qIScF3jeaFRpMpE8/lfiTdzf/twXyPBLAGrLRTmkz3AdTnKeh40X8k9L2fdYwEp/42WGXIRGcg== }
+    dependencies:
+      void-elements: 3.1.0
+    dev: false
+
   /http-proxy-agent/5.0.0:
     resolution:
       {
@@ -7305,6 +7312,13 @@ packages:
     engines: { node: ">=14" }
     hasBin: true
     dev: true
+
+  /i18next/22.4.10:
+    resolution:
+      { integrity: sha512-3EqgGK6fAJRjnGgfkNSStl4mYLCjUoJID338yVyLMj5APT67HUtWoqSayZewiiC5elzMUB1VEUwcmSCoeQcNEA== }
+    dependencies:
+      "@babel/runtime": 7.21.0
+    dev: false
 
   /iconv-lite/0.4.24:
     resolution:
@@ -9093,6 +9107,27 @@ packages:
       use-sidecar: 1.1.2_pmekkgnqduwlme35zpnqhenc34
     dev: false
 
+  /react-i18next/12.2.0_3yopsigl4h4eb2nqrqfsy65uwi:
+    resolution:
+      { integrity: sha512-5XeVgSygaGfyFmDd2WcXvINRw2WEC1XviW1LXY/xLOEMzsCFRwKqfnHN+hUjla8ZipbVJR27GCMSuTr0BhBBBQ== }
+    peerDependencies:
+      i18next: ">= 19.0.0"
+      react: ">= 16.8.0"
+      react-dom: "*"
+      react-native: "*"
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      "@babel/runtime": 7.21.0
+      html-parse-stringify: 3.0.1
+      i18next: 22.4.10
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /react-is/16.13.1:
     resolution:
       { integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ== }
@@ -9217,11 +9252,7 @@ packages:
 
   /regenerator-runtime/0.13.11:
     resolution:
-      {
-        integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npm.taobao.org/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz,
-      }
+      { integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg== }
 
   /regexp.prototype.flags/1.4.3:
     resolution:
@@ -10364,6 +10395,12 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /void-elements/3.1.0:
+    resolution:
+      { integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w== }
+    engines: { node: ">=0.10.0" }
+    dev: false
 
   /vscode-languageserver-types/3.17.3:
     resolution:

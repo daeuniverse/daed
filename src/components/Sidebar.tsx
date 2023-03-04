@@ -1,6 +1,8 @@
-import { Box, Flex, FormLabel, Spacer, Switch, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, FormControl, FormLabel, Spacer, Switch, useColorMode } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 export default () => {
+  const { t } = useTranslation();
   const { colorMode, setColorMode } = useColorMode();
 
   return (
@@ -9,11 +11,11 @@ export default () => {
 
       <Spacer />
 
-      <FormLabel display="flex" alignItems="center" m={0}>
-        <Box mr={2}>Dark Mode</Box>
+      <FormControl as={Flex} alignItems="center" gap={2}>
+        <FormLabel m={0}>{t("dark mode")}</FormLabel>
 
         <Switch isChecked={colorMode === "dark"} onChange={(e) => setColorMode(e.target.checked ? "dark" : "light")} />
-      </FormLabel>
+      </FormControl>
     </Flex>
   );
 };
