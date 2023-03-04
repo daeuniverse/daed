@@ -1,16 +1,14 @@
 import { Box, List, ListItem } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { request } from "graphql-request";
 
+import { gqlClient } from "~/api";
 import { graphql } from "~/gql";
-import { endpointURL } from "~/store";
 
 export default () => {
   const { data: configQueryData } = useQuery(["configs"], async () =>
-    request(
-      endpointURL.get(),
+    gqlClient.request(
       graphql(/* GraphQL */ `
-        query Configs {
+        query Query {
           configs {
             selected
           }

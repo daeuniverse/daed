@@ -363,17 +363,28 @@ export type GlobalInput = {
   wanInterface?: InputMaybe<Array<Scalars["String"]>>;
 };
 
-export type ConfigsQueryVariables = Exact<{ [key: string]: never }>;
+export type QueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ConfigsQuery = { __typename?: "Query"; configs: Array<{ __typename?: "Config"; selected: boolean }> };
+export type QueryQuery = { __typename?: "Query"; configs: Array<{ __typename?: "Config"; selected: boolean }> };
 
-export const ConfigsDocument = {
+export type CreateConfigMutationVariables = Exact<{
+  global?: InputMaybe<GlobalInput>;
+  dns?: InputMaybe<Scalars["String"]>;
+  routing?: InputMaybe<Scalars["String"]>;
+}>;
+
+export type CreateConfigMutation = {
+  __typename?: "Mutation";
+  createConfig: { __typename?: "Config"; selected: boolean };
+};
+
+export const QueryDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "Configs" },
+      name: { kind: "Name", value: "Query" },
       selectionSet: {
         kind: "SelectionSet",
         selections: [
@@ -389,4 +400,61 @@ export const ConfigsDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<ConfigsQuery, ConfigsQueryVariables>;
+} as unknown as DocumentNode<QueryQuery, QueryQueryVariables>;
+export const CreateConfigDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "createConfig" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "global" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "globalInput" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "dns" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "routing" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createConfig" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "global" },
+                value: { kind: "Variable", name: { kind: "Name", value: "global" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "dns" },
+                value: { kind: "Variable", name: { kind: "Name", value: "dns" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "routing" },
+                value: { kind: "Variable", name: { kind: "Name", value: "routing" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [{ kind: "Field", name: { kind: "Name", value: "selected" } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateConfigMutation, CreateConfigMutationVariables>;

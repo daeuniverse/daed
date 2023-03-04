@@ -137,7 +137,7 @@ export default ({
                 <Input {...register("dnsUpstream")} />
               </Field>
 
-              <Field labelNode={t("lanInterface")}>
+              <Field labelNode={t("lanInterface")} isRequired>
                 <Input {...register("lanInterface")} />
               </Field>
 
@@ -149,7 +149,7 @@ export default ({
                 />
               </Field>
 
-              <Field labelNode={t("wanInterface")}>
+              <Field labelNode={t("wanInterface")} isRequired>
                 <Input {...register("wanInterface")} />
               </Field>
 

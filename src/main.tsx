@@ -1,11 +1,12 @@
 import { ChakraProvider, ColorModeScript, extendTheme, type ThemeConfig } from "@chakra-ui/react";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { GraphiQL } from "graphiql";
 import "graphiql/graphiql.css";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import { queryClient } from "~/api";
 import App from "~/App";
 import { DEFAULT_ENDPOINT_URL } from "~/constants";
 import initI18n from "~/i18n";
@@ -26,7 +27,6 @@ const getEndpointURL = () => {
 
 endpointURL.set(getEndpointURL());
 
-const gqlClient = new QueryClient();
 const fetcher = createGraphiQLFetcher({
   url: endpointURL.get(),
 });
@@ -38,7 +38,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         index
         path="/"
         element={
-          <QueryClientProvider client={gqlClient}>
+          <QueryClientProvider client={queryClient}>
             <ChakraProvider theme={theme}>
               <ColorModeScript initialColorMode={theme.config.initialColorMode} />
               <App />
