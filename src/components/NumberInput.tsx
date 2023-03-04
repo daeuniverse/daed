@@ -3,11 +3,13 @@ import {
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
+  NumberInputProps,
   NumberInputStepper,
 } from "@chakra-ui/react";
+import { ForwardedRef, forwardRef } from "react";
 
-export default ({ min, max }: { min?: number; max?: number }) => (
-  <NumberInput min={min} max={max} allowMouseWheel>
+export default forwardRef(({ ...props }: NumberInputProps, forwardedRef: ForwardedRef<HTMLInputElement>) => (
+  <NumberInput allowMouseWheel ref={forwardedRef} {...props}>
     <NumberInputField />
 
     <NumberInputStepper>
@@ -15,4 +17,4 @@ export default ({ min, max }: { min?: number; max?: number }) => (
       <NumberDecrementStepper />
     </NumberInputStepper>
   </NumberInput>
-);
+));

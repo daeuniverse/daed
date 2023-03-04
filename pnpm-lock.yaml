@@ -34,6 +34,7 @@ specifiers:
   prettier: ^2.8.4
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-hook-form: ^7.43.4
   react-i18next: ^12.2.0
   react-router: ^6.8.2
   react-router-dom: ^6.8.2
@@ -55,6 +56,7 @@ dependencies:
   nanostores: 0.7.4
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-hook-form: 7.43.4_react@18.2.0
   react-i18next: 12.2.0_3yopsigl4h4eb2nqrqfsy65uwi
   react-router: 6.8.2_react@18.2.0
   react-router-dom: 6.8.2_biqbaboplfbrettd7655fr4n2y
@@ -9105,6 +9107,16 @@ packages:
       react-clientside-effect: 1.2.6_react@18.2.0
       use-callback-ref: 1.3.0_pmekkgnqduwlme35zpnqhenc34
       use-sidecar: 1.1.2_pmekkgnqduwlme35zpnqhenc34
+    dev: false
+
+  /react-hook-form/7.43.4_react@18.2.0:
+    resolution:
+      { integrity: sha512-JZp05wvmuV8qr3NNDWwyhiQL05sh9E8x/2NoWtkdiyyiezmwOr5pKexlvbCEfBMa7ZYrvzk88G/uhLl47T9b7Q== }
+    engines: { node: ">=12.22.0" }
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-i18next/12.2.0_3yopsigl4h4eb2nqrqfsy65uwi:

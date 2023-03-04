@@ -1,5 +1,6 @@
 {
   "add": "Add",
+  "ms": "ms",
   "allowInsecure": "allowInsecure",
   "cancel": "Cancel",
   "checkInterval": "checkInterval",

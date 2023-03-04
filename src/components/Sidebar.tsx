@@ -23,13 +23,7 @@ export default () => {
       <Flex alignItems="center" direction="column" h="full" p={6}>
         <Box p={10}>daed</Box>
 
-        <Button
-          onClick={() => {
-            onConfigModalOpen();
-          }}
-        >
-          {t("create config")}
-        </Button>
+        <Button onClick={onConfigModalOpen}>{t("create config")}</Button>
 
         <Spacer />
 
@@ -43,7 +37,13 @@ export default () => {
         </FormControl>
       </Flex>
 
-      <CreateConfigModal isOpen={isConfigModalOpen} onClose={onConfigModalClose} />
+      <CreateConfigModal
+        isOpen={isConfigModalOpen}
+        onClose={onConfigModalClose}
+        submitHandler={async (values) => {
+          console.log(values);
+        }}
+      />
     </>
   );
 };

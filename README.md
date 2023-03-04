@@ -6,10 +6,10 @@ A Web Dashboard For [dae](https://github.com/v2raya/dae)
 
 Project Goals:
 
-- Easy to use
-- Beautiful ui
-- Mobile friendly
+- Easy to use, with keyboard shortcuts builtin
+- Beautiful and intuitive UI
 - Dark mode
+- Mobile friendly
 
 ## Status
 
@@ -17,7 +17,7 @@ This project is currently under heavy development
 
 ## Contribute to daed
 
-### How to run and build this project locally
+### How to run and build this project
 
 Install dependencies
 
