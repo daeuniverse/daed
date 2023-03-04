@@ -1,17 +1,25 @@
 {
   "add": "Add",
   "allowInsecure": "allowInsecure",
+  "cancel": "Cancel",
   "checkInterval": "checkInterval",
   "checkTolerance": "checkTolerance",
+  "confirm": "Confirm",
   "create config": "Create Config",
   "dark mode": "Dark Mode",
+  "debug": "debug",
   "dialMode": "dialMode",
   "dnsUpstream": "dnsUpstream",
+  "domain": "domain",
+  "domain+": "domain+",
+  "info": "info",
+  "ip": "ip",
   "lanInterface": "lanInterface",
   "lanNatDirect": "lanNatDirect",
   "logLevel": "logLevel",
   "tcpCheckUrl": "tcpCheckUrl",
   "tproxyPort": "tproxyPort",
   "udpCheckDns": "udpCheckDns",
-  "wanInterface": "wanInterface"
+  "wanInterface": "wanInterface",
+  "warn": "warn"
 }

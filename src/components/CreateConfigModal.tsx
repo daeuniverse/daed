@@ -2,10 +2,12 @@ import {
   Button,
   Flex,
   FormControl,
+  FormControlProps,
   FormLabel,
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -22,8 +24,8 @@ import { useTranslation } from "react-i18next";
 
 import NumberInput from "./NumberInput";
 
-const Field = ({ labelNode, children }: { labelNode: React.ReactNode; children: React.ReactNode }) => (
-  <FormControl>
+const Field: React.FC<{ labelNode: React.ReactNode } & FormControlProps> = ({ labelNode, children, ...props }) => (
+  <FormControl {...props}>
     <FormLabel>{labelNode}</FormLabel>
 
     {children}
@@ -45,6 +47,8 @@ export default ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =
       <ModalOverlay />
 
       <ModalContent>
+        <ModalCloseButton />
+
         <ModalHeader>{t("create config")}</ModalHeader>
 
         <ModalBody>
@@ -53,16 +57,16 @@ export default ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =
               <NumberInput min={0} max={65535} />
             </Field>
 
-            <Field labelNode={t("logLevel")}>
+            <Field labelNode={t("logLevel")} pb={4}>
               <Slider step={25} textAlign="center">
                 <SliderMark value={25} {...sliderLabelStyles}>
-                  error
+                  {t("warn")}
                 </SliderMark>
                 <SliderMark value={50} {...sliderLabelStyles}>
-                  warning
+                  {t("info")}
                 </SliderMark>
                 <SliderMark value={75} {...sliderLabelStyles}>
-                  info
+                  {t("debug")}
                 </SliderMark>
 
                 <SliderTrack>
@@ -93,7 +97,7 @@ export default ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =
               <Input />
             </Field>
 
-            <Field labelNode={t("lanInterface")}>
+            <Field labelNode={t("lanInterface")} isRequired>
               <Input />
             </Field>
 
@@ -101,7 +105,7 @@ export default ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =
               <Switch />
             </Field>
 
-            <Field labelNode={t("wanInterface")}>
+            <Field labelNode={t("wanInterface")} isRequired>
               <Input />
             </Field>
 
@@ -120,7 +124,13 @@ export default ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =
         </ModalBody>
 
         <ModalFooter>
-          <Button onClick={onClose}>Close</Button>
+          <Flex gap={2}>
+            <Button onClick={onClose}>{t("cancel")}</Button>
+
+            <Button bg="Highlight" onClick={onClose}>
+              {t("confirm")}
+            </Button>
+          </Flex>
         </ModalFooter>
       </ModalContent>
     </Modal>
