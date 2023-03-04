@@ -1,6 +1,8 @@
 import {
   Button,
   Flex,
+  FormControl,
+  FormLabel,
   Input,
   Modal,
   ModalBody,
@@ -21,22 +23,22 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Textarea,
 } from "@chakra-ui/react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS } from "~/constants";
+import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS } from "~/constants";
 
-import Field from "./Field";
 import NumberInput from "./NumberInput";
 
 export type FormValues = {
   tproxyPort: number;
-  logLevel: number;
+  logLevelIndex: number;
   tcpCheckUrl: string;
   udpCheckDns: string;
-  checkInterval: number;
-  checkTolerence: number;
+  checkIntervalMS: number;
+  checkTolerenceMS: number;
   dnsUpstream: string;
   lanInterface: string[];
   lanNatDirect: boolean;
@@ -70,6 +72,8 @@ export default ({
     formState: { isSubmitting },
   } = useForm<FormValues>();
 
+  const LOG_LEVEL_STEPS = GET_LOG_LEVEL_STEPS(t);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -83,37 +87,41 @@ export default ({
           <ModalBody>
             <Tabs>
               <TabList>
-                <Tab>Global</Tab>
-                <Tab>DNS</Tab>
-                <Tab>Routing</Tab>
+                <Tab>{t("global")}</Tab>
+                <Tab>{t("dns")}</Tab>
+                <Tab>{t("routing")}</Tab>
               </TabList>
 
               <TabPanels>
                 <TabPanel>
                   <Flex direction="column" gap={4}>
-                    <Field labelNode={`${t("tproxyPort")} (0-65535)`} {...register("tproxyPort")}>
+                    <FormControl>
+                      <FormLabel>{t("tproxyPort")}</FormLabel>
+
                       <Controller
                         name="tproxyPort"
                         control={control}
-                        render={({ field }) => <NumberInput min={0} max={65535} defaultValue={12345} {...field} />}
+                        defaultValue={12345}
+                        render={({ field }) => <NumberInput min={0} max={65535} {...field} />}
                       />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("logLevel")} pb={4}>
+                    <FormControl pb={4}>
+                      <FormLabel>{t("logLevel")}</FormLabel>
+
                       <Controller
-                        name="logLevel"
+                        name="logLevelIndex"
                         control={control}
+                        defaultValue={0}
                         render={({ field }) => (
-                          <Slider defaultValue={0} step={25} textAlign="center" {...field}>
-                            <SliderMark value={25} {...sliderLabelStyles}>
-                              {t("warn")}
-                            </SliderMark>
-                            <SliderMark value={50} {...sliderLabelStyles}>
-                              {t("info")}
-                            </SliderMark>
-                            <SliderMark value={75} {...sliderLabelStyles}>
-                              {t("debug")}
-                            </SliderMark>
+                          <Slider max={LOG_LEVEL_STEPS.length - 1} textAlign="center" {...field}>
+                            <>
+                              {LOG_LEVEL_STEPS.map(([name], i) => (
+                                <SliderMark key={i} value={i} {...sliderLabelStyles}>
+                                  {name}
+                                </SliderMark>
+                              ))}
+                            </>
 
                             <SliderTrack>
                               <SliderFilledTrack />
@@ -123,60 +131,90 @@ export default ({
                           </Slider>
                         )}
                       />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("tcpCheckUrl")}>
+                    <FormControl>
+                      <FormLabel>{t("tcpCheckUrl")}</FormLabel>
+
                       <Input defaultValue={DEFAULT_TCP_CHECK_URL} {...register("tcpCheckUrl")} />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("udpCheckDns")}>
+                    <FormControl>
+                      <FormLabel>{t("udpCheckDns")}</FormLabel>
+
                       <Input defaultValue={DEFAULT_UDP_CHECK_DNS} {...register("udpCheckDns")} />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={`${t("checkInterval")} (${t("ms")})`} {...register("checkInterval")}>
+                    <FormControl>
+                      <FormLabel>{`${t("checkInterval")} (${t("ms")})`}</FormLabel>
+
                       <Controller
-                        name="checkInterval"
+                        name="checkIntervalMS"
                         control={control}
-                        render={({ field }) => <NumberInput min={0} defaultValue={1000} {...field} />}
+                        defaultValue={1000}
+                        render={({ field }) => <NumberInput min={0} {...field} />}
                       />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={`${t("checkTolerance")} (${t("ms")})`} {...register("checkTolerence")}>
+                    <FormControl>
+                      <FormLabel>{`${t("checkTolerance")} (${t("ms")})`}</FormLabel>
+
                       <Controller
-                        name="checkTolerence"
+                        name="checkTolerenceMS"
                         control={control}
-                        render={({ field }) => <NumberInput min={0} defaultValue={1000} {...field} />}
+                        defaultValue={1000}
+                        render={({ field }) => <NumberInput min={0} {...field} />}
                       />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("dnsUpstream")}>
+                    <FormControl>
+                      <FormLabel>{t("dnsUpstream")}</FormLabel>
+
                       <Input {...register("dnsUpstream")} />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("lanInterface")} isRequired>
+                    <FormControl isRequired>
+                      <FormLabel>{t("lanInterface")}</FormLabel>
+
                       <Input {...register("lanInterface")} />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("lanNatDirect")}>
+                    <FormControl>
+                      <FormLabel>{t("lanNatDirect")}</FormLabel>
+
                       <Switch {...register("lanNatDirect")} />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("wanInterface")} isRequired>
+                    <FormControl isRequired>
+                      <FormLabel>{t("wanInterface")}</FormLabel>
+
                       <Input {...register("wanInterface")} />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("allowInsecure")}>
+                    <FormControl>
+                      <FormLabel>{t("allowInsecure")}</FormLabel>
+
                       <Switch {...register("allowInsecure")} />
-                    </Field>
+                    </FormControl>
 
-                    <Field labelNode={t("dialMode")}>
+                    <FormControl>
+                      <FormLabel>{t("dialMode")}</FormLabel>
+
                       <Select {...register("dialMode")}>
                         <option>{t("ip")}</option>
                         <option>{t("domain")}</option>
                         <option>{t("domain+")}</option>
                       </Select>
-                    </Field>
+                    </FormControl>
                   </Flex>
+                </TabPanel>
+
+                <TabPanel>
+                  <Textarea />
+                </TabPanel>
+
+                <TabPanel>
+                  <Textarea />
                 </TabPanel>
               </TabPanels>
             </Tabs>

@@ -8,8 +8,8 @@ import {
 } from "@chakra-ui/react";
 import { ForwardedRef, forwardRef } from "react";
 
-export default forwardRef(({ ...props }: NumberInputProps, forwardedRef: ForwardedRef<HTMLInputElement>) => (
-  <NumberInput allowMouseWheel ref={forwardedRef} {...props}>
+export default forwardRef(({ ...props }: NumberInputProps, forwardedRef: ForwardedRef<HTMLDivElement>) => (
+  <NumberInput ref={forwardedRef} allowMouseWheel {...props}>
     <NumberInputField />
 
     <NumberInputStepper>

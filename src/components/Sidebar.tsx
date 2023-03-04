@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { CiImport, CiSquarePlus } from "react-icons/ci";
 
 import { gqlClient } from "~/api";
+import { GET_LOG_LEVEL_STEPS } from "~/constants";
 import { graphql } from "~/gql";
 
 import CreateConfigModal, { FormValues as CreateConfigModalFormValues } from "./CreateConfigModal";
@@ -57,8 +58,7 @@ export default () => {
         isOpen={isConfigModalOpen}
         onClose={onConfigModalClose}
         submitHandler={async (values: CreateConfigModalFormValues) => {
-          const { logLevel, checkInterval, checkTolerence, tproxyPort, ...global } = values;
-          console.log(values);
+          const { logLevelIndex, checkIntervalMS, checkTolerenceMS, ...global } = values;
 
           try {
             await gqlClient.request(
@@ -71,10 +71,9 @@ export default () => {
               `),
               {
                 global: {
-                  logLevel: "info",
-                  tproxyPort: Number(tproxyPort),
-                  checkInterval: `${checkInterval}ms`,
-                  checkTolerance: `${checkTolerence}ms`,
+                  logLevel: GET_LOG_LEVEL_STEPS(t)[logLevelIndex][1],
+                  checkInterval: `${checkIntervalMS}ms`,
+                  checkTolerance: `${checkTolerenceMS}ms`,
                   ...global,
                 },
                 dns: null,
