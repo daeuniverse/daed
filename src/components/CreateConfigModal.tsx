@@ -82,11 +82,11 @@ export default ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =
             </Field>
 
             <Field labelNode={t("checkInterval")}>
-              <NumberInput />
+              <NumberInput min={0} />
             </Field>
 
             <Field labelNode={t("checkTolerance")}>
-              <NumberInput />
+              <NumberInput min={0} />
             </Field>
 
             <Field labelNode={t("dnsUpstream")}>
