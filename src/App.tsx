@@ -1,40 +1,18 @@
-import { Button, HStack, List, ListItem } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-import { request } from "graphql-request";
+import { Flex } from "@chakra-ui/react";
 
-import { graphql } from "~/gql";
-import { endpointURL } from "~/store";
+import Sidebar from "~/components/Sidebar";
+
+import Home from "./Home";
 
 function App() {
-  const { data: configQueryData } = useQuery(["configs"], async () =>
-    request(
-      endpointURL.get(),
-      graphql(/* GraphQL */ `
-        query Configs {
-          configs {
-            selected
-          }
-        }
-      `)
-    )
-  );
-
   return (
-    <HStack>
-      <List>
-        {configQueryData?.configs.map((config, i) => (
-          <ListItem key={i}>{JSON.stringify(config)}</ListItem>
-        ))}
-      </List>
+    <Flex h="full">
+      <Sidebar />
 
-      <Button
-        onClick={() => {
-          // TODO:
-        }}
-      >
-        Add
-      </Button>
-    </HStack>
+      <Flex flex={1}>
+        <Home />
+      </Flex>
+    </Flex>
   );
 }
 
