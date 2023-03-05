@@ -13,9 +13,9 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-  "\n        query Query {\n          configs {\n            id\n            selected\n          }\n        }\n      ":
+  "\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      ":
     types.QueryDocument,
-  "\n                mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n                  createConfig(global: $global, dns: $dns, routing: $routing) {\n                    selected\n                  }\n                }\n              ":
+  "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        ":
     types.CreateConfigDocument,
 };
 
@@ -37,14 +37,14 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n        query Query {\n          configs {\n            id\n            selected\n          }\n        }\n      "
-): (typeof documents)["\n        query Query {\n          configs {\n            id\n            selected\n          }\n        }\n      "];
+  source: "\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      "
+): (typeof documents)["\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n                mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n                  createConfig(global: $global, dns: $dns, routing: $routing) {\n                    selected\n                  }\n                }\n              "
-): (typeof documents)["\n                mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n                  createConfig(global: $global, dns: $dns, routing: $routing) {\n                    selected\n                  }\n                }\n              "];
+  source: "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        "
+): (typeof documents)["\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        "];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

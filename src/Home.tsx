@@ -14,6 +14,18 @@ export default () => {
           configs {
             id
             selected
+            global {
+              tproxyPort
+              logLevel
+              tcpCheckUrl
+              udpCheckDns
+              checkInterval
+              checkTolerance
+              lanInterface
+              wanInterface
+              allowInsecure
+              dialMode
+            }
           }
         }
       `)

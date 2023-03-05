@@ -367,7 +367,24 @@ export type QueryQueryVariables = Exact<{ [key: string]: never }>;
 
 export type QueryQuery = {
   __typename?: "Query";
-  configs: Array<{ __typename?: "Config"; id: string; selected: boolean }>;
+  configs: Array<{
+    __typename?: "Config";
+    id: string;
+    selected: boolean;
+    global: {
+      __typename?: "Global";
+      tproxyPort: number;
+      logLevel: string;
+      tcpCheckUrl: string;
+      udpCheckDns: string;
+      checkInterval: any;
+      checkTolerance: any;
+      lanInterface: Array<string>;
+      wanInterface: Array<string>;
+      allowInsecure: boolean;
+      dialMode: string;
+    };
+  }>;
 };
 
 export type CreateConfigMutationVariables = Exact<{
@@ -376,10 +393,7 @@ export type CreateConfigMutationVariables = Exact<{
   routing?: InputMaybe<Scalars["String"]>;
 }>;
 
-export type CreateConfigMutation = {
-  __typename?: "Mutation";
-  createConfig: { __typename?: "Config"; selected: boolean };
-};
+export type CreateConfigMutation = { __typename?: "Mutation"; createConfig: { __typename?: "Config"; id: string } };
 
 export const QueryDocument = {
   kind: "Document",
@@ -399,6 +413,25 @@ export const QueryDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "selected" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "global" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "tproxyPort" } },
+                      { kind: "Field", name: { kind: "Name", value: "logLevel" } },
+                      { kind: "Field", name: { kind: "Name", value: "tcpCheckUrl" } },
+                      { kind: "Field", name: { kind: "Name", value: "udpCheckDns" } },
+                      { kind: "Field", name: { kind: "Name", value: "checkInterval" } },
+                      { kind: "Field", name: { kind: "Name", value: "checkTolerance" } },
+                      { kind: "Field", name: { kind: "Name", value: "lanInterface" } },
+                      { kind: "Field", name: { kind: "Name", value: "wanInterface" } },
+                      { kind: "Field", name: { kind: "Name", value: "allowInsecure" } },
+                      { kind: "Field", name: { kind: "Name", value: "dialMode" } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -456,7 +489,7 @@ export const CreateConfigDocument = {
             ],
             selectionSet: {
               kind: "SelectionSet",
-              selections: [{ kind: "Field", name: { kind: "Name", value: "selected" } }],
+              selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
             },
           },
         ],

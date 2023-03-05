@@ -1,6 +1,7 @@
 import { ChakraProvider, ColorModeScript, extendTheme, type ThemeConfig } from "@chakra-ui/react";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GraphiQL } from "graphiql";
 import "graphiql/graphiql.css";
 import ReactDOM from "react-dom/client";
@@ -44,6 +45,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <ColorModeScript initialColorMode={theme.config.initialColorMode} />
               <App />
             </ChakraProvider>
+            <ReactQueryDevtools position="bottom-right" />
           </QueryClientProvider>
         }
       />

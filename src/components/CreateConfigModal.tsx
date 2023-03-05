@@ -43,6 +43,8 @@ export type FormValues = {
   wanInterface: string[];
   allowInsecure: boolean;
   dialMode: string;
+  dns: string;
+  routing: string;
 };
 
 const sliderLabelStyles = {
@@ -58,8 +60,8 @@ export default ({
   submitHandler,
 }: {
   isOpen: boolean;
-  submitHandler: (values: FormValues) => Promise<void>;
   onClose: () => void;
+  submitHandler: (values: FormValues) => Promise<void>;
 }) => {
   const { t } = useTranslation();
 
@@ -196,11 +198,11 @@ export default ({
                 </TabPanel>
 
                 <TabPanel>
-                  <Textarea />
+                  <Textarea {...register("dns")} />
                 </TabPanel>
 
                 <TabPanel>
-                  <Textarea />
+                  <Textarea {...register("routing")} />
                 </TabPanel>
               </TabPanels>
             </Tabs>

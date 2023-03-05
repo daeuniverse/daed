@@ -21,6 +21,7 @@
     "@graphiql/toolkit": "^0.8.2",
     "@nanostores/persistent": "^0.7.0",
     "@tanstack/react-query": "^4.24.10",
+    "@tanstack/react-query-devtools": "^4.24.14",
     "framer-motion": "^10.0.1",
     "graphiql": "^2.4.0",
     "graphql": "^16.6.0",

@@ -9,6 +9,7 @@ import {
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { CiImport, CiSquarePlus } from "react-icons/ci";
 
@@ -22,6 +23,36 @@ export default () => {
   const { t } = useTranslation();
   const { colorMode, setColorMode } = useColorMode();
   const { isOpen: isConfigModalOpen, onOpen: onConfigModalOpen, onClose: onConfigModalClose } = useDisclosure();
+
+  const createConfigMutation = useMutation({
+    mutationFn: (values: CreateConfigModalFormValues) => {
+      const { logLevelIndex, checkIntervalMS, checkTolerenceMS, dns, routing, ...global } = values;
+
+      return gqlClient.request(
+        graphql(`
+          mutation createConfig($global: globalInput, $dns: String, $routing: String) {
+            createConfig(global: $global, dns: $dns, routing: $routing) {
+              id
+            }
+          }
+        `),
+        {
+          global: {
+            logLevel: GET_LOG_LEVEL_STEPS(t)[logLevelIndex][1],
+            checkInterval: `${checkIntervalMS}ms`,
+            checkTolerance: `${checkTolerenceMS}ms`,
+            ...global,
+          },
+          dns,
+          routing,
+        }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
+      onConfigModalClose();
+    },
+  });
 
   return (
     <>
@@ -58,35 +89,7 @@ export default () => {
         isOpen={isConfigModalOpen}
         onClose={onConfigModalClose}
         submitHandler={async (values: CreateConfigModalFormValues) => {
-          const { logLevelIndex, checkIntervalMS, checkTolerenceMS, ...global } = values;
-
-          try {
-            await gqlClient.request(
-              graphql(`
-                mutation createConfig($global: globalInput, $dns: String, $routing: String) {
-                  createConfig(global: $global, dns: $dns, routing: $routing) {
-                    selected
-                  }
-                }
-              `),
-              {
-                global: {
-                  logLevel: GET_LOG_LEVEL_STEPS(t)[logLevelIndex][1],
-                  checkInterval: `${checkIntervalMS}ms`,
-                  checkTolerance: `${checkTolerenceMS}ms`,
-                  ...global,
-                },
-                dns: null,
-                routing: null,
-              }
-            );
-
-            queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
-          } catch {
-            //
-          } finally {
-            onConfigModalClose();
-          }
+          await createConfigMutation.mutateAsync(values);
         }}
       />
     </>
