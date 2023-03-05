@@ -387,6 +387,18 @@ export type QueryQuery = {
   }>;
 };
 
+export type SelectConfigMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type SelectConfigMutation = { __typename?: "Mutation"; selectConfig: number };
+
+export type RemoveConfigMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type RemoveConfigMutation = { __typename?: "Mutation"; removeConfig: number };
+
 export type CreateConfigMutationVariables = Exact<{
   global?: InputMaybe<GlobalInput>;
   dns?: InputMaybe<Scalars["String"]>;
@@ -440,6 +452,72 @@ export const QueryDocument = {
     },
   ],
 } as unknown as DocumentNode<QueryQuery, QueryQueryVariables>;
+export const SelectConfigDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "selectConfig" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "selectConfig" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SelectConfigMutation, SelectConfigMutationVariables>;
+export const RemoveConfigDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "removeConfig" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "removeConfig" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveConfigMutation, RemoveConfigMutationVariables>;
 export const CreateConfigDocument = {
   kind: "Document",
   definitions: [

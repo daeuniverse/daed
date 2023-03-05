@@ -15,6 +15,10 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
 const documents = {
   "\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      ":
     types.QueryDocument,
+  "\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        ":
+    types.SelectConfigDocument,
+  "\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ":
+    types.RemoveConfigDocument,
   "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        ":
     types.CreateConfigDocument,
 };
@@ -39,6 +43,18 @@ export function graphql(source: string): unknown;
 export function graphql(
   source: "\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      "
 ): (typeof documents)["\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        "
+): (typeof documents)["\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        "
+): (typeof documents)["\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
