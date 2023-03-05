@@ -28,7 +28,14 @@ export default () => {
 
   const createConfigMutation = useMutation({
     mutationFn: (values: CreateConfigDrawerFormValues) => {
-      const { logLevelIndex, checkIntervalMS, checkTolerenceMS, dns, routing, ...global } = values;
+      const {
+        logLevelIndex,
+        checkIntervalSeconds: checkIntervalMS,
+        checkTolerenceSeconds: checkTolerenceMS,
+        dns,
+        routing,
+        ...global
+      } = values;
 
       return gqlClient.request(
         graphql(`
@@ -41,8 +48,8 @@ export default () => {
         {
           global: {
             logLevel: GET_LOG_LEVEL_STEPS(t)[logLevelIndex][1],
-            checkInterval: `${checkIntervalMS}ms`,
-            checkTolerance: `${checkTolerenceMS}ms`,
+            checkInterval: `${checkIntervalMS}s`,
+            checkTolerance: `${checkTolerenceMS}s`,
             ...global,
           },
           dns,

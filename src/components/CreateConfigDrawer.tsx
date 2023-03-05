@@ -37,8 +37,8 @@ export type FormValues = {
   logLevelIndex: number;
   tcpCheckUrl: string;
   udpCheckDns: string;
-  checkIntervalMS: number;
-  checkTolerenceMS: number;
+  checkIntervalSeconds: number;
+  checkTolerenceSeconds: number;
   lanInterface: string[];
   wanInterface: string[];
   allowInsecure: boolean;
@@ -77,7 +77,7 @@ export default ({
   const LOG_LEVEL_STEPS = GET_LOG_LEVEL_STEPS(t);
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} placement="bottom">
+    <Drawer isOpen={isOpen} onClose={onClose} placement="right" size="md">
       <DrawerOverlay />
 
       <form onSubmit={handleSubmit(() => submitHandler(form))}>
@@ -148,23 +148,23 @@ export default ({
                     </FormControl>
 
                     <FormControl>
-                      <FormLabel>{`${t("checkInterval")} (${t("ms")})`}</FormLabel>
+                      <FormLabel>{`${t("checkInterval")} (${t("seconds")})`}</FormLabel>
 
                       <Controller
-                        name="checkIntervalMS"
+                        name="checkIntervalSeconds"
                         control={control}
-                        defaultValue={1000}
+                        defaultValue={10}
                         render={({ field }) => <NumberInput min={0} {...field} />}
                       />
                     </FormControl>
 
                     <FormControl>
-                      <FormLabel>{`${t("checkTolerance")} (${t("ms")})`}</FormLabel>
+                      <FormLabel>{`${t("checkTolerance")} (${t("seconds")})`}</FormLabel>
 
                       <Controller
-                        name="checkTolerenceMS"
+                        name="checkTolerenceSeconds"
                         control={control}
-                        defaultValue={1000}
+                        defaultValue={10}
                         render={({ field }) => <NumberInput min={0} {...field} />}
                       />
                     </FormControl>

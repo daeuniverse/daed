@@ -72,7 +72,7 @@ export default () => {
 
   return (
     <SimpleBar style={{ width: "100%", height: "100%" }}>
-      <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2}>
+      <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2} p={2}>
         {configQueryData?.configs.map(({ id, selected, ...config }, i) => (
           <Card key={i}>
             <CardHeader>
