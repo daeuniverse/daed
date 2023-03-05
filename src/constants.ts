@@ -1,5 +1,6 @@
 import { TFunction } from "i18next";
 
+export const CONFIGS_PER_ROW = 4;
 export const QUERY_KEY_CONFIG = ["config"];
 
 export const DEFAULT_ENDPOINT_URL = "http://127.0.0.1:2023/graphql";

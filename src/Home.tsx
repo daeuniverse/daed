@@ -1,10 +1,11 @@
-import { Box, List, ListItem } from "@chakra-ui/react";
+import { Card, CardBody, CardHeader, Grid, Heading } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import SimpleBar from "simplebar-react";
 
 import { gqlClient } from "~/api";
 import { graphql } from "~/gql";
 
-import { QUERY_KEY_CONFIG } from "./constants";
+import { CONFIGS_PER_ROW, QUERY_KEY_CONFIG } from "./constants";
 
 export default () => {
   const { data: configQueryData } = useQuery(QUERY_KEY_CONFIG, async () =>
@@ -33,12 +34,17 @@ export default () => {
   );
 
   return (
-    <Box>
-      <List>
-        {configQueryData?.configs.map((config, i) => (
-          <ListItem key={i}>{JSON.stringify(config)}</ListItem>
+    <SimpleBar style={{ width: "100%", height: "100%" }}>
+      <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2}>
+        {configQueryData?.configs.map(({ id, ...config }, i) => (
+          <Card key={i}>
+            <CardHeader>
+              <Heading>{id}</Heading>
+            </CardHeader>
+            <CardBody>{JSON.stringify(config)}</CardBody>
+          </Card>
         ))}
-      </List>
-    </Box>
+      </Grid>
+    </SimpleBar>
   );
 };

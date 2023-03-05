@@ -8,6 +8,7 @@ import {
   Switch,
   useColorMode,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -17,15 +18,16 @@ import { gqlClient, queryClient } from "~/api";
 import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG } from "~/constants";
 import { graphql } from "~/gql";
 
-import CreateConfigModal, { FormValues as CreateConfigModalFormValues } from "./CreateConfigModal";
+import CreateConfigDrawer, { FormValues as CreateConfigDrawerFormValues } from "./CreateConfigDrawer";
 
 export default () => {
   const { t } = useTranslation();
   const { colorMode, setColorMode } = useColorMode();
-  const { isOpen: isConfigModalOpen, onOpen: onConfigModalOpen, onClose: onConfigModalClose } = useDisclosure();
+  const toast = useToast();
+  const { isOpen: isConfigDrawerOpen, onOpen: onConfigDrawerOpen, onClose: onConfigDrawerClose } = useDisclosure();
 
   const createConfigMutation = useMutation({
-    mutationFn: (values: CreateConfigModalFormValues) => {
+    mutationFn: (values: CreateConfigDrawerFormValues) => {
       const { logLevelIndex, checkIntervalMS, checkTolerenceMS, dns, routing, ...global } = values;
 
       return gqlClient.request(
@@ -48,9 +50,15 @@ export default () => {
         }
       );
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      toast({
+        title: "Config Created",
+        description: `${data.createConfig.id}`,
+        status: "success",
+        isClosable: true,
+      });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
-      onConfigModalClose();
+      onConfigDrawerClose();
     },
   });
 
@@ -61,15 +69,15 @@ export default () => {
           daed
         </Heading>
 
-        <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigModalOpen}>
+        <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigDrawerOpen}>
           {t("config")}
         </Button>
 
-        <Button w="full" leftIcon={<CiImport />} onClick={onConfigModalOpen}>
+        <Button w="full" leftIcon={<CiImport />} onClick={onConfigDrawerOpen}>
           {t("group")}
         </Button>
 
-        <Button w="full" leftIcon={<CiImport />} onClick={onConfigModalOpen}>
+        <Button w="full" leftIcon={<CiImport />} onClick={onConfigDrawerOpen}>
           {t("subscription")}
         </Button>
 
@@ -85,11 +93,13 @@ export default () => {
         </FormControl>
       </Flex>
 
-      <CreateConfigModal
-        isOpen={isConfigModalOpen}
-        onClose={onConfigModalClose}
-        submitHandler={async (values: CreateConfigModalFormValues) => {
+      <CreateConfigDrawer
+        isOpen={isConfigDrawerOpen}
+        onClose={onConfigDrawerClose}
+        submitHandler={async (form) => {
+          const values = form.getValues();
           await createConfigMutation.mutateAsync(values);
+          form.reset();
         }}
       />
     </>

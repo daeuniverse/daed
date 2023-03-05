@@ -34,7 +34,8 @@
     "react-i18next": "^12.2.0",
     "react-icons": "^4.8.0",
     "react-router": "^6.8.2",
-    "react-router-dom": "^6.8.2"
+    "react-router-dom": "^6.8.2",
+    "simplebar-react": "^3.2.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "3.2.1",

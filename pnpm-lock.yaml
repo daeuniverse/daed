@@ -42,6 +42,7 @@ specifiers:
   react-icons: ^4.8.0
   react-router: ^6.8.2
   react-router-dom: ^6.8.2
+  simplebar-react: ^3.2.1
   typescript: ^4.9.3
   vite: ^4.1.0
 
@@ -68,6 +69,7 @@ dependencies:
   react-icons: 4.8.0_react@18.2.0
   react-router: 6.8.2_react@18.2.0
   react-router-dom: 6.8.2_biqbaboplfbrettd7655fr4n2y
+  simplebar-react: 3.2.1_react@18.2.0
 
 devDependencies:
   "@graphql-codegen/cli": 3.2.1_siqdfahpv72jdmk4lfc7c57l6m
@@ -5348,6 +5350,11 @@ packages:
     engines: { node: ">=6" }
     dev: true
 
+  /can-use-dom/0.1.0:
+    resolution:
+      { integrity: sha512-ceOhN1DL7Y4O6M0j9ICgmTYziV89WMd96SvSl0REd8PMgrY0B/WBOPoed5S1KUmJqXgUXh8gzSe6E3ae27upsQ== }
+    dev: false
+
   /caniuse-lite/1.0.30001458:
     resolution:
       {
@@ -8171,6 +8178,11 @@ packages:
       p-locate: 5.0.0
     dev: true
 
+  /lodash-es/4.17.21:
+    resolution:
+      { integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw== }
+    dev: false
+
   /lodash.merge/4.6.2:
     resolution:
       {
@@ -9699,6 +9711,24 @@ packages:
         tarball: https://registry.npm.taobao.org/signedsource/-/signedsource-1.0.0.tgz,
       }
     dev: true
+
+  /simplebar-core/1.2.1:
+    resolution:
+      { integrity: sha512-dgX6qDOSDM3+crxFstIKOlxyxnD3NYGRPm7CqmAtnNfFLVeadrydym5eNpduIO7aDFU/rayS6hEdrcxO0WBqnQ== }
+    dependencies:
+      can-use-dom: 0.1.0
+      lodash-es: 4.17.21
+    dev: false
+
+  /simplebar-react/3.2.1_react@18.2.0:
+    resolution:
+      { integrity: sha512-viHQs/34ZQk956b88Kl7+VckWO8DKOhg2Hkl8kjPv2q16w+/nnOJOGhZKrpj/egMGqDpQywou2AhdRkAM0oddA== }
+    peerDependencies:
+      react: ">=16.8.0"
+    dependencies:
+      react: 18.2.0
+      simplebar-core: 1.2.1
+    dev: false
 
   /slash/3.0.0:
     resolution:

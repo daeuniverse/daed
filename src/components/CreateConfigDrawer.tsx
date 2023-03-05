@@ -1,16 +1,16 @@
 import {
   Button,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
   Flex,
   FormControl,
   FormLabel,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Select,
   Slider,
   SliderFilledTrack,
@@ -25,7 +25,7 @@ import {
   Tabs,
   Textarea,
 } from "@chakra-ui/react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS } from "~/constants";
@@ -61,30 +61,32 @@ export default ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  submitHandler: (values: FormValues) => Promise<void>;
+  submitHandler: (form: UseFormReturn<FormValues>) => Promise<void>;
 }) => {
   const { t } = useTranslation();
+
+  const form = useForm<FormValues>();
 
   const {
     handleSubmit,
     register,
     control,
     formState: { isSubmitting },
-  } = useForm<FormValues>();
+  } = form;
 
   const LOG_LEVEL_STEPS = GET_LOG_LEVEL_STEPS(t);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
+    <Drawer isOpen={isOpen} onClose={onClose} placement="bottom">
+      <DrawerOverlay />
 
-      <form onSubmit={handleSubmit(submitHandler)}>
-        <ModalContent>
-          <ModalCloseButton />
+      <form onSubmit={handleSubmit(() => submitHandler(form))}>
+        <DrawerContent>
+          <DrawerCloseButton />
 
-          <ModalHeader>{t("config")}</ModalHeader>
+          <DrawerHeader>{t("config")}</DrawerHeader>
 
-          <ModalBody>
+          <DrawerBody overflow="hidden">
             <Tabs>
               <TabList>
                 <Tab>{t("global")}</Tab>
@@ -206,9 +208,9 @@ export default ({
                 </TabPanel>
               </TabPanels>
             </Tabs>
-          </ModalBody>
+          </DrawerBody>
 
-          <ModalFooter>
+          <DrawerFooter>
             <Flex gap={2}>
               <Button onClick={onClose}>{t("cancel")}</Button>
 
@@ -216,9 +218,9 @@ export default ({
                 {t("confirm")}
               </Button>
             </Flex>
-          </ModalFooter>
-        </ModalContent>
+          </DrawerFooter>
+        </DrawerContent>
       </form>
-    </Modal>
+    </Drawer>
   );
 };
