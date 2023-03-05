@@ -12,8 +12,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { CiImport, CiSquarePlus } from "react-icons/ci";
 
-import { gqlClient } from "~/api";
-import { GET_LOG_LEVEL_STEPS } from "~/constants";
+import { gqlClient, queryClient } from "~/api";
+import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG } from "~/constants";
 import { graphql } from "~/gql";
 
 import CreateConfigModal, { FormValues as CreateConfigModalFormValues } from "./CreateConfigModal";
@@ -80,8 +80,12 @@ export default () => {
                 routing: null,
               }
             );
+
+            queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
           } catch {
             //
+          } finally {
+            onConfigModalClose();
           }
         }}
       />

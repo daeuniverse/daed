@@ -365,7 +365,10 @@ export type GlobalInput = {
 
 export type QueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type QueryQuery = { __typename?: "Query"; configs: Array<{ __typename?: "Config"; selected: boolean }> };
+export type QueryQuery = {
+  __typename?: "Query";
+  configs: Array<{ __typename?: "Config"; id: string; selected: boolean }>;
+};
 
 export type CreateConfigMutationVariables = Exact<{
   global?: InputMaybe<GlobalInput>;
@@ -393,7 +396,10 @@ export const QueryDocument = {
             name: { kind: "Name", value: "configs" },
             selectionSet: {
               kind: "SelectionSet",
-              selections: [{ kind: "Field", name: { kind: "Name", value: "selected" } }],
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "selected" } },
+              ],
             },
           },
         ],

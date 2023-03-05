@@ -39,9 +39,7 @@ export type FormValues = {
   udpCheckDns: string;
   checkIntervalMS: number;
   checkTolerenceMS: number;
-  dnsUpstream: string;
   lanInterface: string[];
-  lanNatDirect: boolean;
   wanInterface: string[];
   allowInsecure: boolean;
   dialMode: string;
@@ -167,22 +165,10 @@ export default ({
                       />
                     </FormControl>
 
-                    <FormControl>
-                      <FormLabel>{t("dnsUpstream")}</FormLabel>
-
-                      <Input {...register("dnsUpstream")} />
-                    </FormControl>
-
                     <FormControl isRequired>
                       <FormLabel>{t("lanInterface")}</FormLabel>
 
                       <Input {...register("lanInterface")} />
-                    </FormControl>
-
-                    <FormControl>
-                      <FormLabel>{t("lanNatDirect")}</FormLabel>
-
-                      <Switch {...register("lanNatDirect")} />
                     </FormControl>
 
                     <FormControl isRequired>

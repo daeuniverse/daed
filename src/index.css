@@ -2,6 +2,7 @@
 @import "@fontsource/open-sans";
 
 body {
+  margin: 0;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
