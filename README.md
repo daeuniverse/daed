@@ -1,10 +1,10 @@
 # daed
 
-![preview](docs/preview.png)
-
 ## What this project is for
 
 A Web Dashboard For [dae](https://github.com/v2raya/dae)
+
+![preview](docs/preview.png)
 
 Project Goals:
 
