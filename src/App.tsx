@@ -1,4 +1,5 @@
 import { Flex } from "@chakra-ui/react";
+import SimpleBar from "simplebar-react";
 
 import Sidebar from "~/components/Sidebar";
 
@@ -6,12 +7,14 @@ import Home from "./Home";
 
 function App() {
   return (
-    <Flex h="full">
-      <Sidebar />
-
-      <Flex flex={1}>
-        <Home />
+    <Flex>
+      <Flex minH="100dvh">
+        <Sidebar />
       </Flex>
+
+      <SimpleBar style={{ width: "100%", maxHeight: "100dvh", overflowX: "hidden" }}>
+        <Home />
+      </SimpleBar>
     </Flex>
   );
 }

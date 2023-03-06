@@ -96,7 +96,7 @@ export default () => {
   });
 
   return (
-    <Flex alignItems="center" justifyContent="center" direction="column" h="full" p={6} gap={4}>
+    <Flex alignItems="center" justifyContent="center" direction="column" p={6} gap={4}>
       <Heading p={6} rounded="full">
         daed
       </Heading>
