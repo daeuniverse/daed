@@ -391,7 +391,13 @@ export type GroupsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GroupsQuery = {
   __typename?: "Query";
-  groups: Array<{ __typename?: "Group"; id: string; name: string; policy: Policy }>;
+  groups: Array<{
+    __typename?: "Group";
+    id: string;
+    name: string;
+    policy: Policy;
+    policyParams: Array<{ __typename?: "Param"; key: string; val: string }>;
+  }>;
 };
 
 export type SelectConfigMutationVariables = Exact<{
@@ -413,6 +419,14 @@ export type CreateConfigMutationVariables = Exact<{
 }>;
 
 export type CreateConfigMutation = { __typename?: "Mutation"; createConfig: { __typename?: "Config"; id: string } };
+
+export type CreateGroupMutationVariables = Exact<{
+  name: Scalars["String"];
+  policy: Policy;
+  policyParams?: InputMaybe<Array<PolicyParam> | PolicyParam>;
+}>;
+
+export type CreateGroupMutation = { __typename?: "Mutation"; createGroup: { __typename?: "Group"; id: string } };
 
 export const ConfigsDocument = {
   kind: "Document",
@@ -478,6 +492,17 @@ export const GroupsDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "policy" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "policyParams" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "key" } },
+                      { kind: "Field", name: { kind: "Name", value: "val" } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -609,3 +634,63 @@ export const CreateConfigDocument = {
     },
   ],
 } as unknown as DocumentNode<CreateConfigMutation, CreateConfigMutationVariables>;
+export const CreateGroupDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "createGroup" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "String" } } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "policy" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "Policy" } } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "policyParams" } },
+          type: {
+            kind: "ListType",
+            type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "PolicyParam" } } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createGroup" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "policy" },
+                value: { kind: "Variable", name: { kind: "Name", value: "policy" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "policyParams" },
+                value: { kind: "Variable", name: { kind: "Name", value: "policyParams" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateGroupMutation, CreateGroupMutationVariables>;

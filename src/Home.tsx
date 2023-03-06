@@ -64,6 +64,10 @@ export default () => {
             id
             name
             policy
+            policyParams {
+              key
+              val
+            }
           }
         }
       `)
@@ -115,14 +119,15 @@ export default () => {
           </Button>
 
           <Collapse in={isConfigOpen}>
-            <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2}>
+            <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2} p={2}>
               {configQueryData?.configs.map(({ id, selected, ...config }) => (
                 <Card key={id}>
                   <CardBody>{JSON.stringify(config)}</CardBody>
 
                   <CardFooter>
-                    <ButtonGroup isAttached variant="outline">
+                    <ButtonGroup isAttached variant="outline" display="flex" w="full">
                       <Button
+                        flex={1}
                         bg={selected ? "Highlight" : ""}
                         isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
                         onClick={() => {
@@ -153,7 +158,7 @@ export default () => {
           </Button>
 
           <Collapse in={isGroupOpen}>
-            <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2}>
+            <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2} p={2}>
               {groupQueryData?.groups.map(({ id, ...config }) => (
                 <Card key={id}>
                   <CardBody>{JSON.stringify(config)}</CardBody>

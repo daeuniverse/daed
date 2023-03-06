@@ -1,22 +1,34 @@
 import { Button, Flex, Heading, IconButton, Spacer, useColorMode, useDisclosure, useToast } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
+import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { CiDark, CiImport, CiLight, CiSquarePlus } from "react-icons/ci";
 
 import { gqlClient, queryClient } from "~/api";
-import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG } from "~/constants";
+import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP } from "~/constants";
 import { graphql } from "~/gql";
 
-import CreateConfigDrawer, { FormValues as CreateConfigDrawerFormValues } from "./CreateConfigDrawer";
+import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
+import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
 
 export default () => {
   const { t } = useTranslation();
   const { colorMode, toggleColorMode } = useColorMode();
   const toast = useToast();
-  const { isOpen: isConfigDrawerOpen, onOpen: onConfigDrawerOpen, onClose: onConfigDrawerClose } = useDisclosure();
+
+  const {
+    isOpen: isConfigFormDrawerOpen,
+    onOpen: onConfigFormDrawerOpen,
+    onClose: onConfigFormDrawerClose,
+  } = useDisclosure();
+  const {
+    isOpen: isGroupFormDrawerOpen,
+    onOpen: onGroupFormDrawerOpen,
+    onClose: onGroupFormDrawerClose,
+  } = useDisclosure();
 
   const createConfigMutation = useMutation({
-    mutationFn: (values: CreateConfigDrawerFormValues) => {
+    mutationFn: (values: CreateConfigFormDrawerFormValues) => {
       const {
         logLevelIndex,
         checkIntervalSeconds: checkIntervalMS,
@@ -54,7 +66,32 @@ export default () => {
         isClosable: true,
       });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
-      onConfigDrawerClose();
+      onConfigFormDrawerClose();
+    },
+  });
+
+  const createGroupMutation = useMutation({
+    mutationFn: (values: CreateGroupFormDrawerFormValues) => {
+      return gqlClient.request(
+        graphql(`
+          mutation createGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {
+            createGroup(name: $name, policy: $policy, policyParams: $policyParams) {
+              id
+            }
+          }
+        `),
+        values
+      );
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Group Created",
+        description: `${data.createGroup.id}`,
+        status: "success",
+        isClosable: true,
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP });
+      onGroupFormDrawerClose();
     },
   });
 
@@ -64,15 +101,15 @@ export default () => {
         daed
       </Heading>
 
-      <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigDrawerOpen}>
+      <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
         {t("config")}
       </Button>
 
-      <Button w="full" leftIcon={<CiImport />} onClick={onConfigDrawerOpen}>
+      <Button w="full" leftIcon={<CiSquarePlus />} onClick={onGroupFormDrawerOpen}>
         {t("group")}
       </Button>
 
-      <Button w="full" leftIcon={<CiImport />} onClick={onConfigDrawerOpen}>
+      <Button w="full" leftIcon={<CiImport />} onClick={onConfigFormDrawerOpen}>
         {t("subscription")}
       </Button>
 
@@ -84,15 +121,23 @@ export default () => {
         icon={colorMode === "dark" ? <CiLight /> : <CiDark />}
       />
 
-      <CreateConfigDrawer
-        isOpen={isConfigDrawerOpen}
-        onClose={onConfigDrawerClose}
-        submitHandler={async (form) => {
-          const values = form.getValues();
-          await createConfigMutation.mutateAsync(values);
-          form.reset();
-        }}
-      />
+      <Fragment>
+        <CreateConfigFormDrawer
+          isOpen={isConfigFormDrawerOpen}
+          onClose={onConfigFormDrawerClose}
+          onSubmit={async (form) => {
+            await createConfigMutation.mutateAsync(form.getValues());
+          }}
+        />
+
+        <CreateGroupFormDrawer
+          isOpen={isGroupFormDrawerOpen}
+          onClose={onGroupFormDrawerClose}
+          onSubmit={async (form) => {
+            await createGroupMutation.mutateAsync(form.getValues());
+          }}
+        />
+      </Fragment>
     </Flex>
   );
 };
