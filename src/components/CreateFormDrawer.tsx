@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import SimpleBar from "simplebar-react";
 
 export default <FormValues extends Record<string, unknown>>({
   isOpen,
@@ -45,11 +46,14 @@ export default <FormValues extends Record<string, unknown>>({
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>{header}</DrawerHeader>
-          <DrawerBody overflow="hidden">{children}</DrawerBody>
+          <DrawerBody>
+            <SimpleBar style={{ width: "100%", height: "100%", overflowX: "hidden", overflowY: "auto" }}>
+              {children}
+            </SimpleBar>
+          </DrawerBody>
           <DrawerFooter>
             <Flex gap={2}>
               <Button onClick={onClose}>{t("cancel")}</Button>
-
               <Button type="submit" isLoading={form.formState.isSubmitting} bg="Highlight">
                 {t("confirm")}
               </Button>
