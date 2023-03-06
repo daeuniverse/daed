@@ -1,18 +1,7 @@
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Spacer,
-  Switch,
-  useColorMode,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import { Button, Flex, Heading, IconButton, Spacer, useColorMode, useDisclosure, useToast } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { CiImport, CiSquarePlus } from "react-icons/ci";
+import { CiDark, CiImport, CiLight, CiSquarePlus } from "react-icons/ci";
 
 import { gqlClient, queryClient } from "~/api";
 import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG } from "~/constants";
@@ -22,7 +11,7 @@ import CreateConfigDrawer, { FormValues as CreateConfigDrawerFormValues } from "
 
 export default () => {
   const { t } = useTranslation();
-  const { colorMode, setColorMode } = useColorMode();
+  const { colorMode, toggleColorMode } = useColorMode();
   const toast = useToast();
   const { isOpen: isConfigDrawerOpen, onOpen: onConfigDrawerOpen, onClose: onConfigDrawerClose } = useDisclosure();
 
@@ -70,35 +59,30 @@ export default () => {
   });
 
   return (
-    <>
-      <Flex alignItems="center" justifyContent="center" direction="column" h="full" p={6} gap={4}>
-        <Heading p={10} rounded="full">
-          daed
-        </Heading>
+    <Flex alignItems="center" justifyContent="center" direction="column" h="full" p={6} gap={4}>
+      <Heading p={6} rounded="full">
+        daed
+      </Heading>
 
-        <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigDrawerOpen}>
-          {t("config")}
-        </Button>
+      <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigDrawerOpen}>
+        {t("config")}
+      </Button>
 
-        <Button w="full" leftIcon={<CiImport />} onClick={onConfigDrawerOpen}>
-          {t("group")}
-        </Button>
+      <Button w="full" leftIcon={<CiImport />} onClick={onConfigDrawerOpen}>
+        {t("group")}
+      </Button>
 
-        <Button w="full" leftIcon={<CiImport />} onClick={onConfigDrawerOpen}>
-          {t("subscription")}
-        </Button>
+      <Button w="full" leftIcon={<CiImport />} onClick={onConfigDrawerOpen}>
+        {t("subscription")}
+      </Button>
 
-        <Spacer />
+      <Spacer />
 
-        <FormControl as={Flex} alignItems="center" justifyContent="center" gap={2}>
-          <FormLabel m={0}>{t("dark mode")}</FormLabel>
-
-          <Switch
-            isChecked={colorMode === "dark"}
-            onChange={(e) => setColorMode(e.target.checked ? "dark" : "light")}
-          />
-        </FormControl>
-      </Flex>
+      <IconButton
+        aria-label={t("dark mode")}
+        onClick={toggleColorMode}
+        icon={colorMode === "dark" ? <CiLight /> : <CiDark />}
+      />
 
       <CreateConfigDrawer
         isOpen={isConfigDrawerOpen}
@@ -109,6 +93,6 @@ export default () => {
           form.reset();
         }}
       />
-    </>
+    </Flex>
   );
 };

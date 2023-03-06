@@ -363,9 +363,9 @@ export type GlobalInput = {
   wanInterface?: InputMaybe<Array<Scalars["String"]>>;
 };
 
-export type QueryQueryVariables = Exact<{ [key: string]: never }>;
+export type ConfigsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type QueryQuery = {
+export type ConfigsQuery = {
   __typename?: "Query";
   configs: Array<{
     __typename?: "Config";
@@ -385,6 +385,13 @@ export type QueryQuery = {
       dialMode: string;
     };
   }>;
+};
+
+export type GroupsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GroupsQuery = {
+  __typename?: "Query";
+  groups: Array<{ __typename?: "Group"; id: string; name: string; policy: Policy }>;
 };
 
 export type SelectConfigMutationVariables = Exact<{
@@ -407,13 +414,13 @@ export type CreateConfigMutationVariables = Exact<{
 
 export type CreateConfigMutation = { __typename?: "Mutation"; createConfig: { __typename?: "Config"; id: string } };
 
-export const QueryDocument = {
+export const ConfigsDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "Query" },
+      name: { kind: "Name", value: "Configs" },
       selectionSet: {
         kind: "SelectionSet",
         selections: [
@@ -451,7 +458,34 @@ export const QueryDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<QueryQuery, QueryQueryVariables>;
+} as unknown as DocumentNode<ConfigsQuery, ConfigsQueryVariables>;
+export const GroupsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "Groups" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "groups" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "policy" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GroupsQuery, GroupsQueryVariables>;
 export const SelectConfigDocument = {
   kind: "Document",
   definitions: [

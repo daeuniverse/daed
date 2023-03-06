@@ -21,6 +21,7 @@
   "lanInterface": "lanInterface",
   "lanNatDirect": "lanNatDirect",
   "logLevel": "logLevel",
+  "remove": "Remove",
   "routing": "Routing",
   "seconds": "seconds",
   "subscription": "Subscription",

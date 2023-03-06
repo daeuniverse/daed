@@ -1,18 +1,40 @@
-import { Button, ButtonGroup, Card, CardBody, CardHeader, Grid, Heading, IconButton } from "@chakra-ui/react";
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardFooter,
+  Collapse,
+  Flex,
+  Grid,
+  IconButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CiCircleRemove } from "react-icons/ci";
+import { useTranslation } from "react-i18next";
+import { CiCircleRemove, CiSquareChevDown, CiSquareChevUp } from "react-icons/ci";
 import SimpleBar from "simplebar-react";
 
 import { gqlClient, queryClient } from "~/api";
 import { graphql } from "~/gql";
 
-import { CONFIGS_PER_ROW, QUERY_KEY_CONFIG } from "./constants";
+import { CONFIGS_PER_ROW, GROUPS_PER_ROW, QUERY_KEY_CONFIG, QUERY_KEY_GROUP } from "./constants";
 
 export default () => {
+  const { t } = useTranslation();
+
+  const { isOpen: isConfigOpen, onToggle: onConfigToggle } = useDisclosure({
+    defaultIsOpen: true,
+  });
+
+  const { isOpen: isGroupOpen, onToggle: onGroupToggle } = useDisclosure({
+    defaultIsOpen: true,
+  });
+
   const { data: configQueryData } = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
       graphql(`
-        query Query {
+        query Configs {
           configs {
             id
             selected
@@ -28,6 +50,20 @@ export default () => {
               allowInsecure
               dialMode
             }
+          }
+        }
+      `)
+    )
+  );
+
+  const { data: groupQueryData } = useQuery(QUERY_KEY_GROUP, async () =>
+    gqlClient.request(
+      graphql(`
+        query Groups {
+          groups {
+            id
+            name
+            policy
           }
         }
       `)
@@ -71,37 +107,62 @@ export default () => {
   });
 
   return (
-    <SimpleBar style={{ width: "100%", height: "100%" }}>
-      <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2} p={2}>
-        {configQueryData?.configs.map(({ id, selected, ...config }, i) => (
-          <Card key={i}>
-            <CardHeader>
-              <Heading>
-                <ButtonGroup isAttached variant="outline">
-                  <Button
-                    bg={selected ? "Highlight" : ""}
-                    isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
-                    onClick={() => {
-                      selectConfigMutation.mutate(id);
-                    }}
-                  >
-                    {id}
-                  </Button>
-                  <IconButton
-                    aria-label="remove config"
-                    isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
-                    icon={<CiCircleRemove />}
-                    onClick={() => {
-                      removeConfigMutation.mutate(id);
-                    }}
-                  />
-                </ButtonGroup>
-              </Heading>
-            </CardHeader>
-            <CardBody>{JSON.stringify(config)}</CardBody>
-          </Card>
-        ))}
-      </Grid>
+    <SimpleBar style={{ width: "100%", height: "100%", padding: 10 }}>
+      <Flex gap={4} direction="column">
+        <Flex direction="column" gap={4}>
+          <Button onClick={onConfigToggle} rightIcon={isConfigOpen ? <CiSquareChevUp /> : <CiSquareChevDown />}>
+            {t("config")}
+          </Button>
+
+          <Collapse in={isConfigOpen}>
+            <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2}>
+              {configQueryData?.configs.map(({ id, selected, ...config }) => (
+                <Card key={id}>
+                  <CardBody>{JSON.stringify(config)}</CardBody>
+
+                  <CardFooter>
+                    <ButtonGroup isAttached variant="outline">
+                      <Button
+                        bg={selected ? "Highlight" : ""}
+                        isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
+                        onClick={() => {
+                          selectConfigMutation.mutate(id);
+                        }}
+                      >
+                        {id}
+                      </Button>
+                      <IconButton
+                        aria-label={t("remove")}
+                        isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
+                        icon={<CiCircleRemove />}
+                        onClick={() => {
+                          removeConfigMutation.mutate(id);
+                        }}
+                      />
+                    </ButtonGroup>
+                  </CardFooter>
+                </Card>
+              ))}
+            </Grid>
+          </Collapse>
+        </Flex>
+
+        <Flex direction="column" gap={4}>
+          <Button onClick={onGroupToggle} rightIcon={isGroupOpen ? <CiSquareChevUp /> : <CiSquareChevDown />}>
+            {t("group")}
+          </Button>
+
+          <Collapse in={isGroupOpen}>
+            <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2}>
+              {groupQueryData?.groups.map(({ id, ...config }) => (
+                <Card key={id}>
+                  <CardBody>{JSON.stringify(config)}</CardBody>
+                </Card>
+              ))}
+            </Grid>
+          </Collapse>
+        </Flex>
+      </Flex>
     </SimpleBar>
   );
 };

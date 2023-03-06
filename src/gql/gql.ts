@@ -13,8 +13,10 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-  "\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      ":
-    types.QueryDocument,
+  "\n        query Configs {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      ":
+    types.ConfigsDocument,
+  "\n        query Groups {\n          groups {\n            id\n            name\n            policy\n          }\n        }\n      ":
+    types.GroupsDocument,
   "\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        ":
     types.SelectConfigDocument,
   "\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ":
@@ -41,8 +43,14 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      "
-): (typeof documents)["\n        query Query {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      "];
+  source: "\n        query Configs {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      "
+): (typeof documents)["\n        query Configs {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n        query Groups {\n          groups {\n            id\n            name\n            policy\n          }\n        }\n      "
+): (typeof documents)["\n        query Groups {\n          groups {\n            id\n            name\n            policy\n          }\n        }\n      "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
