@@ -38,6 +38,8 @@
     "simplebar-react": "^3.2.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
     "@graphql-codegen/cli": "3.2.1",
     "@graphql-codegen/client-preset": "2.1.0",
     "@graphql-codegen/introspection": "3.0.1",
