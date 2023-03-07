@@ -19,12 +19,15 @@
   "error": "错误",
   "global": "全局",
   "group": "群组",
+  "import": "导入",
   "info": "信息",
   "ip": "IP 地址",
   "lanInterface": "LAN 接口",
   "lanNatDirect": "LAN NAT 直连",
   "logLevel": "日志等级",
   "name": "名字",
+  "node": "节点",
+  "please select a config first": "请先选择配置",
   "policy": "策略",
   "policyParams": "策略参数",
   "remove": "移除",
@@ -37,6 +40,5 @@
   "trace": "跟踪",
   "udpCheckDns": "UDP 检测 DNS",
   "wanInterface": "WAN 接口",
-  "warn": "警告",
-  "please select a config first": "请先选择配置"
+  "warn": "警告"
 }

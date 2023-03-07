@@ -1,19 +1,22 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Button,
   ButtonGroup,
   Card,
   CardBody,
   CardFooter,
   Center,
-  Collapse,
   Flex,
   Grid,
+  Heading,
   Spinner,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { CiSquareChevDown, CiSquareChevUp } from "react-icons/ci";
 
 import { gqlClient } from "~/api";
 import WithConfirmRemoveButton from "~/components/WithConfirmRemoveButton";
@@ -24,14 +27,6 @@ import { CONFIGS_PER_ROW, GROUPS_PER_ROW, QUERY_KEY_CONFIG, QUERY_KEY_GROUP } fr
 export default () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-
-  const { isOpen: isConfigOpen, onToggle: onConfigToggle } = useDisclosure({
-    defaultIsOpen: true,
-  });
-
-  const { isOpen: isGroupOpen, onToggle: onGroupToggle } = useDisclosure({
-    defaultIsOpen: true,
-  });
 
   const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
@@ -109,74 +104,93 @@ export default () => {
   });
 
   return (
-    <Flex direction="column" gap={4} p={4}>
-      <Flex direction="column" gap={4}>
-        <Button onClick={onConfigToggle} rightIcon={isConfigOpen ? <CiSquareChevUp /> : <CiSquareChevDown />}>
-          {t("config")}
-        </Button>
+    <Flex direction="column" gap={4} px={2} py={4}>
+      <Accordion
+        defaultIndex={[0, 1]}
+        allowMultiple
+        allowToggle
+        borderRadius="2xl"
+        borderWidth={4}
+        borderColor="Highlight"
+      >
+        <AccordionItem border="none">
+          <AccordionButton p={4}>
+            <Flex w="full" alignItems="center" justifyContent="space-between">
+              <Heading size="md">{t("config")}</Heading>
 
-        <Collapse in={isConfigOpen}>
-          {configQuery.isLoading ? (
-            <Center>
-              <Spinner />
-            </Center>
-          ) : (
-            <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2} p={2}>
-              {configQuery.data?.configs.map(({ id, selected, ...config }) => (
-                <Card key={id}>
-                  <CardBody>{JSON.stringify(config)}</CardBody>
+              <AccordionIcon />
+            </Flex>
+          </AccordionButton>
 
-                  <CardFooter>
-                    <ButtonGroup isAttached variant="outline" display="flex" w="full">
-                      <Button
-                        flex={1}
-                        bg={selected ? "Highlight" : ""}
-                        isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
-                        onClick={() => {
-                          if (!selected) {
-                            selectConfigMutation.mutate(id);
-                          }
-                        }}
-                      >
-                        {id}
-                      </Button>
-                      <WithConfirmRemoveButton
-                        aria-label={t("remove")}
-                        isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
-                        onRemove={() => {
-                          removeConfigMutation.mutate(id);
-                        }}
-                      />
-                    </ButtonGroup>
-                  </CardFooter>
-                </Card>
-              ))}
-            </Grid>
-          )}
-        </Collapse>
-      </Flex>
+          <AccordionPanel>
+            {configQuery.isLoading ? (
+              <Center>
+                <Spinner />
+              </Center>
+            ) : (
+              <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2}>
+                {configQuery.data?.configs.map(({ id, selected, ...config }) => (
+                  <Card key={id}>
+                    <CardBody>{JSON.stringify(config)}</CardBody>
 
-      <Flex direction="column" gap={4}>
-        <Button onClick={onGroupToggle} rightIcon={isGroupOpen ? <CiSquareChevUp /> : <CiSquareChevDown />}>
-          {t("group")}
-        </Button>
+                    <CardFooter>
+                      <ButtonGroup isAttached variant="outline" display="flex" w="full">
+                        <Button
+                          flex={1}
+                          bg={selected ? "Highlight" : ""}
+                          isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
+                          onClick={() => {
+                            if (!selected) {
+                              selectConfigMutation.mutate(id);
+                            }
+                          }}
+                        >
+                          {id}
+                        </Button>
+                        <WithConfirmRemoveButton
+                          aria-label={t("remove")}
+                          isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
+                          onRemove={() => {
+                            removeConfigMutation.mutate(id);
+                          }}
+                        />
+                      </ButtonGroup>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </Grid>
+            )}
+          </AccordionPanel>
+        </AccordionItem>
 
-        <Collapse in={isGroupOpen}>
-          {groupQuery.isLoading ? (
-            <Center>
-              <Spinner />
-            </Center>
-          ) : (
-            <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2} p={2}>
-              {groupQuery.data?.groups.map(({ id, ...config }) => (
-                <Card key={id}>
-                  <CardBody>{JSON.stringify(config)}</CardBody>
-                </Card>
-              ))}
-            </Grid>
-          )}
-        </Collapse>
-      </Flex>
+        <AccordionItem border="none">
+          <AccordionButton p={4}>
+            <Flex w="full" alignItems="center" justifyContent="space-between">
+              <Heading size="md">{t("group")}</Heading>
+
+              <AccordionIcon />
+            </Flex>
+          </AccordionButton>
+
+          <AccordionPanel>
+            <Flex direction="column" gap={4}>
+              {groupQuery.isLoading ? (
+                <Center>
+                  <Spinner />
+                </Center>
+              ) : (
+                <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2}>
+                  {groupQuery.data?.groups.map(({ id, ...config }) => (
+                    <Card key={id}>
+                      <CardBody>{JSON.stringify(config)}</CardBody>
+                    </Card>
+                  ))}
+                </Grid>
+              )}
+            </Flex>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
     </Flex>
   );
 };

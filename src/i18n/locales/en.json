@@ -19,12 +19,15 @@
   "error": "error",
   "global": "Global",
   "group": "Group",
+  "import": "Import",
   "info": "info",
   "ip": "ip",
   "lanInterface": "lanInterface",
   "lanNatDirect": "lanNatDirect",
   "logLevel": "logLevel",
   "name": "name",
+  "node": "Node",
+  "please select a config first": "Please select a config first",
   "policy": "policy",
   "policyParams": "policyParams",
   "remove": "Remove",
@@ -37,6 +40,5 @@
   "trace": "trace",
   "udpCheckDns": "udpCheckDns",
   "wanInterface": "wanInterface",
-  "warn": "warn",
-  "please select a config first": "Please select a config first"
+  "warn": "warn"
 }

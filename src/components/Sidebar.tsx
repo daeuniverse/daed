@@ -138,7 +138,7 @@ export default () => {
   };
 
   return (
-    <Flex alignItems="center" justifyContent="center" direction="column" p={6} gap={4}>
+    <Flex alignItems="center" justifyContent="center" direction="column" px={2} py={12} gap={4}>
       <Image m={10} boxSize={24} borderRadius="md" src="/logo.svg" alt="logo" />
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
@@ -150,12 +150,16 @@ export default () => {
       </Button>
 
       <Button w="full" leftIcon={<CiImport />} onClick={onConfigFormDrawerOpen}>
-        {`${t("create")} ${t("subscription")}`}
+        {`${t("import")} ${t("node")}`}
+      </Button>
+
+      <Button w="full" leftIcon={<CiImport />} onClick={onConfigFormDrawerOpen}>
+        {`${t("import")} ${t("subscription")}`}
       </Button>
 
       <Spacer />
 
-      <Flex direction="column" gap={4}>
+      <Flex gap={4}>
         <IconButton
           aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
           icon={isRunningQuery.data?.general.dae.running ? <CiStreamOn /> : <CiStreamOff />}

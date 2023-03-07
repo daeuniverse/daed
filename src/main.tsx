@@ -12,18 +12,21 @@ import { DEFAULT_ENDPOINT_URL } from "~/constants";
 import "~/index.css";
 import { endpointURL } from "~/store";
 
+const { searchParams } = new URL(location.href);
+
+const getEndpointURL = () => {
+  return searchParams.get("u") || endpointURL.get() || DEFAULT_ENDPOINT_URL;
+};
+
+endpointURL.set(getEndpointURL());
+
 const theme = extendTheme({
   initialColorMode: "system",
   useSystemColorMode: true,
   fonts: { heading: `'Open Sans', sans-serif`, body: `'Raleway', sans-serif` },
 } as ThemeConfig);
 
-const getEndpointURL = () => {
-  const { searchParams } = new URL(location.href);
-  return searchParams.get("u") || endpointURL.get() || DEFAULT_ENDPOINT_URL;
-};
-
-endpointURL.set(getEndpointURL());
+const debug = searchParams.get("d") || import.meta.env.DEV;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <BrowserRouter>
@@ -37,20 +40,22 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <ColorModeScript initialColorMode={theme.config.initialColorMode} />
               <App />
             </ChakraProvider>
-            <ReactQueryDevtools position="bottom-right" />
+            {debug && <ReactQueryDevtools position="bottom-right" />}
           </QueryClientProvider>
         }
       />
-      <Route
-        path="/graphql"
-        element={
-          <GraphiQL
-            fetcher={createGraphiQLFetcher({
-              url: endpointURL.get(),
-            })}
-          />
-        }
-      />
+      {debug && (
+        <Route
+          path="/graphql"
+          element={
+            <GraphiQL
+              fetcher={createGraphiQLFetcher({
+                url: endpointURL.get(),
+              })}
+            />
+          }
+        />
+      )}
     </Routes>
   </BrowserRouter>
 );
