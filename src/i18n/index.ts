@@ -1,4 +1,3 @@
-import type { Resource } from "i18next";
 import i18n from "i18next";
 import detectLanguage from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
@@ -6,9 +5,9 @@ import { initReactI18next } from "react-i18next";
 import en from "./locales/en.json";
 import zhHans from "./locales/zh-Hans.json";
 
-export const defaultNS = "translation" as const;
+export const defaultNS = "translation";
 
-export const resources: Resource = {
+export const resources = {
   en: { [defaultNS]: en },
   "zh-Hans": { [defaultNS]: zhHans },
 };
@@ -22,7 +21,6 @@ i18n
     },
     defaultNS,
     resources,
-    detection: {},
   });
 
 export default i18n;

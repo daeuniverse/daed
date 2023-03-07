@@ -157,7 +157,7 @@ export default () => {
       <Spacer />
 
       <Flex direction="column" gap={4}>
-        <IconButton aria-label={t("switchLanguage")} icon=<HiLanguage /> onClick={switchLanguage} />
+        <IconButton aria-label={t("switchLanguage")} icon={<HiLanguage />} onClick={switchLanguage} />
 
         <IconButton
           aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
