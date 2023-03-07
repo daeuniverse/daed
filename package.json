@@ -20,6 +20,7 @@
     "@fontsource/raleway": "^4.5.12",
     "@graphiql/toolkit": "^0.8.2",
     "@nanostores/persistent": "^0.7.0",
+    "@nanostores/react": "^0.4.1",
     "@tanstack/react-query": "^4.24.10",
     "@tanstack/react-query-devtools": "^4.24.14",
     "framer-motion": "^10.0.1",

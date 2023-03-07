@@ -1,4 +1,18 @@
-import { Button, Flex, IconButton, Image, Spacer, useColorMode, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  IconButton,
+  Image,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  Spacer,
+  useColorMode,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
+import { useStore } from "@nanostores/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,10 +20,11 @@ import { CiDark, CiImport, CiLight, CiSquarePlus, CiStreamOff, CiStreamOn } from
 import { HiLanguage } from "react-icons/hi2";
 
 import { gqlClient } from "~/api";
-import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_RUNNING } from "~/constants";
+import { COLS_PER_ROW, GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_RUNNING } from "~/constants";
 import { graphql } from "~/gql";
 import { ConfigsQuery } from "~/gql/graphql";
 import i18n from "~/i18n";
+import { colsPerRowAtom } from "~/store";
 
 import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
 import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
@@ -19,6 +34,7 @@ export default () => {
   const queryClient = useQueryClient();
   const { colorMode, toggleColorMode } = useColorMode();
   const toast = useToast();
+  const colsPerRow = useStore(colsPerRowAtom);
 
   const {
     isOpen: isConfigFormDrawerOpen,
@@ -158,6 +174,21 @@ export default () => {
       </Button>
 
       <Spacer />
+
+      <Slider
+        min={1}
+        max={5}
+        defaultValue={COLS_PER_ROW}
+        value={colsPerRow}
+        textAlign="center"
+        onChange={colsPerRowAtom.set}
+      >
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+
+        <SliderThumb />
+      </Slider>
 
       <Flex gap={4}>
         <IconButton

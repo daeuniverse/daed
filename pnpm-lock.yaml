@@ -14,6 +14,7 @@ specifiers:
   "@graphql-codegen/introspection": 3.0.1
   "@graphql-typed-document-node/core": ^3.1.2
   "@nanostores/persistent": ^0.7.0
+  "@nanostores/react": ^0.4.1
   "@tanstack/react-query": ^4.24.10
   "@tanstack/react-query-devtools": ^4.24.14
   "@types/node": ^18.14.4
@@ -57,6 +58,7 @@ dependencies:
   "@fontsource/raleway": 4.5.12
   "@graphiql/toolkit": 0.8.2_hx4xv653uq7zrgbdj6lyizcj3a
   "@nanostores/persistent": 0.7.0_nanostores@0.7.4
+  "@nanostores/react": 0.4.1_nkfnbc2tpc77iht7asm3uqwau4
   "@tanstack/react-query": 4.24.10_biqbaboplfbrettd7655fr4n2y
   "@tanstack/react-query-devtools": 4.24.14_636dldj5wfr5vkyyqzs5k363kq
   framer-motion: 10.0.1_biqbaboplfbrettd7655fr4n2y
@@ -4107,6 +4109,19 @@ packages:
       nanostores: ^0.7.0
     dependencies:
       nanostores: 0.7.4
+    dev: false
+
+  /@nanostores/react/0.4.1_nkfnbc2tpc77iht7asm3uqwau4:
+    resolution:
+      { integrity: sha512-lsv0CYrMxczbXtoV/mxFVEoL/uVjEjseoP89srO/5yNAOkJka+dSFS7LYyWEbuvCPO7EgbtkvRpO5V+OztKQOw== }
+    engines: { node: ^14.0.0 || ^16.0.0 || >=18.0.0 }
+    peerDependencies:
+      nanostores: ^0.7.0
+      react: ">=18.0.0"
+    dependencies:
+      nanostores: 0.7.4
+      react: 18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:
@@ -10993,11 +11008,7 @@ packages:
 
   /use-sync-external-store/1.2.0_react@18.2.0:
     resolution:
-      {
-        integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npm.taobao.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz,
-      }
+      { integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA== }
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:

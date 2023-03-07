@@ -1,7 +1,6 @@
 import { TFunction } from "i18next";
 
-export const CONFIGS_PER_ROW = 4;
-export const GROUPS_PER_ROW = 4;
+export const COLS_PER_ROW = 3;
 export const QUERY_KEY_INTERFACES = ["interfaces"];
 export const QUERY_KEY_RUNNING = ["running"];
 export const QUERY_KEY_CONFIG = ["config"];

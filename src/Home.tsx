@@ -15,6 +15,7 @@ import {
   Heading,
   Spinner,
 } from "@chakra-ui/react";
+import { useStore } from "@nanostores/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import SimpleBar from "simplebar-react";
@@ -23,11 +24,13 @@ import { gqlClient } from "~/api";
 import WithConfirmRemoveButton from "~/components/WithConfirmRemoveButton";
 import { graphql } from "~/gql";
 
-import { CONFIGS_PER_ROW, GROUPS_PER_ROW, QUERY_KEY_CONFIG, QUERY_KEY_GROUP } from "./constants";
+import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP } from "./constants";
+import { colsPerRowAtom } from "./store";
 
 export default () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const colsPerRow = useStore(colsPerRowAtom);
 
   const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
@@ -117,7 +120,7 @@ export default () => {
           borderColor: "Highlight",
         }}
       >
-        <Accordion defaultIndex={[0, 1]} allowMultiple allowToggle>
+        <Accordion defaultIndex={[0, 1]} allowMultiple>
           <AccordionItem border="none">
             <AccordionButton p={4}>
               <Flex w="full" alignItems="center" justifyContent="space-between">
@@ -133,15 +136,18 @@ export default () => {
                   <Spinner />
                 </Center>
               ) : (
-                <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2}>
+                <Grid gridTemplateColumns={`repeat(${colsPerRow}, 1fr)`} gap={2}>
                   {configQuery.data?.configs.map(({ id, selected, ...config }) => (
                     <Card key={id}>
                       <CardBody>{JSON.stringify(config)}</CardBody>
 
                       <CardFooter>
-                        <ButtonGroup isAttached variant="outline" display="flex" w="full">
+                        <ButtonGroup w="full" isAttached variant="outline">
                           <Button
-                            flex={1}
+                            display="inline-block"
+                            whiteSpace="nowrap"
+                            overflow="hidden"
+                            textOverflow="ellipsis"
                             bg={selected ? "Highlight" : ""}
                             isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
                             onClick={() => {
@@ -184,7 +190,7 @@ export default () => {
                     <Spinner />
                   </Center>
                 ) : (
-                  <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2}>
+                  <Grid gridTemplateColumns={`repeat(${colsPerRow}, 1fr)`} gap={2}>
                     {groupQuery.data?.groups.map(({ id, ...config }) => (
                       <Card key={id}>
                         <CardBody>{JSON.stringify(config)}</CardBody>
