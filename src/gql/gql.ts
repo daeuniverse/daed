@@ -21,6 +21,8 @@ const documents = {
     types.SelectConfigDocument,
   "\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ":
     types.RemoveConfigDocument,
+  "\n        query General {\n          general {\n            interfaces {\n              name\n            }\n          }\n        }\n      ":
+    types.GeneralDocument,
   "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        ":
     types.CreateConfigDocument,
   "\n          mutation createGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            createGroup(name: $name, policy: $policy, policyParams: $policyParams) {\n              id\n            }\n          }\n        ":
@@ -65,6 +67,12 @@ export function graphql(
 export function graphql(
   source: "\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        "
 ): (typeof documents)["\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n        query General {\n          general {\n            interfaces {\n              name\n            }\n          }\n        }\n      "
+): (typeof documents)["\n        query General {\n          general {\n            interfaces {\n              name\n            }\n          }\n        }\n      "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

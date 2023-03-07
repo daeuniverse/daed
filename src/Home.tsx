@@ -20,7 +20,7 @@ export default () => {
     defaultIsOpen: true,
   });
 
-  const { data: configQueryData } = useQuery(QUERY_KEY_CONFIG, async () =>
+  const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
       graphql(`
         query Configs {
@@ -45,7 +45,7 @@ export default () => {
     )
   );
 
-  const { data: groupQueryData } = useQuery(QUERY_KEY_GROUP, async () =>
+  const groupQuery = useQuery(QUERY_KEY_GROUP, async () =>
     gqlClient.request(
       graphql(`
         query Groups {
@@ -108,7 +108,7 @@ export default () => {
 
         <Collapse in={isConfigOpen}>
           <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2} p={2}>
-            {configQueryData?.configs.map(({ id, selected, ...config }) => (
+            {configQuery.data?.configs.map(({ id, selected, ...config }) => (
               <Card key={id}>
                 <CardBody>{JSON.stringify(config)}</CardBody>
 
@@ -148,7 +148,7 @@ export default () => {
 
         <Collapse in={isGroupOpen}>
           <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2} p={2}>
-            {groupQueryData?.groups.map(({ id, ...config }) => (
+            {groupQuery.data?.groups.map(({ id, ...config }) => (
               <Card key={id}>
                 <CardBody>{JSON.stringify(config)}</CardBody>
               </Card>

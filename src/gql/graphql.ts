@@ -32,6 +32,18 @@ export type Config = {
   selected: Scalars["Boolean"];
 };
 
+export type Dae = {
+  __typename?: "Dae";
+  running: Scalars["Boolean"];
+};
+
+export type DefaultRoute = {
+  __typename?: "DefaultRoute";
+  gateway?: Maybe<Scalars["String"]>;
+  ipVersion: Scalars["String"];
+  source?: Maybe<Scalars["String"]>;
+};
+
 export type Dns = {
   __typename?: "Dns";
   routing: DnsRouting;
@@ -52,6 +64,16 @@ export type Function = {
 };
 
 export type FunctionOrPlaintext = Function | Plaintext;
+
+export type General = {
+  __typename?: "General";
+  dae: Dae;
+  interfaces: Array<Interface>;
+};
+
+export type GeneralInterfacesArgs = {
+  up?: InputMaybe<Scalars["Boolean"]>;
+};
 
 export type Global = {
   __typename?: "Global";
@@ -82,6 +104,24 @@ export type Group = {
 export type ImportArgument = {
   link: Scalars["String"];
   tag?: InputMaybe<Scalars["String"]>;
+};
+
+export type Interface = {
+  __typename?: "Interface";
+  flag: InterfaceFlag;
+  ifindex: Scalars["Int"];
+  ip: Array<Scalars["String"]>;
+  name: Scalars["String"];
+};
+
+export type InterfaceIpArgs = {
+  onlyGlobalScope?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type InterfaceFlag = {
+  __typename?: "InterfaceFlag";
+  default?: Maybe<Array<DefaultRoute>>;
+  up: Scalars["Boolean"];
 };
 
 export type Mutation = {
@@ -277,6 +317,7 @@ export type PolicyParam = {
 export type Query = {
   __typename?: "Query";
   configs: Array<Config>;
+  general: General;
   group: Group;
   groups: Array<Group>;
   healthCheck: Scalars["Int"];
@@ -411,6 +452,13 @@ export type RemoveConfigMutationVariables = Exact<{
 }>;
 
 export type RemoveConfigMutation = { __typename?: "Mutation"; removeConfig: number };
+
+export type GeneralQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GeneralQuery = {
+  __typename?: "Query";
+  general: { __typename?: "General"; interfaces: Array<{ __typename?: "Interface"; name: string }> };
+};
 
 export type CreateConfigMutationVariables = Exact<{
   global?: InputMaybe<GlobalInput>;
@@ -577,6 +625,38 @@ export const RemoveConfigDocument = {
     },
   ],
 } as unknown as DocumentNode<RemoveConfigMutation, RemoveConfigMutationVariables>;
+export const GeneralDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "General" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "general" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "interfaces" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "name" } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GeneralQuery, GeneralQueryVariables>;
 export const CreateConfigDocument = {
   kind: "Document",
   definitions: [

@@ -2,6 +2,7 @@ import { TFunction } from "i18next";
 
 export const CONFIGS_PER_ROW = 4;
 export const GROUPS_PER_ROW = 4;
+export const QUERY_KEY_GENERAL = ["general"];
 export const QUERY_KEY_CONFIG = ["config"];
 export const QUERY_KEY_GROUP = ["group"];
 

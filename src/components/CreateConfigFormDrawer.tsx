@@ -17,10 +17,13 @@ import {
   Tabs,
   Textarea,
 } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS } from "~/constants";
+import { gqlClient } from "~/api";
+import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS, QUERY_KEY_GENERAL } from "~/constants";
+import { graphql } from "~/gql";
 
 import CreateFormDrawer from "./CreateFormDrawer";
 import NumberInput from "./NumberInput";
@@ -62,6 +65,20 @@ export default ({
   const { register, control } = form;
 
   const LOG_LEVEL_STEPS = GET_LOG_LEVEL_STEPS(t);
+
+  const interfacesQuery = useQuery(QUERY_KEY_GENERAL, async () =>
+    gqlClient.request(
+      graphql(`
+        query General {
+          general {
+            interfaces {
+              name
+            }
+          }
+        }
+      `)
+    )
+  );
 
   return (
     <CreateFormDrawer<FormValues>
@@ -153,16 +170,24 @@ export default ({
                 />
               </FormControl>
 
-              <FormControl isRequired>
+              <FormControl>
                 <FormLabel>{t("lanInterface")}</FormLabel>
 
-                <Input {...register("lanInterface")} />
+                <Select {...register("lanInterface")}>
+                  {interfacesQuery.data?.general.interfaces.map(({ name }) => (
+                    <option key={name}>{name}</option>
+                  ))}
+                </Select>
               </FormControl>
 
-              <FormControl isRequired>
+              <FormControl>
                 <FormLabel>{t("wanInterface")}</FormLabel>
 
-                <Input {...register("wanInterface")} />
+                <Select {...register("wanInterface")}>
+                  {interfacesQuery.data?.general.interfaces.map(({ name }) => (
+                    <option key={name}>{name}</option>
+                  ))}
+                </Select>
               </FormControl>
 
               <FormControl>
