@@ -1,12 +1,20 @@
-import { Center, Flex, Spinner } from "@chakra-ui/react";
-import SimpleBar from "simplebar-react";
+import { Center, Collapse, Flex, IconButton, Spinner, useDisclosure } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
+import { BsChevronBarLeft } from "react-icons/bs";
+import { CiMenuKebab } from "react-icons/ci";
 
 import Sidebar from "~/components/Sidebar";
 
 import Home from "./Home";
 import i18n from "./i18n";
 
-function App() {
+const App = () => {
+  const { t } = useTranslation();
+
+  const { isOpen: isSidebarOpen, onToggle: onSidebarToggle } = useDisclosure({
+    defaultIsOpen: true,
+  });
+
   if (!i18n.isInitialized) {
     return (
       <Center h="full">
@@ -17,15 +25,26 @@ function App() {
 
   return (
     <Flex>
-      <Flex minH="100dvh">
-        <Sidebar />
+      <Flex minH="100dvh" py={6}>
+        <IconButton
+          aria-label={t("collapse")}
+          h="full"
+          icon={isSidebarOpen ? <BsChevronBarLeft /> : <CiMenuKebab />}
+          onClick={onSidebarToggle}
+        />
+        <Collapse
+          in={isSidebarOpen}
+          transition={{
+            enter: { duration: 0.05 },
+            exit: { duration: 0.05 },
+          }}
+        >
+          <Sidebar />
+        </Collapse>
       </Flex>
-
-      <SimpleBar style={{ width: "100%", maxHeight: "100dvh", overflowX: "hidden" }}>
-        <Home />
-      </SimpleBar>
+      <Home />
     </Flex>
   );
-}
+};
 
 export default App;

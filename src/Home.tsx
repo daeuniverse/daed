@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import SimpleBar from "simplebar-react";
 
 import { gqlClient } from "~/api";
 import WithConfirmRemoveButton from "~/components/WithConfirmRemoveButton";
@@ -104,93 +105,98 @@ export default () => {
   });
 
   return (
-    <Flex direction="column" gap={4} px={2} py={4}>
-      <Accordion
-        defaultIndex={[0, 1]}
-        allowMultiple
-        allowToggle
-        borderRadius="2xl"
-        borderWidth={4}
-        borderColor="Highlight"
+    <Flex flex={1} h="100dvh" overflowY="hidden" direction="column" gap={4} px={4} py={6}>
+      <SimpleBar
+        style={{
+          width: "100%",
+          height: "100%",
+          paddingInline: 10,
+          paddingBlock: 20,
+          borderRadius: 12,
+          borderWidth: 4,
+          borderColor: "Highlight",
+        }}
       >
-        <AccordionItem border="none">
-          <AccordionButton p={4}>
-            <Flex w="full" alignItems="center" justifyContent="space-between">
-              <Heading size="md">{t("config")}</Heading>
+        <Accordion defaultIndex={[0, 1]} allowMultiple allowToggle>
+          <AccordionItem border="none">
+            <AccordionButton p={4}>
+              <Flex w="full" alignItems="center" justifyContent="space-between">
+                <Heading size="md">{t("config")}</Heading>
 
-              <AccordionIcon />
-            </Flex>
-          </AccordionButton>
+                <AccordionIcon />
+              </Flex>
+            </AccordionButton>
 
-          <AccordionPanel>
-            {configQuery.isLoading ? (
-              <Center>
-                <Spinner />
-              </Center>
-            ) : (
-              <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2}>
-                {configQuery.data?.configs.map(({ id, selected, ...config }) => (
-                  <Card key={id}>
-                    <CardBody>{JSON.stringify(config)}</CardBody>
-
-                    <CardFooter>
-                      <ButtonGroup isAttached variant="outline" display="flex" w="full">
-                        <Button
-                          flex={1}
-                          bg={selected ? "Highlight" : ""}
-                          isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
-                          onClick={() => {
-                            if (!selected) {
-                              selectConfigMutation.mutate(id);
-                            }
-                          }}
-                        >
-                          {id}
-                        </Button>
-                        <WithConfirmRemoveButton
-                          aria-label={t("remove")}
-                          isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
-                          onRemove={() => {
-                            removeConfigMutation.mutate(id);
-                          }}
-                        />
-                      </ButtonGroup>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </Grid>
-            )}
-          </AccordionPanel>
-        </AccordionItem>
-
-        <AccordionItem border="none">
-          <AccordionButton p={4}>
-            <Flex w="full" alignItems="center" justifyContent="space-between">
-              <Heading size="md">{t("group")}</Heading>
-
-              <AccordionIcon />
-            </Flex>
-          </AccordionButton>
-
-          <AccordionPanel>
-            <Flex direction="column" gap={4}>
-              {groupQuery.isLoading ? (
+            <AccordionPanel>
+              {configQuery.isLoading ? (
                 <Center>
                   <Spinner />
                 </Center>
               ) : (
-                <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2}>
-                  {groupQuery.data?.groups.map(({ id, ...config }) => (
+                <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2}>
+                  {configQuery.data?.configs.map(({ id, selected, ...config }) => (
                     <Card key={id}>
                       <CardBody>{JSON.stringify(config)}</CardBody>
+
+                      <CardFooter>
+                        <ButtonGroup isAttached variant="outline" display="flex" w="full">
+                          <Button
+                            flex={1}
+                            bg={selected ? "Highlight" : ""}
+                            isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
+                            onClick={() => {
+                              if (!selected) {
+                                selectConfigMutation.mutate(id);
+                              }
+                            }}
+                          >
+                            {id}
+                          </Button>
+                          <WithConfirmRemoveButton
+                            aria-label={t("remove")}
+                            isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
+                            onRemove={() => {
+                              removeConfigMutation.mutate(id);
+                            }}
+                          />
+                        </ButtonGroup>
+                      </CardFooter>
                     </Card>
                   ))}
                 </Grid>
               )}
-            </Flex>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+            </AccordionPanel>
+          </AccordionItem>
+
+          <AccordionItem border="none">
+            <AccordionButton p={4}>
+              <Flex w="full" alignItems="center" justifyContent="space-between">
+                <Heading size="md">{t("group")}</Heading>
+
+                <AccordionIcon />
+              </Flex>
+            </AccordionButton>
+
+            <AccordionPanel>
+              <Flex direction="column" gap={4}>
+                {groupQuery.isLoading ? (
+                  <Center>
+                    <Spinner />
+                  </Center>
+                ) : (
+                  <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2}>
+                    {groupQuery.data?.groups.map(({ id, ...config }) => (
+                      <Card key={id}>
+                        <CardBody>{JSON.stringify(config)}</CardBody>
+                      </Card>
+                    ))}
+                  </Grid>
+                )}
+              </Flex>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </SimpleBar>
     </Flex>
   );
 };
