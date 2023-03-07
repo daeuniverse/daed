@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, IconButton, Spacer, useColorMode, useDisclosure, useToast } from "@chakra-ui/react";
+import { Button, Flex, IconButton, Image, Spacer, useColorMode, useDisclosure, useToast } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -138,9 +138,7 @@ export default () => {
 
   return (
     <Flex alignItems="center" justifyContent="center" direction="column" p={6} gap={4}>
-      <Heading p={6} rounded="full">
-        daed
-      </Heading>
+      <Image m={10} boxSize={24} borderRadius="md" src="/logo.png" alt="logo" />
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
         {`${t("create")} ${t("config")}`}
