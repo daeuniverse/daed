@@ -133,15 +133,15 @@ export default () => {
       </Heading>
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
-        {t("config")}
+        {`${t("create")} ${t("config")}`}
       </Button>
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onGroupFormDrawerOpen}>
-        {t("group")}
+        {`${t("create")} ${t("group")}`}
       </Button>
 
       <Button w="full" leftIcon={<CiImport />} onClick={onConfigFormDrawerOpen}>
-        {t("subscription")}
+        {`${t("create")} ${t("subscription")}`}
       </Button>
 
       <Spacer />
