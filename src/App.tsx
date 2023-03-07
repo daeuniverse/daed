@@ -1,22 +1,13 @@
 import { Center, Flex, Spinner } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import SimpleBar from "simplebar-react";
 
 import Sidebar from "~/components/Sidebar";
-import initI18n from "~/i18n";
 
 import Home from "./Home";
+import i18n from "./i18n";
 
 function App() {
-  const [initialized, setInitialized] = useState(false);
-
-  useEffect(() => {
-    Promise.all([initI18n()]).then(() => {
-      setInitialized(true);
-    });
-  }, []);
-
-  if (!initialized) {
+  if (!i18n.isInitialized) {
     return (
       <Center h="full">
         <Spinner size="xl" />

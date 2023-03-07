@@ -31,6 +31,7 @@
   "routing": "路由",
   "seconds": "秒",
   "subscription": "订阅",
+  "switchLanguage": "切换语言",
   "tcpCheckUrl": "TCP 检测链接",
   "tproxyPort": "透明代理端口",
   "trace": "跟踪",

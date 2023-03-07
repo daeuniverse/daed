@@ -3,10 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { CiDark, CiImport, CiLight, CiSquarePlus, CiStreamOff, CiStreamOn } from "react-icons/ci";
+import { HiLanguage } from "react-icons/hi2";
 
 import { gqlClient } from "~/api";
 import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_RUNNING } from "~/constants";
 import { graphql } from "~/gql";
+import i18n from "~/i18n";
 
 import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
 import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
@@ -126,6 +128,14 @@ export default () => {
     },
   });
 
+  const switchLanguage = () => {
+    if (i18n.language.startsWith("zh")) {
+      i18n.changeLanguage("en");
+    } else {
+      i18n.changeLanguage("zh-Hans");
+    }
+  };
+
   return (
     <Flex alignItems="center" justifyContent="center" direction="column" p={6} gap={4}>
       <Heading p={6} rounded="full">
@@ -147,6 +157,8 @@ export default () => {
       <Spacer />
 
       <Flex direction="column" gap={4}>
+        <IconButton aria-label={t("switchLanguage")} icon=<HiLanguage /> onClick={switchLanguage} />
+
         <IconButton
           aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
           icon={isRunningQuery.data?.general.dae.running ? <CiStreamOn /> : <CiStreamOff />}
