@@ -8,6 +8,7 @@ import { HiLanguage } from "react-icons/hi2";
 import { gqlClient } from "~/api";
 import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_RUNNING } from "~/constants";
 import { graphql } from "~/gql";
+import { ConfigsQuery } from "~/gql/graphql";
 import i18n from "~/i18n";
 
 import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
@@ -138,7 +139,7 @@ export default () => {
 
   return (
     <Flex alignItems="center" justifyContent="center" direction="column" p={6} gap={4}>
-      <Image m={10} boxSize={24} borderRadius="md" src="/logo.png" alt="logo" />
+      <Image m={10} boxSize={24} borderRadius="md" src="/logo.svg" alt="logo" />
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
         {`${t("create")} ${t("config")}`}
@@ -155,8 +156,6 @@ export default () => {
       <Spacer />
 
       <Flex direction="column" gap={4}>
-        <IconButton aria-label={t("switchLanguage")} icon={<HiLanguage />} onClick={switchLanguage} />
-
         <IconButton
           aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
           icon={isRunningQuery.data?.general.dae.running ? <CiStreamOn /> : <CiStreamOff />}
@@ -165,9 +164,20 @@ export default () => {
               return;
             }
 
+            if (!queryClient.getQueryData<ConfigsQuery>(QUERY_KEY_CONFIG)?.configs.some(({ selected }) => selected)) {
+              toast({
+                title: t("please select a config first"),
+                status: "error",
+              });
+
+              return;
+            }
+
             runMutation.mutate();
           }}
         />
+
+        <IconButton aria-label={t("switchLanguage")} icon={<HiLanguage />} onClick={switchLanguage} />
 
         <IconButton
           aria-label={t("dark mode")}

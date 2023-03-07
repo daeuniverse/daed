@@ -37,5 +37,6 @@
   "trace": "trace",
   "udpCheckDns": "udpCheckDns",
   "wanInterface": "wanInterface",
-  "warn": "warn"
+  "warn": "warn",
+  "please select a config first": "Please select a config first"
 }
