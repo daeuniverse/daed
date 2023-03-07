@@ -1,11 +1,11 @@
 import { Button, Flex, Heading, IconButton, Spacer, useColorMode, useDisclosure, useToast } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { CiDark, CiImport, CiLight, CiSquarePlus } from "react-icons/ci";
+import { CiDark, CiImport, CiLight, CiSquarePlus, CiStreamOff, CiStreamOn } from "react-icons/ci";
 
 import { gqlClient } from "~/api";
-import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP } from "~/constants";
+import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_RUNNING } from "~/constants";
 import { graphql } from "~/gql";
 
 import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
@@ -27,6 +27,36 @@ export default () => {
     onOpen: onGroupFormDrawerOpen,
     onClose: onGroupFormDrawerClose,
   } = useDisclosure();
+
+  const isRunningQuery = useQuery(QUERY_KEY_RUNNING, async () =>
+    gqlClient.request(
+      graphql(`
+        query Running {
+          general {
+            dae {
+              running
+            }
+          }
+        }
+      `)
+    )
+  );
+
+  const runMutation = useMutation({
+    mutationFn: () => {
+      return gqlClient.request(
+        graphql(`
+          mutation Run($dry: Boolean!) {
+            run(dry: $dry)
+          }
+        `),
+        { dry: false }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_RUNNING });
+    },
+  });
 
   const createConfigMutation = useMutation({
     mutationFn: (values: CreateConfigFormDrawerFormValues) => {
@@ -116,11 +146,25 @@ export default () => {
 
       <Spacer />
 
-      <IconButton
-        aria-label={t("dark mode")}
-        onClick={toggleColorMode}
-        icon={colorMode === "dark" ? <CiLight /> : <CiDark />}
-      />
+      <Flex direction="column" gap={4}>
+        <IconButton
+          aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
+          icon={isRunningQuery.data?.general.dae.running ? <CiStreamOn /> : <CiStreamOff />}
+          onClick={() => {
+            if (isRunningQuery.data?.general.dae.running) {
+              return;
+            }
+
+            runMutation.mutate();
+          }}
+        />
+
+        <IconButton
+          aria-label={t("dark mode")}
+          icon={colorMode === "dark" ? <CiDark /> : <CiLight />}
+          onClick={toggleColorMode}
+        />
+      </Flex>
 
       <Fragment>
         <CreateConfigFormDrawer

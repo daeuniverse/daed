@@ -22,7 +22,7 @@ import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { gqlClient } from "~/api";
-import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS, QUERY_KEY_GENERAL } from "~/constants";
+import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS, QUERY_KEY_INTERFACES } from "~/constants";
 import { graphql } from "~/gql";
 
 import CreateFormDrawer from "./CreateFormDrawer";
@@ -66,10 +66,10 @@ export default ({
 
   const LOG_LEVEL_STEPS = GET_LOG_LEVEL_STEPS(t);
 
-  const interfacesQuery = useQuery(QUERY_KEY_GENERAL, async () =>
+  const interfacesQuery = useQuery(QUERY_KEY_INTERFACES, async () =>
     gqlClient.request(
       graphql(`
-        query General {
+        query Interfaces {
           general {
             interfaces {
               name

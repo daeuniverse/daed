@@ -1,4 +1,4 @@
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Center, Flex, Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import SimpleBar from "simplebar-react";
 
@@ -18,9 +18,9 @@ function App() {
 
   if (!initialized) {
     return (
-      <Flex w="full" h="full" alignItems="center" justifyContent="center">
+      <Center h="full">
         <Spinner size="xl" />
-      </Flex>
+      </Center>
     );
   }
 

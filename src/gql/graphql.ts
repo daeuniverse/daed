@@ -453,12 +453,25 @@ export type RemoveConfigMutationVariables = Exact<{
 
 export type RemoveConfigMutation = { __typename?: "Mutation"; removeConfig: number };
 
-export type GeneralQueryVariables = Exact<{ [key: string]: never }>;
+export type InterfacesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GeneralQuery = {
+export type InterfacesQuery = {
   __typename?: "Query";
   general: { __typename?: "General"; interfaces: Array<{ __typename?: "Interface"; name: string }> };
 };
+
+export type RunningQueryVariables = Exact<{ [key: string]: never }>;
+
+export type RunningQuery = {
+  __typename?: "Query";
+  general: { __typename?: "General"; dae: { __typename?: "Dae"; running: boolean } };
+};
+
+export type RunMutationVariables = Exact<{
+  dry: Scalars["Boolean"];
+}>;
+
+export type RunMutation = { __typename?: "Mutation"; run: number };
 
 export type CreateConfigMutationVariables = Exact<{
   global?: InputMaybe<GlobalInput>;
@@ -625,13 +638,13 @@ export const RemoveConfigDocument = {
     },
   ],
 } as unknown as DocumentNode<RemoveConfigMutation, RemoveConfigMutationVariables>;
-export const GeneralDocument = {
+export const InterfacesDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "General" },
+      name: { kind: "Name", value: "Interfaces" },
       selectionSet: {
         kind: "SelectionSet",
         selections: [
@@ -656,7 +669,72 @@ export const GeneralDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<GeneralQuery, GeneralQueryVariables>;
+} as unknown as DocumentNode<InterfacesQuery, InterfacesQueryVariables>;
+export const RunningDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "Running" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "general" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "dae" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "running" } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RunningQuery, RunningQueryVariables>;
+export const RunDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "Run" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "dry" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "run" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "dry" },
+                value: { kind: "Variable", name: { kind: "Name", value: "dry" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RunMutation, RunMutationVariables>;
 export const CreateConfigDocument = {
   kind: "Document",
   definitions: [

@@ -1,6 +1,7 @@
 @import "@fontsource/raleway";
 @import "@fontsource/open-sans";
 @import "simplebar-react/dist/simplebar.min.css";
+@import "graphiql/graphiql.css";
 
 body {
   margin: 0;

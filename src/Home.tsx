@@ -1,4 +1,16 @@
-import { Button, ButtonGroup, Card, CardBody, CardFooter, Collapse, Flex, Grid, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardFooter,
+  Center,
+  Collapse,
+  Flex,
+  Grid,
+  Spinner,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { CiSquareChevDown, CiSquareChevUp } from "react-icons/ci";
@@ -72,9 +84,7 @@ export default () => {
             selectConfig(id: $id)
           }
         `),
-        {
-          id,
-        }
+        { id }
       );
     },
     onSuccess: () => {
@@ -90,9 +100,7 @@ export default () => {
             removeConfig(id: $id)
           }
         `),
-        {
-          id,
-        }
+        { id }
       );
     },
     onSuccess: () => {
@@ -101,44 +109,50 @@ export default () => {
   });
 
   return (
-    <Flex direction="column" gap={4} p={10}>
+    <Flex direction="column" gap={4} p={4}>
       <Flex direction="column" gap={4}>
         <Button onClick={onConfigToggle} rightIcon={isConfigOpen ? <CiSquareChevUp /> : <CiSquareChevDown />}>
           {t("config")}
         </Button>
 
         <Collapse in={isConfigOpen}>
-          <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2} p={2}>
-            {configQuery.data?.configs.map(({ id, selected, ...config }) => (
-              <Card key={id}>
-                <CardBody>{JSON.stringify(config)}</CardBody>
+          {configQuery.isLoading ? (
+            <Center>
+              <Spinner />
+            </Center>
+          ) : (
+            <Grid gridTemplateColumns={`repeat(${CONFIGS_PER_ROW}, 1fr)`} gap={2} p={2}>
+              {configQuery.data?.configs.map(({ id, selected, ...config }) => (
+                <Card key={id}>
+                  <CardBody>{JSON.stringify(config)}</CardBody>
 
-                <CardFooter>
-                  <ButtonGroup isAttached variant="outline" display="flex" w="full">
-                    <Button
-                      flex={1}
-                      bg={selected ? "Highlight" : ""}
-                      isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
-                      onClick={() => {
-                        if (!selected) {
-                          selectConfigMutation.mutate(id);
-                        }
-                      }}
-                    >
-                      {id}
-                    </Button>
-                    <WithConfirmRemoveButton
-                      aria-label={t("remove")}
-                      isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
-                      onRemove={() => {
-                        removeConfigMutation.mutate(id);
-                      }}
-                    />
-                  </ButtonGroup>
-                </CardFooter>
-              </Card>
-            ))}
-          </Grid>
+                  <CardFooter>
+                    <ButtonGroup isAttached variant="outline" display="flex" w="full">
+                      <Button
+                        flex={1}
+                        bg={selected ? "Highlight" : ""}
+                        isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
+                        onClick={() => {
+                          if (!selected) {
+                            selectConfigMutation.mutate(id);
+                          }
+                        }}
+                      >
+                        {id}
+                      </Button>
+                      <WithConfirmRemoveButton
+                        aria-label={t("remove")}
+                        isLoading={selectConfigMutation.isLoading || removeConfigMutation.isLoading}
+                        onRemove={() => {
+                          removeConfigMutation.mutate(id);
+                        }}
+                      />
+                    </ButtonGroup>
+                  </CardFooter>
+                </Card>
+              ))}
+            </Grid>
+          )}
         </Collapse>
       </Flex>
 
@@ -148,13 +162,19 @@ export default () => {
         </Button>
 
         <Collapse in={isGroupOpen}>
-          <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2} p={2}>
-            {groupQuery.data?.groups.map(({ id, ...config }) => (
-              <Card key={id}>
-                <CardBody>{JSON.stringify(config)}</CardBody>
-              </Card>
-            ))}
-          </Grid>
+          {groupQuery.isLoading ? (
+            <Center>
+              <Spinner />
+            </Center>
+          ) : (
+            <Grid gridTemplateColumns={`repeat(${GROUPS_PER_ROW}, 1fr)`} gap={2} p={2}>
+              {groupQuery.data?.groups.map(({ id, ...config }) => (
+                <Card key={id}>
+                  <CardBody>{JSON.stringify(config)}</CardBody>
+                </Card>
+              ))}
+            </Grid>
+          )}
         </Collapse>
       </Flex>
     </Flex>

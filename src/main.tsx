@@ -3,7 +3,6 @@ import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GraphiQL } from "graphiql";
-import "graphiql/graphiql.css";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
