@@ -10,11 +10,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { queryClient } from "~/api";
 import App from "~/App";
 import { DEFAULT_ENDPOINT_URL } from "~/constants";
-import initI18n from "~/i18n";
 import "~/index.css";
 import { endpointURL } from "~/store";
-
-initI18n();
 
 const theme = extendTheme({
   initialColorMode: "system",
@@ -28,10 +25,6 @@ const getEndpointURL = () => {
 };
 
 endpointURL.set(getEndpointURL());
-
-const fetcher = createGraphiQLFetcher({
-  url: endpointURL.get(),
-});
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <BrowserRouter>
@@ -49,7 +42,16 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           </QueryClientProvider>
         }
       />
-      <Route path="/graphql" element={<GraphiQL fetcher={fetcher} />} />
+      <Route
+        path="/graphql"
+        element={
+          <GraphiQL
+            fetcher={createGraphiQLFetcher({
+              url: endpointURL.get(),
+            })}
+          />
+        }
+      />
     </Routes>
   </BrowserRouter>
 );

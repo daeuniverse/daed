@@ -1,10 +1,10 @@
 import { Button, Flex, Heading, IconButton, Spacer, useColorMode, useDisclosure, useToast } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { CiDark, CiImport, CiLight, CiSquarePlus } from "react-icons/ci";
 
-import { gqlClient, queryClient } from "~/api";
+import { gqlClient } from "~/api";
 import { GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP } from "~/constants";
 import { graphql } from "~/gql";
 
@@ -13,6 +13,7 @@ import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } 
 
 export default () => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const { colorMode, toggleColorMode } = useColorMode();
   const toast = useToast();
 

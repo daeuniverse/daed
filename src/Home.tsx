@@ -1,9 +1,9 @@
 import { Button, ButtonGroup, Card, CardBody, CardFooter, Collapse, Flex, Grid, useDisclosure } from "@chakra-ui/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { CiSquareChevDown, CiSquareChevUp } from "react-icons/ci";
 
-import { gqlClient, queryClient } from "~/api";
+import { gqlClient } from "~/api";
 import WithConfirmRemoveButton from "~/components/WithConfirmRemoveButton";
 import { graphql } from "~/gql";
 
@@ -11,6 +11,7 @@ import { CONFIGS_PER_ROW, GROUPS_PER_ROW, QUERY_KEY_CONFIG, QUERY_KEY_GROUP } fr
 
 export default () => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const { isOpen: isConfigOpen, onToggle: onConfigToggle } = useDisclosure({
     defaultIsOpen: true,
