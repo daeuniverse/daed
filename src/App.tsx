@@ -34,9 +34,10 @@ const App = () => {
         />
         <Collapse
           in={isSidebarOpen}
+          animateOpacity
           transition={{
-            enter: { duration: 0.05 },
-            exit: { duration: 0.05 },
+            enter: { duration: 0.2 },
+            exit: { duration: 0.2 },
           }}
         >
           <Sidebar />

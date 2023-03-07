@@ -1,5 +1,6 @@
 import {
   Button,
+  Center,
   Flex,
   IconButton,
   Image,
@@ -14,7 +15,8 @@ import {
 } from "@chakra-ui/react";
 import { useStore } from "@nanostores/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Fragment } from "react";
+import { motion, useMotionValue, useMotionValueEvent, useSpring } from "framer-motion";
+import { Fragment, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CiDark, CiImport, CiLight, CiSquarePlus, CiStreamOff, CiStreamOn } from "react-icons/ci";
 import { HiLanguage } from "react-icons/hi2";
@@ -153,9 +155,46 @@ export default () => {
     }
   };
 
+  const platform = useRef<HTMLDivElement>(null);
+  const dae = useRef<HTMLImageElement>(null);
+  const [showSave, setShowSave] = useState(false);
+  const x = useMotionValue(0);
+  const y = useSpring(0);
+
+  useMotionValueEvent(y, "change", (latest) => {
+    const platformBottomLimit = platform.current?.clientHeight;
+    const daeHeight = dae.current?.clientHeight;
+
+    if (!platformBottomLimit || !daeHeight) {
+      return;
+    }
+
+    if (latest >= platformBottomLimit - daeHeight) {
+      setShowSave(true);
+    } else {
+      setShowSave(false);
+    }
+  });
+
   return (
-    <Flex h="full" alignItems="center" justifyContent="center" direction="column" px={2} py={12} gap={4}>
-      <Image m={10} boxSize={24} borderRadius="md" src="/logo.svg" alt="logo" />
+    <Flex
+      ref={platform}
+      h="full"
+      alignItems="center"
+      justifyContent="center"
+      direction="column"
+      px={2}
+      pt={6}
+      pb={12}
+      gap={4}
+    >
+      <motion.div
+        drag
+        style={{ x, y, zIndex: Number.MAX_SAFE_INTEGER, height: showSave ? 0 : "auto" }}
+        dragConstraints={{ left: 0, right: 0, top: 0 }}
+      >
+        <Image ref={dae} draggable={false} m={10} boxSize={24} borderRadius="md" src="/logo.svg" alt="logo" />
+      </motion.div>
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
         {`${t("create")} ${t("config")}`}
@@ -221,6 +260,12 @@ export default () => {
             onClick={toggleColorMode}
           />
         </Flex>
+
+        {showSave && (
+          <Center alignItems="center">
+            <Button onClick={() => y.jump(0)}>Save the goose</Button>
+          </Center>
+        )}
       </Flex>
 
       <Fragment>
