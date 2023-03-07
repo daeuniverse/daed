@@ -32,6 +32,7 @@ specifiers:
   graphql-request: ^5.2.0
   husky: ^8.0.3
   i18next: ^22.4.10
+  i18next-browser-languagedetector: ^7.0.1
   lint-staged: ^13.1.2
   nanostores: ^0.7.4
   prettier: ^2.8.4
@@ -61,6 +62,7 @@ dependencies:
   graphql: 16.6.0
   graphql-request: 5.2.0_graphql@16.6.0
   i18next: 22.4.10
+  i18next-browser-languagedetector: 7.0.1
   nanostores: 0.7.4
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -7371,6 +7373,13 @@ packages:
     engines: { node: ">=14" }
     hasBin: true
     dev: true
+
+  /i18next-browser-languagedetector/7.0.1:
+    resolution:
+      { integrity: sha512-Pa5kFwaczXJAeHE56CHG2aWzFBMJNUNghf0Pm4SwSrEMps/PTKqW90EYWlIvhuYStf3Sn1K0vw+gH3+TLdkH1g== }
+    dependencies:
+      "@babel/runtime": 7.21.0
+    dev: false
 
   /i18next/22.4.10:
     resolution:
