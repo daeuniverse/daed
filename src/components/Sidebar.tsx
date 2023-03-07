@@ -154,7 +154,7 @@ export default () => {
   };
 
   return (
-    <Flex alignItems="center" justifyContent="center" direction="column" px={2} py={12} gap={4}>
+    <Flex h="full" alignItems="center" justifyContent="center" direction="column" px={2} py={12} gap={4}>
       <Image m={10} boxSize={24} borderRadius="md" src="/logo.svg" alt="logo" />
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
@@ -175,50 +175,52 @@ export default () => {
 
       <Spacer />
 
-      <Slider
-        min={1}
-        max={5}
-        defaultValue={COLS_PER_ROW}
-        value={colsPerRow}
-        textAlign="center"
-        onChange={colsPerRowAtom.set}
-      >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
+      <Flex direction="column" gap={4}>
+        <Slider
+          min={1}
+          max={5}
+          defaultValue={COLS_PER_ROW}
+          value={colsPerRow}
+          textAlign="center"
+          onChange={colsPerRowAtom.set}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
 
-        <SliderThumb />
-      </Slider>
+          <SliderThumb />
+        </Slider>
 
-      <Flex gap={4}>
-        <IconButton
-          aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
-          icon={isRunningQuery.data?.general.dae.running ? <CiStreamOn /> : <CiStreamOff />}
-          onClick={() => {
-            if (isRunningQuery.data?.general.dae.running) {
-              return;
-            }
+        <Flex gap={4}>
+          <IconButton
+            aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
+            icon={isRunningQuery.data?.general.dae.running ? <CiStreamOn /> : <CiStreamOff />}
+            onClick={() => {
+              if (isRunningQuery.data?.general.dae.running) {
+                return;
+              }
 
-            if (!queryClient.getQueryData<ConfigsQuery>(QUERY_KEY_CONFIG)?.configs.some(({ selected }) => selected)) {
-              toast({
-                title: t("please select a config first"),
-                status: "error",
-              });
+              if (!queryClient.getQueryData<ConfigsQuery>(QUERY_KEY_CONFIG)?.configs.some(({ selected }) => selected)) {
+                toast({
+                  title: t("please select a config first"),
+                  status: "error",
+                });
 
-              return;
-            }
+                return;
+              }
 
-            runMutation.mutate();
-          }}
-        />
+              runMutation.mutate();
+            }}
+          />
 
-        <IconButton aria-label={t("switchLanguage")} icon={<HiLanguage />} onClick={switchLanguage} />
+          <IconButton aria-label={t("switchLanguage")} icon={<HiLanguage />} onClick={switchLanguage} />
 
-        <IconButton
-          aria-label={t("dark mode")}
-          icon={colorMode === "dark" ? <CiDark /> : <CiLight />}
-          onClick={toggleColorMode}
-        />
+          <IconButton
+            aria-label={t("dark mode")}
+            icon={colorMode === "dark" ? <CiDark /> : <CiLight />}
+            onClick={toggleColorMode}
+          />
+        </Flex>
       </Flex>
 
       <Fragment>
