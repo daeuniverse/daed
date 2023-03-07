@@ -47,7 +47,9 @@ export default <FormValues extends Record<string, unknown>>({
           <DrawerCloseButton />
           <DrawerHeader>{header}</DrawerHeader>
           <DrawerBody>
-            <SimpleBar style={{ width: "100%", height: "100%", overflowX: "hidden" }}>{children}</SimpleBar>
+            <SimpleBar style={{ width: "100%", height: "100%", overflowX: "hidden", paddingInline: 4 }}>
+              {children}
+            </SimpleBar>
           </DrawerBody>
           <DrawerFooter>
             <Flex gap={2}>
