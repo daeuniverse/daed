@@ -4,15 +4,9 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Card,
-  CardBody,
-  Center,
   Flex,
-  Grid,
   Heading,
-  Spinner,
 } from "@chakra-ui/react";
-import { useStore } from "@nanostores/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import SimpleBar from "simplebar-react";
@@ -22,13 +16,11 @@ import { graphql } from "~/gql";
 
 import SortableGrid from "./components/SortableGrid";
 import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE } from "./constants";
-import { ConfigsQuery, NodesQuery } from "./gql/graphql";
-import { appStateAtom } from "./store";
+import { ConfigsQuery, GroupsQuery, NodesQuery } from "./gql/graphql";
 
 export default () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { colsPerRow } = useStore(appStateAtom);
 
   const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
@@ -92,6 +84,22 @@ export default () => {
     )
   );
 
+  const removeNodeMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation removeNodes($ids: [ID!]!) {
+            removeNodes(ids: $ids)
+          }
+        `),
+        { ids: [id] }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
+    },
+  });
+
   const selectConfigMutation = useMutation({
     mutationFn: async (id: string) => {
       return gqlClient.request(
@@ -124,19 +132,19 @@ export default () => {
     },
   });
 
-  const removeNodeMutation = useMutation({
+  const removeGroupMutation = useMutation({
     mutationFn: async (id: string) => {
       return gqlClient.request(
         graphql(`
-          mutation removeNodes($ids: [ID!]!) {
-            removeNodes(ids: $ids)
+          mutation removeGroup($id: ID!) {
+            removeGroup(id: $id)
           }
         `),
-        { ids: [id] }
+        { id }
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP });
     },
   });
 
@@ -207,21 +215,13 @@ export default () => {
             </AccordionButton>
 
             <AccordionPanel>
-              <Flex direction="column" gap={4}>
-                {groupQuery.isLoading ? (
-                  <Center>
-                    <Spinner />
-                  </Center>
-                ) : (
-                  <Grid gridTemplateColumns={`repeat(${colsPerRow}, 1fr)`} gap={2}>
-                    {groupQuery.data?.groups.map(({ id, ...config }) => (
-                      <Card key={id}>
-                        <CardBody>{JSON.stringify(config)}</CardBody>
-                      </Card>
-                    ))}
-                  </Grid>
-                )}
-              </Flex>
+              <SortableGrid<GroupsQuery["groups"]>
+                isLoading={groupQuery.isLoading}
+                unSortedItems={groupQuery.data?.groups}
+                onRemove={(data) => {
+                  removeGroupMutation.mutate(data.id);
+                }}
+              />
             </AccordionPanel>
           </AccordionItem>
         </Accordion>

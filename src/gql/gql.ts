@@ -19,12 +19,14 @@ const documents = {
     types.NodesDocument,
   "\n        query Groups {\n          groups {\n            id\n            name\n            policy\n            policyParams {\n              key\n              val\n            }\n          }\n        }\n      ":
     types.GroupsDocument,
+  "\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ":
+    types.RemoveNodesDocument,
   "\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        ":
     types.SelectConfigDocument,
   "\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ":
     types.RemoveConfigDocument,
-  "\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ":
-    types.RemoveNodesDocument,
+  "\n          mutation removeGroup($id: ID!) {\n            removeGroup(id: $id)\n          }\n        ":
+    types.RemoveGroupDocument,
   "\n        query Interfaces {\n          general {\n            interfaces {\n              name\n            }\n          }\n        }\n      ":
     types.InterfacesDocument,
   "\n        query Running {\n          general {\n            dae {\n              running\n            }\n          }\n        }\n      ":
@@ -76,6 +78,12 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: "\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        "
+): (typeof documents)["\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: "\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        "
 ): (typeof documents)["\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        "];
 /**
@@ -88,8 +96,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        "
-): (typeof documents)["\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        "];
+  source: "\n          mutation removeGroup($id: ID!) {\n            removeGroup(id: $id)\n          }\n        "
+): (typeof documents)["\n          mutation removeGroup($id: ID!) {\n            removeGroup(id: $id)\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
