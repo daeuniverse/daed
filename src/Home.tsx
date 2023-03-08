@@ -153,7 +153,7 @@ export default () => {
           borderColor: "Highlight",
         }}
       >
-        <Accordion defaultIndex={[0]} allowMultiple>
+        <Accordion allowToggle>
           <AccordionItem border="none">
             <AccordionButton p={4}>
               <Flex w="full" alignItems="center" justifyContent="space-between">
