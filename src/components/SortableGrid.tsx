@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoMoveSharp } from "react-icons/io5";
 
-import { colsPerRowAtom } from "~/store";
+import { appStateAtom } from "~/store";
 
 import WithConfirmRemoveButton from "./WithConfirmRemoveButton";
 
@@ -40,7 +40,13 @@ const DraggableCard = <T extends List[number]>({
       }}
     >
       <CardHeader as={Flex} gap={2} alignItems="center">
-        <IconButton aria-label={t("select")} icon={<IoMoveSharp />} {...listeners} {...attributes} />
+        <IconButton
+          cursor={isDragging ? "grabbing" : "grab"}
+          aria-label={t("select")}
+          icon={<IoMoveSharp />}
+          {...listeners}
+          {...attributes}
+        />
 
         <Tooltip hasArrow label={data.id} placement="top">
           <Button size="sm" flex={1} noOfLines={1} onClick={() => onSelect && onSelect(data)}>
@@ -66,13 +72,21 @@ export default <T extends List>({
   onSelect?: (data: T[number]) => void;
   onRemove: (data: T[number]) => void;
 }) => {
-  const colsPerRow = useStore(colsPerRowAtom);
+  const { colsPerRow } = useStore(appStateAtom);
   const [sortableKeys, setSortableKeys] = useState<UniqueIdentifier[]>([]);
 
   useEffect(() => {
     if (unSortedItems) {
       if (sortableKeys.length === 0) {
         setSortableKeys(unSortedItems.map(({ id }) => id));
+
+        return;
+      }
+
+      if (sortableKeys.length > unSortedItems.length) {
+        setSortableKeys((keys) => keys.filter((key) => unSortedItems.some(({ id }) => key === id)));
+      } else {
+        setSortableKeys((keys) => [...keys, ...unSortedItems.slice(keys.length).map(({ id }) => id)]);
       }
     }
   }, [unSortedItems]);

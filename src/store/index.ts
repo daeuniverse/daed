@@ -1,7 +1,19 @@
 import { persistentAtom } from "@nanostores/persistent";
-import { atom } from "nanostores";
 
 import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL } from "~/constants";
 
-export const endpointURL = persistentAtom<string>(DEFAULT_ENDPOINT_URL);
-export const colsPerRowAtom = atom(COLS_PER_ROW);
+export type APP_STATE = {
+  colsPerRow: number;
+};
+
+export const endpointURLAtom = persistentAtom<string>(DEFAULT_ENDPOINT_URL);
+export const appStateAtom = persistentAtom<APP_STATE>(
+  "APP_STATE",
+  {
+    colsPerRow: COLS_PER_ROW,
+  },
+  {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+  }
+);

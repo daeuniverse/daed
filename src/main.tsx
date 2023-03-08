@@ -10,15 +10,15 @@ import { queryClient } from "~/api";
 import App from "~/App";
 import { DEFAULT_ENDPOINT_URL } from "~/constants";
 import "~/index.css";
-import { endpointURL } from "~/store";
+import { endpointURLAtom } from "~/store";
 
 const { searchParams } = new URL(location.href);
 
 const getEndpointURL = () => {
-  return searchParams.get("u") || endpointURL.get() || DEFAULT_ENDPOINT_URL;
+  return searchParams.get("u") || endpointURLAtom.get() || DEFAULT_ENDPOINT_URL;
 };
 
-endpointURL.set(getEndpointURL());
+endpointURLAtom.set(getEndpointURL());
 
 const theme = extendTheme({
   initialColorMode: "system",
@@ -50,7 +50,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           element={
             <GraphiQL
               fetcher={createGraphiQLFetcher({
-                url: endpointURL.get(),
+                url: endpointURLAtom.get(),
               })}
             />
           }

@@ -33,7 +33,7 @@ import {
 import { graphql } from "~/gql";
 import { ConfigsQuery } from "~/gql/graphql";
 import i18n from "~/i18n";
-import { colsPerRowAtom } from "~/store";
+import { appStateAtom } from "~/store";
 
 import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
 import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
@@ -47,7 +47,7 @@ export default () => {
   const queryClient = useQueryClient();
   const { colorMode, toggleColorMode } = useColorMode();
   const toast = useToast();
-  const colsPerRow = useStore(colsPerRowAtom);
+  const { colsPerRow } = useStore(appStateAtom);
 
   const {
     isOpen: isConfigFormDrawerOpen,
@@ -119,7 +119,6 @@ export default () => {
     },
     onSuccess: () => {
       toast({
-        title: "Nodes Imported",
         status: "success",
         isClosable: true,
       });
@@ -146,7 +145,6 @@ export default () => {
     },
     onSuccess: () => {
       toast({
-        title: "Nodes Imported",
         status: "success",
         isClosable: true,
       });
@@ -188,8 +186,7 @@ export default () => {
     },
     onSuccess: (data) => {
       toast({
-        title: "Config Created",
-        description: `${data.createConfig.id}`,
+        title: `${data.createConfig.id}`,
         status: "success",
         isClosable: true,
       });
@@ -213,8 +210,7 @@ export default () => {
     },
     onSuccess: (data) => {
       toast({
-        title: "Group Created",
-        description: `${data.createGroup.id}`,
+        title: `${data.createGroup.id}`,
         status: "success",
         isClosable: true,
       });
@@ -293,7 +289,11 @@ export default () => {
           defaultValue={COLS_PER_ROW}
           value={colsPerRow}
           textAlign="center"
-          onChange={colsPerRowAtom.set}
+          onChange={(colsPerRow) =>
+            appStateAtom.set({
+              colsPerRow,
+            })
+          }
         >
           <SliderTrack>
             <SliderFilledTrack />

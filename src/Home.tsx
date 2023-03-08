@@ -23,12 +23,12 @@ import { graphql } from "~/gql";
 import SortableGrid from "./components/SortableGrid";
 import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE } from "./constants";
 import { ConfigsQuery, NodesQuery } from "./gql/graphql";
-import { colsPerRowAtom } from "./store";
+import { appStateAtom } from "./store";
 
 export default () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const colsPerRow = useStore(colsPerRowAtom);
+  const { colsPerRow } = useStore(appStateAtom);
 
   const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
