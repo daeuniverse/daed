@@ -29,6 +29,7 @@
     "graphql-request": "^5.2.0",
     "i18next": "^22.4.10",
     "i18next-browser-languagedetector": "^7.0.1",
+    "lodash": "^4.17.21",
     "nanostores": "^0.7.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

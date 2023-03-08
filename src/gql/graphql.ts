@@ -32,6 +32,17 @@ export type Config = {
   selected: Scalars["Boolean"];
 };
 
+export type ConfigFlatDesc = {
+  __typename?: "ConfigFlatDesc";
+  defaultValue: Scalars["String"];
+  desc: Scalars["String"];
+  isArray: Scalars["Boolean"];
+  mapping: Scalars["String"];
+  name: Scalars["String"];
+  required: Scalars["Boolean"];
+  type: Scalars["String"];
+};
+
 export type Dae = {
   __typename?: "Dae";
   running: Scalars["Boolean"];
@@ -316,6 +327,7 @@ export type PolicyParam = {
 
 export type Query = {
   __typename?: "Query";
+  configFlatDesc: Array<ConfigFlatDesc>;
   configs: Array<Config>;
   general: General;
   group: Group;

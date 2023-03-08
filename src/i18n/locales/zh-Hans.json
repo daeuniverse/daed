@@ -26,6 +26,7 @@
   "lanInterface": "LAN 接口",
   "lanNatDirect": "LAN NAT 直连",
   "logLevel": "日志等级",
+  "milliseconds": "毫秒",
   "name": "名字",
   "node": "节点",
   "please select a config first": "请先选择配置",
@@ -40,6 +41,7 @@
   "tproxyPort": "透明代理端口",
   "trace": "跟踪",
   "udpCheckDns": "UDP 检测 DNS",
+  "value": "值",
   "wanInterface": "WAN 接口",
   "warn": "警告"
 }

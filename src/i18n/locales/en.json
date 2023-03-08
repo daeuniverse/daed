@@ -26,6 +26,7 @@
   "lanInterface": "lanInterface",
   "lanNatDirect": "lanNatDirect",
   "logLevel": "logLevel",
+  "milliseconds": "ms",
   "name": "name",
   "node": "Node",
   "please select a config first": "Please select a config first",
@@ -40,6 +41,7 @@
   "tproxyPort": "tproxyPort",
   "trace": "trace",
   "udpCheckDns": "udpCheckDns",
+  "value": "value",
   "wanInterface": "wanInterface",
   "warn": "warn"
 }

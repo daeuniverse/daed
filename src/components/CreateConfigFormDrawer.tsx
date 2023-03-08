@@ -1,9 +1,11 @@
 import {
+  Box,
   Flex,
   FormControl,
   FormLabel,
   Input,
   Select,
+  SelectProps,
   Slider,
   SliderFilledTrack,
   SliderMark,
@@ -18,12 +20,14 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { forwardRef, Fragment } from "react";
 import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { gqlClient } from "~/api";
 import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS, QUERY_KEY_INTERFACES } from "~/constants";
 import { graphql } from "~/gql";
+import { InterfacesQuery } from "~/gql/graphql";
 
 import CreateFormDrawer from "./CreateFormDrawer";
 import NumberInput from "./NumberInput";
@@ -34,7 +38,7 @@ export type FormValues = {
   tcpCheckUrl: string;
   udpCheckDns: string;
   checkIntervalSeconds: number;
-  checkTolerenceSeconds: number;
+  checkTolerenceMS: number;
   lanInterface: string[];
   wanInterface: string[];
   allowInsecure: boolean;
@@ -43,12 +47,17 @@ export type FormValues = {
   routing: string;
 };
 
-const sliderLabelStyles = {
-  mt: 2,
-  ml: "-50%",
-  w: "full",
-  fontSize: "sm",
-};
+const SelectInterface = forwardRef<HTMLSelectElement, { data?: InterfacesQuery } & SelectProps>(
+  ({ data, ...props }, forwardedRef) => (
+    <Select ref={forwardedRef} {...props}>
+      {data?.general.interfaces
+        .filter(({ name }) => name !== "lo")
+        .map(({ name }) => (
+          <option key={name}>{name}</option>
+        ))}
+    </Select>
+  )
+);
 
 export default ({
   isOpen,
@@ -117,21 +126,23 @@ export default ({
                   control={control}
                   defaultValue={0}
                   render={({ field }) => (
-                    <Slider max={LOG_LEVEL_STEPS.length - 1} textAlign="center" {...field}>
-                      <>
-                        {LOG_LEVEL_STEPS.map(([name], i) => (
-                          <SliderMark key={i} value={i} {...sliderLabelStyles}>
-                            {name}
-                          </SliderMark>
-                        ))}
-                      </>
+                    <Box px={4} textAlign="center">
+                      <Slider max={LOG_LEVEL_STEPS.length - 1} {...field}>
+                        <Fragment>
+                          {LOG_LEVEL_STEPS.map(([name], i) => (
+                            <SliderMark key={i} mt={4} ml="-50%" w="full" fontSize="sm" value={i}>
+                              {name}
+                            </SliderMark>
+                          ))}
+                        </Fragment>
 
-                      <SliderTrack>
-                        <SliderFilledTrack />
-                      </SliderTrack>
+                        <SliderTrack>
+                          <SliderFilledTrack />
+                        </SliderTrack>
 
-                      <SliderThumb />
-                    </Slider>
+                        <SliderThumb />
+                      </Slider>
+                    </Box>
                   )}
                 />
               </FormControl>
@@ -160,12 +171,12 @@ export default ({
               </FormControl>
 
               <FormControl>
-                <FormLabel>{`${t("checkTolerance")} (${t("seconds")})`}</FormLabel>
+                <FormLabel>{`${t("checkTolerance")} (${t("milliseconds")})`}</FormLabel>
 
                 <Controller
-                  name="checkTolerenceSeconds"
+                  name="checkTolerenceMS"
                   control={control}
-                  defaultValue={10}
+                  defaultValue={1000}
                   render={({ field }) => <NumberInput min={0} {...field} />}
                 />
               </FormControl>
@@ -173,21 +184,19 @@ export default ({
               <FormControl>
                 <FormLabel>{t("lanInterface")}</FormLabel>
 
-                <Select {...register("lanInterface")}>
-                  {interfacesQuery.data?.general.interfaces.map(({ name }) => (
-                    <option key={name}>{name}</option>
-                  ))}
-                </Select>
+                <SelectInterface data={interfacesQuery.data} {...register("lanInterface")} />
               </FormControl>
 
               <FormControl>
                 <FormLabel>{t("wanInterface")}</FormLabel>
 
-                <Select {...register("wanInterface")}>
-                  {interfacesQuery.data?.general.interfaces.map(({ name }) => (
-                    <option key={name}>{name}</option>
-                  ))}
-                </Select>
+                <SelectInterface
+                  defaultValue={
+                    interfacesQuery.data?.general.interfaces[interfacesQuery.data?.general.interfaces.length - 1].name
+                  }
+                  data={interfacesQuery.data}
+                  {...register("wanInterface")}
+                />
               </FormControl>
 
               <FormControl>

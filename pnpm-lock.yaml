@@ -37,6 +37,7 @@ specifiers:
   i18next: ^22.4.10
   i18next-browser-languagedetector: ^7.0.1
   lint-staged: ^13.1.2
+  lodash: ^4.17.21
   nanostores: ^0.7.4
   prettier: ^2.8.4
   react: ^18.2.0
@@ -67,6 +68,7 @@ dependencies:
   graphql-request: 5.2.0_graphql@16.6.0
   i18next: 22.4.10
   i18next-browser-languagedetector: 7.0.1
+  lodash: 4.17.21
   nanostores: 0.7.4
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -8636,7 +8638,6 @@ packages:
   /lodash/4.17.21:
     resolution:
       { integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg== }
-    dev: true
 
   /log-symbols/4.1.0:
     resolution:

@@ -78,8 +78,9 @@ export default ({
           <VStack divider={<StackDivider borderColor="Highlight" />}>
             {policyParamsInputList.map((_, i) => (
               <Flex key={i} gap={2}>
-                <Input autoFocus {...register(`policyParams.${i}.key`)} />
-                <Input {...register(`policyParams.${i}.val`)} />
+                <Input autoFocus placeholder={t("name")} {...register(`policyParams.${i}.key`)} />
+                <Input placeholder={t("value")} {...register(`policyParams.${i}.val`)} />
+
                 <IconButton
                   aria-label={t("policyParams")}
                   icon={<CiSquareRemove />}

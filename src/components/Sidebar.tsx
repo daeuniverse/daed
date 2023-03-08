@@ -83,8 +83,8 @@ export default () => {
     mutationFn: (values: CreateConfigFormDrawerFormValues) => {
       const {
         logLevelIndex,
-        checkIntervalSeconds: checkIntervalMS,
-        checkTolerenceSeconds: checkTolerenceMS,
+        checkIntervalSeconds,
+        checkTolerenceMS: checkTolerenceMS,
         dns,
         routing,
         ...global
@@ -101,8 +101,8 @@ export default () => {
         {
           global: {
             logLevel: GET_LOG_LEVEL_STEPS(t)[logLevelIndex][1],
-            checkInterval: `${checkIntervalMS}s`,
-            checkTolerance: `${checkTolerenceMS}s`,
+            checkInterval: `${checkIntervalSeconds}s`,
+            checkTolerance: `${checkTolerenceMS}ms`,
             ...global,
           },
           dns,
@@ -193,7 +193,7 @@ export default () => {
         style={{ x, y, zIndex: Number.MAX_SAFE_INTEGER, height: showSave ? 0 : "auto" }}
         dragConstraints={{ left: 0, right: 0, top: 0 }}
       >
-        <Image ref={dae} draggable={false} m={10} boxSize={24} borderRadius="md" src="/logo.svg" alt="logo" />
+        <Image ref={dae} draggable={false} m={10} boxSize={24} rounded="md" src="/logo.svg" alt="logo" />
       </motion.div>
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
