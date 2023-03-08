@@ -1,4 +1,5 @@
 import { Center, Collapse, Flex, IconButton, Spinner, useDisclosure } from "@chakra-ui/react";
+import { DndContext } from "@dnd-kit/core";
 import { useTranslation } from "react-i18next";
 import { BsChevronBarLeft } from "react-icons/bs";
 import { CiMenuKebab } from "react-icons/ci";
@@ -25,25 +26,28 @@ const App = () => {
 
   return (
     <Flex>
-      <Flex minH="100dvh" py={6}>
-        <IconButton
-          aria-label={t("collapse")}
-          h="full"
-          icon={isSidebarOpen ? <BsChevronBarLeft /> : <CiMenuKebab />}
-          onClick={onSidebarToggle}
-        />
-        <Collapse
-          in={isSidebarOpen}
-          animateOpacity
-          transition={{
-            enter: { duration: 0.2 },
-            exit: { duration: 0.2 },
-          }}
-        >
-          <Sidebar />
-        </Collapse>
-      </Flex>
-      <Home />
+      <DndContext>
+        <Flex minH="100dvh" py={6}>
+          <IconButton
+            aria-label={t("collapse")}
+            h="full"
+            icon={isSidebarOpen ? <BsChevronBarLeft /> : <CiMenuKebab />}
+            onClick={onSidebarToggle}
+          />
+          <Collapse
+            in={isSidebarOpen}
+            animateOpacity
+            transition={{
+              enter: { duration: 0.2 },
+              exit: { duration: 0.2 },
+            }}
+          >
+            <Sidebar />
+          </Collapse>
+        </Flex>
+
+        <Home />
+      </DndContext>
     </Flex>
   );
 };

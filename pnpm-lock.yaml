@@ -4,6 +4,10 @@ specifiers:
   "@chakra-ui/react": ^2.5.1
   "@commitlint/cli": ^17.4.4
   "@commitlint/config-conventional": ^17.4.4
+  "@dnd-kit/core": ^6.0.8
+  "@dnd-kit/modifiers": ^6.0.1
+  "@dnd-kit/sortable": ^7.0.2
+  "@dnd-kit/utilities": ^3.2.1
   "@emotion/react": ^11.10.6
   "@emotion/styled": ^11.10.6
   "@fontsource/open-sans": ^4.5.14
@@ -53,6 +57,10 @@ specifiers:
 
 dependencies:
   "@chakra-ui/react": 2.5.1_llidv3byuxn3l2nsibklt32qgu
+  "@dnd-kit/core": 6.0.8_biqbaboplfbrettd7655fr4n2y
+  "@dnd-kit/modifiers": 6.0.1_52scne4zmdeyjh2otzkgz2xfvu
+  "@dnd-kit/sortable": 7.0.2_52scne4zmdeyjh2otzkgz2xfvu
+  "@dnd-kit/utilities": 3.2.1_react@18.2.0
   "@emotion/react": 11.10.6_pmekkgnqduwlme35zpnqhenc34
   "@emotion/styled": 11.10.6_oouaibmszuch5k64ms7uxp2aia
   "@fontsource/open-sans": 4.5.14
@@ -2677,6 +2685,66 @@ packages:
     dependencies:
       "@jridgewell/trace-mapping": 0.3.9
     dev: true
+
+  /@dnd-kit/accessibility/3.0.1_react@18.2.0:
+    resolution:
+      { integrity: sha512-HXRrwS9YUYQO9lFRc/49uO/VICbM+O+ZRpFDe9Pd1rwVv2PCNkRiTZRdxrDgng/UkvdC3Re9r2vwPpXXrWeFzg== }
+    peerDependencies:
+      react: ">=16.8.0"
+    dependencies:
+      react: 18.2.0
+      tslib: 2.5.0
+    dev: false
+
+  /@dnd-kit/core/6.0.8_biqbaboplfbrettd7655fr4n2y:
+    resolution:
+      { integrity: sha512-lYaoP8yHTQSLlZe6Rr9qogouGUz9oRUj4AHhDQGQzq/hqaJRpFo65X+JKsdHf8oUFBzx5A+SJPUvxAwTF2OabA== }
+    peerDependencies:
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+    dependencies:
+      "@dnd-kit/accessibility": 3.0.1_react@18.2.0
+      "@dnd-kit/utilities": 3.2.1_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      tslib: 2.5.0
+    dev: false
+
+  /@dnd-kit/modifiers/6.0.1_52scne4zmdeyjh2otzkgz2xfvu:
+    resolution:
+      { integrity: sha512-rbxcsg3HhzlcMHVHWDuh9LCjpOVAgqbV78wLGI8tziXY3+qcMQ61qVXIvNKQFuhj75dSfD+o+PYZQ/NUk2A23A== }
+    peerDependencies:
+      "@dnd-kit/core": ^6.0.6
+      react: ">=16.8.0"
+    dependencies:
+      "@dnd-kit/core": 6.0.8_biqbaboplfbrettd7655fr4n2y
+      "@dnd-kit/utilities": 3.2.1_react@18.2.0
+      react: 18.2.0
+      tslib: 2.5.0
+    dev: false
+
+  /@dnd-kit/sortable/7.0.2_52scne4zmdeyjh2otzkgz2xfvu:
+    resolution:
+      { integrity: sha512-wDkBHHf9iCi1veM834Gbk1429bd4lHX4RpAwT0y2cHLf246GAvU2sVw/oxWNpPKQNQRQaeGXhAVgrOl1IT+iyA== }
+    peerDependencies:
+      "@dnd-kit/core": ^6.0.7
+      react: ">=16.8.0"
+    dependencies:
+      "@dnd-kit/core": 6.0.8_biqbaboplfbrettd7655fr4n2y
+      "@dnd-kit/utilities": 3.2.1_react@18.2.0
+      react: 18.2.0
+      tslib: 2.5.0
+    dev: false
+
+  /@dnd-kit/utilities/3.2.1_react@18.2.0:
+    resolution:
+      { integrity: sha512-OOXqISfvBw/1REtkSK2N3Fi2EQiLMlWUlqnOK/UpOISqBZPWpE6TqL+jcPtMOkE8TqYGiURvRdPSI9hltNUjEA== }
+    peerDependencies:
+      react: ">=16.8.0"
+    dependencies:
+      react: 18.2.0
+      tslib: 2.5.0
+    dev: false
 
   /@emotion/babel-plugin/11.10.6:
     resolution:
@@ -10771,11 +10839,7 @@ packages:
 
   /tslib/2.5.0:
     resolution:
-      {
-        integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npm.taobao.org/tslib/-/tslib-2.5.0.tgz,
-      }
+      { integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg== }
 
   /tsutils/3.21.0_typescript@4.9.5:
     resolution:
