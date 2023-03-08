@@ -519,6 +519,16 @@ export type ImportNodesMutation = {
   importNodes: Array<{ __typename?: "NodeImportResult"; link: string; error?: string | null }>;
 };
 
+export type ImportSubscriptionMutationVariables = Exact<{
+  rollbackError: Scalars["Boolean"];
+  arg: ImportArgument;
+}>;
+
+export type ImportSubscriptionMutation = {
+  __typename?: "Mutation";
+  importSubscription: { __typename?: "SubscriptionImportResult"; link: string };
+};
+
 export type CreateConfigMutationVariables = Exact<{
   global?: InputMaybe<GlobalInput>;
   dns?: InputMaybe<Scalars["String"]>;
@@ -918,6 +928,53 @@ export const ImportNodesDocument = {
     },
   ],
 } as unknown as DocumentNode<ImportNodesMutation, ImportNodesMutationVariables>;
+export const ImportSubscriptionDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "importSubscription" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "rollbackError" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "arg" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ImportArgument" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "importSubscription" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "rollbackError" },
+                value: { kind: "Variable", name: { kind: "Name", value: "rollbackError" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "arg" },
+                value: { kind: "Variable", name: { kind: "Name", value: "arg" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [{ kind: "Field", name: { kind: "Name", value: "link" } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ImportSubscriptionMutation, ImportSubscriptionMutationVariables>;
 export const CreateConfigDocument = {
   kind: "Document",
   definitions: [

@@ -32,6 +32,8 @@ const documents = {
   "\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ": types.RunDocument,
   "\n          mutation importNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        ":
     types.ImportNodesDocument,
+  "\n          mutation importSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n            importSubscription(rollbackError: $rollbackError, arg: $arg) {\n              link\n            }\n          }\n        ":
+    types.ImportSubscriptionDocument,
   "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        ":
     types.CreateConfigDocument,
   "\n          mutation createGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            createGroup(name: $name, policy: $policy, policyParams: $policyParams) {\n              id\n            }\n          }\n        ":
@@ -112,6 +114,12 @@ export function graphql(
 export function graphql(
   source: "\n          mutation importNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        "
 ): (typeof documents)["\n          mutation importNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n          mutation importSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n            importSubscription(rollbackError: $rollbackError, arg: $arg) {\n              link\n            }\n          }\n        "
+): (typeof documents)["\n          mutation importSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n            importSubscription(rollbackError: $rollbackError, arg: $arg) {\n              link\n            }\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

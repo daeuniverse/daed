@@ -38,6 +38,9 @@ import { colsPerRowAtom } from "~/store";
 import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
 import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
 import ImportNodeFormDrawer, { FormValues as ImportNodeFormDrawerFormValues } from "./ImportNodeFormDrawer";
+import ImportSubscriptionFormDrawer, {
+  FormValues as ImportSubscriptionFormDrawerFormValues,
+} from "./ImportSubscriptionFormDrawer";
 
 export default () => {
   const { t } = useTranslation();
@@ -50,6 +53,11 @@ export default () => {
     isOpen: isConfigFormDrawerOpen,
     onOpen: onConfigFormDrawerOpen,
     onClose: onConfigFormDrawerClose,
+  } = useDisclosure();
+  const {
+    isOpen: isSubscriptionFormDrawerOpen,
+    onOpen: onSubscriptionFormDrawerOpen,
+    onClose: onSubscriptionFormDrawerClose,
   } = useDisclosure();
   const {
     isOpen: isGroupFormDrawerOpen,
@@ -106,6 +114,33 @@ export default () => {
         {
           rollbackError: true,
           args: values.nodes,
+        }
+      );
+    },
+    onSuccess: () => {
+      toast({
+        title: "Nodes Imported",
+        status: "success",
+        isClosable: true,
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
+      onNodeFormDrawerClose();
+    },
+  });
+
+  const importSubscriptionMutation = useMutation({
+    mutationFn: (values: ImportSubscriptionFormDrawerFormValues) => {
+      return gqlClient.request(
+        graphql(`
+          mutation importSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {
+            importSubscription(rollbackError: $rollbackError, arg: $arg) {
+              link
+            }
+          }
+        `),
+        {
+          rollbackError: true,
+          arg: values.subscription,
         }
       );
     },
@@ -237,7 +272,7 @@ export default () => {
         {`${t("import")} ${t("node")}`}
       </Button>
 
-      <Button w="full" leftIcon={<CiImport />} onClick={onConfigFormDrawerOpen}>
+      <Button w="full" leftIcon={<CiImport />} onClick={onSubscriptionFormDrawerOpen}>
         {`${t("import")} ${t("subscription")}`}
       </Button>
 
@@ -311,6 +346,14 @@ export default () => {
           onClose={onNodeFormDrawerClose}
           onSubmit={async (form) => {
             await importNodesMutation.mutateAsync(form.getValues());
+          }}
+        />
+
+        <ImportSubscriptionFormDrawer
+          isOpen={isSubscriptionFormDrawerOpen}
+          onClose={onSubscriptionFormDrawerClose}
+          onSubmit={async (form) => {
+            await importSubscriptionMutation.mutateAsync(form.getValues());
           }}
         />
 
