@@ -22,7 +22,14 @@ import { CiDark, CiImport, CiLight, CiSquarePlus, CiStreamOff, CiStreamOn } from
 import { HiLanguage } from "react-icons/hi2";
 
 import { gqlClient } from "~/api";
-import { COLS_PER_ROW, GET_LOG_LEVEL_STEPS, QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_RUNNING } from "~/constants";
+import {
+  COLS_PER_ROW,
+  GET_LOG_LEVEL_STEPS,
+  QUERY_KEY_CONFIG,
+  QUERY_KEY_GROUP,
+  QUERY_KEY_NODE,
+  QUERY_KEY_RUNNING,
+} from "~/constants";
 import { graphql } from "~/gql";
 import { ConfigsQuery } from "~/gql/graphql";
 import i18n from "~/i18n";
@@ -30,6 +37,7 @@ import { colsPerRowAtom } from "~/store";
 
 import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
 import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
+import ImportNodeFormDrawer, { FormValues as ImportNodeFormDrawerFormValues } from "./ImportNodeFormDrawer";
 
 export default () => {
   const { t } = useTranslation();
@@ -47,6 +55,11 @@ export default () => {
     isOpen: isGroupFormDrawerOpen,
     onOpen: onGroupFormDrawerOpen,
     onClose: onGroupFormDrawerClose,
+  } = useDisclosure();
+  const {
+    isOpen: isNodeFormDrawerOpen,
+    onOpen: onNodeFormDrawerOpen,
+    onClose: onNodeFormDrawerClose,
   } = useDisclosure();
 
   const isRunningQuery = useQuery(QUERY_KEY_RUNNING, async () =>
@@ -76,6 +89,34 @@ export default () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_RUNNING });
+    },
+  });
+
+  const importNodesMutation = useMutation({
+    mutationFn: (values: ImportNodeFormDrawerFormValues) => {
+      return gqlClient.request(
+        graphql(`
+          mutation importNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {
+            importNodes(rollbackError: $rollbackError, args: $args) {
+              link
+              error
+            }
+          }
+        `),
+        {
+          rollbackError: true,
+          args: values.nodes,
+        }
+      );
+    },
+    onSuccess: () => {
+      toast({
+        title: "Nodes Imported",
+        status: "success",
+        isClosable: true,
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
+      onNodeFormDrawerClose();
     },
   });
 
@@ -169,11 +210,7 @@ export default () => {
       return;
     }
 
-    if (latest >= platformBottomLimit - daeHeight) {
-      setShowSave(true);
-    } else {
-      setShowSave(false);
-    }
+    setShowSave(latest >= platformBottomLimit - daeHeight);
   });
 
   return (
@@ -196,20 +233,20 @@ export default () => {
         <Image ref={dae} draggable={false} m={10} boxSize={24} rounded="md" src="/logo.svg" alt="logo" />
       </motion.div>
 
+      <Button w="full" leftIcon={<CiImport />} onClick={onNodeFormDrawerOpen}>
+        {`${t("import")} ${t("node")}`}
+      </Button>
+
+      <Button w="full" leftIcon={<CiImport />} onClick={onConfigFormDrawerOpen}>
+        {`${t("import")} ${t("subscription")}`}
+      </Button>
+
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
         {`${t("create")} ${t("config")}`}
       </Button>
 
       <Button w="full" leftIcon={<CiSquarePlus />} onClick={onGroupFormDrawerOpen}>
         {`${t("create")} ${t("group")}`}
-      </Button>
-
-      <Button w="full" leftIcon={<CiImport />} onClick={onConfigFormDrawerOpen}>
-        {`${t("import")} ${t("node")}`}
-      </Button>
-
-      <Button w="full" leftIcon={<CiImport />} onClick={onConfigFormDrawerOpen}>
-        {`${t("import")} ${t("subscription")}`}
       </Button>
 
       <Spacer />
@@ -269,6 +306,14 @@ export default () => {
       </Flex>
 
       <Fragment>
+        <ImportNodeFormDrawer
+          isOpen={isNodeFormDrawerOpen}
+          onClose={onNodeFormDrawerClose}
+          onSubmit={async (form) => {
+            await importNodesMutation.mutateAsync(form.getValues());
+          }}
+        />
+
         <CreateConfigFormDrawer
           isOpen={isConfigFormDrawerOpen}
           onClose={onConfigFormDrawerClose}

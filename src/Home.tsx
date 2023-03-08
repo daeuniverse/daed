@@ -31,28 +31,27 @@ import { gqlClient } from "~/api";
 import { graphql } from "~/gql";
 
 import WithConfirmRemoveButton from "./components/WithConfirmRemoveButton";
-import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP } from "./constants";
-import { ConfigsQuery } from "./gql/graphql";
+import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE } from "./constants";
 import { colsPerRowAtom } from "./store";
 
-const DraggableCard = ({
-  config,
+const DraggableCard = <T extends { id: UniqueIdentifier } & Record<string, unknown>>({
+  data,
   onSelect,
   onRemove,
 }: {
-  config: ConfigsQuery["configs"][number];
-  onSelect: () => void;
+  data: T;
+  onSelect?: () => void;
   onRemove: () => void;
 }) => {
   const { t } = useTranslation();
   const { listeners, attributes, setNodeRef, isDragging, transform, transition } = useSortable({
-    id: config.id,
+    id: data.id,
   });
 
   return (
     <Card
       ref={setNodeRef}
-      bg={config.selected ? "Highlight" : ""}
+      bg={data.selected ? "Highlight" : ""}
       size="sm"
       style={{
         zIndex: isDragging ? Number.MAX_SAFE_INTEGER : 0,
@@ -63,15 +62,15 @@ const DraggableCard = ({
       <CardHeader as={Flex} gap={2} alignItems="center">
         <IconButton aria-label={t("select")} icon={<IoMoveSharp />} {...listeners} {...attributes} />
 
-        <Tooltip hasArrow label={config.id} placement="top">
-          <Button size="sm" flex={1} noOfLines={1} onClick={onSelect}>
-            {config.id}
+        <Tooltip hasArrow label={data.id} placement="top">
+          <Button size="sm" flex={1} noOfLines={1} onClick={() => onSelect && onSelect()}>
+            {data.id}
           </Button>
         </Tooltip>
 
         <WithConfirmRemoveButton aria-label={t("remove")} onRemove={onRemove} />
       </CardHeader>
-      <CardBody>{JSON.stringify(config)}</CardBody>
+      <CardBody>{JSON.stringify(data)}</CardBody>
     </Card>
   );
 };
@@ -105,6 +104,61 @@ export default () => {
       `)
     )
   );
+
+  const [sortableConfigKeys, setSortableConfigKeys] = useState<UniqueIdentifier[]>([]);
+
+  useEffect(() => {
+    if (configQuery.data) {
+      if (sortableConfigKeys.length === 0) {
+        setSortableConfigKeys(configQuery.data.configs.map(({ id }) => id));
+      }
+    }
+  }, [configQuery.data]);
+
+  const sortedConfigItems = useMemo(() => {
+    if (!configQuery.data) {
+      return [];
+    }
+
+    return sortableConfigKeys.map((id) => configQuery.data.configs.find((config) => id === config.id));
+  }, [sortableConfigKeys, configQuery.data]);
+
+  const nodeQuery = useQuery(QUERY_KEY_NODE, async () =>
+    gqlClient.request(
+      graphql(`
+        query Nodes {
+          nodes {
+            edges {
+              id
+              link
+              name
+              address
+              protocol
+              tag
+            }
+          }
+        }
+      `)
+    )
+  );
+
+  const [sortableNodeKeys, setSortableNodeKeys] = useState<UniqueIdentifier[]>([]);
+
+  useEffect(() => {
+    if (nodeQuery.data) {
+      if (sortableConfigKeys.length === 0) {
+        setSortableNodeKeys(nodeQuery.data.nodes.edges.map(({ id }) => id));
+      }
+    }
+  }, [nodeQuery.data]);
+
+  const sortedNodeItems = useMemo(() => {
+    if (!nodeQuery.data) {
+      return [];
+    }
+
+    return sortableNodeKeys.map((id) => nodeQuery.data.nodes.edges.find((config) => id === config.id));
+  }, [sortableNodeKeys, nodeQuery.data]);
 
   const groupQuery = useQuery(QUERY_KEY_GROUP, async () =>
     gqlClient.request(
@@ -156,23 +210,21 @@ export default () => {
     },
   });
 
-  const [sortableConfigKeys, setSortableConfigKeys] = useState<UniqueIdentifier[]>([]);
-
-  useEffect(() => {
-    if (configQuery.data?.configs) {
-      if (sortableConfigKeys.length === 0) {
-        setSortableConfigKeys(configQuery.data.configs.map(({ id }) => id));
-      }
-    }
-  }, [configQuery.data?.configs]);
-
-  const sortedConfigItems = useMemo(() => {
-    if (!configQuery.data?.configs) {
-      return [];
-    }
-
-    return sortableConfigKeys.map((id) => configQuery.data.configs.find((config) => id === config.id));
-  }, [sortableConfigKeys, configQuery.data?.configs]);
+  const removeNodeMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation removeNodes($ids: [ID!]!) {
+            removeNodes(ids: $ids)
+          }
+        `),
+        { ids: [id] }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
+    },
+  });
 
   return (
     <Flex flex={1} h="100dvh" overflowY="hidden" direction="column" gap={4} px={4} py={6}>
@@ -187,7 +239,54 @@ export default () => {
           borderColor: "Highlight",
         }}
       >
-        <Accordion defaultIndex={[0, 1]} allowMultiple>
+        <Accordion defaultIndex={[0]} allowMultiple>
+          <AccordionItem border="none">
+            <AccordionButton p={4}>
+              <Flex w="full" alignItems="center" justifyContent="space-between">
+                <Heading size="md">{t("node")}</Heading>
+
+                <AccordionIcon />
+              </Flex>
+            </AccordionButton>
+
+            <AccordionPanel>
+              <Flex direction="column" gap={4}>
+                {nodeQuery.isLoading ? (
+                  <Center>
+                    <Spinner />
+                  </Center>
+                ) : (
+                  <Grid gridTemplateColumns={`repeat(${colsPerRow}, 1fr)`} gap={2}>
+                    <DndContext
+                      modifiers={[restrictToParentElement]}
+                      collisionDetection={closestCenter}
+                      onDragEnd={({ over, active }) =>
+                        over &&
+                        active.id !== over.id &&
+                        setSortableNodeKeys((keys) => arrayMove(keys, keys.indexOf(active.id), keys.indexOf(over.id)))
+                      }
+                    >
+                      <SortableContext items={sortableNodeKeys} strategy={rectSortingStrategy}>
+                        {sortedNodeItems.map(
+                          (data) =>
+                            data && (
+                              <DraggableCard
+                                key={data.id}
+                                data={data}
+                                onRemove={() => {
+                                  removeNodeMutation.mutate(data.id);
+                                }}
+                              />
+                            )
+                        )}
+                      </SortableContext>
+                    </DndContext>
+                  </Grid>
+                )}
+              </Flex>
+            </AccordionPanel>
+          </AccordionItem>
+
           <AccordionItem border="none">
             <AccordionButton p={4}>
               <Flex w="full" alignItems="center" justifyContent="space-between">
@@ -215,13 +314,13 @@ export default () => {
                   >
                     <SortableContext items={sortableConfigKeys} strategy={rectSortingStrategy}>
                       {sortedConfigItems.map(
-                        (config) =>
-                          config && (
+                        (data) =>
+                          data && (
                             <DraggableCard
-                              key={config.id}
-                              config={config}
-                              onSelect={() => selectConfigMutation.mutate(config.id)}
-                              onRemove={() => removeConfigMutation.mutate(config.id)}
+                              key={data.id}
+                              data={data}
+                              onSelect={() => selectConfigMutation.mutate(data.id)}
+                              onRemove={() => removeConfigMutation.mutate(data.id)}
                             />
                           )
                       )}

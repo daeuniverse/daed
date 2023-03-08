@@ -67,11 +67,7 @@ export default ({
           <FormLabel>
             <Flex alignItems="center" gap={2}>
               <Box>{t("policyParams")}</Box>
-              <IconButton
-                aria-label={t("policyParams")}
-                icon={<CiSquarePlus />}
-                onClick={() => incPolicyParamsCount()}
-              />
+              <IconButton aria-label={t("create")} icon={<CiSquarePlus />} onClick={() => incPolicyParamsCount()} />
             </Flex>
           </FormLabel>
 
@@ -81,11 +77,7 @@ export default ({
                 <Input autoFocus placeholder={t("name")} {...register(`policyParams.${i}.key`)} />
                 <Input placeholder={t("value")} {...register(`policyParams.${i}.val`)} />
 
-                <IconButton
-                  aria-label={t("policyParams")}
-                  icon={<CiSquareRemove />}
-                  onClick={() => decPolicyParamsCount()}
-                />
+                <IconButton aria-label={t("remove")} icon={<CiSquareRemove />} onClick={() => decPolicyParamsCount()} />
               </Flex>
             ))}
           </VStack>

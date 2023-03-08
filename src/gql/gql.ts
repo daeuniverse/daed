@@ -15,17 +15,23 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
 const documents = {
   "\n        query Configs {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      ":
     types.ConfigsDocument,
+  "\n        query Nodes {\n          nodes {\n            edges {\n              id\n              link\n              name\n              address\n              protocol\n              tag\n            }\n          }\n        }\n      ":
+    types.NodesDocument,
   "\n        query Groups {\n          groups {\n            id\n            name\n            policy\n            policyParams {\n              key\n              val\n            }\n          }\n        }\n      ":
     types.GroupsDocument,
   "\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        ":
     types.SelectConfigDocument,
   "\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ":
     types.RemoveConfigDocument,
+  "\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ":
+    types.RemoveNodesDocument,
   "\n        query Interfaces {\n          general {\n            interfaces {\n              name\n            }\n          }\n        }\n      ":
     types.InterfacesDocument,
   "\n        query Running {\n          general {\n            dae {\n              running\n            }\n          }\n        }\n      ":
     types.RunningDocument,
   "\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ": types.RunDocument,
+  "\n          mutation importNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        ":
+    types.ImportNodesDocument,
   "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        ":
     types.CreateConfigDocument,
   "\n          mutation createGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            createGroup(name: $name, policy: $policy, policyParams: $policyParams) {\n              id\n            }\n          }\n        ":
@@ -56,6 +62,12 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: "\n        query Nodes {\n          nodes {\n            edges {\n              id\n              link\n              name\n              address\n              protocol\n              tag\n            }\n          }\n        }\n      "
+): (typeof documents)["\n        query Nodes {\n          nodes {\n            edges {\n              id\n              link\n              name\n              address\n              protocol\n              tag\n            }\n          }\n        }\n      "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: "\n        query Groups {\n          groups {\n            id\n            name\n            policy\n            policyParams {\n              key\n              val\n            }\n          }\n        }\n      "
 ): (typeof documents)["\n        query Groups {\n          groups {\n            id\n            name\n            policy\n            policyParams {\n              key\n              val\n            }\n          }\n        }\n      "];
 /**
@@ -74,6 +86,12 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: "\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        "
+): (typeof documents)["\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: "\n        query Interfaces {\n          general {\n            interfaces {\n              name\n            }\n          }\n        }\n      "
 ): (typeof documents)["\n        query Interfaces {\n          general {\n            interfaces {\n              name\n            }\n          }\n        }\n      "];
 /**
@@ -88,6 +106,12 @@ export function graphql(
 export function graphql(
   source: "\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        "
 ): (typeof documents)["\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n          mutation importNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        "
+): (typeof documents)["\n          mutation importNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
