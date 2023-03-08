@@ -440,6 +440,33 @@ export type ConfigsQuery = {
   }>;
 };
 
+export type SubscriptionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SubscriptionsQuery = {
+  __typename?: "Query";
+  subscriptions: Array<{
+    __typename?: "Subscription";
+    id: string;
+    tag?: string | null;
+    link: string;
+    status: string;
+    info: string;
+    nodes: {
+      __typename?: "NodesConnection";
+      edges: Array<{
+        __typename?: "Node";
+        id: string;
+        link: string;
+        name: string;
+        address: string;
+        protocol: string;
+        tag?: string | null;
+        subscriptionID?: string | null;
+      }>;
+    };
+  }>;
+};
+
 export type NodesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type NodesQuery = {
@@ -476,6 +503,12 @@ export type RemoveNodesMutationVariables = Exact<{
 }>;
 
 export type RemoveNodesMutation = { __typename?: "Mutation"; removeNodes: number };
+
+export type RemoveSubscriptionsMutationVariables = Exact<{
+  ids: Array<Scalars["ID"]> | Scalars["ID"];
+}>;
+
+export type RemoveSubscriptionsMutation = { __typename?: "Mutation"; removeSubscriptions: number };
 
 export type SelectConfigMutationVariables = Exact<{
   id: Scalars["ID"];
@@ -596,6 +629,60 @@ export const ConfigsDocument = {
     },
   ],
 } as unknown as DocumentNode<ConfigsQuery, ConfigsQueryVariables>;
+export const SubscriptionsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "Subscriptions" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "subscriptions" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "tag" } },
+                { kind: "Field", name: { kind: "Name", value: "link" } },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
+                { kind: "Field", name: { kind: "Name", value: "info" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "nodes" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "edges" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "link" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                            { kind: "Field", name: { kind: "Name", value: "address" } },
+                            { kind: "Field", name: { kind: "Name", value: "protocol" } },
+                            { kind: "Field", name: { kind: "Name", value: "tag" } },
+                            { kind: "Field", name: { kind: "Name", value: "subscriptionID" } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SubscriptionsQuery, SubscriptionsQueryVariables>;
 export const NodesDocument = {
   kind: "Document",
   definitions: [
@@ -712,6 +799,45 @@ export const RemoveNodesDocument = {
     },
   ],
 } as unknown as DocumentNode<RemoveNodesMutation, RemoveNodesMutationVariables>;
+export const RemoveSubscriptionsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "removeSubscriptions" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "ids" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "removeSubscriptions" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "ids" },
+                value: { kind: "Variable", name: { kind: "Name", value: "ids" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveSubscriptionsMutation, RemoveSubscriptionsMutationVariables>;
 export const SelectConfigDocument = {
   kind: "Document",
   definitions: [

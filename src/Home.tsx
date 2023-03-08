@@ -15,8 +15,8 @@ import { gqlClient } from "~/api";
 import { graphql } from "~/gql";
 
 import SortableGrid from "./components/SortableGrid";
-import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE } from "./constants";
-import { ConfigsQuery, GroupsQuery, NodesQuery } from "./gql/graphql";
+import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "./constants";
+import { ConfigsQuery, GroupsQuery, NodesQuery, SubscriptionsQuery } from "./gql/graphql";
 
 export default () => {
   const { t } = useTranslation();
@@ -40,6 +40,33 @@ export default () => {
               wanInterface
               allowInsecure
               dialMode
+            }
+          }
+        }
+      `)
+    )
+  );
+
+  const subscriptionQuery = useQuery(QUERY_KEY_SUBSCRIPTION, async () =>
+    gqlClient.request(
+      graphql(`
+        query Subscriptions {
+          subscriptions {
+            id
+            tag
+            link
+            status
+            info
+            nodes {
+              edges {
+                id
+                link
+                name
+                address
+                protocol
+                tag
+                subscriptionID
+              }
             }
           }
         }
@@ -97,6 +124,22 @@ export default () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
+    },
+  });
+
+  const removeSubscriptionMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation removeSubscriptions($ids: [ID!]!) {
+            removeSubscriptions(ids: $ids)
+          }
+        `),
+        { ids: [id] }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION });
     },
   });
 
@@ -177,6 +220,26 @@ export default () => {
                 unSortedItems={nodeQuery.data?.nodes.edges}
                 onRemove={(data) => {
                   removeNodeMutation.mutate(data.id);
+                }}
+              />
+            </AccordionPanel>
+          </AccordionItem>
+
+          <AccordionItem border="none">
+            <AccordionButton p={4}>
+              <Flex w="full" alignItems="center" justifyContent="space-between">
+                <Heading size="md">{t("subscription")}</Heading>
+
+                <AccordionIcon />
+              </Flex>
+            </AccordionButton>
+
+            <AccordionPanel>
+              <SortableGrid<SubscriptionsQuery["subscriptions"]>
+                isLoading={subscriptionQuery.isLoading}
+                unSortedItems={subscriptionQuery.data?.subscriptions}
+                onRemove={(data) => {
+                  removeSubscriptionMutation.mutate(data.id);
                 }}
               />
             </AccordionPanel>

@@ -15,12 +15,16 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
 const documents = {
   "\n        query Configs {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      ":
     types.ConfigsDocument,
+  "\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            status\n            info\n            nodes {\n              edges {\n                id\n                link\n                name\n                address\n                protocol\n                tag\n                subscriptionID\n              }\n            }\n          }\n        }\n      ":
+    types.SubscriptionsDocument,
   "\n        query Nodes {\n          nodes {\n            edges {\n              id\n              link\n              name\n              address\n              protocol\n              tag\n            }\n          }\n        }\n      ":
     types.NodesDocument,
   "\n        query Groups {\n          groups {\n            id\n            name\n            policy\n            policyParams {\n              key\n              val\n            }\n          }\n        }\n      ":
     types.GroupsDocument,
   "\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ":
     types.RemoveNodesDocument,
+  "\n          mutation removeSubscriptions($ids: [ID!]!) {\n            removeSubscriptions(ids: $ids)\n          }\n        ":
+    types.RemoveSubscriptionsDocument,
   "\n          mutation selectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        ":
     types.SelectConfigDocument,
   "\n          mutation removeConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ":
@@ -66,6 +70,12 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: "\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            status\n            info\n            nodes {\n              edges {\n                id\n                link\n                name\n                address\n                protocol\n                tag\n                subscriptionID\n              }\n            }\n          }\n        }\n      "
+): (typeof documents)["\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            status\n            info\n            nodes {\n              edges {\n                id\n                link\n                name\n                address\n                protocol\n                tag\n                subscriptionID\n              }\n            }\n          }\n        }\n      "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: "\n        query Nodes {\n          nodes {\n            edges {\n              id\n              link\n              name\n              address\n              protocol\n              tag\n            }\n          }\n        }\n      "
 ): (typeof documents)["\n        query Nodes {\n          nodes {\n            edges {\n              id\n              link\n              name\n              address\n              protocol\n              tag\n            }\n          }\n        }\n      "];
 /**
@@ -80,6 +90,12 @@ export function graphql(
 export function graphql(
   source: "\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        "
 ): (typeof documents)["\n          mutation removeNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n          mutation removeSubscriptions($ids: [ID!]!) {\n            removeSubscriptions(ids: $ids)\n          }\n        "
+): (typeof documents)["\n          mutation removeSubscriptions($ids: [ID!]!) {\n            removeSubscriptions(ids: $ids)\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -29,6 +29,7 @@ import {
   QUERY_KEY_GROUP,
   QUERY_KEY_NODE,
   QUERY_KEY_RUNNING,
+  QUERY_KEY_SUBSCRIPTION,
 } from "~/constants";
 import { graphql } from "~/gql";
 import { ConfigsQuery } from "~/gql/graphql";
@@ -118,10 +119,7 @@ export default () => {
       );
     },
     onSuccess: () => {
-      toast({
-        status: "success",
-        isClosable: true,
-      });
+      toast({ status: "success" });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
       onNodeFormDrawerClose();
     },
@@ -144,12 +142,9 @@ export default () => {
       );
     },
     onSuccess: () => {
-      toast({
-        status: "success",
-        isClosable: true,
-      });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
-      onNodeFormDrawerClose();
+      toast({ status: "success" });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION });
+      onSubscriptionFormDrawerClose();
     },
   });
 
