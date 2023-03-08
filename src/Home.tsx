@@ -160,7 +160,9 @@ export default () => {
 
   useEffect(() => {
     if (configQuery.data?.configs) {
-      setSortableConfigKeys(configQuery.data.configs.map(({ id }) => id));
+      if (sortableConfigKeys.length === 0) {
+        setSortableConfigKeys(configQuery.data.configs.map(({ id }) => id));
+      }
     }
   }, [configQuery.data?.configs]);
 
