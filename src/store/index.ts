@@ -3,13 +3,16 @@ import { persistentAtom, persistentMap } from "@nanostores/persistent";
 
 import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL } from "~/constants";
 
-export type APP_STATE = {
-  colsPerRow: number;
+export type PersistentSortableKeys = {
   nodeSortableKeys: UniqueIdentifier[];
   subscriptionSortableKeys: UniqueIdentifier[];
   configSortableKeys: UniqueIdentifier[];
   groupSortableKeys: UniqueIdentifier[];
 };
+
+export type APP_STATE = {
+  colsPerRow: number;
+} & PersistentSortableKeys;
 
 export const endpointURLAtom = persistentAtom<string>(DEFAULT_ENDPOINT_URL);
 export const appStateAtom = persistentMap<APP_STATE>(

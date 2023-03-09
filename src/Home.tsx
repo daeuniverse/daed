@@ -7,7 +7,6 @@ import {
   Flex,
   Heading,
 } from "@chakra-ui/react";
-import { useStore } from "@nanostores/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
@@ -15,14 +14,48 @@ import { gqlClient } from "~/api";
 import { graphql } from "~/gql";
 
 import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "./constants";
-import { ConfigsQuery, GroupsQuery, NodesQuery, SubscriptionsQuery } from "./gql/graphql";
-import SortableGrid from "./libraries/SortableGrid";
-import { appStateAtom } from "./store";
+import SortableGrid, { GridList, SortableGridProps } from "./libraries/SortableGrid";
+
+const Section = <T extends GridList>({
+  name,
+  isLoading,
+  unSortedItems,
+  onSelect,
+  onRemove,
+  persistentSortableKeysName,
+}: {
+  name: string;
+} & SortableGridProps<T>) => {
+  return (
+    <AccordionItem border="none">
+      <AccordionButton p={4}>
+        <Flex w="full" alignItems="center" justifyContent="space-between">
+          <Heading size="md">
+            {name} ({unSortedItems?.length || 0})
+          </Heading>
+
+          <AccordionIcon />
+        </Flex>
+      </AccordionButton>
+
+      <AccordionPanel>
+        <SortableGrid<T>
+          isLoading={isLoading}
+          unSortedItems={unSortedItems}
+          onSelect={onSelect}
+          onRemove={onRemove}
+          persistentSortableKeysName={persistentSortableKeysName}
+        >
+          {(data) => JSON.stringify(data)}
+        </SortableGrid>
+      </AccordionPanel>
+    </AccordionItem>
+  );
+};
 
 export default () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const appState = useStore(appStateAtom);
 
   const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
@@ -191,112 +224,56 @@ export default () => {
 
   return (
     <Accordion allowToggle>
-      <AccordionItem border="none">
-        <AccordionButton p={4}>
-          <Flex w="full" alignItems="center" justifyContent="space-between">
-            <Heading size="md">
-              {t("node")} ({nodeQuery.data?.nodes.edges.length || 0})
-            </Heading>
+      <Section
+        name={t("node")}
+        isLoading={nodeQuery.isLoading}
+        unSortedItems={nodeQuery.data?.nodes.edges}
+        persistentSortableKeysName="nodeSortableKeys"
+        onRemove={(data) => {
+          removeNodeMutation.mutate(data.id);
+        }}
+      >
+        {(data) => JSON.stringify(data)}
+      </Section>
 
-            <AccordionIcon />
-          </Flex>
-        </AccordionButton>
+      <Section
+        name={t("subscription")}
+        isLoading={subscriptionQuery.isLoading}
+        unSortedItems={subscriptionQuery.data?.subscriptions}
+        onRemove={(data) => {
+          removeSubscriptionMutation.mutate(data.id);
+        }}
+        persistentSortableKeysName="subscriptionSortableKeys"
+      >
+        {(data) => JSON.stringify(data)}
+      </Section>
 
-        <AccordionPanel>
-          <SortableGrid<NodesQuery["nodes"]["edges"]>
-            isLoading={nodeQuery.isLoading}
-            unSortedItems={nodeQuery.data?.nodes.edges}
-            defaultSortableKeys={appState.nodeSortableKeys}
-            onSort={(sortableKeys) => {
-              appStateAtom.setKey("nodeSortableKeys", sortableKeys);
-            }}
-            onRemove={(data) => {
-              removeNodeMutation.mutate(data.id);
-            }}
-          />
-        </AccordionPanel>
-      </AccordionItem>
+      <Section
+        name={t("config")}
+        isLoading={configQuery.isLoading}
+        unSortedItems={configQuery.data?.configs}
+        onSelect={(data) => {
+          selectConfigMutation.mutate(data.id);
+        }}
+        onRemove={(data) => {
+          removeConfigMutation.mutate(data.id);
+        }}
+        persistentSortableKeysName="configSortableKeys"
+      >
+        {(data) => JSON.stringify(data)}
+      </Section>
 
-      <AccordionItem border="none">
-        <AccordionButton p={4}>
-          <Flex w="full" alignItems="center" justifyContent="space-between">
-            <Heading size="md">
-              {t("subscription")} ({subscriptionQuery.data?.subscriptions.length || 0})
-            </Heading>
-
-            <AccordionIcon />
-          </Flex>
-        </AccordionButton>
-
-        <AccordionPanel>
-          <SortableGrid<SubscriptionsQuery["subscriptions"]>
-            isLoading={subscriptionQuery.isLoading}
-            unSortedItems={subscriptionQuery.data?.subscriptions}
-            defaultSortableKeys={appState.subscriptionSortableKeys}
-            onSort={(sortableKeys) => {
-              appStateAtom.setKey("subscriptionSortableKeys", sortableKeys);
-            }}
-            onRemove={(data) => {
-              removeSubscriptionMutation.mutate(data.id);
-            }}
-          />
-        </AccordionPanel>
-      </AccordionItem>
-
-      <AccordionItem border="none">
-        <AccordionButton p={4}>
-          <Flex w="full" alignItems="center" justifyContent="space-between">
-            <Heading size="md">
-              {t("config")} ({configQuery.data?.configs.length || 0})
-            </Heading>
-
-            <AccordionIcon />
-          </Flex>
-        </AccordionButton>
-
-        <AccordionPanel>
-          <SortableGrid<ConfigsQuery["configs"]>
-            isLoading={configQuery.isLoading}
-            unSortedItems={configQuery.data?.configs}
-            defaultSortableKeys={appState.configSortableKeys}
-            onSort={(sortableKeys) => {
-              appStateAtom.setKey("configSortableKeys", sortableKeys);
-            }}
-            onSelect={(data) => {
-              selectConfigMutation.mutate(data.id);
-            }}
-            onRemove={(data) => {
-              removeConfigMutation.mutate(data.id);
-            }}
-          />
-        </AccordionPanel>
-      </AccordionItem>
-
-      <AccordionItem border="none">
-        <AccordionButton p={4}>
-          <Flex w="full" alignItems="center" justifyContent="space-between">
-            <Heading size="md">
-              {t("group")} ({groupQuery.data?.groups.length || 0})
-            </Heading>
-
-            <AccordionIcon />
-          </Flex>
-        </AccordionButton>
-
-        <AccordionPanel>
-          <SortableGrid<GroupsQuery["groups"]>
-            isLoading={groupQuery.isLoading}
-            unSortedItems={groupQuery.data?.groups}
-            defaultSortableKeys={appState.groupSortableKeys}
-            onSort={(sortableKeys) => {
-              appStateAtom.setKey("groupSortableKeys", sortableKeys);
-            }}
-            onRemove={(data) => {
-              removeGroupMutation.mutate(data.id);
-            }}
-          />
-        </AccordionPanel>
-      </AccordionItem>
+      <Section
+        name={t("group")}
+        isLoading={groupQuery.isLoading}
+        unSortedItems={groupQuery.data?.groups}
+        onRemove={(data) => {
+          removeGroupMutation.mutate(data.id);
+        }}
+        persistentSortableKeysName="groupSortableKeys"
+      >
+        {(data) => JSON.stringify(data)}
+      </Section>
     </Accordion>
   );
 };

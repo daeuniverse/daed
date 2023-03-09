@@ -9,19 +9,23 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import WithConfirmRemoveButton from "~/libraries/WithConfirmRemoveButton";
-import { appStateAtom } from "~/store";
+import { appStateAtom, PersistentSortableKeys } from "~/store";
 
-type List = Array<{ id: UniqueIdentifier } & Record<string, unknown>>;
+export type GridList = Array<{ id: UniqueIdentifier } & Record<string, unknown>>;
 
-const DraggableCard = <T extends List[number]>({
-  data,
-  onSelect,
-  onRemove,
-}: {
+export type DraggableGridCardProps<T extends GridList[number]> = {
   data: T;
   onSelect?: (data: T) => void;
   onRemove: (data: T) => void;
-}) => {
+  children: (data: T) => React.ReactNode;
+};
+
+const DraggableGridCard = <T extends GridList[number]>({
+  data,
+  onSelect,
+  onRemove,
+  children,
+}: DraggableGridCardProps<T>) => {
   const { t } = useTranslation();
   const { listeners, attributes, setNodeRef, isDragging, transform, transition } = useSortable({
     id: data.id,
@@ -39,15 +43,16 @@ const DraggableCard = <T extends List[number]>({
       }}
     >
       <CardHeader as={Flex} gap={2} alignItems="center">
-        <WithConfirmRemoveButton aria-label={t("remove")} onRemove={() => onRemove(data)} />
+        <WithConfirmRemoveButton size="sm" aria-label={t("remove")} onRemove={() => onRemove(data)} />
 
         <Tooltip hasArrow label={data.id} placement="top">
-          <Button size="sm" flex={1} noOfLines={1} onClick={() => onSelect && onSelect(data)}>
+          <Button flex={1} noOfLines={1} onClick={() => onSelect && onSelect(data)}>
             {data.id}
           </Button>
         </Tooltip>
 
         <IconButton
+          size="sm"
           cursor={isDragging ? "grabbing" : "grab"}
           aria-label={t("select")}
           icon={<DragHandleIcon />}
@@ -55,28 +60,27 @@ const DraggableCard = <T extends List[number]>({
           {...attributes}
         />
       </CardHeader>
-      <CardBody>{JSON.stringify(data)}</CardBody>
+      <CardBody>{children(data)}</CardBody>
     </Card>
   );
 };
 
-export default <T extends List>({
-  isLoading,
-  unSortedItems,
-  defaultSortableKeys,
-  onSelect,
-  onRemove,
-  onSort,
-}: {
+export type SortableGridProps<T extends GridList> = {
   isLoading: boolean;
   unSortedItems?: T;
-  defaultSortableKeys: UniqueIdentifier[];
-  onSort?: (sortableKeys: UniqueIdentifier[]) => void;
-  onSelect?: (data: T[number]) => void;
-  onRemove: (data: T[number]) => void;
-}) => {
-  const { colsPerRow } = useStore(appStateAtom);
-  const [sortableKeys, setSortableKeys] = useState<UniqueIdentifier[]>(defaultSortableKeys);
+  persistentSortableKeysName: keyof PersistentSortableKeys;
+} & Omit<DraggableGridCardProps<T[number]>, "data">;
+
+export default <T extends GridList>({
+  isLoading,
+  unSortedItems,
+  onSelect,
+  onRemove,
+  persistentSortableKeysName,
+  children,
+}: SortableGridProps<T>) => {
+  const appState = useStore(appStateAtom);
+  const [sortableKeys, setSortableKeys] = useState<UniqueIdentifier[]>(appState[persistentSortableKeysName]);
 
   useEffect(() => {
     if (unSortedItems) {
@@ -95,7 +99,7 @@ export default <T extends List>({
   }, [unSortedItems]);
 
   useEffect(() => {
-    onSort && onSort(sortableKeys);
+    appStateAtom.setKey(persistentSortableKeysName, sortableKeys);
   }, [sortableKeys]);
 
   const sortedItems = useMemo(() => {
@@ -113,7 +117,7 @@ export default <T extends List>({
           <Spinner />
         </Center>
       ) : (
-        <Grid gridTemplateColumns={`repeat(${colsPerRow}, 1fr)`} gap={2}>
+        <Grid gridTemplateColumns={`repeat(${appState.colsPerRow}, 1fr)`} gap={2}>
           <DndContext
             modifiers={[restrictToParentElement]}
             collisionDetection={closestCenter}
@@ -125,7 +129,12 @@ export default <T extends List>({
           >
             <SortableContext items={sortableKeys} strategy={rectSortingStrategy}>
               {sortedItems.map(
-                (item) => item && <DraggableCard key={item.id} data={item} onSelect={onSelect} onRemove={onRemove} />
+                (item) =>
+                  item && (
+                    <DraggableGridCard key={item.id} data={item} onSelect={onSelect} onRemove={onRemove}>
+                      {children}
+                    </DraggableGridCard>
+                  )
               )}
             </SortableContext>
           </DndContext>
