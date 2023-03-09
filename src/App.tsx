@@ -1,8 +1,8 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { Center, Collapse, Flex, Icon, IconButton, Spinner, useDisclosure } from "@chakra-ui/react";
-import { DndContext } from "@dnd-kit/core";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import SimpleBar from "simplebar-react";
 
 import Sidebar from "~/components/Sidebar";
 
@@ -38,29 +38,42 @@ const App = () => {
   }
 
   return (
-    <Flex>
-      <DndContext>
-        <Flex minH="100dvh" py={6}>
-          <IconButton
-            aria-label={t("collapse")}
-            h="full"
-            icon={<Icon as={isSidebarOpen ? ArrowLeftIcon : ArrowRightIcon} />}
-            onClick={onSidebarToggle}
-          />
-          <Collapse
-            in={isSidebarOpen}
-            animateOpacity
-            transition={{
-              enter: { duration: 0.2 },
-              exit: { duration: 0.2 },
-            }}
-          >
-            <Sidebar />
-          </Collapse>
-        </Flex>
+    <Flex h="100dvh">
+      <Flex h="full" py={6}>
+        <IconButton
+          aria-label={t("collapse")}
+          h="full"
+          icon={<Icon as={isSidebarOpen ? ArrowLeftIcon : ArrowRightIcon} />}
+          onClick={onSidebarToggle}
+        />
 
-        <Home />
-      </DndContext>
+        <Collapse
+          in={isSidebarOpen}
+          animateOpacity
+          transition={{
+            enter: { duration: 0.2 },
+            exit: { duration: 0.2 },
+          }}
+        >
+          <Sidebar />
+        </Collapse>
+      </Flex>
+
+      <Flex flex={1} h="full" overflowY="hidden" pr={2} py={6}>
+        <SimpleBar
+          style={{
+            width: "100%",
+            height: "100%",
+            paddingInline: 10,
+            paddingBlock: 20,
+            borderRadius: 12,
+            borderWidth: 4,
+            borderColor: "Highlight",
+          }}
+        >
+          <Home />
+        </SimpleBar>
+      </Flex>
     </Flex>
   );
 };

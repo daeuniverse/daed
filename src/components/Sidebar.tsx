@@ -244,17 +244,7 @@ export default () => {
   });
 
   return (
-    <Flex
-      ref={platform}
-      h="full"
-      alignItems="center"
-      justifyContent="center"
-      direction="column"
-      px={2}
-      pt={6}
-      pb={12}
-      gap={4}
-    >
+    <Flex ref={platform} h="full" alignItems="center" justifyContent="center" direction="column" px={10} pt={4} pb={12}>
       <motion.div
         drag
         style={{ x, y, zIndex: Number.MAX_SAFE_INTEGER, height: showSave ? 0 : "auto" }}
@@ -263,25 +253,27 @@ export default () => {
         <Image ref={dae} draggable={false} m={10} boxSize={24} rounded="md" src="/logo.svg" alt="logo" />
       </motion.div>
 
-      <Button w="full" leftIcon={<LinkIcon />} onClick={onNodeFormDrawerOpen}>
-        {`${t("import")} ${t("node")}`}
-      </Button>
+      <Flex w="full" direction="column" gap={6}>
+        <Button w="full" leftIcon={<LinkIcon />} onClick={onNodeFormDrawerOpen}>
+          {`${t("import")} ${t("node")}`}
+        </Button>
 
-      <Button w="full" leftIcon={<LinkIcon />} onClick={onSubscriptionFormDrawerOpen}>
-        {`${t("import")} ${t("subscription")}`}
-      </Button>
+        <Button w="full" leftIcon={<LinkIcon />} onClick={onSubscriptionFormDrawerOpen}>
+          {`${t("import")} ${t("subscription")}`}
+        </Button>
 
-      <Button w="full" leftIcon={<AddIcon />} onClick={onConfigFormDrawerOpen}>
-        {`${t("create")} ${t("config")}`}
-      </Button>
+        <Button w="full" leftIcon={<AddIcon />} onClick={onConfigFormDrawerOpen}>
+          {`${t("create")} ${t("config")}`}
+        </Button>
 
-      <Button w="full" leftIcon={<AddIcon />} onClick={onGroupFormDrawerOpen}>
-        {`${t("create")} ${t("group")}`}
-      </Button>
+        <Button w="full" leftIcon={<AddIcon />} onClick={onGroupFormDrawerOpen}>
+          {`${t("create")} ${t("group")}`}
+        </Button>
+      </Flex>
 
       <Spacer />
 
-      <Flex direction="column" gap={4}>
+      <Flex direction="column" gap={6}>
         <Slider
           min={1}
           max={5}
