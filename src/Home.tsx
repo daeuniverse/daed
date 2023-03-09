@@ -6,23 +6,27 @@ import {
   AccordionPanel,
   Flex,
   Heading,
+  List,
+  ListItem,
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
 import { gqlClient } from "~/api";
 import { graphql } from "~/gql";
+import { SortableList } from "~/typings";
 
 import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "./constants";
-import SortableGrid, { GridList, SortableGridProps } from "./libraries/SortableGrid";
+import SortableGrid, { SortableGridProps } from "./libraries/SortableGrid";
 
-const Section = <T extends GridList>({
+const Section = <T extends SortableList>({
   name,
   isLoading,
   unSortedItems,
   onSelect,
   onRemove,
   persistentSortableKeysName,
+  children,
 }: {
   name: string;
 } & SortableGridProps<T>) => {
@@ -46,7 +50,7 @@ const Section = <T extends GridList>({
           onRemove={onRemove}
           persistentSortableKeysName={persistentSortableKeysName}
         >
-          {(data) => JSON.stringify(data)}
+          {children}
         </SortableGrid>
       </AccordionPanel>
     </AccordionItem>
@@ -233,7 +237,15 @@ export default () => {
           removeNodeMutation.mutate(data.id);
         }}
       >
-        {(data) => JSON.stringify(data)}
+        {(data) => (
+          <List>
+            {Object.entries(data).map(([name, value], i) => (
+              <ListItem key={i}>
+                {name}: {JSON.stringify(value)}
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Section>
 
       <Section
@@ -245,7 +257,15 @@ export default () => {
         }}
         persistentSortableKeysName="subscriptionSortableKeys"
       >
-        {(data) => JSON.stringify(data)}
+        {(data) => (
+          <List>
+            {Object.entries(data).map(([name, value], i) => (
+              <ListItem key={i}>
+                {name}: {JSON.stringify(value)}
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Section>
 
       <Section
@@ -260,7 +280,15 @@ export default () => {
         }}
         persistentSortableKeysName="configSortableKeys"
       >
-        {(data) => JSON.stringify(data)}
+        {(data) => (
+          <List>
+            {Object.entries(data).map(([name, value], i) => (
+              <ListItem key={i}>
+                {name}: {JSON.stringify(value)}
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Section>
 
       <Section
@@ -272,7 +300,15 @@ export default () => {
         }}
         persistentSortableKeysName="groupSortableKeys"
       >
-        {(data) => JSON.stringify(data)}
+        {(data) => (
+          <List>
+            {Object.entries(data).map(([name, value], i) => (
+              <ListItem as={Flex} key={i}>
+                <Flex>{name}</Flex>: <Flex>{JSON.stringify(value)}</Flex>
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Section>
     </Accordion>
   );

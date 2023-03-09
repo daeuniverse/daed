@@ -10,17 +10,16 @@ import { useTranslation } from "react-i18next";
 
 import WithConfirmRemoveButton from "~/libraries/WithConfirmRemoveButton";
 import { appStateAtom, PersistentSortableKeys } from "~/store";
+import { SortableList } from "~/typings";
 
-export type GridList = Array<{ id: UniqueIdentifier } & Record<string, unknown>>;
-
-export type DraggableGridCardProps<T extends GridList[number]> = {
+export type DraggableGridCardProps<T extends SortableList[number]> = {
   data: T;
   onSelect?: (data: T) => void;
   onRemove: (data: T) => void;
-  children: (data: T) => React.ReactNode;
+  children: React.ReactNode;
 };
 
-const DraggableGridCard = <T extends GridList[number]>({
+const DraggableGridCard = <T extends SortableList[number]>({
   data,
   onSelect,
   onRemove,
@@ -60,18 +59,19 @@ const DraggableGridCard = <T extends GridList[number]>({
           {...attributes}
         />
       </CardHeader>
-      <CardBody>{children(data)}</CardBody>
+      <CardBody>{children}</CardBody>
     </Card>
   );
 };
 
-export type SortableGridProps<T extends GridList> = {
+export type SortableGridProps<T extends SortableList> = {
   isLoading: boolean;
   unSortedItems?: T;
   persistentSortableKeysName: keyof PersistentSortableKeys;
-} & Omit<DraggableGridCardProps<T[number]>, "data">;
+  children: (data: T[number]) => React.ReactNode;
+} & Omit<DraggableGridCardProps<T[number]>, "data" | "children">;
 
-export default <T extends GridList>({
+export default <T extends SortableList>({
   isLoading,
   unSortedItems,
   onSelect,
@@ -129,10 +129,10 @@ export default <T extends GridList>({
           >
             <SortableContext items={sortableKeys} strategy={rectSortingStrategy}>
               {sortedItems.map(
-                (item) =>
-                  item && (
-                    <DraggableGridCard key={item.id} data={item} onSelect={onSelect} onRemove={onRemove}>
-                      {children}
+                (data) =>
+                  data && (
+                    <DraggableGridCard key={data.id} data={data} onSelect={onSelect} onRemove={onRemove}>
+                      {children(data)}
                     </DraggableGridCard>
                   )
               )}
