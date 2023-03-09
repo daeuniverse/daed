@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
-import { Center, Collapse, Flex, IconButton, Spinner, useDisclosure } from "@chakra-ui/react";
+import { Center, Collapse, Flex, Icon, IconButton, Spinner, useDisclosure } from "@chakra-ui/react";
 import { DndContext } from "@dnd-kit/core";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -44,7 +44,7 @@ const App = () => {
           <IconButton
             aria-label={t("collapse")}
             h="full"
-            icon={isSidebarOpen ? <ArrowLeftIcon /> : <ArrowRightIcon />}
+            icon={<Icon as={isSidebarOpen ? ArrowLeftIcon : ArrowRightIcon} />}
             onClick={onSidebarToggle}
           />
           <Collapse

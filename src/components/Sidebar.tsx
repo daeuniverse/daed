@@ -3,6 +3,7 @@ import {
   Button,
   Center,
   Flex,
+  Icon,
   IconButton,
   Image,
   Slider,
@@ -37,12 +38,12 @@ import { ConfigsQuery } from "~/gql/graphql";
 import i18n from "~/i18n";
 import { appStateAtom } from "~/store";
 
+import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
+import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
+import ImportNodeFormDrawer, { FormValues as ImportNodeFormDrawerFormValues } from "./ImportNodeFormDrawer";
 import ImportSubscriptionFormDrawer, {
   FormValues as ImportSubscriptionFormDrawerFormValues,
 } from "./ImportSubscriptionFormDrawer";
-import ImportNodeFormDrawer, { FormValues as ImportNodeFormDrawerFormValues } from "./ImportNodeFormDrawer";
-import CreateGroupFormDrawer, { FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
-import CreateConfigFormDrawer, { FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
 
 export default () => {
   const { t } = useTranslation();
@@ -297,7 +298,7 @@ export default () => {
         <Flex gap={4}>
           <IconButton
             aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
-            icon={isRunningQuery.data?.general.dae.running ? <CiStreamOn /> : <CiStreamOff />}
+            icon={<Icon as={isRunningQuery.data?.general.dae.running ? CiStreamOn : CiStreamOff} />}
             onClick={() => {
               if (isRunningQuery.data?.general.dae.running) {
                 return;
@@ -316,11 +317,11 @@ export default () => {
             }}
           />
 
-          <IconButton aria-label={t("switchLanguage")} icon={<HiLanguage />} onClick={switchLanguage} />
+          <IconButton aria-label={t("switchLanguage")} icon={<Icon as={HiLanguage} />} onClick={switchLanguage} />
 
           <IconButton
             aria-label={t("dark mode")}
-            icon={colorMode === "dark" ? <MoonIcon /> : <SunIcon />}
+            icon={<Icon as={colorMode === "dark" ? MoonIcon : SunIcon} />}
             onClick={toggleColorMode}
           />
         </Flex>
