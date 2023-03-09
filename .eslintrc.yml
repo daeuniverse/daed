@@ -6,23 +6,30 @@ parserOptions:
   sourceType: module
 env:
   node: true
-
 plugins:
   - "@typescript-eslint"
   - react
   - import
-
 extends:
   - eslint:recommended
   - plugin:@typescript-eslint/eslint-recommended
   - plugin:@typescript-eslint/recommended
   - plugin:prettier/recommended
   - plugin:import/recommended
-
 settings:
   import/resolver:
     typescript: true
     node: true
-
 rules:
-  import/order: [1, { newlines-between: always }]
+  import/newline-after-import: error
+  import/order:
+    - error
+    - newlines-between: always
+      groups:
+        - builtin
+        - type
+        - external
+        - internal
+        - sibling
+        - index
+        - parent

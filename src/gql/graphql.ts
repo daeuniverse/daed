@@ -416,6 +416,10 @@ export type GlobalInput = {
   wanInterface?: InputMaybe<Array<Scalars["String"]>>;
 };
 
+export type HealthCheckQueryVariables = Exact<{ [key: string]: never }>;
+
+export type HealthCheckQuery = { __typename?: "Query"; healthCheck: number };
+
 export type ConfigsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigsQuery = {
@@ -580,6 +584,20 @@ export type CreateGroupMutationVariables = Exact<{
 
 export type CreateGroupMutation = { __typename?: "Mutation"; createGroup: { __typename?: "Group"; id: string } };
 
+export const HealthCheckDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "HealthCheck" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [{ kind: "Field", name: { kind: "Name", value: "healthCheck" } }],
+      },
+    },
+  ],
+} as unknown as DocumentNode<HealthCheckQuery, HealthCheckQueryVariables>;
 export const ConfigsDocument = {
   kind: "Document",
   definitions: [
