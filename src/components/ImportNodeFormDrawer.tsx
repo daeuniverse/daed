@@ -30,8 +30,13 @@ export default ({
       <GrowableInputList>
         {(i) => (
           <Fragment>
-            <Input placeholder={t("tag")} {...register(`nodes.${i}.tag`)} />
-            <Input placeholder={t("link")} {...register(`nodes.${i}.link`)} />
+            <Input
+              placeholder={t("tag")}
+              {...register(`nodes.${i}.tag`, {
+                setValueAs: (v) => v || null,
+              })}
+            />
+            <Input isRequired placeholder={t("link")} {...register(`nodes.${i}.link`)} />
           </Fragment>
         )}
       </GrowableInputList>

@@ -35,7 +35,13 @@ export default ({
         <FormControl>
           <VStack divider={<StackDivider borderColor="Highlight" />}>
             <Flex gap={2}>
-              <Input autoFocus placeholder={t("tag")} {...register(`subscription.tag`)} />
+              <Input
+                autoFocus
+                placeholder={t("tag")}
+                {...register(`subscription.tag`, {
+                  setValueAs: (v) => v || null,
+                })}
+              />
               <Input placeholder={t("link")} {...register(`subscription.link`)} />
             </Flex>
           </VStack>

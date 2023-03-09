@@ -54,8 +54,13 @@ export default ({
           <GrowableInputList>
             {(i) => (
               <Fragment>
-                <Input placeholder={t("name")} {...register(`policyParams.${i}.key`)} />
-                <Input placeholder={t("value")} {...register(`policyParams.${i}.val`)} />
+                <Input
+                  placeholder={t("name")}
+                  {...register(`policyParams.${i}.key`, {
+                    setValueAs: (v) => v || null,
+                  })}
+                />
+                <Input isRequired placeholder={t("value")} {...register(`policyParams.${i}.val`)} />
               </Fragment>
             )}
           </GrowableInputList>
