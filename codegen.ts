@@ -1,14 +1,15 @@
-/** @type {import('@graphql-codegen/cli').CodegenConfig} */
-const config = {
+import { CodegenConfig } from "@graphql-codegen/cli";
+
+const config: CodegenConfig = {
   overwrite: true,
   schema: process.env.SCHEMA_PATH || "schema.graphql",
   documents: "src/**/*.tsx",
-  prettier: true,
   generates: {
     "src/gql/": {
       preset: "client",
     },
   },
+  hooks: { afterOneFileWrite: ["prettier -w"] },
 };
 
-module.exports = config;
+export default config;
