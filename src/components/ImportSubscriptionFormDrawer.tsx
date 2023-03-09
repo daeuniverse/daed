@@ -25,7 +25,13 @@ export default ({
   const { register } = form;
 
   return (
-    <CreateFormDrawer<FormValues> header={t("node")} isOpen={isOpen} onClose={onClose} form={form} onSubmit={onSubmit}>
+    <CreateFormDrawer<FormValues>
+      header={t("subscription")}
+      isOpen={isOpen}
+      onClose={onClose}
+      form={form}
+      onSubmit={onSubmit}
+    >
       <Flex direction="column" gap={4}>
         <FormControl>
           <VStack divider={<StackDivider borderColor="Highlight" />}>
