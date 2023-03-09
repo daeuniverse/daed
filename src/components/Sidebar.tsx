@@ -194,6 +194,8 @@ export default () => {
 
   const createGroupMutation = useMutation({
     mutationFn: (values: CreateGroupFormDrawerFormValues) => {
+      const { policyParams, ...data } = values;
+
       return gqlClient.request(
         graphql(`
           mutation createGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {
@@ -202,7 +204,7 @@ export default () => {
             }
           }
         `),
-        values
+        { policyParams: policyParams.filter((param) => !!param.val), ...data }
       );
     },
     onSuccess: (data) => {

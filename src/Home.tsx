@@ -191,7 +191,7 @@ export default () => {
   });
 
   return (
-    <Flex flex={1} h="100dvh" overflowY="hidden" direction="column" gap={4} px={4} py={6}>
+    <Flex flex={1} h="100dvh" overflowY="hidden" gap={4} pr={2} py={6}>
       <SimpleBar
         style={{
           width: "100%",

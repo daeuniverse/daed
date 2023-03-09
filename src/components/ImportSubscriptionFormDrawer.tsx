@@ -42,7 +42,7 @@ export default ({
                   setValueAs: (v) => v || null,
                 })}
               />
-              <Input placeholder={t("link")} {...register(`subscription.link`)} />
+              <Input isRequired placeholder={t("link")} {...register(`subscription.link`)} />
             </Flex>
           </VStack>
         </FormControl>

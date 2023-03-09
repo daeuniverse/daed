@@ -33,7 +33,7 @@ export default ({
         <FormControl>
           <FormLabel>{t("name")}</FormLabel>
 
-          <Input {...register("name")} />
+          <Input isRequired {...register("name")} />
         </FormControl>
 
         <FormControl>
@@ -60,7 +60,12 @@ export default ({
                     setValueAs: (v) => v || null,
                   })}
                 />
-                <Input isRequired placeholder={t("value")} {...register(`policyParams.${i}.val`)} />
+                <Input
+                  placeholder={t("value")}
+                  {...register(`policyParams.${i}.val`, {
+                    setValueAs: (v) => v || null,
+                  })}
+                />
               </Fragment>
             )}
           </GrowableInputList>
