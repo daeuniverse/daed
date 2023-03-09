@@ -297,8 +297,14 @@ export default () => {
 
         <Flex gap={4}>
           <IconButton
+            isLoading={runMutation.isLoading}
             aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
-            icon={<Icon as={isRunningQuery.data?.general.dae.running ? CiStreamOn : CiStreamOff} />}
+            icon={
+              <Icon
+                as={isRunningQuery.data?.general.dae.running ? CiStreamOn : CiStreamOff}
+                color={isRunningQuery.data?.general.dae.running ? "Highlight" : ""}
+              />
+            }
             onClick={() => {
               if (!queryClient.getQueryData<ConfigsQuery>(QUERY_KEY_CONFIG)?.configs.some(({ selected }) => selected)) {
                 toast({
