@@ -1,4 +1,11 @@
+import { extendTheme, ThemeConfig } from "@chakra-ui/react";
 import { TFunction } from "i18next";
+
+export const theme = extendTheme({
+  initialColorMode: "system",
+  useSystemColorMode: true,
+  fonts: { heading: `'Open Sans', sans-serif`, body: `'Raleway', sans-serif` },
+} as ThemeConfig);
 
 export const COLS_PER_ROW = 3;
 export const QUERY_KEY_INTERFACES = ["interfaces"];

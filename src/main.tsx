@@ -1,14 +1,16 @@
-import { ChakraProvider, ColorModeScript, extendTheme, type ThemeConfig } from "@chakra-ui/react";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GraphiQL } from "graphiql";
+import { Fragment } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { queryClient } from "~/api";
 import App from "~/App";
-import { DEFAULT_ENDPOINT_URL } from "~/constants";
+import { ToastContainer } from "~/components/GlobalToast";
+import { DEFAULT_ENDPOINT_URL, theme } from "~/constants";
 import "~/index.css";
 import { endpointURLAtom } from "~/store";
 
@@ -20,42 +22,39 @@ const getEndpointURL = () => {
 
 endpointURLAtom.set(getEndpointURL());
 
-const theme = extendTheme({
-  initialColorMode: "system",
-  useSystemColorMode: true,
-  fonts: { heading: `'Open Sans', sans-serif`, body: `'Raleway', sans-serif` },
-} as ThemeConfig);
-
 const debug = searchParams.get("d") || import.meta.env.DEV;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <BrowserRouter>
-    <Routes>
-      <Route
-        index
-        path="/"
-        element={
-          <QueryClientProvider client={queryClient}>
-            <ChakraProvider theme={theme}>
-              <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-              <App />
-            </ChakraProvider>
-            {debug && <ReactQueryDevtools position="bottom-right" />}
-          </QueryClientProvider>
-        }
-      />
-      {debug && (
+  <Fragment>
+    <BrowserRouter>
+      <Routes>
         <Route
-          path="/graphql"
+          index
+          path="/"
           element={
-            <GraphiQL
-              fetcher={createGraphiQLFetcher({
-                url: endpointURLAtom.get(),
-              })}
-            />
+            <QueryClientProvider client={queryClient}>
+              <ChakraProvider theme={theme}>
+                <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+                <App />
+              </ChakraProvider>
+              {debug && <ReactQueryDevtools position="bottom-right" />}
+            </QueryClientProvider>
           }
         />
-      )}
-    </Routes>
-  </BrowserRouter>
+        {debug && (
+          <Route
+            path="/graphql"
+            element={
+              <GraphiQL
+                fetcher={createGraphiQLFetcher({
+                  url: endpointURLAtom.get(),
+                })}
+              />
+            }
+          />
+        )}
+      </Routes>
+    </BrowserRouter>
+    <ToastContainer />
+  </Fragment>
 );

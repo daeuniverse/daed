@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^2.5.1",
+    "@chakra-ui/toast": "^6.0.1",
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
