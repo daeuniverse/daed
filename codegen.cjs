@@ -1,4 +1,5 @@
-module.exports = {
+/** @type {import('@graphql-codegen/cli').CodegenConfig} */
+const config = {
   overwrite: true,
   schema: process.env.SCHEMA_PATH || "schema.graphql",
   documents: "src/**/*.tsx",
@@ -9,3 +10,5 @@ module.exports = {
     },
   },
 };
+
+module.exports = config;

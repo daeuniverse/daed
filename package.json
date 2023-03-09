@@ -13,6 +13,7 @@
     "codegen": "graphql-codegen -c codegen.cjs"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.5.1",
     "@chakra-ui/toast": "^6.0.1",
     "@dnd-kit/core": "^6.0.8",

@@ -1,3 +1,4 @@
+import { AddIcon, LinkIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import {
   Button,
   Center,
@@ -18,7 +19,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, useMotionValue, useMotionValueEvent, useSpring } from "framer-motion";
 import { Fragment, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CiDark, CiImport, CiLight, CiSquarePlus, CiStreamOff, CiStreamOn } from "react-icons/ci";
+import { CiStreamOff, CiStreamOn } from "react-icons/ci";
 import { HiLanguage } from "react-icons/hi2";
 
 import { gqlClient } from "~/api";
@@ -259,19 +260,19 @@ export default () => {
         <Image ref={dae} draggable={false} m={10} boxSize={24} rounded="md" src="/logo.svg" alt="logo" />
       </motion.div>
 
-      <Button w="full" leftIcon={<CiImport />} onClick={onNodeFormDrawerOpen}>
+      <Button w="full" leftIcon={<LinkIcon />} onClick={onNodeFormDrawerOpen}>
         {`${t("import")} ${t("node")}`}
       </Button>
 
-      <Button w="full" leftIcon={<CiImport />} onClick={onSubscriptionFormDrawerOpen}>
+      <Button w="full" leftIcon={<LinkIcon />} onClick={onSubscriptionFormDrawerOpen}>
         {`${t("import")} ${t("subscription")}`}
       </Button>
 
-      <Button w="full" leftIcon={<CiSquarePlus />} onClick={onConfigFormDrawerOpen}>
+      <Button w="full" leftIcon={<AddIcon />} onClick={onConfigFormDrawerOpen}>
         {`${t("create")} ${t("config")}`}
       </Button>
 
-      <Button w="full" leftIcon={<CiSquarePlus />} onClick={onGroupFormDrawerOpen}>
+      <Button w="full" leftIcon={<AddIcon />} onClick={onGroupFormDrawerOpen}>
         {`${t("create")} ${t("group")}`}
       </Button>
 
@@ -323,7 +324,7 @@ export default () => {
 
           <IconButton
             aria-label={t("dark mode")}
-            icon={colorMode === "dark" ? <CiDark /> : <CiLight />}
+            icon={colorMode === "dark" ? <MoonIcon /> : <SunIcon />}
             onClick={toggleColorMode}
           />
         </Flex>

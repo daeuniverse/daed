@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  "@chakra-ui/icons": ^2.0.17
   "@chakra-ui/react": ^2.5.1
   "@chakra-ui/toast": ^6.0.1
   "@commitlint/cli": ^17.4.4
@@ -57,6 +58,7 @@ specifiers:
   vite: ^4.1.0
 
 dependencies:
+  "@chakra-ui/icons": 2.0.17_react@18.2.0
   "@chakra-ui/react": 2.5.1_llidv3byuxn3l2nsibklt32qgu
   "@chakra-ui/toast": 6.0.1_ebzb4eubdt7ncg7mnmpz4e7qou
   "@dnd-kit/core": 6.0.8_biqbaboplfbrettd7655fr4n2y
@@ -1375,11 +1377,7 @@ packages:
 
   /@chakra-ui/icon/3.0.16_n3dxrjldmk5gnycgnw7noyo5tu:
     resolution:
-      {
-        integrity: sha512-RpA1X5Ptz8Mt39HSyEIW1wxAz2AXyf9H0JJ5HVx/dBdMZaGMDJ0HyyPBVci0m4RCoJuyG1HHG/DXJaVfUTVAeg==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npm.taobao.org/@chakra-ui/icon/-/icon-3.0.16.tgz,
-      }
+      { integrity: sha512-RpA1X5Ptz8Mt39HSyEIW1wxAz2AXyf9H0JJ5HVx/dBdMZaGMDJ0HyyPBVci0m4RCoJuyG1HHG/DXJaVfUTVAeg== }
     peerDependencies:
       "@chakra-ui/system": ">=2.0.0"
       react: ">=18"
@@ -1391,16 +1389,23 @@ packages:
 
   /@chakra-ui/icon/3.0.16_react@18.2.0:
     resolution:
-      {
-        integrity: sha512-RpA1X5Ptz8Mt39HSyEIW1wxAz2AXyf9H0JJ5HVx/dBdMZaGMDJ0HyyPBVci0m4RCoJuyG1HHG/DXJaVfUTVAeg==,
-        registry: https://registry.npm.taobao.org/,
-        tarball: https://registry.npm.taobao.org/@chakra-ui/icon/-/icon-3.0.16.tgz,
-      }
+      { integrity: sha512-RpA1X5Ptz8Mt39HSyEIW1wxAz2AXyf9H0JJ5HVx/dBdMZaGMDJ0HyyPBVci0m4RCoJuyG1HHG/DXJaVfUTVAeg== }
     peerDependencies:
       "@chakra-ui/system": ">=2.0.0"
       react: ">=18"
     dependencies:
       "@chakra-ui/shared-utils": 2.0.5
+      react: 18.2.0
+    dev: false
+
+  /@chakra-ui/icons/2.0.17_react@18.2.0:
+    resolution:
+      { integrity: sha512-HMJP0WrJgAmFR9+Xh/CBH0nVnGMsJ4ZC8MK6tMgxPKd9/muvn0I4hsicHqdPlLpmB0TlxlhkBAKaVMtOdz6F0w== }
+    peerDependencies:
+      "@chakra-ui/system": ">=2.0.0"
+      react: ">=18"
+    dependencies:
+      "@chakra-ui/icon": 3.0.16_react@18.2.0
       react: 18.2.0
     dev: false
 

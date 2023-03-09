@@ -1,6 +1,6 @@
+import { CloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import { IconButton, IconButtonProps } from "@chakra-ui/react";
 import { useState } from "react";
-import { CiCircleRemove, CiTrash } from "react-icons/ci";
 
 export default ({ onRemove, ...props }: { onRemove: () => void } & IconButtonProps) => {
   const [confirmed, confirm] = useState(false);
@@ -9,7 +9,7 @@ export default ({ onRemove, ...props }: { onRemove: () => void } & IconButtonPro
     <IconButton
       {...props}
       colorScheme={confirmed ? "red" : undefined}
-      icon={confirmed ? <CiTrash /> : <CiCircleRemove />}
+      icon={confirmed ? <DeleteIcon /> : <CloseIcon />}
       onClick={async () => {
         if (confirmed) {
           onRemove();

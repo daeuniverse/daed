@@ -1,3 +1,4 @@
+import { DragHandleIcon } from "@chakra-ui/icons";
 import { Button, Card, CardBody, CardHeader, Center, Flex, Grid, IconButton, Spinner, Tooltip } from "@chakra-ui/react";
 import { closestCenter, DndContext, UniqueIdentifier } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
@@ -6,7 +7,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { IoMoveSharp } from "react-icons/io5";
 
 import { appStateAtom } from "~/store";
 
@@ -40,13 +40,7 @@ const DraggableCard = <T extends List[number]>({
       }}
     >
       <CardHeader as={Flex} gap={2} alignItems="center">
-        <IconButton
-          cursor={isDragging ? "grabbing" : "grab"}
-          aria-label={t("select")}
-          icon={<IoMoveSharp />}
-          {...listeners}
-          {...attributes}
-        />
+        <WithConfirmRemoveButton aria-label={t("remove")} onRemove={() => onRemove(data)} />
 
         <Tooltip hasArrow label={data.id} placement="top">
           <Button size="sm" flex={1} noOfLines={1} onClick={() => onSelect && onSelect(data)}>
@@ -54,7 +48,13 @@ const DraggableCard = <T extends List[number]>({
           </Button>
         </Tooltip>
 
-        <WithConfirmRemoveButton aria-label={t("remove")} onRemove={() => onRemove(data)} />
+        <IconButton
+          cursor={isDragging ? "grabbing" : "grab"}
+          aria-label={t("select")}
+          icon={<DragHandleIcon />}
+          {...listeners}
+          {...attributes}
+        />
       </CardHeader>
       <CardBody>{JSON.stringify(data)}</CardBody>
     </Card>

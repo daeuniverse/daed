@@ -1,8 +1,7 @@
+import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { Center, Collapse, Flex, IconButton, Spinner, useDisclosure } from "@chakra-ui/react";
 import { DndContext } from "@dnd-kit/core";
 import { useTranslation } from "react-i18next";
-import { BsChevronBarLeft } from "react-icons/bs";
-import { CiMenuKebab } from "react-icons/ci";
 
 import Sidebar from "~/components/Sidebar";
 
@@ -31,7 +30,7 @@ const App = () => {
           <IconButton
             aria-label={t("collapse")}
             h="full"
-            icon={isSidebarOpen ? <BsChevronBarLeft /> : <CiMenuKebab />}
+            icon={isSidebarOpen ? <ArrowLeftIcon /> : <ArrowRightIcon />}
             onClick={onSidebarToggle}
           />
           <Collapse
