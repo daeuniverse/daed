@@ -19,7 +19,7 @@ export default ({
     <VStack divider={<StackDivider borderColor="Highlight" />}>
       {inputList.map((_, i) => (
         <Flex key={i} gap={2}>
-          <Input autoFocus placeholder={t("name")} {...getNameInputProps(i)} />
+          <Input placeholder={t("name")} {...getNameInputProps(i)} />
           <Input placeholder={t("value")} {...getValueInputProps(i)} />
 
           <IconButton aria-label={t("create")} icon={<CiSquarePlus />} onClick={() => increment()} />
