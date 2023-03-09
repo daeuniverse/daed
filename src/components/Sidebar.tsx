@@ -88,14 +88,14 @@ export default () => {
   );
 
   const runMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: (run: boolean) => {
       return gqlClient.request(
         graphql(`
           mutation Run($dry: Boolean!) {
             run(dry: $dry)
           }
         `),
-        { dry: false }
+        { dry: !run }
       );
     },
     onSuccess: () => {
@@ -300,10 +300,6 @@ export default () => {
             aria-label={isRunningQuery.data?.general.dae.running ? t("connected") : t("disconnected")}
             icon={<Icon as={isRunningQuery.data?.general.dae.running ? CiStreamOn : CiStreamOff} />}
             onClick={() => {
-              if (isRunningQuery.data?.general.dae.running) {
-                return;
-              }
-
               if (!queryClient.getQueryData<ConfigsQuery>(QUERY_KEY_CONFIG)?.configs.some(({ selected }) => selected)) {
                 toast({
                   title: t("please select a config first"),
@@ -311,9 +307,9 @@ export default () => {
                 });
 
                 return;
+              } else {
+                runMutation.mutate(!isRunningQuery.data?.general.dae.running);
               }
-
-              runMutation.mutate();
             }}
           />
 
