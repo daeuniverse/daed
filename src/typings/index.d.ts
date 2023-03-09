@@ -1,7 +1,5 @@
 import { defaultNS, resources } from "~/i18n";
 
-declare type SortableList = Array<{ id: UniqueIdentifier } & Record<string, unknown>>;
-
 declare module "i18next" {
   interface CustomTypeOptions {
     defaultNS: typeof defaultNS;
@@ -10,3 +8,14 @@ declare module "i18next" {
     };
   }
 }
+
+declare type SortableList = Array<{ id: UniqueIdentifier } & Record<string, unknown>>;
+
+declare type SimpleDisplayable = number | string;
+
+declare type Displayable =
+  | null
+  | boolean
+  | SimpleDisplayable
+  | Array<SimpleDisplayable>
+  | Array<{ [key: string]: unknown; key: string; val: string }>;

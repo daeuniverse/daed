@@ -1,103 +1,12 @@
-import {
-  Accordion,
-  Checkbox,
-  Flex,
-  List,
-  ListItem,
-  SimpleGrid,
-  Tag,
-  Text,
-  Tooltip,
-  useOutsideClick,
-} from "@chakra-ui/react";
+import { Accordion, SimpleGrid } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { gqlClient } from "~/api";
 import Section from "~/components/Section";
+import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "~/constants";
 import { graphql } from "~/gql";
-
-import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "./constants";
-
-type SimpleDisplayable = number | string;
-
-type Displayable =
-  | null
-  | boolean
-  | SimpleDisplayable
-  | Array<SimpleDisplayable>
-  | Array<{ [key: string]: unknown; key: string; val: string }>;
-
-const DescriptiveText = ({ title }: { title: SimpleDisplayable }) => {
-  const [preventTooltipClose, setPreventTooltipClose] = useState(false);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-
-  useOutsideClick({
-    ref: tooltipRef,
-    handler: () => setPreventTooltipClose(false),
-  });
-
-  return (
-    <Tooltip
-      ref={tooltipRef}
-      label={title}
-      placement="right"
-      hasArrow
-      isOpen={preventTooltipClose ? true : undefined}
-      pointerEvents="all"
-    >
-      <Text
-        noOfLines={1}
-        onClick={() => {
-          !preventTooltipClose && setPreventTooltipClose(true);
-        }}
-      >
-        {title}
-      </Text>
-    </Tooltip>
-  );
-};
-
-const SimpleDisplay = ({ name, value }: { name: string; value?: Displayable }) => {
-  return (
-    <Flex
-      alignItems="center"
-      justifyContent="space-between"
-      gap={2}
-      fontSize="xs"
-      overflow="hidden"
-      wordBreak="break-all"
-    >
-      <Text flexShrink={0}>{name}</Text>
-
-      <Flex textAlign="right">
-        {value === undefined || value === null ? null : Array.isArray(value) ? (
-          <List>
-            {value.map((item, i) => (
-              <ListItem key={i}>
-                {typeof item === "object" ? (
-                  <Flex gap={2}>
-                    <Text>{item.key}</Text>
-                    <DescriptiveText title={item.val} />
-                  </Flex>
-                ) : (
-                  <Tag>
-                    <DescriptiveText title={item} />
-                  </Tag>
-                )}
-              </ListItem>
-            ))}
-          </List>
-        ) : typeof value === "boolean" ? (
-          <Checkbox disabled isChecked={value} />
-        ) : (
-          <DescriptiveText title={value} />
-        )}
-      </Flex>
-    </Flex>
-  );
-};
+import SimpleDisplay from "~/libraries/SimpleDisplay";
 
 export default () => {
   const { t } = useTranslation();
