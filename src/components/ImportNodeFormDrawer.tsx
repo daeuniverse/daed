@@ -1,3 +1,5 @@
+import { Input } from "@chakra-ui/react";
+import { Fragment } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -25,10 +27,14 @@ export default ({
 
   return (
     <CreateFormDrawer<FormValues> header={t("node")} isOpen={isOpen} onClose={onClose} form={form} onSubmit={onSubmit}>
-      <GrowableInputList
-        getNameInputProps={(i) => ({ placeholder: t("tag"), ...register(`nodes.${i}.tag`) })}
-        getValueInputProps={(i) => ({ placeholder: t("link"), ...register(`nodes.${i}.link`) })}
-      />
+      <GrowableInputList>
+        {(i) => (
+          <Fragment>
+            <Input placeholder={t("tag")} {...register(`nodes.${i}.tag`)} />
+            <Input placeholder={t("link")} {...register(`nodes.${i}.link`)} />
+          </Fragment>
+        )}
+      </GrowableInputList>
     </CreateFormDrawer>
   );
 };

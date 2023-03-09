@@ -29,6 +29,7 @@ import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS, QUER
 import { graphql } from "~/gql";
 import { InterfacesQuery } from "~/gql/graphql";
 import CreateFormDrawer from "~/libraries/CreateFormDrawer";
+import GrowableInputList from "~/libraries/GrowableInputList";
 import NumberInput from "~/libraries/NumberInput";
 
 export type FormValues = {
@@ -183,19 +184,26 @@ export default ({
               <FormControl>
                 <FormLabel>{t("lanInterface")}</FormLabel>
 
-                <SelectInterface data={interfacesQuery.data} {...register("lanInterface")} />
+                <GrowableInputList>
+                  {(i) => <SelectInterface data={interfacesQuery.data} {...register(`lanInterface.${i}`)} />}
+                </GrowableInputList>
               </FormControl>
 
               <FormControl>
                 <FormLabel>{t("wanInterface")}</FormLabel>
 
-                <SelectInterface
-                  defaultValue={
-                    interfacesQuery.data?.general.interfaces[interfacesQuery.data?.general.interfaces.length - 1].name
-                  }
-                  data={interfacesQuery.data}
-                  {...register("wanInterface")}
-                />
+                <GrowableInputList>
+                  {(i) => (
+                    <SelectInterface
+                      defaultValue={
+                        interfacesQuery.data?.general.interfaces[interfacesQuery.data?.general.interfaces.length - 1]
+                          .name
+                      }
+                      data={interfacesQuery.data}
+                      {...register(`wanInterface.${i}`)}
+                    />
+                  )}
+                </GrowableInputList>
               </FormControl>
 
               <FormControl>

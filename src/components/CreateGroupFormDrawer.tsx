@@ -1,4 +1,5 @@
 import { Flex, FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
+import { Fragment } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -50,10 +51,14 @@ export default ({
         <FormControl>
           <FormLabel>{t("policyParams")}</FormLabel>
 
-          <GrowableInputList
-            getNameInputProps={(i) => ({ placeholder: t("name"), ...register(`policyParams.${i}.key`) })}
-            getValueInputProps={(i) => ({ placeholder: t("value"), ...register(`policyParams.${i}.val`) })}
-          />
+          <GrowableInputList>
+            {(i) => (
+              <Fragment>
+                <Input placeholder={t("name")} {...register(`policyParams.${i}.key`)} />
+                <Input placeholder={t("value")} {...register(`policyParams.${i}.val`)} />
+              </Fragment>
+            )}
+          </GrowableInputList>
         </FormControl>
       </Flex>
     </CreateFormDrawer>
