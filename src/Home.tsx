@@ -12,13 +12,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import SimpleBar from "simplebar-react";
 
-import { gqlClient } from "~/api";
-import { graphql } from "~/gql";
-
-import SortableGrid from "./components/SortableGrid";
 import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "./constants";
 import { ConfigsQuery, GroupsQuery, NodesQuery, SubscriptionsQuery } from "./gql/graphql";
+import SortableGrid from "./libraries/SortableGrid";
 import { appStateAtom } from "./store";
+
+import { graphql } from "~/gql";
+import { gqlClient } from "~/api";
 
 export default () => {
   const { t } = useTranslation();
@@ -58,17 +58,13 @@ export default () => {
             id
             tag
             link
-            status
-            info
             nodes {
               edges {
                 id
                 link
                 name
-                address
                 protocol
                 tag
-                subscriptionID
               }
             }
           }

@@ -1,3 +1,5 @@
+import "~/index.css";
+
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -9,9 +11,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { queryClient } from "~/api";
 import App from "~/App";
-import { ToastContainer } from "~/components/GlobalToast";
 import { DEFAULT_ENDPOINT_URL, theme } from "~/constants";
-import "~/index.css";
+import { ToastContainer } from "~/libraries/GlobalToast";
 import { endpointURLAtom } from "~/store";
 
 const { searchParams } = new URL(location.href);

@@ -25,4 +25,4 @@ settings:
     node: true
 
 rules:
-  import/order: [1, { newlines-between: always, groups: [builtin, external, internal, parent, sibling, index, object] }]
+  import/order: [1, { newlines-between: always }]

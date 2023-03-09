@@ -3,10 +3,10 @@ import { Center, Collapse, Flex, IconButton, Spinner, useDisclosure } from "@cha
 import { DndContext } from "@dnd-kit/core";
 import { useTranslation } from "react-i18next";
 
-import Sidebar from "~/components/Sidebar";
-
 import Home from "./Home";
 import i18n from "./i18n";
+
+import Sidebar from "~/components/Sidebar";
 
 const App = () => {
   const { t } = useTranslation();

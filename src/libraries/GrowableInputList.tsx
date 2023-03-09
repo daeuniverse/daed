@@ -1,7 +1,7 @@
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Flex, IconButton, Input, InputProps, StackDivider, useCounter, VStack } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CiSquarePlus, CiSquareRemove } from "react-icons/ci";
 
 export default ({
   getNameInputProps,
@@ -19,11 +19,11 @@ export default ({
     <VStack divider={<StackDivider borderColor="Highlight" />}>
       {inputList.map((_, i) => (
         <Flex key={i} gap={2}>
-          <Input placeholder={t("name")} {...getNameInputProps(i)} />
-          <Input placeholder={t("value")} {...getValueInputProps(i)} />
+          <Input {...getNameInputProps(i)} />
+          <Input {...getValueInputProps(i)} />
 
-          <IconButton aria-label={t("create")} icon={<CiSquarePlus />} onClick={() => increment()} />
-          <IconButton aria-label={t("remove")} icon={<CiSquareRemove />} onClick={() => decrement()} />
+          <IconButton aria-label={t("create")} icon={<AddIcon />} onClick={() => increment()} />
+          <IconButton aria-label={t("remove")} icon={<DeleteIcon />} onClick={() => decrement()} />
         </Flex>
       ))}
     </VStack>

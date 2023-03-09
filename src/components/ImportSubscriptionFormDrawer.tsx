@@ -3,8 +3,7 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { ImportArgument } from "~/gql/graphql";
-
-import CreateFormDrawer from "./CreateFormDrawer";
+import CreateFormDrawer from "~/libraries/CreateFormDrawer";
 
 export type FormValues = {
   subscription: ImportArgument;

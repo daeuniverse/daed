@@ -2,9 +2,8 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { ImportArgument } from "~/gql/graphql";
-
-import CreateFormDrawer from "./CreateFormDrawer";
-import GrowableInputList from "./GrowableInputList";
+import CreateFormDrawer from "~/libraries/CreateFormDrawer";
+import GrowableInputList from "~/libraries/GrowableInputList";
 
 export type FormValues = {
   nodes: ImportArgument[];
@@ -27,8 +26,8 @@ export default ({
   return (
     <CreateFormDrawer<FormValues> header={t("node")} isOpen={isOpen} onClose={onClose} form={form} onSubmit={onSubmit}>
       <GrowableInputList
-        getNameInputProps={(i) => ({ ...register(`nodes.${i}.tag`) })}
-        getValueInputProps={(i) => ({ ...register(`nodes.${i}.link`) })}
+        getNameInputProps={(i) => ({ placeholder: t("tag"), ...register(`nodes.${i}.tag`) })}
+        getValueInputProps={(i) => ({ placeholder: t("link"), ...register(`nodes.${i}.link`) })}
       />
     </CreateFormDrawer>
   );

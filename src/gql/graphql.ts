@@ -449,8 +449,6 @@ export type SubscriptionsQuery = {
     id: string;
     tag?: string | null;
     link: string;
-    status: string;
-    info: string;
     nodes: {
       __typename?: "NodesConnection";
       edges: Array<{
@@ -458,10 +456,8 @@ export type SubscriptionsQuery = {
         id: string;
         link: string;
         name: string;
-        address: string;
         protocol: string;
         tag?: string | null;
-        subscriptionID?: string | null;
       }>;
     };
   }>;
@@ -648,8 +644,6 @@ export const SubscriptionsDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "tag" } },
                 { kind: "Field", name: { kind: "Name", value: "link" } },
-                { kind: "Field", name: { kind: "Name", value: "status" } },
-                { kind: "Field", name: { kind: "Name", value: "info" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "nodes" },
@@ -665,10 +659,8 @@ export const SubscriptionsDocument = {
                             { kind: "Field", name: { kind: "Name", value: "id" } },
                             { kind: "Field", name: { kind: "Name", value: "link" } },
                             { kind: "Field", name: { kind: "Name", value: "name" } },
-                            { kind: "Field", name: { kind: "Name", value: "address" } },
                             { kind: "Field", name: { kind: "Name", value: "protocol" } },
                             { kind: "Field", name: { kind: "Name", value: "tag" } },
-                            { kind: "Field", name: { kind: "Name", value: "subscriptionID" } },
                           ],
                         },
                       },

@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
 const documents = {
   "\n        query Configs {\n          configs {\n            id\n            selected\n            global {\n              tproxyPort\n              logLevel\n              tcpCheckUrl\n              udpCheckDns\n              checkInterval\n              checkTolerance\n              lanInterface\n              wanInterface\n              allowInsecure\n              dialMode\n            }\n          }\n        }\n      ":
     types.ConfigsDocument,
-  "\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            status\n            info\n            nodes {\n              edges {\n                id\n                link\n                name\n                address\n                protocol\n                tag\n                subscriptionID\n              }\n            }\n          }\n        }\n      ":
+  "\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            nodes {\n              edges {\n                id\n                link\n                name\n                protocol\n                tag\n              }\n            }\n          }\n        }\n      ":
     types.SubscriptionsDocument,
   "\n        query Nodes {\n          nodes {\n            edges {\n              id\n              link\n              name\n              address\n              protocol\n              tag\n            }\n          }\n        }\n      ":
     types.NodesDocument,
@@ -70,8 +70,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            status\n            info\n            nodes {\n              edges {\n                id\n                link\n                name\n                address\n                protocol\n                tag\n                subscriptionID\n              }\n            }\n          }\n        }\n      "
-): (typeof documents)["\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            status\n            info\n            nodes {\n              edges {\n                id\n                link\n                name\n                address\n                protocol\n                tag\n                subscriptionID\n              }\n            }\n          }\n        }\n      "];
+  source: "\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            nodes {\n              edges {\n                id\n                link\n                name\n                protocol\n                tag\n              }\n            }\n          }\n        }\n      "
+): (typeof documents)["\n        query Subscriptions {\n          subscriptions {\n            id\n            tag\n            link\n            nodes {\n              edges {\n                id\n                link\n                name\n                protocol\n                tag\n              }\n            }\n          }\n        }\n      "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

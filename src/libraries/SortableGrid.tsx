@@ -8,9 +8,8 @@ import { useStore } from "@nanostores/react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import WithConfirmRemoveButton from "~/libraries/WithConfirmRemoveButton";
 import { appStateAtom } from "~/store";
-
-import WithConfirmRemoveButton from "./WithConfirmRemoveButton";
 
 type List = Array<{ id: UniqueIdentifier } & Record<string, unknown>>;
 
@@ -72,7 +71,7 @@ export default <T extends List>({
   isLoading: boolean;
   unSortedItems?: T;
   defaultSortableKeys: UniqueIdentifier[];
-  onSort: (sortableKeys: UniqueIdentifier[]) => void;
+  onSort?: (sortableKeys: UniqueIdentifier[]) => void;
   onSelect?: (data: T[number]) => void;
   onRemove: (data: T[number]) => void;
 }) => {

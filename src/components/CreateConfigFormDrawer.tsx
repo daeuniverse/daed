@@ -28,9 +28,8 @@ import { gqlClient } from "~/api";
 import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS, QUERY_KEY_INTERFACES } from "~/constants";
 import { graphql } from "~/gql";
 import { InterfacesQuery } from "~/gql/graphql";
-
-import CreateFormDrawer from "./CreateFormDrawer";
-import NumberInput from "./NumberInput";
+import CreateFormDrawer from "~/libraries/CreateFormDrawer";
+import NumberInput from "~/libraries/NumberInput";
 
 export type FormValues = {
   tproxyPort: number;

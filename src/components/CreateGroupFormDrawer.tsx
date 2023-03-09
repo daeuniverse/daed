@@ -3,9 +3,8 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { Policy, PolicyParam } from "~/gql/graphql";
-
-import CreateFormDrawer from "./CreateFormDrawer";
-import GrowableInputList from "./GrowableInputList";
+import CreateFormDrawer from "~/libraries/CreateFormDrawer";
+import GrowableInputList from "~/libraries/GrowableInputList";
 
 export type FormValues = {
   name: string;
@@ -40,11 +39,11 @@ export default ({
           <FormLabel>{t("policy")}</FormLabel>
 
           <Select defaultValue={Policy.Random} {...register("policy")}>
+            <option>{Policy.Random}</option>
             <option>{Policy.Fixed}</option>
             <option>{Policy.Min}</option>
             <option>{Policy.MinAvg10}</option>
             <option>{Policy.MinMovingAvg}</option>
-            <option>{Policy.Random}</option>
           </Select>
         </FormControl>
 
@@ -52,8 +51,8 @@ export default ({
           <FormLabel>{t("policyParams")}</FormLabel>
 
           <GrowableInputList
-            getNameInputProps={(i) => ({ ...register(`policyParams.${i}.key`) })}
-            getValueInputProps={(i) => ({ ...register(`policyParams.${i}.val`) })}
+            getNameInputProps={(i) => ({ placeholder: t("name"), ...register(`policyParams.${i}.key`) })}
+            getValueInputProps={(i) => ({ placeholder: t("value"), ...register(`policyParams.${i}.val`) })}
           />
         </FormControl>
       </Flex>
