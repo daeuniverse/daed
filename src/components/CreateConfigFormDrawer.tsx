@@ -216,9 +216,9 @@ export default ({
                 <FormLabel>{t("dialMode")}</FormLabel>
 
                 <Select {...register("dialMode")}>
-                  <option>{t("ip")}</option>
-                  <option>{t("domain")}</option>
-                  <option>{t("domain+")}</option>
+                  <option value="ip">{t("ip")}</option>
+                  <option value="domain">{t("domain")}</option>
+                  <option value="domain+">{t("domain+")}</option>
                 </Select>
               </FormControl>
             </Flex>
