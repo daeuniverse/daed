@@ -208,7 +208,9 @@ export default () => {
           <AccordionItem border="none">
             <AccordionButton p={4}>
               <Flex w="full" alignItems="center" justifyContent="space-between">
-                <Heading size="md">{t("node")}</Heading>
+                <Heading size="md">
+                  {t("node")} ({nodeQuery.data?.nodes.edges.length || 0})
+                </Heading>
 
                 <AccordionIcon />
               </Flex>
@@ -228,7 +230,9 @@ export default () => {
           <AccordionItem border="none">
             <AccordionButton p={4}>
               <Flex w="full" alignItems="center" justifyContent="space-between">
-                <Heading size="md">{t("subscription")}</Heading>
+                <Heading size="md">
+                  {t("subscription")} ({subscriptionQuery.data?.subscriptions.length || 0})
+                </Heading>
 
                 <AccordionIcon />
               </Flex>
@@ -248,7 +252,9 @@ export default () => {
           <AccordionItem border="none">
             <AccordionButton p={4}>
               <Flex w="full" alignItems="center" justifyContent="space-between">
-                <Heading size="md">{t("config")}</Heading>
+                <Heading size="md">
+                  {t("config")} ({configQuery.data?.configs.length || 0})
+                </Heading>
 
                 <AccordionIcon />
               </Flex>
@@ -271,7 +277,9 @@ export default () => {
           <AccordionItem border="none">
             <AccordionButton p={4}>
               <Flex w="full" alignItems="center" justifyContent="space-between">
-                <Heading size="md">{t("group")}</Heading>
+                <Heading size="md">
+                  {t("group")} ({groupQuery.data?.groups.length || 0})
+                </Heading>
 
                 <AccordionIcon />
               </Flex>
