@@ -1,59 +1,101 @@
 import {
   Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
+  Checkbox,
   Flex,
-  Heading,
   List,
   ListItem,
+  SimpleGrid,
+  Tag,
+  Text,
+  Tooltip,
+  useOutsideClick,
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { gqlClient } from "~/api";
+import Section from "~/components/Section";
 import { graphql } from "~/gql";
-import { SortableList } from "~/typings";
 
 import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "./constants";
-import SortableGrid, { SortableGridProps } from "./libraries/SortableGrid";
 
-const Section = <T extends SortableList>({
-  name,
-  isLoading,
-  unSortedItems,
-  onSelect,
-  onRemove,
-  persistentSortableKeysName,
-  children,
-}: {
-  name: string;
-} & SortableGridProps<T>) => {
+type SimpleDisplayable = number | string;
+
+type Displayable =
+  | null
+  | boolean
+  | SimpleDisplayable
+  | Array<SimpleDisplayable>
+  | Array<{ [key: string]: unknown; key: string; val: string }>;
+
+const DescriptiveText = ({ title }: { title: SimpleDisplayable }) => {
+  const [preventTooltipClose, setPreventTooltipClose] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick({
+    ref: tooltipRef,
+    handler: () => setPreventTooltipClose(false),
+  });
+
   return (
-    <AccordionItem border="none">
-      <AccordionButton p={4}>
-        <Flex w="full" alignItems="center" justifyContent="space-between">
-          <Heading size="md">
-            {name} ({unSortedItems?.length || 0})
-          </Heading>
+    <Tooltip
+      ref={tooltipRef}
+      label={title}
+      placement="right"
+      hasArrow
+      isOpen={preventTooltipClose ? true : undefined}
+      pointerEvents="all"
+    >
+      <Text
+        noOfLines={1}
+        onClick={() => {
+          !preventTooltipClose && setPreventTooltipClose(true);
+        }}
+      >
+        {title}
+      </Text>
+    </Tooltip>
+  );
+};
 
-          <AccordionIcon />
-        </Flex>
-      </AccordionButton>
+const SimpleDisplay = ({ name, value }: { name: string; value?: Displayable }) => {
+  return (
+    <Flex
+      alignItems="center"
+      justifyContent="space-between"
+      gap={2}
+      fontSize="xs"
+      overflow="hidden"
+      wordBreak="break-all"
+    >
+      <Text flexShrink={0}>{name}</Text>
 
-      <AccordionPanel>
-        <SortableGrid<T>
-          isLoading={isLoading}
-          unSortedItems={unSortedItems}
-          onSelect={onSelect}
-          onRemove={onRemove}
-          persistentSortableKeysName={persistentSortableKeysName}
-        >
-          {children}
-        </SortableGrid>
-      </AccordionPanel>
-    </AccordionItem>
+      <Flex textAlign="right">
+        {value === undefined || value === null ? null : Array.isArray(value) ? (
+          <List>
+            {value.map((item, i) => (
+              <ListItem key={i}>
+                {typeof item === "object" ? (
+                  <Flex gap={2}>
+                    <Text>{item.key}</Text>
+                    <DescriptiveText title={item.val} />
+                  </Flex>
+                ) : (
+                  <Tag>
+                    <DescriptiveText title={item} />
+                  </Tag>
+                )}
+              </ListItem>
+            ))}
+          </List>
+        ) : typeof value === "boolean" ? (
+          <Checkbox disabled isChecked={value} />
+        ) : (
+          <DescriptiveText title={value} />
+        )}
+      </Flex>
+    </Flex>
   );
 };
 
@@ -61,24 +103,18 @@ export default () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
+  const nodeQuery = useQuery(QUERY_KEY_NODE, async () =>
     gqlClient.request(
       graphql(`
-        query Configs {
-          configs {
-            id
-            selected
-            global {
-              tproxyPort
-              logLevel
-              tcpCheckUrl
-              udpCheckDns
-              checkInterval
-              checkTolerance
-              lanInterface
-              wanInterface
-              allowInsecure
-              dialMode
+        query Nodes {
+          nodes {
+            edges {
+              id
+              link
+              name
+              address
+              protocol
+              tag
             }
           }
         }
@@ -109,18 +145,24 @@ export default () => {
     )
   );
 
-  const nodeQuery = useQuery(QUERY_KEY_NODE, async () =>
+  const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
       graphql(`
-        query Nodes {
-          nodes {
-            edges {
-              id
-              link
-              name
-              address
-              protocol
-              tag
+        query Configs {
+          configs {
+            id
+            selected
+            global {
+              tproxyPort
+              logLevel
+              tcpCheckUrl
+              udpCheckDns
+              checkInterval
+              checkTolerance
+              lanInterface
+              wanInterface
+              allowInsecure
+              dialMode
             }
           }
         }
@@ -233,18 +275,16 @@ export default () => {
         isLoading={nodeQuery.isLoading}
         unSortedItems={nodeQuery.data?.nodes.edges}
         persistentSortableKeysName="nodeSortableKeys"
-        onRemove={(data) => {
-          removeNodeMutation.mutate(data.id);
-        }}
+        onRemove={(data) => removeNodeMutation.mutate(data.id)}
       >
         {(data) => (
-          <List>
-            {Object.entries(data).map(([name, value], i) => (
-              <ListItem key={i}>
-                {name}: {JSON.stringify(value)}
-              </ListItem>
-            ))}
-          </List>
+          <SimpleGrid gap={2}>
+            <SimpleDisplay name={t("name")} value={data.name} />
+            <SimpleDisplay name={t("tag")} value={data.tag} />
+            <SimpleDisplay name={t("address")} value={data.address} />
+            <SimpleDisplay name={t("protocol")} value={data.protocol} />
+            <SimpleDisplay name={t("link")} value={data.link} />
+          </SimpleGrid>
         )}
       </Section>
 
@@ -252,19 +292,14 @@ export default () => {
         name={t("subscription")}
         isLoading={subscriptionQuery.isLoading}
         unSortedItems={subscriptionQuery.data?.subscriptions}
-        onRemove={(data) => {
-          removeSubscriptionMutation.mutate(data.id);
-        }}
+        onRemove={(data) => removeSubscriptionMutation.mutate(data.id)}
         persistentSortableKeysName="subscriptionSortableKeys"
       >
         {(data) => (
-          <List>
-            {Object.entries(data).map(([name, value], i) => (
-              <ListItem key={i}>
-                {name}: {JSON.stringify(value)}
-              </ListItem>
-            ))}
-          </List>
+          <SimpleGrid gap={2}>
+            <SimpleDisplay name={t("link")} value={data.link} />
+            <SimpleDisplay name={t("tag")} value={data.tag} />
+          </SimpleGrid>
         )}
       </Section>
 
@@ -272,22 +307,22 @@ export default () => {
         name={t("config")}
         isLoading={configQuery.isLoading}
         unSortedItems={configQuery.data?.configs}
-        onSelect={(data) => {
-          selectConfigMutation.mutate(data.id);
-        }}
-        onRemove={(data) => {
-          removeConfigMutation.mutate(data.id);
-        }}
+        onSelect={(data) => selectConfigMutation.mutate(data.id)}
+        onRemove={(data) => removeConfigMutation.mutate(data.id)}
         persistentSortableKeysName="configSortableKeys"
       >
         {(data) => (
-          <List>
-            {Object.entries(data).map(([name, value], i) => (
-              <ListItem key={i}>
-                {name}: {JSON.stringify(value)}
-              </ListItem>
-            ))}
-          </List>
+          <SimpleGrid gap={2}>
+            <SimpleDisplay name={t("tproxyPort")} value={data.global.tproxyPort} />
+            <SimpleDisplay name={t("logLevel")} value={data.global.logLevel} />
+            <SimpleDisplay name={t("tcpCheckUrl")} value={data.global.tcpCheckUrl} />
+            <SimpleDisplay name={t("udpCheckDns")} value={data.global.udpCheckDns} />
+            <SimpleDisplay name={t("checkInterval")} value={data.global.checkInterval} />
+            <SimpleDisplay name={t("checkTolerance")} value={data.global.checkTolerance} />
+            <SimpleDisplay name={t("lanInterface")} value={data.global.lanInterface} />
+            <SimpleDisplay name={t("wanInterface")} value={data.global.wanInterface} />
+            <SimpleDisplay name={t("allowInsecure")} value={data.global.allowInsecure} />
+          </SimpleGrid>
         )}
       </Section>
 
@@ -295,19 +330,15 @@ export default () => {
         name={t("group")}
         isLoading={groupQuery.isLoading}
         unSortedItems={groupQuery.data?.groups}
-        onRemove={(data) => {
-          removeGroupMutation.mutate(data.id);
-        }}
+        onRemove={(data) => removeGroupMutation.mutate(data.id)}
         persistentSortableKeysName="groupSortableKeys"
       >
         {(data) => (
-          <List>
-            {Object.entries(data).map(([name, value], i) => (
-              <ListItem as={Flex} key={i}>
-                <Flex>{name}</Flex>: <Flex>{JSON.stringify(value)}</Flex>
-              </ListItem>
-            ))}
-          </List>
+          <SimpleGrid gap={2}>
+            <SimpleDisplay name={t("name")} value={data.name} />
+            <SimpleDisplay name={t("policy")} value={data.policy} />
+            <SimpleDisplay name={t("policyParams")} value={data.policyParams} />
+          </SimpleGrid>
         )}
       </Section>
     </Accordion>

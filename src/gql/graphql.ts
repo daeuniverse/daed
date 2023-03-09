@@ -420,28 +420,22 @@ export type HealthCheckQueryVariables = Exact<{ [key: string]: never }>;
 
 export type HealthCheckQuery = { __typename?: "Query"; healthCheck: number };
 
-export type ConfigsQueryVariables = Exact<{ [key: string]: never }>;
+export type NodesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type ConfigsQuery = {
+export type NodesQuery = {
   __typename?: "Query";
-  configs: Array<{
-    __typename?: "Config";
-    id: string;
-    selected: boolean;
-    global: {
-      __typename?: "Global";
-      tproxyPort: number;
-      logLevel: string;
-      tcpCheckUrl: string;
-      udpCheckDns: string;
-      checkInterval: any;
-      checkTolerance: any;
-      lanInterface: Array<string>;
-      wanInterface: Array<string>;
-      allowInsecure: boolean;
-      dialMode: string;
-    };
-  }>;
+  nodes: {
+    __typename?: "NodesConnection";
+    edges: Array<{
+      __typename?: "Node";
+      id: string;
+      link: string;
+      name: string;
+      address: string;
+      protocol: string;
+      tag?: string | null;
+    }>;
+  };
 };
 
 export type SubscriptionsQueryVariables = Exact<{ [key: string]: never }>;
@@ -467,22 +461,28 @@ export type SubscriptionsQuery = {
   }>;
 };
 
-export type NodesQueryVariables = Exact<{ [key: string]: never }>;
+export type ConfigsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type NodesQuery = {
+export type ConfigsQuery = {
   __typename?: "Query";
-  nodes: {
-    __typename?: "NodesConnection";
-    edges: Array<{
-      __typename?: "Node";
-      id: string;
-      link: string;
-      name: string;
-      address: string;
-      protocol: string;
-      tag?: string | null;
-    }>;
-  };
+  configs: Array<{
+    __typename?: "Config";
+    id: string;
+    selected: boolean;
+    global: {
+      __typename?: "Global";
+      tproxyPort: number;
+      logLevel: string;
+      tcpCheckUrl: string;
+      udpCheckDns: string;
+      checkInterval: any;
+      checkTolerance: any;
+      lanInterface: Array<string>;
+      wanInterface: Array<string>;
+      allowInsecure: boolean;
+      dialMode: string;
+    };
+  }>;
 };
 
 export type GroupsQueryVariables = Exact<{ [key: string]: never }>;
@@ -598,40 +598,34 @@ export const HealthCheckDocument = {
     },
   ],
 } as unknown as DocumentNode<HealthCheckQuery, HealthCheckQueryVariables>;
-export const ConfigsDocument = {
+export const NodesDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "Configs" },
+      name: { kind: "Name", value: "Nodes" },
       selectionSet: {
         kind: "SelectionSet",
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "configs" },
+            name: { kind: "Name", value: "nodes" },
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "selected" } },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "global" },
+                  name: { kind: "Name", value: "edges" },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "tproxyPort" } },
-                      { kind: "Field", name: { kind: "Name", value: "logLevel" } },
-                      { kind: "Field", name: { kind: "Name", value: "tcpCheckUrl" } },
-                      { kind: "Field", name: { kind: "Name", value: "udpCheckDns" } },
-                      { kind: "Field", name: { kind: "Name", value: "checkInterval" } },
-                      { kind: "Field", name: { kind: "Name", value: "checkTolerance" } },
-                      { kind: "Field", name: { kind: "Name", value: "lanInterface" } },
-                      { kind: "Field", name: { kind: "Name", value: "wanInterface" } },
-                      { kind: "Field", name: { kind: "Name", value: "allowInsecure" } },
-                      { kind: "Field", name: { kind: "Name", value: "dialMode" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "link" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "address" } },
+                      { kind: "Field", name: { kind: "Name", value: "protocol" } },
+                      { kind: "Field", name: { kind: "Name", value: "tag" } },
                     ],
                   },
                 },
@@ -642,7 +636,7 @@ export const ConfigsDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<ConfigsQuery, ConfigsQueryVariables>;
+} as unknown as DocumentNode<NodesQuery, NodesQueryVariables>;
 export const SubscriptionsDocument = {
   kind: "Document",
   definitions: [
@@ -693,34 +687,40 @@ export const SubscriptionsDocument = {
     },
   ],
 } as unknown as DocumentNode<SubscriptionsQuery, SubscriptionsQueryVariables>;
-export const NodesDocument = {
+export const ConfigsDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "Nodes" },
+      name: { kind: "Name", value: "Configs" },
       selectionSet: {
         kind: "SelectionSet",
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "nodes" },
+            name: { kind: "Name", value: "configs" },
             selectionSet: {
               kind: "SelectionSet",
               selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "selected" } },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "edges" },
+                  name: { kind: "Name", value: "global" },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "link" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "address" } },
-                      { kind: "Field", name: { kind: "Name", value: "protocol" } },
-                      { kind: "Field", name: { kind: "Name", value: "tag" } },
+                      { kind: "Field", name: { kind: "Name", value: "tproxyPort" } },
+                      { kind: "Field", name: { kind: "Name", value: "logLevel" } },
+                      { kind: "Field", name: { kind: "Name", value: "tcpCheckUrl" } },
+                      { kind: "Field", name: { kind: "Name", value: "udpCheckDns" } },
+                      { kind: "Field", name: { kind: "Name", value: "checkInterval" } },
+                      { kind: "Field", name: { kind: "Name", value: "checkTolerance" } },
+                      { kind: "Field", name: { kind: "Name", value: "lanInterface" } },
+                      { kind: "Field", name: { kind: "Name", value: "wanInterface" } },
+                      { kind: "Field", name: { kind: "Name", value: "allowInsecure" } },
+                      { kind: "Field", name: { kind: "Name", value: "dialMode" } },
                     ],
                   },
                 },
@@ -731,7 +731,7 @@ export const NodesDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<NodesQuery, NodesQueryVariables>;
+} as unknown as DocumentNode<ConfigsQuery, ConfigsQueryVariables>;
 export const GroupsDocument = {
   kind: "Document",
   definitions: [

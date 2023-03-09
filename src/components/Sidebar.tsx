@@ -121,7 +121,7 @@ export default () => {
       );
     },
     onSuccess: () => {
-      toast({ status: "success" });
+      toast({ title: t("success"), status: "success" });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
       onNodeFormDrawerClose();
     },
@@ -144,7 +144,7 @@ export default () => {
       );
     },
     onSuccess: () => {
-      toast({ status: "success" });
+      toast({ title: t("success"), status: "success" });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION });
       onSubscriptionFormDrawerClose();
     },

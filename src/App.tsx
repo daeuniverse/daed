@@ -38,8 +38,8 @@ const App = () => {
   }
 
   return (
-    <Flex h="100dvh">
-      <Flex h="full" py={6}>
+    <Flex h="100dvh" px={4} py={12}>
+      <Flex>
         <IconButton
           aria-label={t("collapse")}
           h="full"
@@ -59,7 +59,7 @@ const App = () => {
         </Collapse>
       </Flex>
 
-      <Flex flex={1} h="full" overflowY="hidden" pr={2} py={6}>
+      <Flex flex={1} overflowY="hidden">
         <SimpleBar
           style={{
             width: "100%",
