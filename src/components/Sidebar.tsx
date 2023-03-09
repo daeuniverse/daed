@@ -285,11 +285,7 @@ export default () => {
           defaultValue={COLS_PER_ROW}
           value={colsPerRow}
           textAlign="center"
-          onChange={(colsPerRow) =>
-            appStateAtom.set({
-              colsPerRow,
-            })
-          }
+          onChange={(colsPerRow) => appStateAtom.setKey("colsPerRow", colsPerRow)}
         >
           <SliderTrack>
             <SliderFilledTrack />

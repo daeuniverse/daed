@@ -7,6 +7,7 @@ import {
   Flex,
   Heading,
 } from "@chakra-ui/react";
+import { useStore } from "@nanostores/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import SimpleBar from "simplebar-react";
@@ -17,10 +18,12 @@ import { graphql } from "~/gql";
 import SortableGrid from "./components/SortableGrid";
 import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "./constants";
 import { ConfigsQuery, GroupsQuery, NodesQuery, SubscriptionsQuery } from "./gql/graphql";
+import { appStateAtom } from "./store";
 
 export default () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const appState = useStore(appStateAtom);
 
   const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
     gqlClient.request(
@@ -220,6 +223,10 @@ export default () => {
               <SortableGrid<NodesQuery["nodes"]["edges"]>
                 isLoading={nodeQuery.isLoading}
                 unSortedItems={nodeQuery.data?.nodes.edges}
+                defaultSortableKeys={appState.nodeSortableKeys}
+                onSort={(sortableKeys) => {
+                  appStateAtom.setKey("nodeSortableKeys", sortableKeys);
+                }}
                 onRemove={(data) => {
                   removeNodeMutation.mutate(data.id);
                 }}
@@ -242,6 +249,10 @@ export default () => {
               <SortableGrid<SubscriptionsQuery["subscriptions"]>
                 isLoading={subscriptionQuery.isLoading}
                 unSortedItems={subscriptionQuery.data?.subscriptions}
+                defaultSortableKeys={appState.subscriptionSortableKeys}
+                onSort={(sortableKeys) => {
+                  appStateAtom.setKey("subscriptionSortableKeys", sortableKeys);
+                }}
                 onRemove={(data) => {
                   removeSubscriptionMutation.mutate(data.id);
                 }}
@@ -264,6 +275,10 @@ export default () => {
               <SortableGrid<ConfigsQuery["configs"]>
                 isLoading={configQuery.isLoading}
                 unSortedItems={configQuery.data?.configs}
+                defaultSortableKeys={appState.configSortableKeys}
+                onSort={(sortableKeys) => {
+                  appStateAtom.setKey("configSortableKeys", sortableKeys);
+                }}
                 onSelect={(data) => {
                   selectConfigMutation.mutate(data.id);
                 }}
@@ -289,6 +304,10 @@ export default () => {
               <SortableGrid<GroupsQuery["groups"]>
                 isLoading={groupQuery.isLoading}
                 unSortedItems={groupQuery.data?.groups}
+                defaultSortableKeys={appState.groupSortableKeys}
+                onSort={(sortableKeys) => {
+                  appStateAtom.setKey("groupSortableKeys", sortableKeys);
+                }}
                 onRemove={(data) => {
                   removeGroupMutation.mutate(data.id);
                 }}

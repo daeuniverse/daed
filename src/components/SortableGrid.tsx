@@ -64,16 +64,20 @@ const DraggableCard = <T extends List[number]>({
 export default <T extends List>({
   isLoading,
   unSortedItems,
+  defaultSortableKeys,
   onSelect,
   onRemove,
+  onSort,
 }: {
   isLoading: boolean;
   unSortedItems?: T;
+  defaultSortableKeys: UniqueIdentifier[];
+  onSort: (sortableKeys: UniqueIdentifier[]) => void;
   onSelect?: (data: T[number]) => void;
   onRemove: (data: T[number]) => void;
 }) => {
   const { colsPerRow } = useStore(appStateAtom);
-  const [sortableKeys, setSortableKeys] = useState<UniqueIdentifier[]>([]);
+  const [sortableKeys, setSortableKeys] = useState<UniqueIdentifier[]>(defaultSortableKeys);
 
   useEffect(() => {
     if (unSortedItems) {
@@ -90,6 +94,10 @@ export default <T extends List>({
       }
     }
   }, [unSortedItems]);
+
+  useEffect(() => {
+    onSort && onSort(sortableKeys);
+  }, [sortableKeys]);
 
   const sortedItems = useMemo(() => {
     if (!unSortedItems) {
