@@ -1,23 +1,11 @@
-import {
-  Box,
-  Flex,
-  FormControl,
-  FormLabel,
-  IconButton,
-  Input,
-  Select,
-  StackDivider,
-  useCounter,
-  VStack,
-} from "@chakra-ui/react";
-import { useMemo } from "react";
+import { Flex, FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { CiSquarePlus, CiSquareRemove } from "react-icons/ci";
 
 import { Policy, PolicyParam } from "~/gql/graphql";
 
 import CreateFormDrawer from "./CreateFormDrawer";
+import GrowableInputList from "./GrowableInputList";
 
 export type FormValues = {
   name: string;
@@ -38,9 +26,6 @@ export default ({
 
   const form = useForm<FormValues>();
   const { register } = form;
-
-  const { value: policyParamsCount, increment: incPolicyParamsCount, decrement: decPolicyParamsCount } = useCounter();
-  const policyParamsInputList = useMemo(() => Array(Number(policyParamsCount)).fill(undefined), [policyParamsCount]);
 
   return (
     <CreateFormDrawer<FormValues> header={t("group")} isOpen={isOpen} onClose={onClose} form={form} onSubmit={onSubmit}>
@@ -64,23 +49,12 @@ export default ({
         </FormControl>
 
         <FormControl>
-          <FormLabel>
-            <Flex alignItems="center" gap={2}>
-              <Box>{t("policyParams")}</Box>
-              <IconButton aria-label={t("create")} icon={<CiSquarePlus />} onClick={() => incPolicyParamsCount()} />
-            </Flex>
-          </FormLabel>
+          <FormLabel>{t("policyParams")}</FormLabel>
 
-          <VStack divider={<StackDivider borderColor="Highlight" />}>
-            {policyParamsInputList.map((_, i) => (
-              <Flex key={i} gap={2}>
-                <Input autoFocus placeholder={t("name")} {...register(`policyParams.${i}.key`)} />
-                <Input placeholder={t("value")} {...register(`policyParams.${i}.val`)} />
-
-                <IconButton aria-label={t("remove")} icon={<CiSquareRemove />} onClick={() => decPolicyParamsCount()} />
-              </Flex>
-            ))}
-          </VStack>
+          <GrowableInputList
+            getNameInputProps={(i) => ({ ...register(`policyParams.${i}.key`) })}
+            getValueInputProps={(i) => ({ ...register(`policyParams.${i}.val`) })}
+          />
         </FormControl>
       </Flex>
     </CreateFormDrawer>
