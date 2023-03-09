@@ -1,4 +1,4 @@
-import { Checkbox, Flex, List, ListItem, Tag, Text, Tooltip, useOutsideClick } from "@chakra-ui/react";
+import { Checkbox, Flex, List, ListItem, Skeleton, Tag, Text, Tooltip, useOutsideClick } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 
 import { Displayable, SimpleDisplayable } from "~/typings";
@@ -33,7 +33,9 @@ const DescriptiveText = ({ title }: { title: SimpleDisplayable }) => {
   );
 };
 
-export default ({ name, value }: { name: string; value?: Displayable }) => {
+export default ({ name, value, encrypt }: { name: string; value?: Displayable; encrypt?: boolean }) => {
+  const [isEncrypted, setIsEncrypted] = useState(encrypt);
+
   return (
     <Flex
       alignItems="center"
@@ -67,7 +69,19 @@ export default ({ name, value }: { name: string; value?: Displayable }) => {
         ) : typeof value === "boolean" ? (
           <Checkbox disabled isChecked={value} />
         ) : (
-          <DescriptiveText title={value} />
+          <Skeleton
+            rounded="md"
+            pointerEvents="all"
+            isLoaded={!isEncrypted}
+            startColor="gray.400"
+            endColor="gray.500"
+            speed={1.6}
+            onClick={() => {
+              setIsEncrypted(false);
+            }}
+          >
+            <DescriptiveText title={value} />
+          </Skeleton>
         )}
       </Flex>
     </Flex>

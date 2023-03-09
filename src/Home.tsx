@@ -190,9 +190,9 @@ export default () => {
           <SimpleGrid gap={2}>
             <SimpleDisplay name={t("name")} value={data.name} />
             <SimpleDisplay name={t("tag")} value={data.tag} />
-            <SimpleDisplay name={t("address")} value={data.address} />
+            <SimpleDisplay name={t("address")} value={data.address} encrypt />
             <SimpleDisplay name={t("protocol")} value={data.protocol} />
-            <SimpleDisplay name={t("link")} value={data.link} />
+            <SimpleDisplay name={t("link")} value={data.link} encrypt />
           </SimpleGrid>
         )}
       </Section>
@@ -206,7 +206,7 @@ export default () => {
       >
         {(data) => (
           <SimpleGrid gap={2}>
-            <SimpleDisplay name={t("link")} value={data.link} />
+            <SimpleDisplay name={t("link")} value={data.link} encrypt />
             <SimpleDisplay name={t("tag")} value={data.tag} />
           </SimpleGrid>
         )}
