@@ -31,28 +31,19 @@ Install dependencies
 pnpm i
 ```
 
-First and foremost, we need to generate graphql type definitions and api bindings
+We need to generate graphql type definitions and api bindings
 
-Use environment variable `SCHEMA_PATH` to customize your schema endpoint, it can be a url starts with http(s) points to graphql endpoint or a local file path points to graphql schema
+Use environment variable `SCHEMA_PATH` to specify your schema endpoint
 
-By default, if you dont specify `SCHEMA_PATH`, fallback to `schema.graphql`
+It can be a url starts with http(s) points to graphql endpoint or graphql schema file
 
-```sh
-# SCHEMA_PATH=http(s)://SCHEMA_PATH pnpm codegen
-
-SCHEMA_PATH=/path/to/SCHEMA_PATH pnpm codegen
-```
-
-Optionally, you can watch any schema changes by append `-w` or `--watch` to the end of the codegen command like so
+or a local file `absolute path` points to graphql schema
 
 ```sh
-pnpm codegen -w
-```
+# SCHEMA_PATH=http(s)://example.com/graphql pnpm dev
+# SCHEMA_PATH=http(s)://example.com/graphql.schema pnpm dev
 
-Then start dev server
-
-```sh
-pnpm dev
+SCHEMA_PATH=/path/to/SCHEMA_PATH pnpm dev
 ```
 
 If everything goes well, open your browser and navigate to http://localhost:5173
@@ -63,4 +54,5 @@ Happy Hacking!
 
 - [Chakra](https://chakra-ui.com)
 - [React](https://reactjs.org)
+- [Tauri](https://tauri.app)
 - [Graphql](https://graphql.org)

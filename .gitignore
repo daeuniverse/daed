@@ -21,4 +21,8 @@ dist-ssr
 *.sln
 *.sw?
 
+# Turborepo
 .turbo
+
+# Tauri rust build artifacts
+native/target
