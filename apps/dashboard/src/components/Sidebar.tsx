@@ -19,25 +19,10 @@ import {
 import { i18n } from "@daed/i18n";
 import { graphql } from "@daed/schemas/gql";
 import { ConfigsQuery } from "@daed/schemas/gql/graphql";
-import { useStore } from "@nanostores/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, useMotionValue, useMotionValueEvent, useSpring } from "framer-motion";
-import { Fragment, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { CiStreamOff, CiStreamOn } from "react-icons/ci";
 import { HiLanguage } from "react-icons/hi2";
-
-import { gqlClient } from "~/api";
-import {
-  COLS_PER_ROW,
-  GET_LOG_LEVEL_STEPS,
-  QUERY_KEY_CONFIG,
-  QUERY_KEY_GROUP,
-  QUERY_KEY_NODE,
-  QUERY_KEY_RUNNING,
-  QUERY_KEY_SUBSCRIPTION,
-} from "~/constants";
-import { appStateAtom } from "~/store";
 
 import { CreateConfigFormDrawer, FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
 import { CreateGroupFormDrawer, FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";

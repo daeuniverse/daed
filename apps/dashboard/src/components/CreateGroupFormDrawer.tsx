@@ -1,9 +1,6 @@
 import { Flex, FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
 import { CreateFormDrawer, GrowableInputList } from "@daed/components";
 import { Policy, PolicyParam } from "@daed/schemas/gql/graphql";
-import { Fragment } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 
 export type FormValues = {
   name: string;

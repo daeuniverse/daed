@@ -1,8 +1,6 @@
 import { Flex, FormControl, Input, StackDivider, VStack } from "@chakra-ui/react";
 import { CreateFormDrawer } from "@daed/components";
 import { ImportArgument } from "@daed/schemas/gql/graphql";
-import { useForm, UseFormReturn } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 
 export type FormValues = {
   subscription: ImportArgument;
