@@ -7,7 +7,7 @@
   "description": "A Web Dashboard For dae",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "prepare": "husky install",
     "codegen": "graphql-codegen"

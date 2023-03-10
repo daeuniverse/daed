@@ -60,7 +60,7 @@ const DraggableGridCard = <T extends SortableList[number]>({
       }}
     >
       <CardHeader as={Flex} gap={2} alignItems="center">
-        <Menu>
+        <Menu size="sm">
           <MenuButton size="sm" as={IconButton} icon={<HamburgerIcon />} />
 
           <Portal>

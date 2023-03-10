@@ -1,10 +1,21 @@
-import { Flex, Icon, List, ListItem, Skeleton, Tag, Text, Tooltip, useOutsideClick } from "@chakra-ui/react";
+import {
+  Flex,
+  Icon,
+  ListItem,
+  Skeleton,
+  Tag,
+  Text,
+  TextProps,
+  Tooltip,
+  UnorderedList,
+  useOutsideClick,
+} from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
 
 import { Displayable, SimpleDisplayable } from "~/typings";
 
-const DescriptiveText = ({ title }: { title: SimpleDisplayable }) => {
+const DescriptiveText = ({ tip, ...props }: { tip: SimpleDisplayable } & TextProps) => {
   const [preventTooltipClose, setPreventTooltipClose] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -16,26 +27,36 @@ const DescriptiveText = ({ title }: { title: SimpleDisplayable }) => {
   return (
     <Tooltip
       ref={tooltipRef}
-      label={title}
+      label={tip}
       placement="right"
       hasArrow
       isOpen={preventTooltipClose ? true : undefined}
       pointerEvents="all"
     >
       <Text
+        cursor="pointer"
         noOfLines={1}
         onClick={() => {
           !preventTooltipClose && setPreventTooltipClose(true);
         }}
+        {...props}
       >
-        {title}
+        {tip}
       </Text>
     </Tooltip>
   );
 };
 
-export default ({ name, value, encrypt }: { name: string; value?: Displayable; encrypt?: boolean }) => {
-  const [isEncrypted, setIsEncrypted] = useState(encrypt);
+export default ({
+  name,
+  value,
+  defaultEncrypted,
+}: {
+  name: string;
+  value?: Displayable;
+  defaultEncrypted?: boolean;
+}) => {
+  const [encrypted, setEncrypted] = useState(defaultEncrypted);
 
   return (
     <Flex
@@ -50,35 +71,45 @@ export default ({ name, value, encrypt }: { name: string; value?: Displayable; e
 
       <Flex textAlign="right">
         {value === undefined || value === null ? null : Array.isArray(value) ? (
-          <List>
+          <UnorderedList spacing={2}>
             {value.map((item, i) => (
               <ListItem key={i}>
                 {typeof item === "object" ? (
-                  <Flex gap={1}>
-                    <Text>{item.key}:</Text>
-                    <DescriptiveText title={item.val} />
-                  </Flex>
+                  Object.entries(item).map(([key, val], i) => (
+                    <Flex gap={1} key={i}>
+                      <DescriptiveText tip={key} />
+                      :
+                      <DescriptiveText tip={val} />
+                    </Flex>
+                  ))
                 ) : (
                   <Tag size="sm">
-                    <DescriptiveText title={item} />
+                    <DescriptiveText tip={item} />
                   </Tag>
                 )}
               </ListItem>
             ))}
-          </List>
+          </UnorderedList>
         ) : typeof value === "boolean" ? (
           <Icon fontSize="lg" as={value ? CiCircleCheck : CiCircleRemove} />
         ) : (
           <Skeleton
             rounded="md"
             pointerEvents="all"
-            isLoaded={!isEncrypted}
+            isLoaded={!encrypted}
             startColor="gray.200"
             endColor="gray.300"
             speed={1.6}
-            onClick={() => setIsEncrypted(false)}
+            onClick={() => setEncrypted(false)}
+            onContextMenu={(e) => e.preventDefault()}
           >
-            <DescriptiveText title={value} />
+            <DescriptiveText
+              tip={value}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setEncrypted(true);
+              }}
+            />
           </Skeleton>
         )}
       </Flex>

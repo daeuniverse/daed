@@ -18,4 +18,4 @@ declare type Displayable =
   | boolean
   | SimpleDisplayable
   | Array<SimpleDisplayable>
-  | Array<{ [key: string]: unknown; key: string; val: string }>;
+  | Array<{ [key: string]: SimpleDisplayable }>;

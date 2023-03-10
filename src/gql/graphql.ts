@@ -481,6 +481,7 @@ export type ConfigsQuery = {
     __typename?: "Config";
     id: string;
     selected: boolean;
+    name: string;
     global: {
       __typename?: "Global";
       tproxyPort: number;
@@ -718,6 +719,7 @@ export const ConfigsDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "selected" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "global" },

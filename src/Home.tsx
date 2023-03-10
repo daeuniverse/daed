@@ -61,6 +61,7 @@ export default () => {
           configs {
             id
             selected
+            name
             global {
               tproxyPort
               logLevel
@@ -190,9 +191,9 @@ export default () => {
           <SimpleGrid gap={2}>
             <SimpleDisplay name={t("name")} value={data.name} />
             <SimpleDisplay name={t("tag")} value={data.tag} />
-            <SimpleDisplay name={t("address")} value={data.address} encrypt />
+            <SimpleDisplay name={t("address")} value={data.address} defaultEncrypted />
             <SimpleDisplay name={t("protocol")} value={data.protocol} />
-            <SimpleDisplay name={t("link")} value={data.link} encrypt />
+            <SimpleDisplay name={t("link")} value={data.link} defaultEncrypted />
           </SimpleGrid>
         )}
       </Section>
@@ -206,7 +207,7 @@ export default () => {
       >
         {(data) => (
           <SimpleGrid gap={2}>
-            <SimpleDisplay name={t("link")} value={data.link} encrypt />
+            <SimpleDisplay name={t("link")} value={data.link} defaultEncrypted />
             <SimpleDisplay name={t("tag")} value={data.tag} />
           </SimpleGrid>
         )}
@@ -222,6 +223,7 @@ export default () => {
       >
         {(data) => (
           <SimpleGrid gap={2}>
+            <SimpleDisplay name={t("name")} value={data.name} />
             <SimpleDisplay name={t("tproxyPort")} value={data.global.tproxyPort} />
             <SimpleDisplay name={t("logLevel")} value={data.global.logLevel} />
             <SimpleDisplay name={t("tcpCheckUrl")} value={data.global.tcpCheckUrl} />
