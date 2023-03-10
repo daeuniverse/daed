@@ -21,10 +21,8 @@ import { closestCenter, DndContext, UniqueIdentifier } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useStore } from "@nanostores/react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { appStateAtom, PersistentSortableKeys } from "~/store";
 
 type DraggableGridCardProps<T extends SortableList[number]> = {
   data: T;
@@ -109,22 +107,25 @@ const DraggableGridCard = <T extends SortableList[number]>({
 };
 
 export type SortableGridProps<T extends SortableList> = {
+  colsPerRow: number;
   isLoading: boolean;
   unSortedItems?: T;
-  persistentSortableKeysName: keyof PersistentSortableKeys;
+  defaultSortableKeys: UniqueIdentifier[];
+  onSort?: (sortableKeys: UniqueIdentifier[]) => void;
   children: (data: T[number]) => React.ReactNode;
 } & Omit<DraggableGridCardProps<T[number]>, "data" | "children">;
 
 export const SortableGrid = <T extends SortableList>({
+  colsPerRow,
   isLoading,
   unSortedItems,
   onSelect,
   onRemove,
-  persistentSortableKeysName,
+  defaultSortableKeys,
+  onSort,
   children,
 }: SortableGridProps<T>) => {
-  const appState = useStore(appStateAtom);
-  const [sortableKeys, setSortableKeys] = useState<UniqueIdentifier[]>(appState[persistentSortableKeysName]);
+  const [sortableKeys, setSortableKeys] = useState<UniqueIdentifier[]>(defaultSortableKeys);
 
   useEffect(() => {
     if (unSortedItems) {
@@ -143,7 +144,7 @@ export const SortableGrid = <T extends SortableList>({
   }, [unSortedItems]);
 
   useEffect(() => {
-    appStateAtom.setKey(persistentSortableKeysName, sortableKeys);
+    onSort && onSort(sortableKeys);
   }, [sortableKeys]);
 
   const sortedItems = useMemo(() => {
@@ -161,7 +162,7 @@ export const SortableGrid = <T extends SortableList>({
           <Spinner />
         </Center>
       ) : (
-        <Grid gridTemplateColumns={`repeat(${appState.colsPerRow}, 1fr)`} gap={2}>
+        <Grid gridTemplateColumns={`repeat(${colsPerRow}, 1fr)`} gap={2}>
           <DndContext
             modifiers={[restrictToParentElement]}
             collisionDetection={closestCenter}

@@ -1,3 +1,4 @@
 {
-  "name": "@daed/i18n"
+  "name": "@daed/i18n",
+  "private": true
 }

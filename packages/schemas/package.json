@@ -1,3 +1,4 @@
 {
-  "name": "@daed/schemas"
+  "name": "@daed/schemas",
+  "private": true
 }

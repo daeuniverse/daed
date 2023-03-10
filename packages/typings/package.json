@@ -1,3 +1,4 @@
 {
-  "name": "@daed/typings"
+  "name": "@daed/typings",
+  "private": true
 }
