@@ -124,10 +124,12 @@ importers:
   apps/dashboard:
     specifiers:
       '@daed/components': workspace:*
+      '@daed/i18n': workspace:*
       '@daed/schemas': workspace:*
       '@daed/typings': workspace:*
     dependencies:
       '@daed/components': link:../../packages/components
+      '@daed/i18n': link:../../packages/i18n
       '@daed/schemas': link:../../packages/schemas
     devDependencies:
       '@daed/typings': link:../../packages/typings
@@ -137,6 +139,9 @@ importers:
       '@daed/typings': workspace:*
     devDependencies:
       '@daed/typings': link:../typings
+
+  packages/i18n:
+    specifiers: {}
 
   packages/schemas:
     specifiers: {}

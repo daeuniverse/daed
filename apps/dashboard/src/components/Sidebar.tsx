@@ -16,6 +16,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { i18n } from "@daed/i18n";
 import { graphql } from "@daed/schemas/gql";
 import { ConfigsQuery } from "@daed/schemas/gql/graphql";
 import { useStore } from "@nanostores/react";
@@ -36,7 +37,6 @@ import {
   QUERY_KEY_RUNNING,
   QUERY_KEY_SUBSCRIPTION,
 } from "~/constants";
-import { i18n } from "~/i18n";
 import { appStateAtom } from "~/store";
 
 import { CreateConfigFormDrawer, FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";

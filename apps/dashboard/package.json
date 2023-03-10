@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@daed/components": "workspace:*",
+    "@daed/i18n": "workspace:*",
     "@daed/schemas": "workspace:*"
   },
   "devDependencies": {

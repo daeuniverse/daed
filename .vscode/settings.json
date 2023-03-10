@@ -31,6 +31,6 @@
     "source.organizeImports": true
   },
   "editor.formatOnSave": true,
-  "i18n-ally.localesPaths": ["src/i18n/locales"],
+  "i18n-ally.localesPaths": ["packages/i18n/locales"],
   "i18n-ally.keystyle": "nested"
 }

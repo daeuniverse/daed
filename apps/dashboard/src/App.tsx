@@ -1,5 +1,6 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { Center, Collapse, Flex, Icon, IconButton, Spinner, useDisclosure } from "@chakra-ui/react";
+import { i18n } from "@daed/i18n";
 import { graphql } from "@daed/schemas/gql";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -10,7 +11,6 @@ import { Sidebar } from "~/components/Sidebar";
 import { gqlClient } from "./api";
 import { QUERY_KEY_HEALTH_CHECK } from "./constants";
 import { Home } from "./Home";
-import { i18n } from "./i18n";
 
 export const App = () => {
   const { t } = useTranslation();
