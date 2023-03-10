@@ -1,9 +1,6 @@
 import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Flex, Heading } from "@chakra-ui/react";
 import { SortableGrid, SortableGridProps } from "@daed/components";
 import { SortableList } from "@daed/typings";
-import { useStore } from "@nanostores/react";
-
-import { appStateAtom, PersistentSortableKeys } from "~/store";
 
 export const Section = <T extends SortableList>({
   name,

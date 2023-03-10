@@ -9,8 +9,6 @@ import {
   DrawerOverlay,
   Flex,
 } from "@chakra-ui/react";
-import { UseFormReturn } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import SimpleBar from "simplebar-react";
 
 export const CreateFormDrawer = <FormValues extends Record<string, unknown>>({

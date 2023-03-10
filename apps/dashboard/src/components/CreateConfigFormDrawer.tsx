@@ -23,12 +23,6 @@ import { CreateFormDrawer, GrowableInputList, NumberInput } from "@daed/componen
 import { graphql } from "@daed/schemas/gql";
 import { InterfacesQuery } from "@daed/schemas/gql/graphql";
 import { useQuery } from "@tanstack/react-query";
-import { forwardRef, Fragment } from "react";
-import { Controller, useForm, UseFormReturn } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-
-import { gqlClient } from "~/api";
-import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS, QUERY_KEY_INTERFACES } from "~/constants";
 
 export type FormValues = {
   name: string;

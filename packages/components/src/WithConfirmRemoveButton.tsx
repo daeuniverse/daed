@@ -1,6 +1,5 @@
 import { CloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import { IconButton, IconButtonProps } from "@chakra-ui/react";
-import { useState } from "react";
 
 export const WithConfirmRemoveButton = ({ onRemove, ...props }: { onRemove: () => void } & IconButtonProps) => {
   const [confirmed, confirm] = useState(false);

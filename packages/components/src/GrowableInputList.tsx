@@ -1,7 +1,5 @@
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Flex, IconButton, StackDivider, useCounter, VStack } from "@chakra-ui/react";
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
 
 export const GrowableInputList = ({ children }: { children: (i: number) => React.ReactNode }) => {
   const { t } = useTranslation();
