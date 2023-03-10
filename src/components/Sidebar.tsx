@@ -3,6 +3,7 @@ import {
   Button,
   Center,
   Flex,
+  Heading,
   Icon,
   IconButton,
   Image,
@@ -244,16 +245,33 @@ export default () => {
   });
 
   return (
-    <Flex ref={platform} h="full" alignItems="center" justifyContent="center" direction="column" px={10} pt={4} pb={12}>
+    <Flex ref={platform} h="full" alignItems="center" justifyContent="center" direction="column" px={10} pt={4}>
       <motion.div
         drag
-        style={{ x, y, zIndex: Number.MAX_SAFE_INTEGER, height: showSave ? 0 : "auto" }}
+        style={{
+          x,
+          y,
+          touchAction: "none",
+          zIndex: Number.MAX_SAFE_INTEGER,
+          height: showSave ? 0 : "auto",
+          marginBlock: 20,
+        }}
         dragConstraints={{ left: 0, right: 0, top: 0 }}
+        whileHover={{
+          rotate: 360,
+          transition: {
+            duration: 0.3,
+          },
+        }}
       >
-        <Image ref={dae} draggable={false} m={10} boxSize={24} rounded="md" src="/logo.svg" alt="logo" />
+        <Image ref={dae} draggable={false} boxSize={24} rounded="md" src="/logo.svg" alt="logo" />
       </motion.div>
 
-      <Flex w="full" direction="column" gap={6}>
+      <Flex w="full" direction="column" gap={4}>
+        <Heading as="h1" textAlign="center">
+          daed
+        </Heading>
+
         <Button w="full" leftIcon={<LinkIcon />} onClick={onNodeFormDrawerOpen}>
           {`${t("import")} ${t("node")}`}
         </Button>

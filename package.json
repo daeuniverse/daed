@@ -24,6 +24,7 @@
     "@emotion/styled": "^11.10.6",
     "@fontsource/open-sans": "^4.5.14",
     "@fontsource/raleway": "^4.5.12",
+    "@fontsource/source-code-pro": "^4.5.14",
     "@graphiql/toolkit": "^0.8.2",
     "@nanostores/persistent": "^0.7.0",
     "@nanostores/react": "^0.4.1",

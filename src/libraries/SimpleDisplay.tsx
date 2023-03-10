@@ -1,5 +1,6 @@
-import { Checkbox, Flex, List, ListItem, Skeleton, Tag, Text, Tooltip, useOutsideClick } from "@chakra-ui/react";
+import { Flex, Icon, List, ListItem, Skeleton, Tag, Text, Tooltip, useOutsideClick } from "@chakra-ui/react";
 import { useRef, useState } from "react";
+import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
 
 import { Displayable, SimpleDisplayable } from "~/typings";
 
@@ -53,13 +54,12 @@ export default ({ name, value, encrypt }: { name: string; value?: Displayable; e
             {value.map((item, i) => (
               <ListItem key={i}>
                 {typeof item === "object" ? (
-                  <Flex gap={2}>
-                    <Text>{item.key}</Text>
-                    :
+                  <Flex gap={1}>
+                    <Text>{item.key}:</Text>
                     <DescriptiveText title={item.val} />
                   </Flex>
                 ) : (
-                  <Tag>
+                  <Tag size="sm">
                     <DescriptiveText title={item} />
                   </Tag>
                 )}
@@ -67,18 +67,16 @@ export default ({ name, value, encrypt }: { name: string; value?: Displayable; e
             ))}
           </List>
         ) : typeof value === "boolean" ? (
-          <Checkbox disabled isChecked={value} />
+          <Icon fontSize="lg" as={value ? CiCircleCheck : CiCircleRemove} />
         ) : (
           <Skeleton
             rounded="md"
             pointerEvents="all"
             isLoaded={!isEncrypted}
-            startColor="gray.400"
-            endColor="gray.500"
+            startColor="gray.200"
+            endColor="gray.300"
             speed={1.6}
-            onClick={() => {
-              setIsEncrypted(false);
-            }}
+            onClick={() => setIsEncrypted(false)}
           >
             <DescriptiveText title={value} />
           </Skeleton>

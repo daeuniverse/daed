@@ -178,7 +178,7 @@ export default () => {
   });
 
   return (
-    <Accordion allowToggle>
+    <Accordion allowToggle fontFamily={`"Source Code Pro", monospace`}>
       <Section
         name={t("node")}
         isLoading={nodeQuery.isLoading}

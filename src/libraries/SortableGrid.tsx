@@ -33,10 +33,9 @@ const DraggableGridCard = <T extends SortableList[number]>({
   return (
     <Card
       ref={setNodeRef}
-      bg={data.selected ? "Highlight" : ""}
       size="sm"
       style={{
-        zIndex: isDragging ? Number.MAX_SAFE_INTEGER : 0,
+        zIndex: isDragging ? Number.MAX_SAFE_INTEGER : 1,
         transform: CSS.Translate.toString(transform),
         transition,
       }}
@@ -45,7 +44,12 @@ const DraggableGridCard = <T extends SortableList[number]>({
         <WithConfirmRemoveButton size="sm" aria-label={t("remove")} onRemove={() => onRemove(data)} />
 
         <Tooltip hasArrow label={data.id} placement="top">
-          <Button flex={1} noOfLines={1} onClick={() => onSelect && onSelect(data)}>
+          <Button
+            flex={1}
+            noOfLines={1}
+            colorScheme={data.selected ? "blue" : undefined}
+            onClick={() => onSelect && onSelect(data)}
+          >
             {data.id}
           </Button>
         </Tooltip>

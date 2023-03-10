@@ -28,6 +28,8 @@ export type Config = {
   dns: Dns;
   global: Global;
   id: Scalars["ID"];
+  name: Scalars["String"];
+  referenceGroups: Array<Scalars["String"]>;
   routing: Routing;
   selected: Scalars["Boolean"];
 };
@@ -45,6 +47,8 @@ export type ConfigFlatDesc = {
 
 export type Dae = {
   __typename?: "Dae";
+  /** modified indicates whether the running config has been modified. */
+  modified: Scalars["Boolean"];
   running: Scalars["Boolean"];
 };
 
@@ -161,15 +165,17 @@ export type Mutation = {
   removeNodes: Scalars["Int"];
   /** removeSubscriptions is to remove subscriptions with given ID list. */
   removeSubscriptions: Scalars["Int"];
+  /** renameConfig is to give the config a new name. */
+  renameConfig: Scalars["Int"];
   /** renameGroup is to rename a group. */
   renameGroup: Scalars["Int"];
   /** run proxy with the current config. Dry-run can be used to stop the proxy. */
   run: Scalars["Int"];
   /** selectConfig is to select a config as the current config. */
   selectConfig: Scalars["Int"];
-  /** tagNode is to give the node a tag. */
+  /** tagNode is to give the node a new tag. */
   tagNode: Scalars["Int"];
-  /** tagNode is to give the subscription a tag. */
+  /** tagSubscription is to give the subscription a new tag. */
   tagSubscription: Scalars["Int"];
   /** updateConfig allows to partially update "global". */
   updateConfig: Config;
@@ -180,6 +186,7 @@ export type Mutation = {
 export type MutationCreateConfigArgs = {
   dns?: InputMaybe<Scalars["String"]>;
   global?: InputMaybe<GlobalInput>;
+  name?: InputMaybe<Scalars["String"]>;
   routing?: InputMaybe<Scalars["String"]>;
 };
 
@@ -233,6 +240,11 @@ export type MutationRemoveNodesArgs = {
 
 export type MutationRemoveSubscriptionsArgs = {
   ids: Array<Scalars["ID"]>;
+};
+
+export type MutationRenameConfigArgs = {
+  id: Scalars["ID"];
+  name: Scalars["String"];
 };
 
 export type MutationRenameGroupArgs = {
@@ -321,7 +333,7 @@ export enum Policy {
 }
 
 export type PolicyParam = {
-  key: Scalars["String"];
+  key?: InputMaybe<Scalars["String"]>;
   val: Scalars["String"];
 };
 

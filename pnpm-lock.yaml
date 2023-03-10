@@ -14,6 +14,7 @@ specifiers:
   "@emotion/styled": ^11.10.6
   "@fontsource/open-sans": ^4.5.14
   "@fontsource/raleway": ^4.5.12
+  "@fontsource/source-code-pro": ^4.5.14
   "@graphiql/toolkit": ^0.8.2
   "@graphql-codegen/cli": 3.2.2
   "@graphql-codegen/client-preset": 2.1.1
@@ -69,6 +70,7 @@ dependencies:
   "@emotion/styled": 11.10.6_oouaibmszuch5k64ms7uxp2aia
   "@fontsource/open-sans": 4.5.14
   "@fontsource/raleway": 4.5.12
+  "@fontsource/source-code-pro": 4.5.14
   "@graphiql/toolkit": 0.8.2_jukviheqyaybdjg76ifj2dsifa
   "@nanostores/persistent": 0.7.0_nanostores@0.7.4
   "@nanostores/react": 0.4.1_nkfnbc2tpc77iht7asm3uqwau4
@@ -2659,6 +2661,11 @@ packages:
   /@fontsource/raleway/4.5.12:
     resolution:
       { integrity: sha512-uKs13d6NFWU4vf5LSDHK/cbaAw+UXkzz03fKjyvkKq8Nop+CeB6o8STEDkZD9/uOo3v3sgm59Wyw8uGWvxoCiA== }
+    dev: false
+
+  /@fontsource/source-code-pro/4.5.14:
+    resolution:
+      { integrity: sha512-EWE0djE7wFCBmExWa9oT1vIp+qj5MUroVvXWb9G7Ig4t4aXDd9QDidYZzMzNemb8gQxTdOzGmhx6EZnDTFMh5Q== }
     dev: false
 
   /@graphiql/react/0.17.0_eurdrfph5ej35qh4hedy3uumg4:
