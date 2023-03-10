@@ -41,7 +41,7 @@ const documents = {
     types.ImportNodesDocument,
   "\n          mutation importSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n            importSubscription(rollbackError: $rollbackError, arg: $arg) {\n              link\n            }\n          }\n        ":
     types.ImportSubscriptionDocument,
-  "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        ":
+  "\n          mutation createConfig($name: String, $global: globalInput, $dns: String, $routing: String) {\n            createConfig(name: $name, global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        ":
     types.CreateConfigDocument,
   "\n          mutation createGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            createGroup(name: $name, policy: $policy, policyParams: $policyParams) {\n              id\n            }\n          }\n        ":
     types.CreateGroupDocument,
@@ -155,8 +155,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        "
-): (typeof documents)["\n          mutation createConfig($global: globalInput, $dns: String, $routing: String) {\n            createConfig(global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        "];
+  source: "\n          mutation createConfig($name: String, $global: globalInput, $dns: String, $routing: String) {\n            createConfig(name: $name, global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        "
+): (typeof documents)["\n          mutation createConfig($name: String, $global: globalInput, $dns: String, $routing: String) {\n            createConfig(name: $name, global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

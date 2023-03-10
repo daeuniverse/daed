@@ -1,5 +1,21 @@
-import { DragHandleIcon } from "@chakra-ui/icons";
-import { Button, Card, CardBody, CardHeader, Center, Flex, Grid, IconButton, Spinner, Tooltip } from "@chakra-ui/react";
+import { DeleteIcon, DragHandleIcon, EditIcon, HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Flex,
+  Grid,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
+  Spinner,
+  Tooltip,
+} from "@chakra-ui/react";
 import { closestCenter, DndContext, UniqueIdentifier } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
@@ -8,20 +24,23 @@ import { useStore } from "@nanostores/react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import WithConfirmRemoveButton from "~/libraries/WithConfirmRemoveButton";
 import { appStateAtom, PersistentSortableKeys } from "~/store";
 import { SortableList } from "~/typings";
 
-export type DraggableGridCardProps<T extends SortableList[number]> = {
+type DraggableGridCardProps<T extends SortableList[number]> = {
   data: T;
   onSelect?: (data: T) => void;
-  onRemove: (data: T) => void;
+  onRename?: (data: T) => void;
+  onEdit?: (data: T) => void;
+  onRemove?: (data: T) => void;
   children: React.ReactNode;
 };
 
 const DraggableGridCard = <T extends SortableList[number]>({
   data,
   onSelect,
+  onRename,
+  onEdit,
   onRemove,
   children,
 }: DraggableGridCardProps<T>) => {
@@ -41,7 +60,29 @@ const DraggableGridCard = <T extends SortableList[number]>({
       }}
     >
       <CardHeader as={Flex} gap={2} alignItems="center">
-        <WithConfirmRemoveButton size="sm" aria-label={t("remove")} onRemove={() => onRemove(data)} />
+        <Menu>
+          <MenuButton size="sm" as={IconButton} icon={<HamburgerIcon />} />
+
+          <Portal>
+            <MenuList>
+              {onRename && (
+                <MenuItem icon={<EditIcon />} onClick={() => onRename(data)}>
+                  {t("rename")}
+                </MenuItem>
+              )}
+
+              {onEdit && (
+                <MenuItem icon={<SettingsIcon />} onClick={() => onEdit(data)}>
+                  {t("edit")}
+                </MenuItem>
+              )}
+
+              <MenuItem icon={<DeleteIcon />} onClick={() => onRemove && onRemove(data)}>
+                {t("remove")}
+              </MenuItem>
+            </MenuList>
+          </Portal>
+        </Menu>
 
         <Tooltip hasArrow label={data.id} placement="top">
           <Button

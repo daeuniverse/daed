@@ -581,6 +581,7 @@ export type ImportSubscriptionMutation = {
 };
 
 export type CreateConfigMutationVariables = Exact<{
+  name?: InputMaybe<Scalars["String"]>;
   global?: InputMaybe<GlobalInput>;
   dns?: InputMaybe<Scalars["String"]>;
   routing?: InputMaybe<Scalars["String"]>;
@@ -1172,6 +1173,11 @@ export const CreateConfigDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
           variable: { kind: "Variable", name: { kind: "Name", value: "global" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "globalInput" } },
         },
@@ -1193,6 +1199,11 @@ export const CreateConfigDocument = {
             kind: "Field",
             name: { kind: "Name", value: "createConfig" },
             arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+              },
               {
                 kind: "Argument",
                 name: { kind: "Name", value: "global" },

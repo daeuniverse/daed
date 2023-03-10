@@ -33,16 +33,19 @@ import GrowableInputList from "~/libraries/GrowableInputList";
 import NumberInput from "~/libraries/NumberInput";
 
 export type FormValues = {
-  tproxyPort: number;
-  logLevelIndex: number;
-  tcpCheckUrl: string;
-  udpCheckDns: string;
-  checkIntervalSeconds: number;
-  checkTolerenceMS: number;
-  lanInterface: string[];
-  wanInterface: string[];
-  allowInsecure: boolean;
-  dialMode: string;
+  name: string;
+  global: {
+    tproxyPort: number;
+    logLevelIndex: number;
+    tcpCheckUrl: string;
+    udpCheckDns: string;
+    checkIntervalSeconds: number;
+    checkTolerenceMS: number;
+    lanInterface: string[];
+    wanInterface: string[];
+    allowInsecure: boolean;
+    dialMode: string;
+  };
   dns: string;
   routing: string;
 };
@@ -108,10 +111,16 @@ export default ({
           <TabPanel>
             <Flex direction="column" gap={4}>
               <FormControl>
+                <FormLabel>{t("name")}</FormLabel>
+
+                <Input {...register("name")} />
+              </FormControl>
+
+              <FormControl>
                 <FormLabel>{t("tproxyPort")}</FormLabel>
 
                 <Controller
-                  name="tproxyPort"
+                  name="global.tproxyPort"
                   control={control}
                   defaultValue={12345}
                   render={({ field }) => <NumberInput min={0} max={65535} {...field} />}
@@ -122,7 +131,7 @@ export default ({
                 <FormLabel>{t("logLevel")}</FormLabel>
 
                 <Controller
-                  name="logLevelIndex"
+                  name="global.logLevelIndex"
                   control={control}
                   defaultValue={0}
                   render={({ field }) => (
@@ -150,20 +159,20 @@ export default ({
               <FormControl>
                 <FormLabel>{t("tcpCheckUrl")}</FormLabel>
 
-                <Input defaultValue={DEFAULT_TCP_CHECK_URL} {...register("tcpCheckUrl")} />
+                <Input defaultValue={DEFAULT_TCP_CHECK_URL} {...register("global.tcpCheckUrl")} />
               </FormControl>
 
               <FormControl>
                 <FormLabel>{t("udpCheckDns")}</FormLabel>
 
-                <Input defaultValue={DEFAULT_UDP_CHECK_DNS} {...register("udpCheckDns")} />
+                <Input defaultValue={DEFAULT_UDP_CHECK_DNS} {...register("global.udpCheckDns")} />
               </FormControl>
 
               <FormControl>
                 <FormLabel>{`${t("checkInterval")} (${t("seconds")})`}</FormLabel>
 
                 <Controller
-                  name="checkIntervalSeconds"
+                  name="global.checkIntervalSeconds"
                   control={control}
                   defaultValue={10}
                   render={({ field }) => <NumberInput min={0} {...field} />}
@@ -174,7 +183,7 @@ export default ({
                 <FormLabel>{`${t("checkTolerance")} (${t("milliseconds")})`}</FormLabel>
 
                 <Controller
-                  name="checkTolerenceMS"
+                  name="global.checkTolerenceMS"
                   control={control}
                   defaultValue={1000}
                   render={({ field }) => <NumberInput min={0} {...field} />}
@@ -185,7 +194,7 @@ export default ({
                 <FormLabel>{t("lanInterface")}</FormLabel>
 
                 <GrowableInputList>
-                  {(i) => <SelectInterface data={interfacesQuery.data} {...register(`lanInterface.${i}`)} />}
+                  {(i) => <SelectInterface data={interfacesQuery.data} {...register(`global.lanInterface.${i}`)} />}
                 </GrowableInputList>
               </FormControl>
 
@@ -200,26 +209,26 @@ export default ({
                           .name
                       }
                       data={interfacesQuery.data}
-                      {...register(`wanInterface.${i}`)}
+                      {...register(`global.wanInterface.${i}`)}
                     />
                   )}
                 </GrowableInputList>
               </FormControl>
 
               <FormControl>
-                <FormLabel>{t("allowInsecure")}</FormLabel>
-
-                <Switch {...register("allowInsecure")} />
-              </FormControl>
-
-              <FormControl>
                 <FormLabel>{t("dialMode")}</FormLabel>
 
-                <Select {...register("dialMode")}>
+                <Select {...register("global.dialMode")}>
                   <option value="ip">{t("ip")}</option>
                   <option value="domain">{t("domain")}</option>
                   <option value="domain+">{t("domain+")}</option>
                 </Select>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>{t("allowInsecure")}</FormLabel>
+
+                <Switch {...register("global.allowInsecure")} />
               </FormControl>
             </Flex>
           </TabPanel>
