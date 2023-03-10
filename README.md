@@ -1,5 +1,9 @@
 # daed
 
+<p align="center" width="100%">
+  <img width="100" src="docs/logo.svg" />
+</p>
+
 ## What this project is for
 
 A Web Dashboard For [dae](https://github.com/v2raya/dae)

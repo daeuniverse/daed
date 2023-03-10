@@ -7,7 +7,7 @@
   "devDependencies": {
     "@daed/typings": "workspace:*"
   },
-  "name": "daed",
+  "name": "@daed/dashboard",
   "private": true,
   "scripts": {
     "build": "vite build",
