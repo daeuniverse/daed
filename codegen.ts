@@ -1,15 +1,14 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
 
-const config: CodegenConfig = {
+// eslint-disable-next-line import/no-default-export
+export default {
   overwrite: true,
   schema: process.env.SCHEMA_PATH || "schema.graphql",
-  documents: "src/**/*.tsx",
+  documents: "apps/*/src/**/*.tsx",
   generates: {
-    "src/gql/": {
+    "packages/schemas/gql/": {
       preset: "client",
     },
   },
   hooks: { afterOneFileWrite: ["prettier -w"] },
-};
-
-export default config;
+} as CodegenConfig;

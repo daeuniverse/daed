@@ -1,122 +1,148 @@
 lockfileVersion: 5.4
 
-specifiers:
-  '@chakra-ui/icons': ^2.0.17
-  '@chakra-ui/react': ^2.5.1
-  '@chakra-ui/toast': ^6.0.1
-  '@commitlint/cli': ^17.4.4
-  '@commitlint/config-conventional': ^17.4.4
-  '@dnd-kit/core': ^6.0.8
-  '@dnd-kit/modifiers': ^6.0.1
-  '@dnd-kit/sortable': ^7.0.2
-  '@dnd-kit/utilities': ^3.2.1
-  '@emotion/react': ^11.10.6
-  '@emotion/styled': ^11.10.6
-  '@fontsource/open-sans': ^4.5.14
-  '@fontsource/raleway': ^4.5.12
-  '@fontsource/source-code-pro': ^4.5.14
-  '@graphiql/toolkit': ^0.8.2
-  '@graphql-codegen/cli': 3.2.2
-  '@graphql-codegen/client-preset': 2.1.1
-  '@graphql-codegen/introspection': 3.0.1
-  '@graphql-typed-document-node/core': ^3.1.2
-  '@nanostores/persistent': ^0.7.0
-  '@nanostores/react': ^0.4.1
-  '@tanstack/react-query': ^4.26.1
-  '@tanstack/react-query-devtools': ^4.26.1
-  '@types/node': ^18.14.6
-  '@types/react': ^18.0.28
-  '@types/react-dom': ^18.0.11
-  '@typescript-eslint/eslint-plugin': ^5.54.1
-  '@typescript-eslint/parser': ^5.54.1
-  '@vitejs/plugin-react-swc': ^3.2.0
-  eslint: ^8.35.0
-  eslint-config-prettier: ^8.7.0
-  eslint-import-resolver-typescript: ^3.5.3
-  eslint-plugin-import: ^2.27.5
-  eslint-plugin-prettier: ^4.2.1
-  eslint-plugin-react: ^7.32.2
-  framer-motion: ^10.2.3
-  graphiql: ^2.4.0
-  graphql: ^16.6.0
-  graphql-request: ^5.2.0
-  husky: ^8.0.3
-  i18next: ^22.4.11
-  i18next-browser-languagedetector: ^7.0.1
-  lint-staged: ^13.1.2
-  lodash: ^4.17.21
-  nanostores: ^0.7.4
-  prettier: ^2.8.4
-  react: ^18.2.0
-  react-dom: ^18.2.0
-  react-hook-form: ^7.43.5
-  react-i18next: ^12.2.0
-  react-icons: ^4.8.0
-  react-router: ^6.8.2
-  react-router-dom: ^6.8.2
-  simplebar-react: ^3.2.1
-  typescript: ^4.9.5
-  vite: ^4.1.4
+importers:
 
-dependencies:
-  '@chakra-ui/icons': 2.0.17_react@18.2.0
-  '@chakra-ui/react': 2.5.1_h6z3b2rujpcgk2nnxer2nh5ufu
-  '@chakra-ui/toast': 6.0.1_6ggf4a6hlz4kphqo2oczd6zkam
-  '@dnd-kit/core': 6.0.8_biqbaboplfbrettd7655fr4n2y
-  '@dnd-kit/modifiers': 6.0.1_52scne4zmdeyjh2otzkgz2xfvu
-  '@dnd-kit/sortable': 7.0.2_52scne4zmdeyjh2otzkgz2xfvu
-  '@dnd-kit/utilities': 3.2.1_react@18.2.0
-  '@emotion/react': 11.10.6_pmekkgnqduwlme35zpnqhenc34
-  '@emotion/styled': 11.10.6_oouaibmszuch5k64ms7uxp2aia
-  '@fontsource/open-sans': 4.5.14
-  '@fontsource/raleway': 4.5.12
-  '@fontsource/source-code-pro': 4.5.14
-  '@graphiql/toolkit': 0.8.2_jukviheqyaybdjg76ifj2dsifa
-  '@nanostores/persistent': 0.7.0_nanostores@0.7.4
-  '@nanostores/react': 0.4.1_nkfnbc2tpc77iht7asm3uqwau4
-  '@tanstack/react-query': 4.26.1_biqbaboplfbrettd7655fr4n2y
-  '@tanstack/react-query-devtools': 4.26.1_brdhmlf72zuns3lsk66phyptty
-  framer-motion: 10.2.3_biqbaboplfbrettd7655fr4n2y
-  graphiql: 2.4.0_eurdrfph5ej35qh4hedy3uumg4
-  graphql: 16.6.0
-  graphql-request: 5.2.0_graphql@16.6.0
-  i18next: 22.4.11
-  i18next-browser-languagedetector: 7.0.1
-  lodash: 4.17.21
-  nanostores: 0.7.4
-  react: 18.2.0
-  react-dom: 18.2.0_react@18.2.0
-  react-hook-form: 7.43.5_react@18.2.0
-  react-i18next: 12.2.0_nuvg7z3l7c7q3mgp6kac62miay
-  react-icons: 4.8.0_react@18.2.0
-  react-router: 6.8.2_react@18.2.0
-  react-router-dom: 6.8.2_biqbaboplfbrettd7655fr4n2y
-  simplebar-react: 3.2.1_react@18.2.0
+  .:
+    specifiers:
+      '@chakra-ui/icons': ^2.0.17
+      '@chakra-ui/react': ^2.5.1
+      '@chakra-ui/toast': ^6.0.1
+      '@commitlint/cli': ^17.4.4
+      '@commitlint/config-conventional': ^17.4.4
+      '@dnd-kit/core': ^6.0.8
+      '@dnd-kit/modifiers': ^6.0.1
+      '@dnd-kit/sortable': ^7.0.2
+      '@dnd-kit/utilities': ^3.2.1
+      '@emotion/react': ^11.10.6
+      '@emotion/styled': ^11.10.6
+      '@fontsource/open-sans': ^4.5.14
+      '@fontsource/raleway': ^4.5.12
+      '@fontsource/source-code-pro': ^4.5.14
+      '@graphiql/toolkit': ^0.8.2
+      '@graphql-codegen/cli': 3.2.2
+      '@graphql-codegen/client-preset': 2.1.1
+      '@graphql-codegen/introspection': 3.0.1
+      '@graphql-typed-document-node/core': ^3.1.2
+      '@nanostores/persistent': ^0.7.0
+      '@nanostores/react': ^0.4.1
+      '@tanstack/react-query': ^4.26.1
+      '@tanstack/react-query-devtools': ^4.26.1
+      '@types/node': ^18.14.6
+      '@types/react': ^18.0.28
+      '@types/react-dom': ^18.0.11
+      '@typescript-eslint/eslint-plugin': ^5.54.1
+      '@typescript-eslint/parser': ^5.54.1
+      '@vitejs/plugin-react-swc': ^3.2.0
+      eslint: ^8.35.0
+      eslint-config-prettier: ^8.7.0
+      eslint-import-resolver-typescript: ^3.5.3
+      eslint-plugin-import: ^2.27.5
+      eslint-plugin-prettier: ^4.2.1
+      eslint-plugin-react: ^7.32.2
+      framer-motion: ^10.2.3
+      graphiql: ^2.4.0
+      graphql: ^16.6.0
+      graphql-request: ^5.2.0
+      husky: ^8.0.3
+      i18next: ^22.4.11
+      i18next-browser-languagedetector: ^7.0.1
+      lint-staged: ^13.1.2
+      lodash: ^4.17.21
+      nanostores: ^0.7.4
+      prettier: ^2.8.4
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-hook-form: ^7.43.5
+      react-i18next: ^12.2.0
+      react-icons: ^4.8.0
+      react-router: ^6.8.2
+      react-router-dom: ^6.8.2
+      simplebar-react: ^3.2.1
+      turbo: ^1.8.3
+      typescript: ^4.9.5
+      vite: ^4.1.4
+    dependencies:
+      '@chakra-ui/icons': 2.0.17_react@18.2.0
+      '@chakra-ui/react': 2.5.1_h6z3b2rujpcgk2nnxer2nh5ufu
+      '@chakra-ui/toast': 6.0.1_6ggf4a6hlz4kphqo2oczd6zkam
+      '@dnd-kit/core': 6.0.8_biqbaboplfbrettd7655fr4n2y
+      '@dnd-kit/modifiers': 6.0.1_52scne4zmdeyjh2otzkgz2xfvu
+      '@dnd-kit/sortable': 7.0.2_52scne4zmdeyjh2otzkgz2xfvu
+      '@dnd-kit/utilities': 3.2.1_react@18.2.0
+      '@emotion/react': 11.10.6_pmekkgnqduwlme35zpnqhenc34
+      '@emotion/styled': 11.10.6_oouaibmszuch5k64ms7uxp2aia
+      '@fontsource/open-sans': 4.5.14
+      '@fontsource/raleway': 4.5.12
+      '@fontsource/source-code-pro': 4.5.14
+      '@graphiql/toolkit': 0.8.2_jukviheqyaybdjg76ifj2dsifa
+      '@nanostores/persistent': 0.7.0_nanostores@0.7.4
+      '@nanostores/react': 0.4.1_nkfnbc2tpc77iht7asm3uqwau4
+      '@tanstack/react-query': 4.26.1_biqbaboplfbrettd7655fr4n2y
+      '@tanstack/react-query-devtools': 4.26.1_brdhmlf72zuns3lsk66phyptty
+      framer-motion: 10.2.3_biqbaboplfbrettd7655fr4n2y
+      graphiql: 2.4.0_eurdrfph5ej35qh4hedy3uumg4
+      graphql: 16.6.0
+      graphql-request: 5.2.0_graphql@16.6.0
+      i18next: 22.4.11
+      i18next-browser-languagedetector: 7.0.1
+      lodash: 4.17.21
+      nanostores: 0.7.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-hook-form: 7.43.5_react@18.2.0
+      react-i18next: 12.2.0_nuvg7z3l7c7q3mgp6kac62miay
+      react-icons: 4.8.0_react@18.2.0
+      react-router: 6.8.2_react@18.2.0
+      react-router-dom: 6.8.2_biqbaboplfbrettd7655fr4n2y
+      simplebar-react: 3.2.1_react@18.2.0
+    devDependencies:
+      '@commitlint/cli': 17.4.4
+      '@commitlint/config-conventional': 17.4.4
+      '@graphql-codegen/cli': 3.2.2_jukviheqyaybdjg76ifj2dsifa
+      '@graphql-codegen/client-preset': 2.1.1_graphql@16.6.0
+      '@graphql-codegen/introspection': 3.0.1_graphql@16.6.0
+      '@graphql-typed-document-node/core': 3.1.2_graphql@16.6.0
+      '@types/node': 18.14.6
+      '@types/react': 18.0.28
+      '@types/react-dom': 18.0.11
+      '@typescript-eslint/eslint-plugin': 5.54.1_mlk7dnz565t663n4razh6a6v6i
+      '@typescript-eslint/parser': 5.54.1_ycpbpc6yetojsgtrx3mwntkhsu
+      '@vitejs/plugin-react-swc': 3.2.0_vite@4.1.4
+      eslint: 8.35.0
+      eslint-config-prettier: 8.7.0_eslint@8.35.0
+      eslint-import-resolver-typescript: 3.5.3_yckic57kx266ph64dhq6ozvb54
+      eslint-plugin-import: 2.27.5_yiggpkcwtyhpwcphetqfqiayhm
+      eslint-plugin-prettier: 4.2.1_xprnzp4ul2bcpmfe73av4voica
+      eslint-plugin-react: 7.32.2_eslint@8.35.0
+      husky: 8.0.3
+      lint-staged: 13.1.2
+      prettier: 2.8.4
+      turbo: 1.8.3
+      typescript: 4.9.5
+      vite: 4.1.4_@types+node@18.14.6
 
-devDependencies:
-  '@commitlint/cli': 17.4.4
-  '@commitlint/config-conventional': 17.4.4
-  '@graphql-codegen/cli': 3.2.2_jukviheqyaybdjg76ifj2dsifa
-  '@graphql-codegen/client-preset': 2.1.1_graphql@16.6.0
-  '@graphql-codegen/introspection': 3.0.1_graphql@16.6.0
-  '@graphql-typed-document-node/core': 3.1.2_graphql@16.6.0
-  '@types/node': 18.14.6
-  '@types/react': 18.0.28
-  '@types/react-dom': 18.0.11
-  '@typescript-eslint/eslint-plugin': 5.54.1_mlk7dnz565t663n4razh6a6v6i
-  '@typescript-eslint/parser': 5.54.1_ycpbpc6yetojsgtrx3mwntkhsu
-  '@vitejs/plugin-react-swc': 3.2.0_vite@4.1.4
-  eslint: 8.35.0
-  eslint-config-prettier: 8.7.0_eslint@8.35.0
-  eslint-import-resolver-typescript: 3.5.3_yckic57kx266ph64dhq6ozvb54
-  eslint-plugin-import: 2.27.5_yiggpkcwtyhpwcphetqfqiayhm
-  eslint-plugin-prettier: 4.2.1_xprnzp4ul2bcpmfe73av4voica
-  eslint-plugin-react: 7.32.2_eslint@8.35.0
-  husky: 8.0.3
-  lint-staged: 13.1.2
-  prettier: 2.8.4
-  typescript: 4.9.5
-  vite: 4.1.4_@types+node@18.14.6
+  apps/dashboard:
+    specifiers:
+      '@daed/components': workspace:*
+      '@daed/schemas': workspace:*
+      '@daed/typings': workspace:*
+    dependencies:
+      '@daed/components': link:../../packages/components
+      '@daed/schemas': link:../../packages/schemas
+    devDependencies:
+      '@daed/typings': link:../../packages/typings
+
+  packages/components:
+    specifiers:
+      '@daed/typings': workspace:*
+    devDependencies:
+      '@daed/typings': link:../typings
+
+  packages/schemas:
+    specifiers: {}
+
+  packages/typings:
+    specifiers: {}
 
 packages:
 
@@ -7828,6 +7854,67 @@ packages:
     dependencies:
       tslib: 1.14.1
       typescript: 4.9.5
+    dev: true
+
+  /turbo-darwin-64/1.8.3:
+    resolution: {integrity: sha512-bLM084Wr17VAAY/EvCWj7+OwYHvI9s/NdsvlqGp8iT5HEYVimcornCHespgJS/yvZDfC+mX9EQkn3V2JmYgGGw==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-darwin-arm64/1.8.3:
+    resolution: {integrity: sha512-4oZjXtzakopMK110kue3z/hqu3WLv+eDLZOX1NGdo49gqca9BeD8GbH+sXpAp6tqyeuzpss+PIliVYuyt7LgbA==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-64/1.8.3:
+    resolution: {integrity: sha512-uvX2VKotf5PU14FCxJA5iHItPQno2JWzerMd+g3/h/Asay6dvxvtVjc39MQeGT0H5njSvzVKFkT+3/5q8lgOEg==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-arm64/1.8.3:
+    resolution: {integrity: sha512-E1p+oH3XKMaPS4rqWhYsL4j2Pzc0d/9P5KU7Kn1kqVLo2T3iRA7n2KVULEieUNE0nTH+aIJPXYXOpqCI5wFJaA==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-windows-64/1.8.3:
+    resolution: {integrity: sha512-cnzAytHtoLXd0J7aNzRpZFpL/GTjcBmkvAPlbOdf/Pl1iwS4qzGrudZQ+OM1lmLgLIfBPIavsGHBknTwTNib4A==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-windows-arm64/1.8.3:
+    resolution: {integrity: sha512-ulIiItNm2w/zYJdD5/oAzjzNns1IjbpweRzpsE8tLXaWwo6+fnXXkyloUug0IUhcd2k6fJXfoiDZfygqpOVuXg==}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo/1.8.3:
+    resolution: {integrity: sha512-zGrkU1EuNFmkq6iky6LcMqD4h0OLE8XysVFxQWRIZbcTNnf0XAycbsbeEyiJpiWeqb7qtg2bVuY9EYcNoNhVuQ==}
+    hasBin: true
+    requiresBuild: true
+    optionalDependencies:
+      turbo-darwin-64: 1.8.3
+      turbo-darwin-arm64: 1.8.3
+      turbo-linux-64: 1.8.3
+      turbo-linux-arm64: 1.8.3
+      turbo-windows-64: 1.8.3
+      turbo-windows-arm64: 1.8.3
     dev: true
 
   /type-check/0.4.0:
