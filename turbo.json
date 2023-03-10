@@ -2,9 +2,13 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
+      "dependsOn": ["lint"],
       "outputs": ["dist/**"]
     },
-    "dev": {},
-    "lint": {}
+    "dev": {
+      "dependsOn": ["lint"]
+    },
+    "lint": {},
+    "native": {}
   }
 }

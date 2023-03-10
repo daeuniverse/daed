@@ -1,4 +1,11 @@
 {
+  "devDependencies": {
+    "@daed/typings": "workspace:*"
+  },
   "name": "@daed/schemas",
-  "private": true
+  "private": true,
+  "scripts": {
+    "build": "graphql-codegen",
+    "dev": "graphql-codegen -w"
+  }
 }

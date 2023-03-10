@@ -3,13 +3,12 @@
   "private": true,
   "license": "MIT",
   "homepage": "https://github.com/daeuniverse/daed",
-  "description": "A Web Dashboard For dae",
+  "description": "A Dashboard Monorepo For dae",
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "prepare": "husky install",
-    "codegen": "graphql-codegen"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.17",

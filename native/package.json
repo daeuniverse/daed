@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.2.3"
+  },
+  "name": "@daed/native",
+  "scripts": {
+    "build": "tauri build",
+    "dev": "tauri dev"
+  }
+}

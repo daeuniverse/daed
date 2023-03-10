@@ -1,0 +1,21 @@
+[package]
+name = "daed"
+version = "0.1.0"
+description = "A Native Dashboard For dae"
+license = "MIT"
+repository = "https://github.com/daeuniverse/daed"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.2.1", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "1.2.4", features = ["api-all"] }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
