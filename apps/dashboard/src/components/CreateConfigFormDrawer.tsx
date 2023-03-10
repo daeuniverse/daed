@@ -27,8 +27,8 @@ import { forwardRef, Fragment } from "react";
 import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { gqlClient } from "~/api";
 import { DEFAULT_TCP_CHECK_URL, DEFAULT_UDP_CHECK_DNS, GET_LOG_LEVEL_STEPS, QUERY_KEY_INTERFACES } from "~/constants";
+import { useQGLQueryClient } from "~/hooks";
 
 export type FormValues = {
   name: string;
@@ -70,6 +70,8 @@ export const CreateConfigFormDrawer = ({
   onSubmit: (form: UseFormReturn<FormValues>) => Promise<void>;
 }) => {
   const { t } = useTranslation();
+
+  const gqlClient = useQGLQueryClient();
 
   const form = useForm<FormValues>();
   const { register, control } = form;

@@ -1,35 +1,81 @@
-import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
-import { Center, Collapse, Flex, Icon, IconButton, Spinner, useDisclosure } from "@chakra-ui/react";
-import { i18n } from "@daed/i18n";
+import { Center, ChakraProvider, ColorModeScript, Spinner, useToast } from "@chakra-ui/react";
+import { theme } from "@daed/components";
+import { i18nInit } from "@daed/i18n";
 import { graphql } from "@daed/schemas/gql";
-import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import SimpleBar from "simplebar-react";
+import { createGraphiQLFetcher } from "@graphiql/toolkit";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { GraphiQL } from "graphiql";
+import { GraphQLClient } from "graphql-request";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { Sidebar } from "~/components/Sidebar";
+import { Home } from "~/Home";
+import { endpointURLAtom } from "~/store";
 
-import { gqlClient } from "./api";
-import { QUERY_KEY_HEALTH_CHECK } from "./constants";
-import { Home } from "./Home";
+import { DEFAULT_ENDPOINT_URL, GQLClientContext } from "./constants";
+
+const GQLQueryClientProvider = ({ client, children }: { client: GraphQLClient; children: React.ReactNode }) => {
+  return (
+    <GQLClientContext.Provider value={client}>
+      <GQLClientContext.Consumer>{() => children}</GQLClientContext.Consumer>
+    </GQLClientContext.Provider>
+  );
+};
 
 export const App = () => {
-  const { t } = useTranslation();
+  const { searchParams } = new URL(location.href);
+  const endpointURL = searchParams.get("u") || endpointURLAtom.get() || DEFAULT_ENDPOINT_URL;
 
-  const { isOpen: isSidebarOpen, onToggle: onSidebarToggle } = useDisclosure({
-    defaultIsOpen: true,
+  useEffect(() => {
+    endpointURLAtom.set(endpointURL);
+  }, [endpointURL]);
+
+  const toast = useToast();
+
+  const onError = (err: unknown) => {
+    const id = "api-error";
+
+    if (toast.isActive(id)) {
+      return;
+    }
+
+    toast({
+      id,
+      title: (err as Error).message,
+      status: "error",
+    });
+  };
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        onError,
+      },
+      mutations: {
+        onError,
+      },
+    },
   });
 
-  const healthCheckQuery = useQuery(QUERY_KEY_HEALTH_CHECK, async () =>
+  const gqlClient = new GraphQLClient(endpointURL);
+
+  const healthCheckQuery = async () =>
     gqlClient.request(
       graphql(`
         query HealthCheck {
           healthCheck
         }
       `)
-    )
-  );
+    );
 
-  if (!i18n.isInitialized || healthCheckQuery.isLoading) {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([i18nInit(), healthCheckQuery()]).then(() => setLoading(false));
+  }, []);
+
+  if (loading) {
     return (
       <Center h="full">
         <Spinner size="xl" />
@@ -38,42 +84,35 @@ export const App = () => {
   }
 
   return (
-    <Flex h="100dvh" px={4} py={12}>
-      <Flex>
-        <IconButton
-          aria-label={t("collapse")}
-          h="full"
-          icon={<Icon as={isSidebarOpen ? ArrowLeftIcon : ArrowRightIcon} />}
-          onClick={onSidebarToggle}
+    <BrowserRouter>
+      <Routes>
+        <Route
+          index
+          path="/"
+          element={
+            <QueryClientProvider client={queryClient}>
+              <GQLQueryClientProvider client={gqlClient}>
+                <ChakraProvider theme={theme}>
+                  <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+                  <Home />
+                </ChakraProvider>
+                <ReactQueryDevtools position="bottom-right" />
+              </GQLQueryClientProvider>
+            </QueryClientProvider>
+          }
         />
 
-        <Collapse
-          in={isSidebarOpen}
-          animateOpacity
-          transition={{
-            enter: { duration: 0.2 },
-            exit: { duration: 0.2 },
-          }}
-        >
-          <Sidebar />
-        </Collapse>
-      </Flex>
-
-      <Flex flex={1} overflowY="hidden">
-        <SimpleBar
-          style={{
-            width: "100%",
-            height: "100%",
-            paddingInline: 10,
-            paddingBlock: 20,
-            borderRadius: 12,
-            borderWidth: 4,
-            borderColor: "Highlight",
-          }}
-        >
-          <Home />
-        </SimpleBar>
-      </Flex>
-    </Flex>
+        <Route
+          path="/graphql"
+          element={
+            <GraphiQL
+              fetcher={createGraphiQLFetcher({
+                url: endpointURL,
+              })}
+            />
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 };

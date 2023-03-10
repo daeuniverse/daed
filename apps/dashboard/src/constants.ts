@@ -1,4 +1,8 @@
+import { GraphQLClient } from "graphql-request";
 import { TFunction } from "i18next";
+import { createContext } from "react";
+
+export const GQLClientContext = createContext<GraphQLClient>(null as unknown as GraphQLClient);
 
 export const COLS_PER_ROW = 3;
 export const QUERY_KEY_HEALTH_CHECK = ["healthCheck"];

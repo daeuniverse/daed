@@ -12,15 +12,17 @@ export const resources = {
   "zh-Hans": { [defaultNS]: zhHans },
 };
 
-i18n
-  .use(detectLanguage)
-  .use(initReactI18next)
-  .init({
-    fallbackLng: {
-      "zh-CN": ["zh-Hans"],
-    },
-    defaultNS,
-    resources,
-  });
+const i18nInit = () => {
+  i18n
+    .use(detectLanguage)
+    .use(initReactI18next)
+    .init({
+      fallbackLng: {
+        "zh-CN": ["zh-Hans"],
+      },
+      defaultNS,
+      resources,
+    });
+};
 
-export { i18n };
+export { i18n, i18nInit };

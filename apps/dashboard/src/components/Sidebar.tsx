@@ -27,7 +27,6 @@ import { useTranslation } from "react-i18next";
 import { CiStreamOff, CiStreamOn } from "react-icons/ci";
 import { HiLanguage } from "react-icons/hi2";
 
-import { gqlClient } from "~/api";
 import {
   COLS_PER_ROW,
   GET_LOG_LEVEL_STEPS,
@@ -37,6 +36,7 @@ import {
   QUERY_KEY_RUNNING,
   QUERY_KEY_SUBSCRIPTION,
 } from "~/constants";
+import { useQGLQueryClient } from "~/hooks";
 import { appStateAtom } from "~/store";
 
 import { CreateConfigFormDrawer, FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
@@ -50,6 +50,7 @@ import {
 export const Sidebar = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const gqlClient = useQGLQueryClient();
   const { colorMode, toggleColorMode } = useColorMode();
   const toast = useToast();
   const { colsPerRow } = useStore(appStateAtom);
