@@ -28,12 +28,16 @@ const documents = {
     types.SelectConfigDocument,
   "\n          mutation RemoveConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ":
     types.RemoveConfigDocument,
-  "\n          query Routings {\n            routings {\n              id\n              name\n              routing {\n                string\n              }\n            }\n          }\n        ":
+  "\n          query Routings {\n            routings {\n              id\n              name\n              selected\n              routing {\n                string\n              }\n            }\n          }\n        ":
     types.RoutingsDocument,
+  "\n          mutation SelectRouting($id: ID!) {\n            selectRouting(id: $id)\n          }\n        ":
+    types.SelectRoutingDocument,
   "\n          mutation RemoveRouting($id: ID!) {\n            removeRouting(id: $id)\n          }\n        ":
     types.RemoveRoutingDocument,
-  "\n          query Dnss {\n            dnss {\n              id\n              name\n              dns {\n                string\n              }\n            }\n          }\n        ":
+  "\n          query Dnss {\n            dnss {\n              id\n              name\n              selected\n              dns {\n                string\n              }\n            }\n          }\n        ":
     types.DnssDocument,
+  "\n          mutation SelectDNS($id: ID!) {\n            selectDns(id: $id)\n          }\n        ":
+    types.SelectDnsDocument,
   "\n          mutation RemoveDns($id: ID!) {\n            removeDns(id: $id)\n          }\n        ":
     types.RemoveDnsDocument,
   "\n          query Groups {\n            groups {\n              id\n              name\n              policy\n              policyParams {\n                key\n                val\n              }\n            }\n          }\n        ":
@@ -125,8 +129,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          query Routings {\n            routings {\n              id\n              name\n              routing {\n                string\n              }\n            }\n          }\n        "
-): (typeof documents)["\n          query Routings {\n            routings {\n              id\n              name\n              routing {\n                string\n              }\n            }\n          }\n        "];
+  source: "\n          query Routings {\n            routings {\n              id\n              name\n              selected\n              routing {\n                string\n              }\n            }\n          }\n        "
+): (typeof documents)["\n          query Routings {\n            routings {\n              id\n              name\n              selected\n              routing {\n                string\n              }\n            }\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n          mutation SelectRouting($id: ID!) {\n            selectRouting(id: $id)\n          }\n        "
+): (typeof documents)["\n          mutation SelectRouting($id: ID!) {\n            selectRouting(id: $id)\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -137,8 +147,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          query Dnss {\n            dnss {\n              id\n              name\n              dns {\n                string\n              }\n            }\n          }\n        "
-): (typeof documents)["\n          query Dnss {\n            dnss {\n              id\n              name\n              dns {\n                string\n              }\n            }\n          }\n        "];
+  source: "\n          query Dnss {\n            dnss {\n              id\n              name\n              selected\n              dns {\n                string\n              }\n            }\n          }\n        "
+): (typeof documents)["\n          query Dnss {\n            dnss {\n              id\n              name\n              selected\n              dns {\n                string\n              }\n            }\n          }\n        "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: "\n          mutation SelectDNS($id: ID!) {\n            selectDns(id: $id)\n          }\n        "
+): (typeof documents)["\n          mutation SelectDNS($id: ID!) {\n            selectDns(id: $id)\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

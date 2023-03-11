@@ -638,9 +638,16 @@ export type RoutingsQuery = {
     __typename?: "Routing";
     id: string;
     name: string;
+    selected: boolean;
     routing: { __typename?: "DaeRouting"; string: string };
   }>;
 };
+
+export type SelectRoutingMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type SelectRoutingMutation = { __typename?: "Mutation"; selectRouting: number };
 
 export type RemoveRoutingMutationVariables = Exact<{
   id: Scalars["ID"];
@@ -652,8 +659,20 @@ export type DnssQueryVariables = Exact<{ [key: string]: never }>;
 
 export type DnssQuery = {
   __typename?: "Query";
-  dnss: Array<{ __typename?: "Dns"; id: string; name: string; dns: { __typename?: "DaeDns"; string: string } }>;
+  dnss: Array<{
+    __typename?: "Dns";
+    id: string;
+    name: string;
+    selected: boolean;
+    dns: { __typename?: "DaeDns"; string: string };
+  }>;
 };
+
+export type SelectDnsMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type SelectDnsMutation = { __typename?: "Mutation"; selectDns: number };
 
 export type RemoveDnsMutationVariables = Exact<{
   id: Scalars["ID"];
@@ -1060,6 +1079,7 @@ export const RoutingsDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "selected" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "routing" },
@@ -1076,6 +1096,39 @@ export const RoutingsDocument = {
     },
   ],
 } as unknown as DocumentNode<RoutingsQuery, RoutingsQueryVariables>;
+export const SelectRoutingDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "SelectRouting" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "selectRouting" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SelectRoutingMutation, SelectRoutingMutationVariables>;
 export const RemoveRoutingDocument = {
   kind: "Document",
   definitions: [
@@ -1127,6 +1180,7 @@ export const DnssDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "selected" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "dns" },
@@ -1143,6 +1197,39 @@ export const DnssDocument = {
     },
   ],
 } as unknown as DocumentNode<DnssQuery, DnssQueryVariables>;
+export const SelectDnsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "SelectDNS" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "selectDns" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SelectDnsMutation, SelectDnsMutationVariables>;
 export const RemoveDnsDocument = {
   kind: "Document",
   definitions: [

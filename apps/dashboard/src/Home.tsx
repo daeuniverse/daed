@@ -219,6 +219,7 @@ export const Home = () => {
             routings {
               id
               name
+              selected
               routing {
                 string
               }
@@ -226,6 +227,22 @@ export const Home = () => {
           }
         `)
       ),
+  });
+
+  const selectRoutingMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation SelectRouting($id: ID!) {
+            selectRouting(id: $id)
+          }
+        `),
+        { id }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING });
+    },
   });
 
   const removeRoutingMutation = useMutation({
@@ -253,6 +270,7 @@ export const Home = () => {
             dnss {
               id
               name
+              selected
               dns {
                 string
               }
@@ -260,6 +278,22 @@ export const Home = () => {
           }
         `)
       ),
+  });
+
+  const selectDNSMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation SelectDNS($id: ID!) {
+            selectDns(id: $id)
+          }
+        `),
+        { id }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS });
+    },
   });
 
   const removeDNSMutation = useMutation({
@@ -378,6 +412,7 @@ export const Home = () => {
           name={t("routing")}
           isLoading={routingQuery.isLoading}
           unSortedItems={routingQuery.data?.routings}
+          onSelect={(data) => selectRoutingMutation.mutate(data.id)}
           onRemove={(data) => removeRoutingMutation.mutate(data.id)}
           persistentSortableKeysName="routingSortableKeys"
         >
@@ -393,6 +428,7 @@ export const Home = () => {
           name={t("dns")}
           isLoading={dnsQuery.isLoading}
           unSortedItems={dnsQuery.data?.dnss}
+          onSelect={(data) => selectDNSMutation.mutate(data.id)}
           onRemove={(data) => removeDNSMutation.mutate(data.id)}
           persistentSortableKeysName="dnsSortableKeys"
         >
