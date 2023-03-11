@@ -15,7 +15,7 @@ export const DescriptiveText = ({ tip, ...props }: { tip: SimpleDisplayable } & 
     <Tooltip
       ref={tooltipRef}
       label={tip}
-      placement="right"
+      placement="auto"
       hasArrow
       maxW="unset"
       isOpen={preventTooltipClose ? true : undefined}

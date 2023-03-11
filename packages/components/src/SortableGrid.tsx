@@ -162,7 +162,7 @@ export const SortableGrid = <T extends SortableList>({
           <Spinner />
         </Center>
       ) : (
-        <Grid gridTemplateColumns={`repeat(${colsPerRow}, 1fr)`} gap={2}>
+        <Grid gridTemplateColumns={`repeat(${colsPerRow}, 1fr)`} flex={1} gap={2}>
           <DndContext
             modifiers={[restrictToParentElement]}
             collisionDetection={closestCenter}

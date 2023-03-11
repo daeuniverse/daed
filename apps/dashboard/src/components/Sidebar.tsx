@@ -300,7 +300,7 @@ export const Sidebar = () => {
   });
 
   return (
-    <Flex ref={platform} h="full" alignItems="center" justifyContent="center" direction="column" px={10} pt={4}>
+    <Flex ref={platform} h="full" alignItems="center" justifyContent="center" direction="column" px={2} pt={4}>
       <motion.div
         drag
         style={{
@@ -327,27 +327,27 @@ export const Sidebar = () => {
           daed
         </Heading>
 
-        <Button w="full" leftIcon={<LinkIcon />} onClick={onNodeFormDrawerOpen}>
+        <Button size="sm" w="full" leftIcon={<LinkIcon />} onClick={onNodeFormDrawerOpen}>
           {`${t("actions.import")} ${t("node")}`}
         </Button>
 
-        <Button w="full" leftIcon={<LinkIcon />} onClick={onSubscriptionFormDrawerOpen}>
+        <Button size="sm" w="full" leftIcon={<LinkIcon />} onClick={onSubscriptionFormDrawerOpen}>
           {`${t("actions.import")} ${t("subscription")}`}
         </Button>
 
-        <Button w="full" leftIcon={<AddIcon />} onClick={onConfigFormDrawerOpen}>
+        <Button size="sm" w="full" leftIcon={<AddIcon />} onClick={onConfigFormDrawerOpen}>
           {`${t("actions.create")} ${t("config")}`}
         </Button>
 
-        <Button w="full" leftIcon={<AddIcon />} onClick={onRoutingFormDrawerOpen}>
+        <Button size="sm" w="full" leftIcon={<AddIcon />} onClick={onRoutingFormDrawerOpen}>
           {`${t("actions.create")} ${t("routing")}`}
         </Button>
 
-        <Button w="full" leftIcon={<AddIcon />} onClick={onDNSFormDrawerOpen}>
+        <Button size="sm" w="full" leftIcon={<AddIcon />} onClick={onDNSFormDrawerOpen}>
           {`${t("actions.create")} ${t("dns")}`}
         </Button>
 
-        <Button w="full" leftIcon={<AddIcon />} onClick={onGroupFormDrawerOpen}>
+        <Button size="sm" w="full" leftIcon={<AddIcon />} onClick={onGroupFormDrawerOpen}>
           {`${t("actions.create")} ${t("group")}`}
         </Button>
       </Flex>
