@@ -1,4 +1,4 @@
 {
   "extends": "@daed/typings/tsconfig.json",
-  "include": ["codegen.ts", "gql"]
+  "include": ["gql"]
 }

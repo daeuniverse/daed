@@ -4,9 +4,9 @@ import { CodegenConfig } from "@graphql-codegen/cli";
 export default {
   overwrite: true,
   schema: process.env.SCHEMA_PATH,
-  documents: "../../apps/*/src/**/*.tsx",
+  documents: "apps/*/src/**/*.tsx",
   generates: {
-    "gql/": {
+    "packages/schemas/gql/": {
       preset: "client",
     },
   },

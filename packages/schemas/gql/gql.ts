@@ -18,7 +18,7 @@ const documents = {
     types.NodesDocument,
   "\n          query Subscriptions {\n            subscriptions {\n              id\n              tag\n              link\n              nodes {\n                edges {\n                  id\n                  link\n                  name\n                  protocol\n                  tag\n                }\n              }\n            }\n          }\n        ":
     types.SubscriptionsDocument,
-  "\n          query Configs {\n            configs {\n              id\n              selected\n              name\n              global {\n                tproxyPort\n                logLevel\n                tcpCheckUrl\n                udpCheckDns\n                checkInterval\n                checkTolerance\n                lanInterface\n                wanInterface\n                allowInsecure\n                dialMode\n              }\n              routing {\n                string\n              }\n              dns {\n                string\n              }\n            }\n          }\n        ":
+  "\n          query Configs {\n            configs {\n              id\n              name\n              selected\n              global {\n                tproxyPort\n                logLevel\n                tcpCheckUrl\n                udpCheckDns\n                checkInterval\n                checkTolerance\n                lanInterface\n                wanInterface\n                allowInsecure\n                dialMode\n              }\n            }\n          }\n        ":
     types.ConfigsDocument,
   "\n          query Groups {\n            groups {\n              id\n              name\n              policy\n              policyParams {\n                key\n                val\n              }\n            }\n          }\n        ":
     types.GroupsDocument,
@@ -41,7 +41,7 @@ const documents = {
     types.ImportNodesDocument,
   "\n          mutation importSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n            importSubscription(rollbackError: $rollbackError, arg: $arg) {\n              link\n            }\n          }\n        ":
     types.ImportSubscriptionDocument,
-  "\n          mutation createConfig($name: String, $global: globalInput, $dns: String, $routing: String) {\n            createConfig(name: $name, global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        ":
+  "\n          mutation createConfig($name: String, $global: globalInput) {\n            createConfig(name: $name, global: $global) {\n              id\n            }\n          }\n        ":
     types.CreateConfigDocument,
   "\n          mutation createGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            createGroup(name: $name, policy: $policy, policyParams: $policyParams) {\n              id\n            }\n          }\n        ":
     types.CreateGroupDocument,
@@ -83,8 +83,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          query Configs {\n            configs {\n              id\n              selected\n              name\n              global {\n                tproxyPort\n                logLevel\n                tcpCheckUrl\n                udpCheckDns\n                checkInterval\n                checkTolerance\n                lanInterface\n                wanInterface\n                allowInsecure\n                dialMode\n              }\n              routing {\n                string\n              }\n              dns {\n                string\n              }\n            }\n          }\n        "
-): (typeof documents)["\n          query Configs {\n            configs {\n              id\n              selected\n              name\n              global {\n                tproxyPort\n                logLevel\n                tcpCheckUrl\n                udpCheckDns\n                checkInterval\n                checkTolerance\n                lanInterface\n                wanInterface\n                allowInsecure\n                dialMode\n              }\n              routing {\n                string\n              }\n              dns {\n                string\n              }\n            }\n          }\n        "];
+  source: "\n          query Configs {\n            configs {\n              id\n              name\n              selected\n              global {\n                tproxyPort\n                logLevel\n                tcpCheckUrl\n                udpCheckDns\n                checkInterval\n                checkTolerance\n                lanInterface\n                wanInterface\n                allowInsecure\n                dialMode\n              }\n            }\n          }\n        "
+): (typeof documents)["\n          query Configs {\n            configs {\n              id\n              name\n              selected\n              global {\n                tproxyPort\n                logLevel\n                tcpCheckUrl\n                udpCheckDns\n                checkInterval\n                checkTolerance\n                lanInterface\n                wanInterface\n                allowInsecure\n                dialMode\n              }\n            }\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -155,8 +155,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          mutation createConfig($name: String, $global: globalInput, $dns: String, $routing: String) {\n            createConfig(name: $name, global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        "
-): (typeof documents)["\n          mutation createConfig($name: String, $global: globalInput, $dns: String, $routing: String) {\n            createConfig(name: $name, global: $global, dns: $dns, routing: $routing) {\n              id\n            }\n          }\n        "];
+  source: "\n          mutation createConfig($name: String, $global: globalInput) {\n            createConfig(name: $name, global: $global) {\n              id\n            }\n          }\n        "
+): (typeof documents)["\n          mutation createConfig($name: String, $global: globalInput) {\n            createConfig(name: $name, global: $global) {\n              id\n            }\n          }\n        "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

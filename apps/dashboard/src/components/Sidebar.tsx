@@ -160,14 +160,12 @@ export const Sidebar = () => {
       const {
         name,
         global: { logLevelIndex, checkIntervalSeconds, checkTolerenceMS: checkTolerenceMS, ...global },
-        dns,
-        routing,
       } = values;
 
       return gqlClient.request(
         graphql(`
-          mutation createConfig($name: String, $global: globalInput, $dns: String, $routing: String) {
-            createConfig(name: $name, global: $global, dns: $dns, routing: $routing) {
+          mutation createConfig($name: String, $global: globalInput) {
+            createConfig(name: $name, global: $global) {
               id
             }
           }
@@ -180,8 +178,6 @@ export const Sidebar = () => {
             checkTolerance: `${checkTolerenceMS}ms`,
             ...global,
           },
-          dns,
-          routing,
         }
       );
     },
@@ -276,7 +272,7 @@ export const Sidebar = () => {
         </Heading>
 
         <Button w="full" leftIcon={<LinkIcon />} onClick={onNodeFormDrawerOpen}>
-          {`${t("actions.add")} ${t("node")}`}
+          {`${t("actions.import")} ${t("node")}`}
         </Button>
 
         <Button w="full" leftIcon={<LinkIcon />} onClick={onSubscriptionFormDrawerOpen}>

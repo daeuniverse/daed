@@ -3,9 +3,5 @@
     "@daed/typings": "workspace:*"
   },
   "name": "@daed/schemas",
-  "private": true,
-  "scripts": {
-    "build": "graphql-codegen",
-    "dev": "graphql-codegen -w"
-  }
+  "private": true
 }

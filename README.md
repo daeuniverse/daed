@@ -37,11 +37,19 @@ Use environment variable `SCHEMA_PATH` to specify your schema endpoint
 
 It can be a url starts with http(s) points to graphql endpoint or a static graphql schema file
 
-```sh
-# SCHEMA_PATH=http(s)://example.com/graphql pnpm dev
-# SCHEMA_PATH=http(s)://example.com/graphql.schema pnpm dev
+Optionally, append `-w` or `--watch` at the end of the command to watch upcoming changes
 
-SCHEMA_PATH=/path/to/SCHEMA_PATH pnpm dev
+```sh
+# SCHEMA_PATH=http(s)://example.com/graphql pnpm codegen
+# SCHEMA_PATH=http(s)://example.com/graphql.schema pnpm codegen
+
+SCHEMA_PATH=/path/to/SCHEMA_PATH pnpm codegen -w
+```
+
+Start dev server
+
+```sh
+pnpm dev
 ```
 
 If everything goes well, open your browser and navigate to http://localhost:5173

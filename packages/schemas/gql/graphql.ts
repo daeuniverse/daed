@@ -25,12 +25,9 @@ export type AndFunctionsOrPlaintext = AndFunctions | Plaintext;
 
 export type Config = {
   __typename?: "Config";
-  dns: Dns;
   global: Global;
   id: Scalars["ID"];
   name: Scalars["String"];
-  referenceGroups: Array<Scalars["String"]>;
-  routing: Routing;
   selected: Scalars["Boolean"];
 };
 
@@ -52,6 +49,20 @@ export type Dae = {
   running: Scalars["Boolean"];
 };
 
+export type DaeDns = {
+  __typename?: "DaeDns";
+  routing: DnsRouting;
+  string: Scalars["String"];
+  upstream: Array<Param>;
+};
+
+export type DaeRouting = {
+  __typename?: "DaeRouting";
+  fallback: FunctionOrPlaintext;
+  rules: Array<RoutingRule>;
+  string: Scalars["String"];
+};
+
 export type DefaultRoute = {
   __typename?: "DefaultRoute";
   gateway?: Maybe<Scalars["String"]>;
@@ -61,15 +72,16 @@ export type DefaultRoute = {
 
 export type Dns = {
   __typename?: "Dns";
-  routing: DnsRouting;
-  string: Scalars["String"];
-  upstream: Array<Param>;
+  dns: DaeDns;
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  selected: Scalars["Boolean"];
 };
 
 export type DnsRouting = {
   __typename?: "DnsRouting";
-  request: Routing;
-  response: Routing;
+  request: DaeRouting;
+  response: DaeRouting;
 };
 
 export type Function = {
@@ -142,10 +154,14 @@ export type InterfaceFlag = {
 
 export type Mutation = {
   __typename?: "Mutation";
-  /** createConfig create a config. Null arguments will be converted to default value. */
+  /** createConfig create a global config. Null arguments will be converted to default value. */
   createConfig: Config;
+  /** createConfig create a dns config. Null arguments will be converted to default value. */
+  createDns: Dns;
   /** createGroup is to create a group. */
   createGroup: Group;
+  /** createConfig create a routing config. Null arguments will be converted to default value. */
+  createRouting: Routing;
   /** groupAddNodes is to add nodes to the group. Nodes will not be removed from its subscription when subscription update. */
   groupAddNodes: Scalars["Int"];
   /** groupAddSubscriptions is to add subscriptions to the group. */
@@ -154,47 +170,73 @@ export type Mutation = {
   groupDelNodes: Scalars["Int"];
   /** groupDelSubscriptions is to remove subscriptions from the group. */
   groupDelSubscriptions: Scalars["Int"];
+  /** groupSetPolicy is to set the group a new policy. */
+  groupSetPolicy: Scalars["Int"];
   /** importNodes is to import nodes with no subscription ID. rollbackError means abort the import on error. */
   importNodes: Array<NodeImportResult>;
   /** importSubscription is to fetch and resolve the subscription into nodes. */
   importSubscription: SubscriptionImportResult;
   /** removeConfig is to remove a config with given config ID. */
   removeConfig: Scalars["Int"];
+  /** removeDns is to remove a dns config with given dns ID. */
+  removeDns: Scalars["Int"];
   /** removeGroup is to remove a group. */
   removeGroup: Scalars["Int"];
   /** removeNodes is to remove nodes that have no subscription ID. */
   removeNodes: Scalars["Int"];
+  /** removeRouting is to remove a routing config with given routing ID. */
+  removeRouting: Scalars["Int"];
   /** removeSubscriptions is to remove subscriptions with given ID list. */
   removeSubscriptions: Scalars["Int"];
   /** renameConfig is to give the config a new name. */
   renameConfig: Scalars["Int"];
+  /** renameDns is to give the dns config a new name. */
+  renameDns: Scalars["Int"];
   /** renameGroup is to rename a group. */
   renameGroup: Scalars["Int"];
-  /** run proxy with the current config. Dry-run can be used to stop the proxy. */
+  /** renameRouting is to give the routing config a new name. */
+  renameRouting: Scalars["Int"];
+  /** run proxy with selected config+dns+routing. Dry-run can be used to stop the proxy. */
   run: Scalars["Int"];
   /** selectConfig is to select a config as the current config. */
   selectConfig: Scalars["Int"];
+  /** selectConfig is to select a dns config as the current dns. */
+  selectDns: Scalars["Int"];
+  /** selectConfig is to select a routing config as the current routing. */
+  selectRouting: Scalars["Int"];
   /** tagNode is to give the node a new tag. */
   tagNode: Scalars["Int"];
   /** tagSubscription is to give the subscription a new tag. */
   tagSubscription: Scalars["Int"];
-  /** updateConfig allows to partially update "global". */
+  /** updateConfig allows to partially update global config with given id. */
   updateConfig: Config;
+  /** updateDns is to update dns config with given id. */
+  updateDns: Dns;
+  /** updateRouting is to update routing config with given id. */
+  updateRouting: Routing;
   /** updateSubscription is to re-fetch subscription and resolve subscription into nodes. Old nodes that independently belong to any groups will not be removed. */
   updateSubscription: Subscription;
 };
 
 export type MutationCreateConfigArgs = {
-  dns?: InputMaybe<Scalars["String"]>;
   global?: InputMaybe<GlobalInput>;
   name?: InputMaybe<Scalars["String"]>;
-  routing?: InputMaybe<Scalars["String"]>;
+};
+
+export type MutationCreateDnsArgs = {
+  dns?: InputMaybe<Scalars["String"]>;
+  name?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationCreateGroupArgs = {
   name: Scalars["String"];
   policy: Policy;
   policyParams?: InputMaybe<Array<PolicyParam>>;
+};
+
+export type MutationCreateRoutingArgs = {
+  name?: InputMaybe<Scalars["String"]>;
+  routing?: InputMaybe<Scalars["String"]>;
 };
 
 export type MutationGroupAddNodesArgs = {
@@ -217,6 +259,12 @@ export type MutationGroupDelSubscriptionsArgs = {
   subscriptionIDs: Array<Scalars["ID"]>;
 };
 
+export type MutationGroupSetPolicyArgs = {
+  id: Scalars["ID"];
+  policy: Policy;
+  policyParams?: InputMaybe<Array<PolicyParam>>;
+};
+
 export type MutationImportNodesArgs = {
   args: Array<ImportArgument>;
   rollbackError: Scalars["Boolean"];
@@ -231,12 +279,20 @@ export type MutationRemoveConfigArgs = {
   id: Scalars["ID"];
 };
 
+export type MutationRemoveDnsArgs = {
+  id: Scalars["ID"];
+};
+
 export type MutationRemoveGroupArgs = {
   id: Scalars["ID"];
 };
 
 export type MutationRemoveNodesArgs = {
   ids: Array<Scalars["ID"]>;
+};
+
+export type MutationRemoveRoutingArgs = {
+  id: Scalars["ID"];
 };
 
 export type MutationRemoveSubscriptionsArgs = {
@@ -248,7 +304,17 @@ export type MutationRenameConfigArgs = {
   name: Scalars["String"];
 };
 
+export type MutationRenameDnsArgs = {
+  id: Scalars["ID"];
+  name: Scalars["String"];
+};
+
 export type MutationRenameGroupArgs = {
+  id: Scalars["ID"];
+  name: Scalars["String"];
+};
+
+export type MutationRenameRoutingArgs = {
   id: Scalars["ID"];
   name: Scalars["String"];
 };
@@ -258,6 +324,14 @@ export type MutationRunArgs = {
 };
 
 export type MutationSelectConfigArgs = {
+  id: Scalars["ID"];
+};
+
+export type MutationSelectDnsArgs = {
+  id: Scalars["ID"];
+};
+
+export type MutationSelectRoutingArgs = {
   id: Scalars["ID"];
 };
 
@@ -272,10 +346,18 @@ export type MutationTagSubscriptionArgs = {
 };
 
 export type MutationUpdateConfigArgs = {
-  dns?: InputMaybe<Scalars["String"]>;
-  global?: InputMaybe<GlobalInput>;
+  global: GlobalInput;
   id: Scalars["ID"];
-  routing?: InputMaybe<Scalars["String"]>;
+};
+
+export type MutationUpdateDnsArgs = {
+  dns: Scalars["String"];
+  id: Scalars["ID"];
+};
+
+export type MutationUpdateRoutingArgs = {
+  id: Scalars["ID"];
+  routing: Scalars["String"];
 };
 
 export type MutationUpdateSubscriptionArgs = {
@@ -342,17 +424,24 @@ export type Query = {
   __typename?: "Query";
   configFlatDesc: Array<ConfigFlatDesc>;
   configs: Array<Config>;
+  dnss: Array<Dns>;
   general: General;
   group: Group;
   groups: Array<Group>;
   healthCheck: Scalars["Int"];
   nodes: NodesConnection;
-  parsedDns: Dns;
-  parsedRouting: Routing;
+  parsedDns: DaeDns;
+  parsedRouting: DaeRouting;
+  routings: Array<Routing>;
   subscriptions: Array<Subscription>;
 };
 
 export type QueryConfigsArgs = {
+  id?: InputMaybe<Scalars["ID"]>;
+  selected?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type QueryDnssArgs = {
   id?: InputMaybe<Scalars["ID"]>;
   selected?: InputMaybe<Scalars["Boolean"]>;
 };
@@ -380,15 +469,22 @@ export type QueryParsedRoutingArgs = {
   raw: Scalars["String"];
 };
 
+export type QueryRoutingsArgs = {
+  id?: InputMaybe<Scalars["ID"]>;
+  selected?: InputMaybe<Scalars["Boolean"]>;
+};
+
 export type QuerySubscriptionsArgs = {
   id?: InputMaybe<Scalars["ID"]>;
 };
 
 export type Routing = {
   __typename?: "Routing";
-  fallback: FunctionOrPlaintext;
-  rules: Array<RoutingRule>;
-  string: Scalars["String"];
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  referenceGroups: Array<Scalars["String"]>;
+  routing: DaeRouting;
+  selected: Scalars["Boolean"];
 };
 
 export type RoutingRule = {
@@ -492,8 +588,8 @@ export type ConfigsQuery = {
   configs: Array<{
     __typename?: "Config";
     id: string;
-    selected: boolean;
     name: string;
+    selected: boolean;
     global: {
       __typename?: "Global";
       tproxyPort: number;
@@ -507,8 +603,6 @@ export type ConfigsQuery = {
       allowInsecure: boolean;
       dialMode: string;
     };
-    routing: { __typename?: "Routing"; string: string };
-    dns: { __typename?: "Dns"; string: string };
   }>;
 };
 
@@ -598,8 +692,6 @@ export type ImportSubscriptionMutation = {
 export type CreateConfigMutationVariables = Exact<{
   name?: InputMaybe<Scalars["String"]>;
   global?: InputMaybe<GlobalInput>;
-  dns?: InputMaybe<Scalars["String"]>;
-  routing?: InputMaybe<Scalars["String"]>;
 }>;
 
 export type CreateConfigMutation = { __typename?: "Mutation"; createConfig: { __typename?: "Config"; id: string } };
@@ -732,8 +824,8 @@ export const ConfigsDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "selected" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "selected" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "global" },
@@ -751,22 +843,6 @@ export const ConfigsDocument = {
                       { kind: "Field", name: { kind: "Name", value: "allowInsecure" } },
                       { kind: "Field", name: { kind: "Name", value: "dialMode" } },
                     ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "routing" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "string" } }],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "dns" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [{ kind: "Field", name: { kind: "Name", value: "string" } }],
                   },
                 },
               ],
@@ -1213,16 +1289,6 @@ export const CreateConfigDocument = {
           variable: { kind: "Variable", name: { kind: "Name", value: "global" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "globalInput" } },
         },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "dns" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "routing" } },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1240,16 +1306,6 @@ export const CreateConfigDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "global" },
                 value: { kind: "Variable", name: { kind: "Name", value: "global" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "dns" },
-                value: { kind: "Variable", name: { kind: "Name", value: "dns" } },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "routing" },
-                value: { kind: "Variable", name: { kind: "Name", value: "routing" } },
               },
             ],
             selectionSet: {

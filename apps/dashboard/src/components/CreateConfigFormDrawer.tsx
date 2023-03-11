@@ -17,7 +17,6 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  Textarea,
 } from "@chakra-ui/react";
 import { CreateFormDrawer, GrowableInputList, NumberInput } from "@daed/components";
 import { graphql } from "@daed/schemas/gql";
@@ -44,8 +43,6 @@ export type FormValues = {
     allowInsecure: boolean;
     dialMode: string;
   };
-  dns: string;
-  routing: string;
 };
 
 const SelectInterface = forwardRef<HTMLSelectElement, { data?: InterfacesQuery } & SelectProps>(
@@ -233,14 +230,6 @@ export const CreateConfigFormDrawer = ({
                 <Switch {...register("global.allowInsecure")} />
               </FormControl>
             </Flex>
-          </TabPanel>
-
-          <TabPanel>
-            <Textarea {...register("dns")} />
-          </TabPanel>
-
-          <TabPanel>
-            <Textarea {...register("routing")} />
           </TabPanel>
         </TabPanels>
       </Tabs>
