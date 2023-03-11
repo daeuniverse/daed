@@ -62,6 +62,7 @@ export type DefaultRoute = {
 export type Dns = {
   __typename?: "Dns";
   routing: DnsRouting;
+  string: Scalars["String"];
   upstream: Array<Param>;
 };
 
@@ -346,6 +347,8 @@ export type Query = {
   groups: Array<Group>;
   healthCheck: Scalars["Int"];
   nodes: NodesConnection;
+  parsedDns: Dns;
+  parsedRouting: Routing;
   subscriptions: Array<Subscription>;
 };
 
@@ -369,6 +372,14 @@ export type QueryNodesArgs = {
   subscriptionId?: InputMaybe<Scalars["ID"]>;
 };
 
+export type QueryParsedDnsArgs = {
+  raw: Scalars["String"];
+};
+
+export type QueryParsedRoutingArgs = {
+  raw: Scalars["String"];
+};
+
 export type QuerySubscriptionsArgs = {
   id?: InputMaybe<Scalars["ID"]>;
 };
@@ -377,6 +388,7 @@ export type Routing = {
   __typename?: "Routing";
   fallback: FunctionOrPlaintext;
   rules: Array<RoutingRule>;
+  string: Scalars["String"];
 };
 
 export type RoutingRule = {
@@ -495,6 +507,8 @@ export type ConfigsQuery = {
       allowInsecure: boolean;
       dialMode: string;
     };
+    routing: { __typename?: "Routing"; string: string };
+    dns: { __typename?: "Dns"; string: string };
   }>;
 };
 
@@ -737,6 +751,22 @@ export const ConfigsDocument = {
                       { kind: "Field", name: { kind: "Name", value: "allowInsecure" } },
                       { kind: "Field", name: { kind: "Name", value: "dialMode" } },
                     ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "routing" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "string" } }],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "dns" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "string" } }],
                   },
                 },
               ],

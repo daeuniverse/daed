@@ -156,9 +156,9 @@ export const SortableGrid = <T extends SortableList>({
   }, [sortableKeys, unSortedItems]);
 
   return (
-    <Flex direction="column" gap={4}>
+    <Flex>
       {isLoading ? (
-        <Center>
+        <Center flex={1}>
           <Spinner />
         </Center>
       ) : (

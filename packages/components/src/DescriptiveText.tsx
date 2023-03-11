@@ -1,6 +1,6 @@
 import { Text, TextProps, Tooltip, useOutsideClick } from "@chakra-ui/react";
-import { useRef, useState } from "react";
 import { SimpleDisplayable } from "@daed/typings";
+import { useRef, useState } from "react";
 
 export const DescriptiveText = ({ tip, ...props }: { tip: SimpleDisplayable } & TextProps) => {
   const [preventTooltipClose, setPreventTooltipClose] = useState(false);
@@ -17,8 +17,10 @@ export const DescriptiveText = ({ tip, ...props }: { tip: SimpleDisplayable } & 
       label={tip}
       placement="right"
       hasArrow
+      maxW="unset"
       isOpen={preventTooltipClose ? true : undefined}
       pointerEvents="all"
+      whiteSpace="break-spaces"
     >
       <Text
         cursor="pointer"

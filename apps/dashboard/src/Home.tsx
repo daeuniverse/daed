@@ -133,6 +133,12 @@ export const Home = () => {
                 allowInsecure
                 dialMode
               }
+              routing {
+                string
+              }
+              dns {
+                string
+              }
             }
           }
         `)
@@ -295,6 +301,8 @@ export const Home = () => {
               <SimpleDisplay name={t("lanInterface")} value={data.global.lanInterface} />
               <SimpleDisplay name={t("wanInterface")} value={data.global.wanInterface} />
               <SimpleDisplay name={t("allowInsecure")} value={data.global.allowInsecure} />
+              <SimpleDisplay name={t("routing")} value={data.routing.string} />
+              <SimpleDisplay name={t("dns")} value={data.dns.string} />
             </SimpleGrid>
           )}
         </Section>
