@@ -9,10 +9,9 @@ import { GraphQLClient } from "graphql-request";
 import { useEffect, useState } from "react";
 import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
 
+import { DEFAULT_ENDPOINT_URL, GQLClientContext } from "~/constants";
 import { Home } from "~/Home";
 import { endpointURLAtom } from "~/store";
-
-import { DEFAULT_ENDPOINT_URL, GQLClientContext } from "./constants";
 
 const GQLQueryClientProvider = ({ client, children }: { client: GraphQLClient; children: React.ReactNode }) => {
   return (

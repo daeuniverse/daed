@@ -138,12 +138,17 @@ importers:
 
   packages/components:
     specifiers:
+      '@daed/i18n': workspace:*
       '@daed/typings': workspace:*
     devDependencies:
+      '@daed/i18n': link:../i18n
       '@daed/typings': link:../typings
 
   packages/i18n:
-    specifiers: {}
+    specifiers:
+      '@daed/typings': workspace:*
+    devDependencies:
+      '@daed/typings': link:../typings
 
   packages/schemas:
     specifiers: {}

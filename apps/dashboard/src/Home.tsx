@@ -7,9 +7,9 @@ import { useTranslation } from "react-i18next";
 import SimpleBar from "simplebar-react";
 
 import { Section } from "~/components/Section";
+import { Sidebar } from "~/components/Sidebar";
 import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "~/constants";
 
-import { Sidebar } from "./components/Sidebar";
 import { useQGLQueryClient } from "./hooks";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

@@ -1,3 +1,5 @@
+import "@daed/i18n";
+
 export * from "./src/CreateFormDrawer";
 export * from "./src/DescriptiveText";
 export * from "./src/GrowableInputList";

@@ -254,10 +254,10 @@ export const Sidebar = () => {
         style={{
           x,
           y,
-          touchAction: "none",
-          zIndex: Number.MAX_SAFE_INTEGER,
           height: showSave ? 0 : "auto",
           marginBlock: 20,
+          zIndex: Number.MAX_SAFE_INTEGER,
+          touchAction: "none",
         }}
         dragConstraints={{ left: 0, right: 0, top: 0 }}
         whileHover={{
@@ -276,19 +276,19 @@ export const Sidebar = () => {
         </Heading>
 
         <Button w="full" leftIcon={<LinkIcon />} onClick={onNodeFormDrawerOpen}>
-          {`${t("import")} ${t("node")}`}
+          {`${t("actions.add")} ${t("node")}`}
         </Button>
 
         <Button w="full" leftIcon={<LinkIcon />} onClick={onSubscriptionFormDrawerOpen}>
-          {`${t("import")} ${t("subscription")}`}
+          {`${t("actions.import")} ${t("subscription")}`}
         </Button>
 
         <Button w="full" leftIcon={<AddIcon />} onClick={onConfigFormDrawerOpen}>
-          {`${t("create")} ${t("config")}`}
+          {`${t("actions.create")} ${t("config")}`}
         </Button>
 
         <Button w="full" leftIcon={<AddIcon />} onClick={onGroupFormDrawerOpen}>
-          {`${t("create")} ${t("group")}`}
+          {`${t("actions.create")} ${t("group")}`}
         </Button>
       </Flex>
 
@@ -345,7 +345,7 @@ export const Sidebar = () => {
 
         {showSave && (
           <Center alignItems="center">
-            <Button onClick={() => y.jump(0)}>Save the goose</Button>
+            <Button onClick={() => y.jump(0)}>{t("actions.save dae")}</Button>
           </Center>
         )}
       </Flex>

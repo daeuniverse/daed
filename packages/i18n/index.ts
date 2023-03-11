@@ -25,4 +25,13 @@ const i18nInit = () => {
     });
 };
 
+declare module "i18next" {
+  interface CustomTypeOptions {
+    defaultNS: typeof defaultNS;
+    resources: {
+      translation: (typeof resources)["zh-Hans"][typeof defaultNS];
+    };
+  }
+}
+
 export { i18n, i18nInit };

@@ -15,8 +15,8 @@ export const GrowableInputList = ({ children }: { children: (i: number) => React
         <Flex key={i} w="full" gap={2}>
           {children(i)}
 
-          <IconButton aria-label={t("create")} icon={<AddIcon />} onClick={() => increment()} />
-          <IconButton aria-label={t("remove")} icon={<DeleteIcon />} onClick={() => value > 1 && decrement()} />
+          <IconButton aria-label={t("actions.create")} icon={<AddIcon />} onClick={() => increment()} />
+          <IconButton aria-label={t("actions.remove")} icon={<DeleteIcon />} onClick={() => value > 1 && decrement()} />
         </Flex>
       ))}
     </VStack>

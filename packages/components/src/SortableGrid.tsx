@@ -64,18 +64,18 @@ const DraggableGridCard = <T extends SortableList[number]>({
             <MenuList>
               {onRename && (
                 <MenuItem icon={<EditIcon />} onClick={() => onRename(data)}>
-                  {t("rename")}
+                  {t("actions.rename")}
                 </MenuItem>
               )}
 
               {onEdit && (
                 <MenuItem icon={<SettingsIcon />} onClick={() => onEdit(data)}>
-                  {t("edit")}
+                  {t("actions.edit")}
                 </MenuItem>
               )}
 
               <MenuItem icon={<DeleteIcon />} onClick={() => onRemove && onRemove(data)}>
-                {t("remove")}
+                {t("actions.remove")}
               </MenuItem>
             </MenuList>
           </Portal>

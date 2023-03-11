@@ -55,9 +55,9 @@ export const CreateFormDrawer = <FormValues extends Record<string, unknown>>({
           </DrawerBody>
           <DrawerFooter>
             <Flex gap={2}>
-              <Button onClick={onClose}>{t("cancel")}</Button>
+              <Button onClick={onClose}>{t("actions.cancel")}</Button>
               <Button type="submit" isLoading={form.formState.isSubmitting} bg="Highlight">
-                {t("confirm")}
+                {t("actions.confirm")}
               </Button>
             </Flex>
           </DrawerFooter>
