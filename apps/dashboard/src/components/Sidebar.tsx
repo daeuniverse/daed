@@ -31,6 +31,7 @@ import {
   COLS_PER_ROW,
   GET_LOG_LEVEL_STEPS,
   QUERY_KEY_CONFIG,
+  QUERY_KEY_DNS,
   QUERY_KEY_GROUP,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
@@ -41,6 +42,7 @@ import { useQGLQueryClient } from "~/hooks";
 import { appStateAtom } from "~/store";
 
 import { CreateConfigFormDrawer, FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
+import { CreateDNSFormDrawer, FormValues as CreateDNSFormDrawerFormValues } from "./CreateDNSFormDrawer";
 import { CreateGroupFormDrawer, FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
 import { CreateRoutingFormDrawer, FormValues as CreateRoutingFormDrawerFormValues } from "./CreateRoutingFormDrawer";
 import { FormValues as ImportNodeFormDrawerFormValues, ImportNodeFormDrawer } from "./ImportNodeFormDrawer";
@@ -82,6 +84,7 @@ export const Sidebar = () => {
     onOpen: onRoutingFormDrawerOpen,
     onClose: onRoutingFormDrawerClose,
   } = useDisclosure();
+  const { isOpen: isDNSFormDrawerOpen, onOpen: onDNSFormDrawerOpen, onClose: onDNSFormDrawerClose } = useDisclosure();
 
   const isRunningQuery = useQuery({
     queryKey: QUERY_KEY_RUNNING,
@@ -225,6 +228,32 @@ export const Sidebar = () => {
     },
   });
 
+  const createDNSMutation = useMutation({
+    mutationFn: (values: CreateDNSFormDrawerFormValues) => {
+      const { name, dns } = values;
+
+      return gqlClient.request(
+        graphql(`
+          mutation CreateDns($name: String!, $dns: String) {
+            createDns(name: $name, dns: $dns) {
+              id
+            }
+          }
+        `),
+        { name, dns }
+      );
+    },
+    onSuccess: (data) => {
+      toast({
+        title: `${data.createDns.id}`,
+        status: "success",
+        isClosable: true,
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS });
+      onDNSFormDrawerClose();
+    },
+  });
+
   const createGroupMutation = useMutation({
     mutationFn: (values: CreateGroupFormDrawerFormValues) => {
       const { policyParams, ...data } = values;
@@ -320,6 +349,10 @@ export const Sidebar = () => {
           {`${t("actions.create")} ${t("routing")}`}
         </Button>
 
+        <Button w="full" leftIcon={<AddIcon />} onClick={onDNSFormDrawerOpen}>
+          {`${t("actions.create")} ${t("dns")}`}
+        </Button>
+
         <Button w="full" leftIcon={<AddIcon />} onClick={onGroupFormDrawerOpen}>
           {`${t("actions.create")} ${t("group")}`}
         </Button>
@@ -413,6 +446,14 @@ export const Sidebar = () => {
           onClose={onRoutingFormDrawerClose}
           onSubmit={async (form) => {
             await createRoutingMutation.mutateAsync(form.getValues());
+          }}
+        />
+
+        <CreateDNSFormDrawer
+          isOpen={isDNSFormDrawerOpen}
+          onClose={onDNSFormDrawerClose}
+          onSubmit={async (form) => {
+            await createDNSMutation.mutateAsync(form.getValues());
           }}
         />
 

@@ -10,6 +10,7 @@ import { Section } from "~/components/Section";
 import { Sidebar } from "~/components/Sidebar";
 import {
   QUERY_KEY_CONFIG,
+  QUERY_KEY_DNS,
   QUERY_KEY_GROUP,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
@@ -243,6 +244,40 @@ export const Home = () => {
     },
   });
 
+  const dnsQuery = useQuery({
+    queryKey: QUERY_KEY_DNS,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Dnss {
+            dnss {
+              id
+              name
+              dns {
+                string
+              }
+            }
+          }
+        `)
+      ),
+  });
+
+  const removeDNSMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveDns($id: ID!) {
+            removeDns(id: $id)
+          }
+        `),
+        { id }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS });
+    },
+  });
+
   const groupQuery = useQuery({
     queryKey: QUERY_KEY_GROUP,
     queryFn: async () =>
@@ -350,6 +385,21 @@ export const Home = () => {
             <SimpleGrid gap={2}>
               <SimpleDisplay name={t("name")} value={data.name} />
               <SimpleDisplay name={t("routing")} value={data.routing.string} />
+            </SimpleGrid>
+          )}
+        </Section>
+
+        <Section
+          name={t("dns")}
+          isLoading={dnsQuery.isLoading}
+          unSortedItems={dnsQuery.data?.dnss}
+          onRemove={(data) => removeDNSMutation.mutate(data.id)}
+          persistentSortableKeysName="dnsSortableKeys"
+        >
+          {(data) => (
+            <SimpleGrid gap={2}>
+              <SimpleDisplay name={t("name")} value={data.name} />
+              <SimpleDisplay name={t("dns")} value={data.dns.string} />
             </SimpleGrid>
           )}
         </Section>
