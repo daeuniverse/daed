@@ -151,7 +151,10 @@ importers:
       '@daed/typings': link:../typings
 
   packages/schemas:
-    specifiers: {}
+    specifiers:
+      '@daed/typings': workspace:*
+    devDependencies:
+      '@daed/typings': link:../typings
 
   packages/typings:
     specifiers: {}
