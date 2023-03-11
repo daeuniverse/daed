@@ -76,19 +76,21 @@ export const Sidebar = () => {
     onClose: onNodeFormDrawerClose,
   } = useDisclosure();
 
-  const isRunningQuery = useQuery(QUERY_KEY_RUNNING, async () =>
-    gqlClient.request(
-      graphql(`
-        query Running {
-          general {
-            dae {
-              running
+  const isRunningQuery = useQuery({
+    queryKey: QUERY_KEY_RUNNING,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Running {
+            general {
+              dae {
+                running
+              }
             }
           }
-        }
-      `)
-    )
-  );
+        `)
+      ),
+  });
 
   const runMutation = useMutation({
     mutationFn: (run: boolean) => {

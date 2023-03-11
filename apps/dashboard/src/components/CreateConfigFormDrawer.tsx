@@ -78,19 +78,21 @@ export const CreateConfigFormDrawer = ({
 
   const LOG_LEVEL_STEPS = GET_LOG_LEVEL_STEPS(t);
 
-  const interfacesQuery = useQuery(QUERY_KEY_INTERFACES, async () =>
-    gqlClient.request(
-      graphql(`
-        query Interfaces {
-          general {
-            interfaces {
-              name
+  const interfacesQuery = useQuery({
+    queryKey: QUERY_KEY_INTERFACES,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Interfaces {
+            general {
+              interfaces {
+                name
+              }
             }
           }
-        }
-      `)
-    )
-  );
+        `)
+      ),
+  });
 
   return (
     <CreateFormDrawer<FormValues>

@@ -65,91 +65,99 @@ export const Home = () => {
   const queryClient = useQueryClient();
   const gqlClient = useQGLQueryClient();
 
-  const nodeQuery = useQuery(QUERY_KEY_NODE, async () =>
-    gqlClient.request(
-      graphql(`
-        query Nodes {
-          nodes {
-            edges {
-              id
-              link
-              name
-              address
-              protocol
-              tag
-            }
-          }
-        }
-      `)
-    )
-  );
-
-  const subscriptionQuery = useQuery(QUERY_KEY_SUBSCRIPTION, async () =>
-    gqlClient.request(
-      graphql(`
-        query Subscriptions {
-          subscriptions {
-            id
-            tag
-            link
+  const nodeQuery = useQuery({
+    queryKey: QUERY_KEY_NODE,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Nodes {
             nodes {
               edges {
                 id
                 link
                 name
+                address
                 protocol
                 tag
               }
             }
           }
-        }
-      `)
-    )
-  );
+        `)
+      ),
+  });
 
-  const configQuery = useQuery(QUERY_KEY_CONFIG, async () =>
-    gqlClient.request(
-      graphql(`
-        query Configs {
-          configs {
-            id
-            selected
-            name
-            global {
-              tproxyPort
-              logLevel
-              tcpCheckUrl
-              udpCheckDns
-              checkInterval
-              checkTolerance
-              lanInterface
-              wanInterface
-              allowInsecure
-              dialMode
+  const subscriptionQuery = useQuery({
+    queryKey: QUERY_KEY_SUBSCRIPTION,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Subscriptions {
+            subscriptions {
+              id
+              tag
+              link
+              nodes {
+                edges {
+                  id
+                  link
+                  name
+                  protocol
+                  tag
+                }
+              }
             }
           }
-        }
-      `)
-    )
-  );
+        `)
+      ),
+  });
 
-  const groupQuery = useQuery(QUERY_KEY_GROUP, async () =>
-    gqlClient.request(
-      graphql(`
-        query Groups {
-          groups {
-            id
-            name
-            policy
-            policyParams {
-              key
-              val
+  const configQuery = useQuery({
+    queryKey: QUERY_KEY_CONFIG,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Configs {
+            configs {
+              id
+              selected
+              name
+              global {
+                tproxyPort
+                logLevel
+                tcpCheckUrl
+                udpCheckDns
+                checkInterval
+                checkTolerance
+                lanInterface
+                wanInterface
+                allowInsecure
+                dialMode
+              }
             }
           }
-        }
-      `)
-    )
-  );
+        `)
+      ),
+  });
+
+  const groupQuery = useQuery({
+    queryKey: QUERY_KEY_GROUP,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Groups {
+            groups {
+              id
+              name
+              policy
+              policyParams {
+                key
+                val
+              }
+            }
+          }
+        `)
+      ),
+  });
 
   const removeNodeMutation = useMutation({
     mutationFn: async (id: string) => {

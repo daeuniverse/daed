@@ -17,6 +17,7 @@ extends:
   - plugin:@typescript-eslint/recommended
   - plugin:prettier/recommended
   - plugin:import/recommended
+  - plugin:@tanstack/eslint-plugin-query/recommended
 settings:
   import/resolver:
     typescript:

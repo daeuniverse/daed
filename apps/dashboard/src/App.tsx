@@ -1,5 +1,4 @@
-import { Center, ChakraProvider, ColorModeScript, Spinner, useToast } from "@chakra-ui/react";
-import { theme } from "@daed/components";
+import { Center, Spinner, useToast } from "@chakra-ui/react";
 import { i18nInit } from "@daed/i18n";
 import { graphql } from "@daed/schemas/gql";
 import { createGraphiQLFetcher } from "@graphiql/toolkit";
@@ -8,7 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GraphiQL } from "graphiql";
 import { GraphQLClient } from "graphql-request";
 import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
 
 import { Home } from "~/Home";
 import { endpointURLAtom } from "~/store";
@@ -25,7 +24,7 @@ const GQLQueryClientProvider = ({ client, children }: { client: GraphQLClient; c
 
 export const App = () => {
   const { searchParams } = new URL(location.href);
-  const endpointURL = searchParams.get("u") || endpointURLAtom.get() || DEFAULT_ENDPOINT_URL;
+  const endpointURL = searchParams.get("u") || DEFAULT_ENDPOINT_URL;
 
   useEffect(() => {
     endpointURLAtom.set(endpointURL);
@@ -50,6 +49,7 @@ export const App = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
+        refetchOnWindowFocus: !import.meta.env.DEV,
         onError,
       },
       mutations: {
@@ -69,50 +69,49 @@ export const App = () => {
       `)
     );
 
-  const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    Promise.all([i18nInit(), healthCheckQuery()]).then(() => setLoading(false));
+    Promise.all([i18nInit(), healthCheckQuery()]).then(() => setReady(true));
   }, []);
 
-  if (loading) {
+  if (!ready) {
     return (
-      <Center h="full">
+      <Center w="100dvw" h="100dvh">
         <Spinner size="xl" />
       </Center>
     );
   }
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          index
-          path="/"
-          element={
-            <QueryClientProvider client={queryClient}>
-              <GQLQueryClientProvider client={gqlClient}>
-                <ChakraProvider theme={theme}>
-                  <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-                  <Home />
-                </ChakraProvider>
-                <ReactQueryDevtools position="bottom-right" />
-              </GQLQueryClientProvider>
-            </QueryClientProvider>
-          }
-        />
+  const routes: RouteObject[] = [
+    {
+      index: true,
+      path: "/",
+      element: <Home />,
+    },
+  ];
 
-        <Route
-          path="/graphql"
-          element={
-            <GraphiQL
-              fetcher={createGraphiQLFetcher({
-                url: endpointURL,
-              })}
-            />
-          }
+  if (import.meta.env.DEV) {
+    routes.push({
+      path: "/graphql",
+      element: (
+        <GraphiQL
+          fetcher={createGraphiQLFetcher({
+            url: endpointURL,
+          })}
         />
-      </Routes>
-    </BrowserRouter>
+      ),
+    });
+  }
+
+  const router = createBrowserRouter(routes);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <GQLQueryClientProvider client={gqlClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools position="bottom-right" />
+      </GQLQueryClientProvider>
+    </QueryClientProvider>
   );
 };
