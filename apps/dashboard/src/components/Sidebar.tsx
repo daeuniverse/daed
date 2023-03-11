@@ -138,7 +138,6 @@ export const Sidebar = () => {
     onSuccess: () => {
       toast({ title: t("success"), status: "success" });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
-      onNodeFormDrawerClose();
     },
   });
 
@@ -161,7 +160,6 @@ export const Sidebar = () => {
     onSuccess: () => {
       toast({ title: t("success"), status: "success" });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION });
-      onSubscriptionFormDrawerClose();
     },
   });
 
@@ -198,7 +196,6 @@ export const Sidebar = () => {
         isClosable: true,
       });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
-      onConfigFormDrawerClose();
     },
   });
 
@@ -224,7 +221,6 @@ export const Sidebar = () => {
         isClosable: true,
       });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING });
-      onRoutingFormDrawerClose();
     },
   });
 
@@ -250,7 +246,6 @@ export const Sidebar = () => {
         isClosable: true,
       });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS });
-      onDNSFormDrawerClose();
     },
   });
 
@@ -276,7 +271,6 @@ export const Sidebar = () => {
         isClosable: true,
       });
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP });
-      onGroupFormDrawerClose();
     },
   });
 

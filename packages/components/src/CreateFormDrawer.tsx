@@ -36,6 +36,7 @@ export const CreateFormDrawer = <FormValues extends Record<string, unknown>>({
         onSubmit={form.handleSubmit(async () => {
           try {
             await onSubmit(form);
+            onClose();
             form.reset();
           } catch {
             //
