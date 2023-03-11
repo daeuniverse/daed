@@ -558,6 +558,12 @@ export type NodesQuery = {
   };
 };
 
+export type RemoveNodesMutationVariables = Exact<{
+  ids: Array<Scalars["ID"]> | Scalars["ID"];
+}>;
+
+export type RemoveNodesMutation = { __typename?: "Mutation"; removeNodes: number };
+
 export type SubscriptionsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SubscriptionsQuery = {
@@ -580,6 +586,12 @@ export type SubscriptionsQuery = {
     };
   }>;
 };
+
+export type RemoveSubscriptionsMutationVariables = Exact<{
+  ids: Array<Scalars["ID"]> | Scalars["ID"];
+}>;
+
+export type RemoveSubscriptionsMutation = { __typename?: "Mutation"; removeSubscriptions: number };
 
 export type ConfigsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -606,6 +618,36 @@ export type ConfigsQuery = {
   }>;
 };
 
+export type SelectConfigMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type SelectConfigMutation = { __typename?: "Mutation"; selectConfig: number };
+
+export type RemoveConfigMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type RemoveConfigMutation = { __typename?: "Mutation"; removeConfig: number };
+
+export type RoutingsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type RoutingsQuery = {
+  __typename?: "Query";
+  routings: Array<{
+    __typename?: "Routing";
+    id: string;
+    name: string;
+    routing: { __typename?: "DaeRouting"; string: string };
+  }>;
+};
+
+export type RemoveRoutingMutationVariables = Exact<{
+  id: Scalars["ID"];
+}>;
+
+export type RemoveRoutingMutation = { __typename?: "Mutation"; removeRouting: number };
+
 export type GroupsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GroupsQuery = {
@@ -618,30 +660,6 @@ export type GroupsQuery = {
     policyParams: Array<{ __typename?: "Param"; key: string; val: string }>;
   }>;
 };
-
-export type RemoveNodesMutationVariables = Exact<{
-  ids: Array<Scalars["ID"]> | Scalars["ID"];
-}>;
-
-export type RemoveNodesMutation = { __typename?: "Mutation"; removeNodes: number };
-
-export type RemoveSubscriptionsMutationVariables = Exact<{
-  ids: Array<Scalars["ID"]> | Scalars["ID"];
-}>;
-
-export type RemoveSubscriptionsMutation = { __typename?: "Mutation"; removeSubscriptions: number };
-
-export type SelectConfigMutationVariables = Exact<{
-  id: Scalars["ID"];
-}>;
-
-export type SelectConfigMutation = { __typename?: "Mutation"; selectConfig: number };
-
-export type RemoveConfigMutationVariables = Exact<{
-  id: Scalars["ID"];
-}>;
-
-export type RemoveConfigMutation = { __typename?: "Mutation"; removeConfig: number };
 
 export type RemoveGroupMutationVariables = Exact<{
   id: Scalars["ID"];
@@ -695,6 +713,13 @@ export type CreateConfigMutationVariables = Exact<{
 }>;
 
 export type CreateConfigMutation = { __typename?: "Mutation"; createConfig: { __typename?: "Config"; id: string } };
+
+export type CreateRoutingMutationVariables = Exact<{
+  name: Scalars["String"];
+  routing?: InputMaybe<Scalars["String"]>;
+}>;
+
+export type CreateRoutingMutation = { __typename?: "Mutation"; createRouting: { __typename?: "Routing"; id: string } };
 
 export type CreateGroupMutationVariables = Exact<{
   name: Scalars["String"];
@@ -757,6 +782,45 @@ export const NodesDocument = {
     },
   ],
 } as unknown as DocumentNode<NodesQuery, NodesQueryVariables>;
+export const RemoveNodesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveNodes" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "ids" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "removeNodes" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "ids" },
+                value: { kind: "Variable", name: { kind: "Name", value: "ids" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveNodesMutation, RemoveNodesMutationVariables>;
 export const SubscriptionsDocument = {
   kind: "Document",
   definitions: [
@@ -807,6 +871,45 @@ export const SubscriptionsDocument = {
     },
   ],
 } as unknown as DocumentNode<SubscriptionsQuery, SubscriptionsQueryVariables>;
+export const RemoveSubscriptionsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveSubscriptions" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "ids" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "removeSubscriptions" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "ids" },
+                value: { kind: "Variable", name: { kind: "Name", value: "ids" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveSubscriptionsMutation, RemoveSubscriptionsMutationVariables>;
 export const ConfigsDocument = {
   kind: "Document",
   definitions: [
@@ -853,6 +956,139 @@ export const ConfigsDocument = {
     },
   ],
 } as unknown as DocumentNode<ConfigsQuery, ConfigsQueryVariables>;
+export const SelectConfigDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "SelectConfig" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "selectConfig" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SelectConfigMutation, SelectConfigMutationVariables>;
+export const RemoveConfigDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveConfig" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "removeConfig" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveConfigMutation, RemoveConfigMutationVariables>;
+export const RoutingsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "Routings" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "routings" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "routing" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [{ kind: "Field", name: { kind: "Name", value: "string" } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RoutingsQuery, RoutingsQueryVariables>;
+export const RemoveRoutingDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveRouting" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "removeRouting" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveRoutingMutation, RemoveRoutingMutationVariables>;
 export const GroupsDocument = {
   kind: "Document",
   definitions: [
@@ -891,157 +1127,13 @@ export const GroupsDocument = {
     },
   ],
 } as unknown as DocumentNode<GroupsQuery, GroupsQueryVariables>;
-export const RemoveNodesDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "removeNodes" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "ids" } },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "ListType",
-              type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "removeNodes" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "ids" },
-                value: { kind: "Variable", name: { kind: "Name", value: "ids" } },
-              },
-            ],
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<RemoveNodesMutation, RemoveNodesMutationVariables>;
-export const RemoveSubscriptionsDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "removeSubscriptions" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "ids" } },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "ListType",
-              type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "removeSubscriptions" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "ids" },
-                value: { kind: "Variable", name: { kind: "Name", value: "ids" } },
-              },
-            ],
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<RemoveSubscriptionsMutation, RemoveSubscriptionsMutationVariables>;
-export const SelectConfigDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "selectConfig" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
-          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "selectConfig" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "id" },
-                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
-              },
-            ],
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SelectConfigMutation, SelectConfigMutationVariables>;
-export const RemoveConfigDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "removeConfig" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
-          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "ID" } } },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "removeConfig" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "id" },
-                value: { kind: "Variable", name: { kind: "Name", value: "id" } },
-              },
-            ],
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<RemoveConfigMutation, RemoveConfigMutationVariables>;
 export const RemoveGroupDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "mutation",
-      name: { kind: "Name", value: "removeGroup" },
+      name: { kind: "Name", value: "RemoveGroup" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -1171,7 +1263,7 @@ export const ImportNodesDocument = {
     {
       kind: "OperationDefinition",
       operation: "mutation",
-      name: { kind: "Name", value: "importNodes" },
+      name: { kind: "Name", value: "ImportNodes" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -1230,7 +1322,7 @@ export const ImportSubscriptionDocument = {
     {
       kind: "OperationDefinition",
       operation: "mutation",
-      name: { kind: "Name", value: "importSubscription" },
+      name: { kind: "Name", value: "ImportSubscription" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -1277,7 +1369,7 @@ export const CreateConfigDocument = {
     {
       kind: "OperationDefinition",
       operation: "mutation",
-      name: { kind: "Name", value: "createConfig" },
+      name: { kind: "Name", value: "CreateConfig" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -1318,13 +1410,60 @@ export const CreateConfigDocument = {
     },
   ],
 } as unknown as DocumentNode<CreateConfigMutation, CreateConfigMutationVariables>;
+export const CreateRoutingDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "CreateRouting" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NonNullType", type: { kind: "NamedType", name: { kind: "Name", value: "String" } } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "routing" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createRouting" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "routing" },
+                value: { kind: "Variable", name: { kind: "Name", value: "routing" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [{ kind: "Field", name: { kind: "Name", value: "id" } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateRoutingMutation, CreateRoutingMutationVariables>;
 export const CreateGroupDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "mutation",
-      name: { kind: "Name", value: "createGroup" },
+      name: { kind: "Name", value: "CreateGroup" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",

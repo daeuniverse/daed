@@ -33,6 +33,7 @@ import {
   QUERY_KEY_CONFIG,
   QUERY_KEY_GROUP,
   QUERY_KEY_NODE,
+  QUERY_KEY_ROUTING,
   QUERY_KEY_RUNNING,
   QUERY_KEY_SUBSCRIPTION,
 } from "~/constants";
@@ -41,6 +42,7 @@ import { appStateAtom } from "~/store";
 
 import { CreateConfigFormDrawer, FormValues as CreateConfigFormDrawerFormValues } from "./CreateConfigFormDrawer";
 import { CreateGroupFormDrawer, FormValues as CreateGroupFormDrawerFormValues } from "./CreateGroupFormDrawer";
+import { CreateRoutingFormDrawer, FormValues as CreateRoutingFormDrawerFormValues } from "./CreateRoutingFormDrawer";
 import { FormValues as ImportNodeFormDrawerFormValues, ImportNodeFormDrawer } from "./ImportNodeFormDrawer";
 import {
   FormValues as ImportSubscriptionFormDrawerFormValues,
@@ -74,6 +76,11 @@ export const Sidebar = () => {
     isOpen: isNodeFormDrawerOpen,
     onOpen: onNodeFormDrawerOpen,
     onClose: onNodeFormDrawerClose,
+  } = useDisclosure();
+  const {
+    isOpen: isRoutingFormDrawerOpen,
+    onOpen: onRoutingFormDrawerOpen,
+    onClose: onRoutingFormDrawerClose,
   } = useDisclosure();
 
   const isRunningQuery = useQuery({
@@ -112,7 +119,7 @@ export const Sidebar = () => {
     mutationFn: (values: ImportNodeFormDrawerFormValues) => {
       return gqlClient.request(
         graphql(`
-          mutation importNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {
+          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {
             importNodes(rollbackError: $rollbackError, args: $args) {
               link
               error
@@ -136,7 +143,7 @@ export const Sidebar = () => {
     mutationFn: (values: ImportSubscriptionFormDrawerFormValues) => {
       return gqlClient.request(
         graphql(`
-          mutation importSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {
+          mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {
             importSubscription(rollbackError: $rollbackError, arg: $arg) {
               link
             }
@@ -164,7 +171,7 @@ export const Sidebar = () => {
 
       return gqlClient.request(
         graphql(`
-          mutation createConfig($name: String, $global: globalInput) {
+          mutation CreateConfig($name: String, $global: globalInput) {
             createConfig(name: $name, global: $global) {
               id
             }
@@ -192,13 +199,39 @@ export const Sidebar = () => {
     },
   });
 
+  const createRoutingMutation = useMutation({
+    mutationFn: (values: CreateRoutingFormDrawerFormValues) => {
+      const { name, routing } = values;
+
+      return gqlClient.request(
+        graphql(`
+          mutation CreateRouting($name: String!, $routing: String) {
+            createRouting(name: $name, routing: $routing) {
+              id
+            }
+          }
+        `),
+        { name, routing }
+      );
+    },
+    onSuccess: (data) => {
+      toast({
+        title: `${data.createRouting.id}`,
+        status: "success",
+        isClosable: true,
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING });
+      onRoutingFormDrawerClose();
+    },
+  });
+
   const createGroupMutation = useMutation({
     mutationFn: (values: CreateGroupFormDrawerFormValues) => {
       const { policyParams, ...data } = values;
 
       return gqlClient.request(
         graphql(`
-          mutation createGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {
+          mutation CreateGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {
             createGroup(name: $name, policy: $policy, policyParams: $policyParams) {
               id
             }
@@ -281,6 +314,10 @@ export const Sidebar = () => {
 
         <Button w="full" leftIcon={<AddIcon />} onClick={onConfigFormDrawerOpen}>
           {`${t("actions.create")} ${t("config")}`}
+        </Button>
+
+        <Button w="full" leftIcon={<AddIcon />} onClick={onRoutingFormDrawerOpen}>
+          {`${t("actions.create")} ${t("routing")}`}
         </Button>
 
         <Button w="full" leftIcon={<AddIcon />} onClick={onGroupFormDrawerOpen}>
@@ -368,6 +405,14 @@ export const Sidebar = () => {
           onClose={onConfigFormDrawerClose}
           onSubmit={async (form) => {
             await createConfigMutation.mutateAsync(form.getValues());
+          }}
+        />
+
+        <CreateRoutingFormDrawer
+          isOpen={isRoutingFormDrawerOpen}
+          onClose={onRoutingFormDrawerClose}
+          onSubmit={async (form) => {
+            await createRoutingMutation.mutateAsync(form.getValues());
           }}
         />
 

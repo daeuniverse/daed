@@ -11,6 +11,7 @@ export const QUERY_KEY_RUNNING = ["running"];
 export const QUERY_KEY_NODE = ["node"];
 export const QUERY_KEY_SUBSCRIPTION = ["subscription"];
 export const QUERY_KEY_CONFIG = ["config"];
+export const QUERY_KEY_ROUTING = ["routing"];
 export const QUERY_KEY_GROUP = ["group"];
 
 export const DEFAULT_ENDPOINT_URL = "http://127.0.0.1:2023/graphql";

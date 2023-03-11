@@ -7,6 +7,7 @@ export type PersistentSortableKeys = {
   nodeSortableKeys: UniqueIdentifier[];
   subscriptionSortableKeys: UniqueIdentifier[];
   configSortableKeys: UniqueIdentifier[];
+  routingSortableKeys: UniqueIdentifier[];
   groupSortableKeys: UniqueIdentifier[];
 };
 
@@ -22,6 +23,7 @@ export const appStateAtom = persistentMap<APP_STATE>(
     nodeSortableKeys: [],
     subscriptionSortableKeys: [],
     configSortableKeys: [],
+    routingSortableKeys: [],
     groupSortableKeys: [],
   },
   {

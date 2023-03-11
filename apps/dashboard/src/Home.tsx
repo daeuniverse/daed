@@ -8,7 +8,13 @@ import SimpleBar from "simplebar-react";
 
 import { Section } from "~/components/Section";
 import { Sidebar } from "~/components/Sidebar";
-import { QUERY_KEY_CONFIG, QUERY_KEY_GROUP, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "~/constants";
+import {
+  QUERY_KEY_CONFIG,
+  QUERY_KEY_GROUP,
+  QUERY_KEY_NODE,
+  QUERY_KEY_ROUTING,
+  QUERY_KEY_SUBSCRIPTION,
+} from "~/constants";
 
 import { useQGLQueryClient } from "./hooks";
 
@@ -86,6 +92,22 @@ export const Home = () => {
       ),
   });
 
+  const removeNodeMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveNodes($ids: [ID!]!) {
+            removeNodes(ids: $ids)
+          }
+        `),
+        { ids: [id] }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
+    },
+  });
+
   const subscriptionQuery = useQuery({
     queryKey: QUERY_KEY_SUBSCRIPTION,
     queryFn: async () =>
@@ -109,6 +131,22 @@ export const Home = () => {
           }
         `)
       ),
+  });
+
+  const removeSubscriptionMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveSubscriptions($ids: [ID!]!) {
+            removeSubscriptions(ids: $ids)
+          }
+        `),
+        { ids: [id] }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION });
+    },
   });
 
   const configQuery = useQuery({
@@ -139,6 +177,72 @@ export const Home = () => {
       ),
   });
 
+  const selectConfigMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation SelectConfig($id: ID!) {
+            selectConfig(id: $id)
+          }
+        `),
+        { id }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
+    },
+  });
+
+  const removeConfigMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveConfig($id: ID!) {
+            removeConfig(id: $id)
+          }
+        `),
+        { id }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
+    },
+  });
+
+  const routingQuery = useQuery({
+    queryKey: QUERY_KEY_ROUTING,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Routings {
+            routings {
+              id
+              name
+              routing {
+                string
+              }
+            }
+          }
+        `)
+      ),
+  });
+
+  const removeRoutingMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveRouting($id: ID!) {
+            removeRouting(id: $id)
+          }
+        `),
+        { id }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING });
+    },
+  });
+
   const groupQuery = useQuery({
     queryKey: QUERY_KEY_GROUP,
     queryFn: async () =>
@@ -159,75 +263,11 @@ export const Home = () => {
       ),
   });
 
-  const removeNodeMutation = useMutation({
-    mutationFn: async (id: string) => {
-      return gqlClient.request(
-        graphql(`
-          mutation removeNodes($ids: [ID!]!) {
-            removeNodes(ids: $ids)
-          }
-        `),
-        { ids: [id] }
-      );
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
-    },
-  });
-
-  const removeSubscriptionMutation = useMutation({
-    mutationFn: async (id: string) => {
-      return gqlClient.request(
-        graphql(`
-          mutation removeSubscriptions($ids: [ID!]!) {
-            removeSubscriptions(ids: $ids)
-          }
-        `),
-        { ids: [id] }
-      );
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION });
-    },
-  });
-
-  const selectConfigMutation = useMutation({
-    mutationFn: async (id: string) => {
-      return gqlClient.request(
-        graphql(`
-          mutation selectConfig($id: ID!) {
-            selectConfig(id: $id)
-          }
-        `),
-        { id }
-      );
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
-    },
-  });
-
-  const removeConfigMutation = useMutation({
-    mutationFn: async (id: string) => {
-      return gqlClient.request(
-        graphql(`
-          mutation removeConfig($id: ID!) {
-            removeConfig(id: $id)
-          }
-        `),
-        { id }
-      );
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG });
-    },
-  });
-
   const removeGroupMutation = useMutation({
     mutationFn: async (id: string) => {
       return gqlClient.request(
         graphql(`
-          mutation removeGroup($id: ID!) {
+          mutation RemoveGroup($id: ID!) {
             removeGroup(id: $id)
           }
         `),
@@ -295,6 +335,21 @@ export const Home = () => {
               <SimpleDisplay name={t("lanInterface")} value={data.global.lanInterface} />
               <SimpleDisplay name={t("wanInterface")} value={data.global.wanInterface} />
               <SimpleDisplay name={t("allowInsecure")} value={data.global.allowInsecure} />
+            </SimpleGrid>
+          )}
+        </Section>
+
+        <Section
+          name={t("routing")}
+          isLoading={routingQuery.isLoading}
+          unSortedItems={routingQuery.data?.routings}
+          onRemove={(data) => removeRoutingMutation.mutate(data.id)}
+          persistentSortableKeysName="routingSortableKeys"
+        >
+          {(data) => (
+            <SimpleGrid gap={2}>
+              <SimpleDisplay name={t("name")} value={data.name} />
+              <SimpleDisplay name={t("routing")} value={data.routing.string} />
             </SimpleGrid>
           )}
         </Section>
