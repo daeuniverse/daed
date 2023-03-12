@@ -2,6 +2,14 @@ import { GraphQLClient } from "graphql-request";
 import { TFunction } from "i18next";
 import { createContext } from "react";
 
+export const formatUserInputEndpointURL = (input?: string) => {
+  const { protocol } = new URL(location.href);
+
+  return `${protocol}//${input}/graphql`;
+};
+
+export const DEFAULT_ENDPOINT_URL_INPUT = "127.0.0.1:2023";
+export const DEFAULT_ENDPOINT_URL = formatUserInputEndpointURL(DEFAULT_ENDPOINT_URL_INPUT);
 export const GQLClientContext = createContext<GraphQLClient>(null as unknown as GraphQLClient);
 
 export const COLS_PER_ROW = 3;
@@ -15,7 +23,6 @@ export const QUERY_KEY_ROUTING = ["routing"];
 export const QUERY_KEY_DNS = ["dns"];
 export const QUERY_KEY_GROUP = ["group"];
 
-export const ENDPOINT_URL = "ENDPOINT_URL";
 export const DEFAULT_TCP_CHECK_URL = "http://keep-alv.google.com/generate_204";
 export const DEFAULT_UDP_CHECK_DNS = "1.1.1.1";
 

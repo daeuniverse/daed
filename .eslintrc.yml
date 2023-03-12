@@ -31,6 +31,9 @@ rules:
     - blankLine: always
       prev: "*"
       next: return
+    - blankLine: always
+      prev: "*"
+      next: if
   import/newline-after-import: error
   import/no-default-export: error
   import/order:

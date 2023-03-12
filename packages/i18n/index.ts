@@ -12,7 +12,7 @@ export const resources = {
   "zh-Hans": { [defaultNS]: zhHans },
 };
 
-const i18nInit = () => {
+const i18nInit = () =>
   i18n
     .use(detectLanguage)
     .use(initReactI18next)
@@ -23,7 +23,6 @@ const i18nInit = () => {
       defaultNS,
       resources,
     });
-};
 
 declare module "i18next" {
   interface CustomTypeOptions {
