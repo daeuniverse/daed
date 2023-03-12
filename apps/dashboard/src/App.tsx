@@ -9,7 +9,7 @@ import { GraphQLClient } from "graphql-request";
 import { useEffect, useState } from "react";
 import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
 
-import { DEFAULT_ENDPOINT_URL, GQLClientContext } from "~/constants";
+import { GQLClientContext } from "~/constants";
 import { Home } from "~/Home";
 import { endpointURLAtom } from "~/store";
 
@@ -22,13 +22,6 @@ const GQLQueryClientProvider = ({ client, children }: { client: GraphQLClient; c
 };
 
 export const App = () => {
-  const { searchParams } = new URL(location.href);
-  const endpointURL = searchParams.get("u") || DEFAULT_ENDPOINT_URL;
-
-  useEffect(() => {
-    endpointURLAtom.set(endpointURL);
-  }, [endpointURL]);
-
   const toast = useToast();
 
   const onError = (err: unknown) => {
@@ -57,7 +50,7 @@ export const App = () => {
     },
   });
 
-  const gqlClient = new GraphQLClient(endpointURL);
+  const gqlClient = new GraphQLClient(endpointURLAtom.get());
 
   const healthCheckQuery = async () =>
     gqlClient.request(
@@ -96,7 +89,7 @@ export const App = () => {
       element: (
         <GraphiQL
           fetcher={createGraphiQLFetcher({
-            url: endpointURL,
+            url: endpointURLAtom.get(),
           })}
         />
       ),

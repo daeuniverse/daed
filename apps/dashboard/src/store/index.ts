@@ -1,7 +1,7 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { persistentAtom, persistentMap } from "@nanostores/persistent";
 
-import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL } from "~/constants";
+import { COLS_PER_ROW, ENDPOINT_URL } from "~/constants";
 
 export type PersistentSortableKeys = {
   nodeSortableKeys: UniqueIdentifier[];
@@ -16,7 +16,7 @@ export type APP_STATE = {
   colsPerRow: number;
 } & PersistentSortableKeys;
 
-export const endpointURLAtom = persistentAtom<string>(DEFAULT_ENDPOINT_URL);
+export const endpointURLAtom = persistentAtom<string>(ENDPOINT_URL);
 export const appStateAtom = persistentMap<APP_STATE>(
   "APP_STATE",
   {
