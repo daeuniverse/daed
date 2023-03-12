@@ -31,7 +31,7 @@ export const CreateDNSFormDrawer = ({
           <Input isRequired {...register("name")} />
         </FormControl>
 
-        <Textarea {...register("dns")} />
+        <Textarea h="md" isRequired {...register("dns")} />
       </Flex>
     </CreateFormDrawer>
   );

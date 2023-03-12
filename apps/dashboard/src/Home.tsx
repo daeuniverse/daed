@@ -1,8 +1,8 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
-import { Accordion, Collapse, Flex, Icon, IconButton, SimpleGrid, useDisclosure } from "@chakra-ui/react";
+import { Accordion, Collapse, Flex, Icon, IconButton, Progress, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 import { SimpleDisplay } from "@daed/components";
 import { graphql } from "@daed/schemas/gql";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useIsFetching, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import SimpleBar from "simplebar-react";
 
@@ -25,9 +25,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { isOpen: isSidebarOpen, onToggle: onSidebarToggle } = useDisclosure({
     defaultIsOpen: true,
   });
+  const fetching = useIsFetching();
 
   return (
     <Flex h="100dvh" px={4} py={12}>
+      {fetching > 0 && <Progress isIndeterminate pos="fixed" top={2} left={0} right={0} mx={4} rounded="md" />}
+
       <Flex>
         <IconButton
           aria-label={t("collapse")}

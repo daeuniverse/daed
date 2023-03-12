@@ -126,7 +126,7 @@ const Main = () => {
   const routes: RouteObject[] = [
     {
       index: true,
-      path: "/",
+      path: "*",
       element: <Home />,
     },
   ];
