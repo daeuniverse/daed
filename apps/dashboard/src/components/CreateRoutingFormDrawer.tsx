@@ -37,7 +37,7 @@ export const CreateRoutingFormDrawer = ({
           <Input isRequired {...register("name")} />
         </FormControl>
 
-        <Textarea h="md" isRequired {...register("routing")} />
+        <Textarea h="md" isRequired {...register("routing")} spellCheck={false} />
       </Flex>
     </CreateFormDrawer>
   );
