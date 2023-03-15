@@ -167,7 +167,7 @@ export const Sidebar = () => {
     mutationFn: (values: CreateConfigFormDrawerFormValues) => {
       const {
         name,
-        global: { logLevelIndex, checkIntervalSeconds, checkTolerenceMS: checkTolerenceMS, ...global },
+        global: { tproxyPort, logLevelIndex, checkIntervalSeconds, checkTolerenceMS: checkTolerenceMS, ...global },
       } = values;
 
       return gqlClient.request(
@@ -181,6 +181,7 @@ export const Sidebar = () => {
         {
           name,
           global: {
+            tproxyPort: Number(tproxyPort),
             logLevel: GET_LOG_LEVEL_STEPS(t)[logLevelIndex][1],
             checkInterval: `${checkIntervalSeconds}s`,
             checkTolerance: `${checkTolerenceMS}ms`,
