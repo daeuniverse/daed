@@ -15,8 +15,11 @@ extends:
   - eslint:recommended
   - plugin:@typescript-eslint/eslint-recommended
   - plugin:@typescript-eslint/recommended
-  - plugin:prettier/recommended
   - plugin:import/recommended
+  - plugin:prettier/recommended
+  - plugin:react-hooks/recommended
+  - plugin:react/recommended
+  - plugin:react/jsx-runtime
   - plugin:@tanstack/eslint-plugin-query/recommended
 settings:
   import/resolver:
@@ -25,6 +28,8 @@ settings:
         - apps/*/tsconfig.json
         - packages/*/tsconfig.json
     node: true
+  react:
+    version: detect
 rules:
   padding-line-between-statements:
     - error
@@ -34,6 +39,9 @@ rules:
     - blankLine: always
       prev: "*"
       next: if
+  react/prop-types: off
+  react/display-name: off
+  react/self-closing-comp: error
   import/newline-after-import: error
   import/no-default-export: error
   import/order:

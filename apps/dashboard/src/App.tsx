@@ -16,7 +16,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GraphiQL } from "graphiql";
 import { GraphQLClient } from "graphql-request";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
 
 import { DEFAULT_ENDPOINT_URL_INPUT, formatUserInputEndpointURL, GQLClientContext } from "~/constants";
@@ -32,7 +32,7 @@ const Setup = ({ children }: { children: React.ReactNode }) => {
       <Center w="100dvw" h="100dvh">
         <Container>
           <InputGroup>
-            <InputLeftAddon>{protocol}//</InputLeftAddon>
+            <InputLeftAddon>{`${protocol}//`}</InputLeftAddon>
 
             <Input
               type="url"
@@ -90,16 +90,19 @@ const Main = () => {
     },
   });
 
-  const gqlClient = new GraphQLClient(endpointURL);
+  const gqlClient = useMemo(() => new GraphQLClient(endpointURL), [endpointURL]);
 
-  const healthCheckQuery = () =>
-    gqlClient.request(
-      graphql(`
-        query HealthCheck {
-          healthCheck
-        }
-      `)
-    );
+  const healthCheckQuery = useCallback(
+    () =>
+      gqlClient.request(
+        graphql(`
+          query HealthCheck {
+            healthCheck
+          }
+        `)
+      ),
+    [gqlClient]
+  );
 
   const [ready, setReady] = useState(false);
 
@@ -113,7 +116,7 @@ const Main = () => {
           endpointURLAtom.set("");
         });
     }
-  }, [ready]);
+  }, [healthCheckQuery, ready]);
 
   if (!ready) {
     return (

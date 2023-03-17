@@ -29,7 +29,7 @@
     "@nanostores/react": "^0.4.1",
     "@tanstack/react-query": "^4.26.1",
     "@tanstack/react-query-devtools": "^4.26.1",
-    "framer-motion": "^10.3.1",
+    "framer-motion": "^10.5.0",
     "graphiql": "^2.4.0",
     "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
@@ -66,11 +66,12 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.4",
     "turbo": "^1.8.3",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.4"
+    "typescript": "^5.0.2",
+    "vite": "^4.2.0"
   }
 }
