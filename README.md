@@ -1,14 +1,14 @@
 # daed
 
 <p align="center" width="100%">
-  <img width="100" src="docs/logo.svg" />
+  <img width="100" src="dashboard/public/logo.svg" />
 </p>
 
 ## What this project is for
 
 A Web Dashboard For [dae](https://github.com/v2raya/dae)
 
-![preview](docs/preview.png)
+![preview](dashboard/public/preview.png)
 
 Project Goals:
 
@@ -58,6 +58,6 @@ Happy Hacking!
 
 ### What you need to know
 
-- [Chakra](https://chakra-ui.com)
+- [Chakra](https://mui.com)
 - [React](https://reactjs.org)
 - [Graphql](https://graphql.org)

@@ -1,24 +1,39 @@
-import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Flex, IconButton, StackDivider, useCounter, VStack } from "@chakra-ui/react";
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { Stack } from "@mui/material";
+import { forwardRef, Fragment, useImperativeHandle, useState } from "react";
+import { v4 as uuid } from "uuid";
 
-export const GrowableInputList = ({ children }: { children: (i: number) => React.ReactNode }) => {
-  const { t } = useTranslation();
+export type GrowableInputListHandle = {
+  reset: () => void;
+};
 
-  const { value, increment, decrement } = useCounter({ defaultValue: 1 });
-  const inputList = useMemo(() => Array(Number(value)).fill(undefined), [value]);
+export const GrowableInputList = forwardRef<
+  GrowableInputListHandle,
+  { children: (i: number, props: { inc: () => void; dec: () => void; reset: () => void }) => React.ReactNode }
+>(({ children }, ref) => {
+  const [inputList, setInputList] = useState<string[]>([uuid()]);
+  const reset = () => setInputList([uuid()]);
+
+  useImperativeHandle(ref, () => ({
+    reset,
+  }));
 
   return (
-    <VStack divider={<StackDivider borderColor="Highlight" />}>
-      {inputList.map((_, i) => (
-        <Flex key={i} w="full" gap={2}>
-          {children(i)}
+    <Fragment>
+      {inputList.map((id, i) => (
+        <Stack key={id} direction="row" alignItems="center" spacing={1}>
+          {children(i, {
+            inc: () =>
+              setInputList((list) => {
+                const updated = list.slice(0);
+                updated.splice(i + 1, 0, uuid());
 
-          <IconButton aria-label={t("actions.create")} icon={<AddIcon />} onClick={() => increment()} />
-          <IconButton aria-label={t("actions.remove")} icon={<DeleteIcon />} onClick={() => value > 1 && decrement()} />
-        </Flex>
+                return updated;
+              }),
+            dec: () => inputList.length >= 2 && setInputList((list) => list.filter((_, n) => i !== n)),
+            reset,
+          })}
+        </Stack>
       ))}
-    </VStack>
+    </Fragment>
   );
-};
+});
