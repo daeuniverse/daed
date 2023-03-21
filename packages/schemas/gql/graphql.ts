@@ -154,14 +154,16 @@ export type InterfaceFlag = {
 
 export type Mutation = {
   __typename?: "Mutation";
-  /** createConfig create a global config. Null arguments will be converted to default value. */
+  /** createConfig creates a global config. Null arguments will be converted to default value. */
   createConfig: Config;
-  /** createConfig create a dns config. Null arguments will be converted to default value. */
+  /** createConfig creates a dns config. Null arguments will be converted to default value. */
   createDns: Dns;
   /** createGroup is to create a group. */
   createGroup: Group;
-  /** createConfig create a routing config. Null arguments will be converted to default value. */
+  /** createConfig creates a routing config. Null arguments will be converted to default value. */
   createRouting: Routing;
+  /** createUser creates a user if there is no user. */
+  createUser: Scalars["String"];
   /** groupAddNodes is to add nodes to the group. Nodes will not be removed from its subscription when subscription update. */
   groupAddNodes: Scalars["Int"];
   /** groupAddSubscriptions is to add subscriptions to the group. */
@@ -182,6 +184,8 @@ export type Mutation = {
   removeDns: Scalars["Int"];
   /** removeGroup is to remove a group. */
   removeGroup: Scalars["Int"];
+  /** removeJsonStorage remove given paths from user related json storage. Empty paths is to clear json storage. Refer to https://github.com/tidwall/sjson */
+  removeJsonStorage: Scalars["Int"];
   /** removeNodes is to remove nodes that have no subscription ID. */
   removeNodes: Scalars["Int"];
   /** removeRouting is to remove a routing config with given routing ID. */
@@ -204,6 +208,8 @@ export type Mutation = {
   selectDns: Scalars["Int"];
   /** selectConfig is to select a routing config as the current routing. */
   selectRouting: Scalars["Int"];
+  /** setJsonStorage set given paths to values in user related json storage. Refer to https://github.com/tidwall/sjson */
+  setJsonStorage: Scalars["Int"];
   /** tagNode is to give the node a new tag. */
   tagNode: Scalars["Int"];
   /** tagSubscription is to give the subscription a new tag. */
@@ -237,6 +243,11 @@ export type MutationCreateGroupArgs = {
 export type MutationCreateRoutingArgs = {
   name?: InputMaybe<Scalars["String"]>;
   routing?: InputMaybe<Scalars["String"]>;
+};
+
+export type MutationCreateUserArgs = {
+  password: Scalars["String"];
+  username: Scalars["String"];
 };
 
 export type MutationGroupAddNodesArgs = {
@@ -287,6 +298,10 @@ export type MutationRemoveGroupArgs = {
   id: Scalars["ID"];
 };
 
+export type MutationRemoveJsonStorageArgs = {
+  paths?: InputMaybe<Array<Scalars["String"]>>;
+};
+
 export type MutationRemoveNodesArgs = {
   ids: Array<Scalars["ID"]>;
 };
@@ -333,6 +348,11 @@ export type MutationSelectDnsArgs = {
 
 export type MutationSelectRoutingArgs = {
   id: Scalars["ID"];
+};
+
+export type MutationSetJsonStorageArgs = {
+  paths: Array<Scalars["String"]>;
+  values: Array<Scalars["String"]>;
 };
 
 export type MutationTagNodeArgs = {
@@ -429,11 +449,15 @@ export type Query = {
   group: Group;
   groups: Array<Group>;
   healthCheck: Scalars["Int"];
+  /** jsonStorage get given paths from user related json storage. Empty paths is to get all. Refer to https://github.com/tidwall/gjson */
+  jsonStorage: Array<Scalars["String"]>;
   nodes: NodesConnection;
+  numberUsers: Scalars["Int"];
   parsedDns: DaeDns;
   parsedRouting: DaeRouting;
   routings: Array<Routing>;
   subscriptions: Array<Subscription>;
+  token: Scalars["String"];
 };
 
 export type QueryConfigsArgs = {
@@ -452,6 +476,10 @@ export type QueryGroupArgs = {
 
 export type QueryGroupsArgs = {
   id?: InputMaybe<Scalars["ID"]>;
+};
+
+export type QueryJsonStorageArgs = {
+  paths?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type QueryNodesArgs = {
@@ -477,6 +505,15 @@ export type QueryRoutingsArgs = {
 export type QuerySubscriptionsArgs = {
   id?: InputMaybe<Scalars["ID"]>;
 };
+
+export type QueryTokenArgs = {
+  password: Scalars["String"];
+  username: Scalars["String"];
+};
+
+export enum Role {
+  Admin = "admin",
+}
 
 export type Routing = {
   __typename?: "Routing";

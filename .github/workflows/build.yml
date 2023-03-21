@@ -1,0 +1,52 @@
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup pnpm store cache variable
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: build
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact
+          path: dashboard/dist
+
+  release:
+    runs-on: self-hosted
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist/
