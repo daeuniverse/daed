@@ -1,7 +1,7 @@
 :80 {
-  file_server
+	file_server
 
-  root * .
+	root * .
 
-  try_files {path} /index.html
+	try_files {path} /index.html
 }
