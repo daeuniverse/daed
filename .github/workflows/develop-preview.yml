@@ -4,15 +4,12 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - "feature/**"
-      - "patch/**"
-      - "hotfix/**"
-      - "hotfix/**"
-      - "ci/**"
-    types:
-      - opened
-      - synchronize
-      - reopened
+      - "feature*"
+      - "patch*"
+      - "hotfix*"
+      - "fix*"
+      - "ci*"
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
