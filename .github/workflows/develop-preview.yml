@@ -2,13 +2,13 @@ name: PR Development Build
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "ci/**"
   pull_request:
     branches:
       - "feature/**"
-      - "feature/**"
+      - "patch/**"
+      - "hotfix/**"
+      - "hotfix/**"
+      - "ci/**"
     types:
       - opened
       - synchronize
