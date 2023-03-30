@@ -1,19 +1,19 @@
-import { FormDialog, GrowableInputListHandle } from "@daed/components";
-import { ImportArgument } from "@daed/schemas/gql/graphql";
-import { Add, Remove } from "@mui/icons-material";
-import { Avatar, Button, IconButton, Stack, Tab, Tabs, TextField, TextFieldProps } from "@mui/material";
-import { enqueueSnackbar } from "notistack";
-import { useEffect, useRef, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { FormDialog, GrowableInputListHandle } from '@daed/components'
+import { ImportArgument } from '@daed/schemas/gql/graphql'
+import { Add, Remove } from '@mui/icons-material'
+import { Avatar, Button, IconButton, Stack, Tab, Tabs, TextField, TextFieldProps } from '@mui/material'
+import { enqueueSnackbar } from 'notistack'
+import { useEffect, useRef, useState } from 'react'
+import { useFieldArray, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
-import { useImportNodesMutation, useImportSubscriptionsMutation } from "~/apis";
-import { TabPanel } from "~/components/TabPanel";
+import { useImportNodesMutation, useImportSubscriptionsMutation } from '~/apis'
+import { TabPanel } from '~/components/TabPanel'
 
 export type FormValues = {
-  nodes: ImportArgument[];
-  subscriptions: ImportArgument[];
-};
+  nodes: ImportArgument[]
+  subscriptions: ImportArgument[]
+}
 
 const GrowableArgumentsInput = ({
   inc,
@@ -21,12 +21,12 @@ const GrowableArgumentsInput = ({
   linkProps,
   tagProps,
 }: {
-  inc: () => void;
-  dec: () => void;
-  linkProps: TextFieldProps;
-  tagProps: TextFieldProps;
+  inc: () => void
+  dec: () => void
+  linkProps: TextFieldProps
+  tagProps: TextFieldProps
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <Stack direction="row" spacing={2}>
@@ -47,7 +47,7 @@ const GrowableArgumentsInput = ({
             </Stack>
           ),
         }}
-        label={t("link")}
+        label={t('link')}
         required
         {...linkProps}
       />
@@ -56,86 +56,86 @@ const GrowableArgumentsInput = ({
         sx={{
           flexBasis: 100,
         }}
-        label={t("tag")}
+        label={t('tag')}
         {...tagProps}
       />
     </Stack>
-  );
-};
+  )
+}
 
 export const ImportFormDialog = ({ open, close }: { open: boolean; close: () => void }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const form = useForm<FormValues>({
     shouldUnregister: true,
     defaultValues: {
       nodes: [],
       subscriptions: [],
     },
-  });
+  })
   const {
     register,
     control,
     formState: { isSubmitSuccessful },
-  } = form;
+  } = form
 
   const nodeArgumentsForm = useFieldArray({
-    name: "nodes",
+    name: 'nodes',
     control,
-  });
+  })
 
   const subscriptionArgumentsForm = useFieldArray({
-    name: "subscriptions",
+    name: 'subscriptions',
     control,
-  });
+  })
 
-  const subscriptionsGrowableInputListRef = useRef<GrowableInputListHandle>(null);
+  const subscriptionsGrowableInputListRef = useRef<GrowableInputListHandle>(null)
 
   useEffect(() => {
     if (isSubmitSuccessful) {
-      subscriptionsGrowableInputListRef.current && subscriptionsGrowableInputListRef.current.reset();
+      subscriptionsGrowableInputListRef.current && subscriptionsGrowableInputListRef.current.reset()
     }
-  }, [isSubmitSuccessful]);
+  }, [isSubmitSuccessful])
 
-  const importNodesMutation = useImportNodesMutation();
-  const importSubscriptionsMutation = useImportSubscriptionsMutation();
+  const importNodesMutation = useImportNodesMutation()
+  const importSubscriptionsMutation = useImportSubscriptionsMutation()
 
-  const [curTab, setCurTab] = useState<"node" | "subscription">("node");
+  const [curTab, setCurTab] = useState<'node' | 'subscription'>('node')
 
   return (
     <FormDialog
       form={form}
-      title={t("actions.import")}
+      title={t('actions.import')}
       open={open}
       close={close}
       onSubmit={async (form) => {
-        const values = form.getValues();
+        const values = form.getValues()
 
         try {
           await Promise.all([
             importNodesMutation.mutateAsync(values.nodes),
             importSubscriptionsMutation.mutateAsync(values.subscriptions),
-          ]);
+          ])
 
-          enqueueSnackbar(t("success"));
+          enqueueSnackbar(t('success'))
         } catch {
           //
         }
       }}
     >
       <Tabs variant="fullWidth" value={curTab} onChange={(_, curTab) => setCurTab(curTab)}>
-        <Tab value="node" label={t("node")} />
-        <Tab value="subscription" label={t("subscription")} />
+        <Tab value="node" label={t('node')} />
+        <Tab value="subscription" label={t('subscription')} />
       </Tabs>
 
-      <TabPanel active={curTab === "node"}>
+      <TabPanel active={curTab === 'node'}>
         <Stack spacing={2}>
           {nodeArgumentsForm.fields.map((field, i) => (
             <GrowableArgumentsInput
               key={field.id}
               inc={() =>
                 nodeArgumentsForm.insert(i + 1, {
-                  link: "",
-                  tag: "",
+                  link: '',
+                  tag: '',
                 })
               }
               dec={() => nodeArgumentsForm.remove(i)}
@@ -146,7 +146,7 @@ export const ImportFormDialog = ({ open, close }: { open: boolean; close: () => 
             />
           ))}
 
-          <Button onClick={() => nodeArgumentsForm.append({ link: "", tag: "" })}>
+          <Button onClick={() => nodeArgumentsForm.append({ link: '', tag: '' })}>
             <Avatar>
               <Add />
             </Avatar>
@@ -154,15 +154,15 @@ export const ImportFormDialog = ({ open, close }: { open: boolean; close: () => 
         </Stack>
       </TabPanel>
 
-      <TabPanel active={curTab === "subscription"}>
+      <TabPanel active={curTab === 'subscription'}>
         <Stack spacing={2}>
           {subscriptionArgumentsForm.fields.map((field, i) => (
             <GrowableArgumentsInput
               key={field.id}
               inc={() =>
                 subscriptionArgumentsForm.insert(i + 1, {
-                  link: "",
-                  tag: "",
+                  link: '',
+                  tag: '',
                 })
               }
               dec={() => subscriptionArgumentsForm.remove(i)}
@@ -173,7 +173,7 @@ export const ImportFormDialog = ({ open, close }: { open: boolean; close: () => 
             />
           ))}
 
-          <Button onClick={() => subscriptionArgumentsForm.append({ link: "", tag: "" })}>
+          <Button onClick={() => subscriptionArgumentsForm.append({ link: '', tag: '' })}>
             <Avatar>
               <Add />
             </Avatar>
@@ -181,5 +181,5 @@ export const ImportFormDialog = ({ open, close }: { open: boolean; close: () => 
         </Stack>
       </TabPanel>
     </FormDialog>
-  );
-};
+  )
+}

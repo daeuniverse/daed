@@ -1,13 +1,13 @@
-import { graphql } from "@daed/schemas/gql";
-import { ImportArgument } from "@daed/schemas/gql/graphql";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { graphql } from '@daed/schemas/gql'
+import { ImportArgument } from '@daed/schemas/gql/graphql'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from "./constants";
-import { useQGLQueryClient } from "./contexts";
+import { QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from '~/constants'
+import { useQGLQueryClient } from '~/contexts'
 
 export const useImportNodesMutation = () => {
-  const gqlClient = useQGLQueryClient();
-  const queryClient = useQueryClient();
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (data: ImportArgument[]) => {
@@ -24,17 +24,17 @@ export const useImportNodesMutation = () => {
           rollbackError: true,
           args: data,
         }
-      );
+      )
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE })
     },
-  });
-};
+  })
+}
 
 export const useImportSubscriptionsMutation = () => {
-  const gqlClient = useQGLQueryClient();
-  const queryClient = useQueryClient();
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (data: ImportArgument[]) =>
@@ -56,7 +56,7 @@ export const useImportSubscriptionsMutation = () => {
         )
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
     },
-  });
-};
+  })
+}

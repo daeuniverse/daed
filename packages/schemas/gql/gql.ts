@@ -1,6 +1,6 @@
 /* eslint-disable */
-import * as types from "./graphql";
-import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+import * as types from './graphql'
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core'
 
 /**
  * Map of all GraphQL operations in the project.
@@ -13,16 +13,21 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-  "\n          query HealthCheck {\n            healthCheck\n          }\n        ": types.HealthCheckDocument,
-  "\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        ":
+  '\n                  query NumberUsers {\n                    numberUsers\n                  }\n                ':
+    types.NumberUsersDocument,
+  '\n                    mutation CreateUser($username: String!, $password: String!) {\n                      createUser(username: $username, password: $password)\n                    }\n                  ':
+    types.CreateUserDocument,
+  '\n                    query Token($username: String!, $password: String!) {\n                      token(username: $username, password: $password)\n                    }\n                  ':
+    types.TokenDocument,
+  '\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        ':
     types.ImportNodesDocument,
-  "\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                }\n              }\n            ":
+  '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                }\n              }\n            ':
     types.ImportSubscriptionDocument,
-  "\n          query Running {\n            general {\n              dae {\n                running\n              }\n            }\n          }\n        ":
+  '\n          query Running {\n            general {\n              dae {\n                running\n              }\n            }\n          }\n        ':
     types.RunningDocument,
-  "\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n              }\n            }\n          }\n        ":
+  '\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n              }\n            }\n          }\n        ':
     types.NodesDocument,
-};
+}
 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -36,41 +41,53 @@ const documents = {
  * The query argument is unknown!
  * Please regenerate the types.
  */
-export function graphql(source: string): unknown;
+export function graphql(source: string): unknown
 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          query HealthCheck {\n            healthCheck\n          }\n        "
-): (typeof documents)["\n          query HealthCheck {\n            healthCheck\n          }\n        "];
+  source: '\n                  query NumberUsers {\n                    numberUsers\n                  }\n                '
+): (typeof documents)['\n                  query NumberUsers {\n                    numberUsers\n                  }\n                ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        "
-): (typeof documents)["\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        "];
+  source: '\n                    mutation CreateUser($username: String!, $password: String!) {\n                      createUser(username: $username, password: $password)\n                    }\n                  '
+): (typeof documents)['\n                    mutation CreateUser($username: String!, $password: String!) {\n                      createUser(username: $username, password: $password)\n                    }\n                  ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                }\n              }\n            "
-): (typeof documents)["\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                }\n              }\n            "];
+  source: '\n                    query Token($username: String!, $password: String!) {\n                      token(username: $username, password: $password)\n                    }\n                  '
+): (typeof documents)['\n                    query Token($username: String!, $password: String!) {\n                      token(username: $username, password: $password)\n                    }\n                  ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          query Running {\n            general {\n              dae {\n                running\n              }\n            }\n          }\n        "
-): (typeof documents)["\n          query Running {\n            general {\n              dae {\n                running\n              }\n            }\n          }\n        "];
+  source: '\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        '
+): (typeof documents)['\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: "\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n              }\n            }\n          }\n        "
-): (typeof documents)["\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n              }\n            }\n          }\n        "];
+  source: '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                }\n              }\n            '
+): (typeof documents)['\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                }\n              }\n            ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          query Running {\n            general {\n              dae {\n                running\n              }\n            }\n          }\n        '
+): (typeof documents)['\n          query Running {\n            general {\n              dae {\n                running\n              }\n            }\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n              }\n            }\n          }\n        '
+): (typeof documents)['\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n              }\n            }\n          }\n        ']
 
 export function graphql(source: string) {
-  return (documents as any)[source] ?? {};
+  return (documents as any)[source] ?? {}
 }
 
 export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<
@@ -78,4 +95,4 @@ export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocume
   any
 >
   ? TType
-  : never;
+  : never

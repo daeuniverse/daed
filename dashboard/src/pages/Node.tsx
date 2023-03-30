@@ -1,5 +1,5 @@
-import { graphql } from "@daed/schemas/gql";
-import { Attachment, Group } from "@mui/icons-material";
+import { graphql } from '@daed/schemas/gql'
+import { Attachment, Group } from '@mui/icons-material'
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -10,23 +10,23 @@ import {
   Menu,
   MenuItem,
   Stack,
-} from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import { bindContextMenu, bindMenu, usePopupState } from "material-ui-popup-state/hooks";
-import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
-import { Outlet, useLocation, useNavigate } from "react-router";
+} from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import { bindContextMenu, bindMenu, usePopupState } from 'material-ui-popup-state/hooks'
+import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Outlet, useLocation, useNavigate } from 'react-router'
 
-import { QUERY_KEY_NODE } from "~/constants";
-import { useQGLQueryClient } from "~/contexts";
+import { QUERY_KEY_NODE } from '~/constants'
+import { useQGLQueryClient } from '~/contexts'
 
 export const NodeList = () => {
-  const { t } = useTranslation();
-  const gqlClient = useQGLQueryClient();
+  const { t } = useTranslation()
+  const gqlClient = useQGLQueryClient()
 
   const contextMenuState = usePopupState({
-    variant: "popover",
-  });
+    variant: 'popover',
+  })
 
   const nodesQuery = useQuery({
     queryKey: QUERY_KEY_NODE,
@@ -43,7 +43,7 @@ export const NodeList = () => {
           }
         `)
       ),
-  });
+  })
 
   return (
     <Stack flex={1} {...bindContextMenu(contextMenuState)}>
@@ -59,26 +59,26 @@ export const NodeList = () => {
         <Menu {...bindMenu(contextMenuState)}>
           <MenuItem
             onClick={() => {
-              nodesQuery.refetch();
-              contextMenuState.close();
+              nodesQuery.refetch()
+              contextMenuState.close()
             }}
           >
-            {t("actions.refresh")}
+            {t('actions.refresh')}
           </MenuItem>
         </Menu>
       </List>
     </Stack>
-  );
-};
+  )
+}
 
 export const NodeGroup = () => {
-  return <Stack />;
-};
+  return <Stack />
+}
 
 export const Node = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   return (
     <Fragment>
@@ -90,12 +90,12 @@ export const Node = () => {
         showLabels
         value={location.pathname}
         onChange={(_, route) => {
-          navigate(route);
+          navigate(route)
         }}
       >
-        <BottomNavigationAction value="/node" label={t("node")} icon={<Attachment />} />
-        <BottomNavigationAction value="/node/group" label={t("group")} icon={<Group />} />
+        <BottomNavigationAction value="/node" label={t('node')} icon={<Attachment />} />
+        <BottomNavigationAction value="/node/group" label={t('group')} icon={<Group />} />
       </BottomNavigation>
     </Fragment>
-  );
-};
+  )
+}

@@ -1,80 +1,46 @@
-import { useColorMode } from "@daed/components";
-import { i18nInit } from "@daed/i18n";
-import { graphql } from "@daed/schemas/gql";
-import { createGraphiQLFetcher } from "@graphiql/toolkit";
-import { CircularProgress, Stack, TextField } from "@mui/material";
-import { useStore } from "@nanostores/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { GraphiQL } from "graphiql";
-import { GraphQLClient } from "graphql-request";
-import { useSnackbar } from "notistack";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
+import { useColorMode } from '@daed/components'
+import { graphql } from '@daed/schemas/gql'
+import { createGraphiQLFetcher } from '@graphiql/toolkit'
+import { Button, Stack, TextField } from '@mui/material'
+import { useStore } from '@nanostores/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { GraphiQL } from 'graphiql'
+import { GraphQLClient, request } from 'graphql-request'
+import { useSnackbar } from 'notistack'
+import { Fragment, useEffect, useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 
-import { DEFAULT_ENDPOINT_URL_INPUT, formatUserInputEndpointURL } from "~/constants";
-import { GQLQueryClientProvider } from "~/contexts";
-import { Home } from "~/Home";
-import { Config } from "~/pages/Config";
-import { DNS } from "~/pages/DNS";
-import { Node, NodeGroup, NodeList } from "~/pages/Node";
-import { Routing } from "~/pages/Routing";
-import { appStateAtom, endpointURLAtom } from "~/store";
+import { DEFAULT_ENDPOINT_URL_INPUT, formatUserInputEndpointURL } from '~/constants'
+import { GQLQueryClientProvider, SetupContext, useSetupContext } from '~/contexts'
+import { Home } from '~/layouts/Home'
+import { Config } from '~/pages/Config'
+import { DNS } from '~/pages/DNS'
+import { Node, NodeGroup, NodeList } from '~/pages/Node'
+import { Routing } from '~/pages/Routing'
+import { appStateAtom, endpointURLAtom, tokenAtom } from '~/store'
 
-const Setup = ({ children }: { children: React.ReactElement }) => {
-  const endpointURL = useStore(endpointURLAtom);
-  const { protocol } = new URL(location.href);
-  const [endpointURLInput, setEndpointURLInput] = useState("");
-  const { colorMode } = useColorMode();
+const Setup = ({ children }: { children: React.ReactNode }) => {
+  const { t } = useTranslation()
+  const endpointURL = useStore(endpointURLAtom)
+  const token = useStore(tokenAtom)
+  const { protocol } = new URL(location.href)
+  const { register, handleSubmit } = useForm<{
+    username: string
+    password: string
+    endpointURL: string
+  }>({
+    shouldUnregister: true,
+  })
 
-  useEffect(() => {
-    const preventContextMenu = (e: MouseEvent) => e.preventDefault();
-    document.addEventListener("contextmenu", preventContextMenu);
-
-    return () => {
-      document.removeEventListener("contextmenu", preventContextMenu);
-    };
-  }, []);
-
-  useEffect(() => {
-    appStateAtom.setKey("darkMode", colorMode === "dark");
-  }, [colorMode]);
-
-  if (!endpointURL) {
-    return (
-      <Stack height="100dvh" alignItems="center" justifyContent="center">
-        <TextField
-          type="url"
-          helperText="Endpoint URL"
-          InputProps={{
-            startAdornment: `${protocol}//`,
-            endAdornment: "/graphql",
-          }}
-          value={endpointURLInput}
-          onChange={(e) => setEndpointURLInput(e.target.value)}
-          placeholder={DEFAULT_ENDPOINT_URL_INPUT}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && endpointURLInput) {
-              endpointURLAtom.set(formatUserInputEndpointURL(endpointURLInput));
-            }
-          }}
-        />
-      </Stack>
-    );
-  }
-
-  return children;
-};
-
-const Main = () => {
-  const endpointURL = useStore(endpointURLAtom);
-  const { enqueueSnackbar } = useSnackbar();
-
+  const { enqueueSnackbar } = useSnackbar()
   const onError = (err: unknown) => {
     enqueueSnackbar((err as Error).message, {
-      variant: "error",
-    });
-  };
+      variant: 'error',
+    })
+  }
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -85,93 +51,145 @@ const Main = () => {
         onError,
       },
     },
-  });
+  })
 
-  const gqlClient = useMemo(() => new GraphQLClient(endpointURL), [endpointURL]);
+  const gqlClient = useMemo(() => {
+    const client = new GraphQLClient(endpointURL)
 
-  const healthCheckQuery = useCallback(
-    () =>
-      gqlClient.request(
-        graphql(`
-          query HealthCheck {
-            healthCheck
-          }
-        `)
-      ),
-    [gqlClient]
-  );
+    if (token) {
+      client.setHeader('authorization', `Bearer ${token}`)
+    }
 
-  const [ready, setReady] = useState(false);
+    return client
+  }, [endpointURL, token])
+
+  if (!endpointURL) {
+    return (
+      <Stack minHeight="100dvh" spacing={2} maxWidth={512} mx="auto" alignItems="center" justifyContent="center">
+        <TextField fullWidth label={t('username')} {...register('username')} />
+        <TextField fullWidth type="password" label={t('password')} {...register('password')} />
+
+        <TextField
+          fullWidth
+          type="url"
+          helperText={t('endpointURL')}
+          InputProps={{
+            startAdornment: `${protocol}//`,
+            endAdornment: '/graphql',
+          }}
+          placeholder={DEFAULT_ENDPOINT_URL_INPUT}
+          {...register('endpointURL')}
+        />
+
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={handleSubmit(async (data) => {
+            const formattedUserInputEndpointURL = formatUserInputEndpointURL(data.endpointURL)
+
+            try {
+              const { numberUsers } = await request(
+                formattedUserInputEndpointURL,
+                graphql(`
+                  query NumberUsers {
+                    numberUsers
+                  }
+                `)
+              )
+
+              if (numberUsers === 0) {
+                const { createUser: createUserToken } = await request(
+                  formattedUserInputEndpointURL,
+                  graphql(`
+                    mutation CreateUser($username: String!, $password: String!) {
+                      createUser(username: $username, password: $password)
+                    }
+                  `),
+                  {
+                    username: data.username,
+                    password: data.password,
+                  }
+                )
+
+                tokenAtom.set(createUserToken)
+              } else {
+                const { token: loginToken } = await request(
+                  formattedUserInputEndpointURL,
+                  graphql(`
+                    query Token($username: String!, $password: String!) {
+                      token(username: $username, password: $password)
+                    }
+                  `),
+                  {
+                    username: data.username,
+                    password: data.password,
+                  }
+                )
+
+                tokenAtom.set(loginToken)
+              }
+
+              endpointURLAtom.set(formattedUserInputEndpointURL)
+            } catch (e) {
+              enqueueSnackbar((e as Error).message, {
+                variant: 'error',
+              })
+            }
+          })}
+        >
+          {t('actions.login')}
+        </Button>
+      </Stack>
+    )
+  }
+
+  return (
+    <SetupContext.Provider
+      value={{
+        gqlClient,
+        queryClient,
+      }}
+    >
+      <SetupContext.Consumer>{() => children}</SetupContext.Consumer>
+    </SetupContext.Provider>
+  )
+}
+
+const Main = () => {
+  const endpointURL = useStore(endpointURLAtom)
+  const { queryClient, gqlClient } = useSetupContext()
+  const { colorMode } = useColorMode()
 
   useEffect(() => {
-    if (!ready) {
-      Promise.all([i18nInit(), healthCheckQuery()])
-        .then(() => {
-          setReady(true);
-        })
-        .catch(() => {
-          endpointURLAtom.set("");
-        });
-    }
-  }, [healthCheckQuery, ready]);
+    appStateAtom.setKey('darkMode', colorMode === 'dark')
+  }, [colorMode])
 
-  if (!ready) {
-    return (
-      <Stack height="100dvh" alignItems="center" justifyContent="center">
-        <CircularProgress />
-      </Stack>
-    );
-  }
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Fragment>
+        <Route path="/" element={<Home />}>
+          <Route path="node" element={<Node />}>
+            <Route index element={<NodeList />} />
+            <Route path="group" element={<NodeGroup />} />
+          </Route>
+          <Route path="config" element={<Config />} />
+          <Route path="routing" element={<Routing />} />
+          <Route path="dns" element={<DNS />} />
+        </Route>
 
-  const routes: RouteObject[] = [
-    {
-      path: "/",
-      element: <Home />,
-      children: [
-        {
-          path: "node",
-          element: <Node />,
-          children: [
-            {
-              index: true,
-              element: <NodeList />,
-            },
-            {
-              path: "group",
-              element: <NodeGroup />,
-            },
-          ],
-        },
-        {
-          path: "config",
-          element: <Config />,
-        },
-        {
-          path: "routing",
-          element: <Routing />,
-        },
-        {
-          path: "dns",
-          element: <DNS />,
-        },
-      ],
-    },
-  ];
-
-  if (import.meta.env.DEV) {
-    routes.push({
-      path: "/graphql",
-      element: (
-        <GraphiQL
-          fetcher={createGraphiQLFetcher({
-            url: endpointURL,
-          })}
+        <Route
+          path="/graphql"
+          element={
+            <GraphiQL
+              fetcher={createGraphiQLFetcher({
+                url: endpointURL,
+              })}
+            />
+          }
         />
-      ),
-    });
-  }
-
-  const router = createBrowserRouter(routes);
+      </Fragment>
+    )
+  )
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -180,13 +198,13 @@ const Main = () => {
         <ReactQueryDevtools position="bottom-right" />
       </GQLQueryClientProvider>
     </QueryClientProvider>
-  );
-};
+  )
+}
 
 export const App = () => {
   return (
     <Setup>
       <Main />
     </Setup>
-  );
-};
+  )
+}
