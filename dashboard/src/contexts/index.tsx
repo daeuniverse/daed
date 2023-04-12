@@ -1,6 +1,7 @@
-import { QueryClient } from '@tanstack/react-query'
 import { GraphQLClient } from 'graphql-request'
 import { createContext, useContext } from 'react'
+
+import { MODE } from '~/constants'
 
 export const GQLClientContext = createContext<GraphQLClient>(null as unknown as GraphQLClient)
 
@@ -15,8 +16,8 @@ export const GQLQueryClientProvider = ({ client, children }: { client: GraphQLCl
 export const useQGLQueryClient = () => useContext(GQLClientContext)
 
 type SetupContextProps = {
-  gqlClient: GraphQLClient
-  queryClient: QueryClient
+  token: string
+  mode: MODE
 }
 
 export const SetupContext = createContext(null as unknown as SetupContextProps)

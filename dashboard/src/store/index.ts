@@ -13,17 +13,16 @@ export type PersistentSortableKeys = {
 }
 
 export type APP_STATE = {
-  mode: MODE
   darkMode: boolean
   colsPerRow: number
 } & PersistentSortableKeys
 
+export const modeAtom = persistentAtom<MODE>('mode')
 export const tokenAtom = persistentAtom<string>('token')
 export const endpointURLAtom = persistentAtom<string>('endpointURL', DEFAULT_ENDPOINT_URL)
 export const appStateAtom = persistentMap<APP_STATE>(
   'APP_STATE',
   {
-    mode: MODE.simple,
     darkMode: false,
     colsPerRow: COLS_PER_ROW,
     nodeSortableKeys: [],

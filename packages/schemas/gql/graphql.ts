@@ -591,6 +591,19 @@ export type TokenQueryVariables = Exact<{
 
 export type TokenQuery = { __typename?: 'Query'; token: string }
 
+export type SetJsonStorageMutationVariables = Exact<{
+  paths: Array<Scalars['String']> | Scalars['String']
+  values: Array<Scalars['String']> | Scalars['String']
+}>
+
+export type SetJsonStorageMutation = { __typename?: 'Mutation'; setJsonStorage: number }
+
+export type JsonStorageQueryVariables = Exact<{
+  paths?: InputMaybe<Array<Scalars['String']> | Scalars['String']>
+}>
+
+export type JsonStorageQuery = { __typename?: 'Query'; jsonStorage: Array<string> }
+
 export type ImportNodesMutationVariables = Exact<{
   rollbackError: Scalars['Boolean']
   args: Array<ImportArgument> | ImportArgument
@@ -725,6 +738,97 @@ export const TokenDocument = {
     },
   ],
 } as unknown as DocumentNode<TokenQuery, TokenQueryVariables>
+export const SetJsonStorageDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'SetJsonStorage' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'values' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'setJsonStorage' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'paths' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'values' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'values' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SetJsonStorageMutation, SetJsonStorageMutationVariables>
+export const JsonStorageDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'JsonStorage' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+          type: {
+            kind: 'ListType',
+            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'jsonStorage' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'paths' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<JsonStorageQuery, JsonStorageQueryVariables>
 export const ImportNodesDocument = {
   kind: 'Document',
   definitions: [

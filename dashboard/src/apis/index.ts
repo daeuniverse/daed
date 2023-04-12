@@ -1,9 +1,48 @@
 import { graphql } from '@daed/schemas/gql'
 import { ImportArgument } from '@daed/schemas/gql/graphql'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { request } from 'graphql-request'
 
 import { QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
+
+export const setJsonStorageRequest = (endpointURL: string, token: string) => (object: Record<string, string>) => {
+  const paths = Object.keys(object)
+  const values = paths.map((path) => object[path])
+
+  return request(
+    endpointURL,
+    graphql(`
+      mutation SetJsonStorage($paths: [String!]!, $values: [String!]!) {
+        setJsonStorage(paths: $paths, values: $values)
+      }
+    `),
+    {
+      paths,
+      values,
+    },
+    {
+      authorization: token,
+    }
+  )
+}
+
+export const getJsonStorageRequest = (endpointURL: string, token: string) => (paths: string[]) => {
+  return request(
+    endpointURL,
+    graphql(`
+      query JsonStorage($paths: [String!]) {
+        jsonStorage(paths: $paths)
+      }
+    `),
+    {
+      paths,
+    },
+    {
+      authorization: token,
+    }
+  )
+}
 
 export const useImportNodesMutation = () => {
   const gqlClient = useQGLQueryClient()
