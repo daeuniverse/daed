@@ -6,8 +6,7 @@ import { SnackbarProvider } from 'notistack'
 import ReactDOM from 'react-dom/client'
 
 import { App } from '~/App'
-
-import { appStateAtom } from './store'
+import { appStateAtom } from '~/store'
 
 i18nInit()
   .then(() => {

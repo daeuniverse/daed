@@ -3,21 +3,23 @@ import { i18n } from '@daed/i18n'
 import { graphql } from '@daed/schemas/gql'
 import { Clear, Cloud, CloudOff, DarkMode, LightMode, Translate } from '@mui/icons-material'
 import { Button, IconButton, Stack, Tooltip } from '@mui/material'
+import { useStore } from '@nanostores/react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, useMotionValue, useMotionValueEvent, useSpring } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
-import { QUERY_KEY_RUNNING } from '~/constants'
+import { MODE, QUERY_KEY_RUNNING } from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
-import { endpointURLAtom } from '~/store'
+import { endpointURLAtom, modeAtom, tokenAtom } from '~/store'
 
 export const Sidebar = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const gqlClient = useQGLQueryClient()
   const { colorMode, toggleColorMode } = useColorMode()
+  const mode = useStore(modeAtom)
 
   const isRunningQuery = useQuery({
     queryKey: QUERY_KEY_RUNNING,
@@ -61,7 +63,7 @@ export const Sidebar = () => {
   })
 
   return (
-    <Stack ref={platform} height="100%" alignItems="center" justifyContent="center" overflow="hidden">
+    <Stack ref={platform} height="100%" minWidth={120} alignItems="center" justifyContent="center" overflow="hidden">
       <motion.div
         drag
         style={{
@@ -80,28 +82,31 @@ export const Sidebar = () => {
         <img ref={dae} draggable={false} src="/logo.svg" alt="logo" />
       </motion.div>
 
-      <Stack spacing={2}>
-        <Button size="large" variant="contained" onClick={() => navigate('/node')}>
-          {t('node')}
-        </Button>
+      {mode === MODE.advanced && (
+        <Stack spacing={2}>
+          <Button size="large" variant="contained" onClick={() => navigate('/node')}>
+            {t('node')}
+          </Button>
 
-        <Button size="large" variant="contained" onClick={() => navigate('/config')}>
-          {t('config')}
-        </Button>
+          <Button size="large" variant="contained" onClick={() => navigate('/config')}>
+            {t('config')}
+          </Button>
 
-        <Button size="large" variant="contained" onClick={() => navigate('/routing')}>
-          {t('routing')}
-        </Button>
+          <Button size="large" variant="contained" onClick={() => navigate('/routing')}>
+            {t('routing')}
+          </Button>
 
-        <Button size="large" variant="contained" onClick={() => navigate('/dns')}>
-          {t('dns')}
-        </Button>
-      </Stack>
+          <Button size="large" variant="contained" onClick={() => navigate('/dns')}>
+            {t('dns')}
+          </Button>
+        </Stack>
+      )}
 
       <Stack spacing={2} flex={1} justifyContent="end">
         <Tooltip title={t('actions.change endpoint')} placement="right">
           <IconButton
             onClick={() => {
+              tokenAtom.set('')
               endpointURLAtom.set('')
             }}
           >

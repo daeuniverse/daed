@@ -15,5 +15,6 @@ body {
 }
 
 #root {
+  height: 100dvh;
   min-width: 512px;
 }

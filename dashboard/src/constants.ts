@@ -1,3 +1,4 @@
+import { GlobalInput } from '@daed/schemas/gql/graphql'
 import { TFunction } from 'i18next'
 
 export const formatUserInputEndpointURL = (input?: string) => {
@@ -26,6 +27,40 @@ export const QUERY_KEY_GROUP = ['group']
 
 export const DEFAULT_TCP_CHECK_URL = 'http://keep-alv.google.com/generate_204'
 export const DEFAULT_UDP_CHECK_DNS = '1.1.1.1'
+
+export const DEFAULT_CONFIG_withInterface = (interfaceName: string): GlobalInput => ({
+  logLevel: 'info',
+  tproxyPort: 7890,
+  allowInsecure: true,
+  checkInterval: '10s',
+  checkTolerance: '1000ms',
+  lanInterface: [interfaceName],
+  wanInterface: [interfaceName],
+  udpCheckDns: DEFAULT_UDP_CHECK_DNS,
+  tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
+  dialMode: 'domain',
+})
+
+export const DEFAULT_ROUTING = `
+  pname(NetworkManager, systemd-resolved) -> direct
+  dip(geoip:private) -> direct
+  dip(geoip:cn) -> direct
+  domain(geosite:cn) -> direct
+  fallback: default
+`
+
+export const DEFAULT_DNS = `
+  upstream {
+    alidns: 'udp://223.5.5.5:53'
+    googledns: 'udp://8.8.8.8:53'
+  }
+  routing {
+    request {
+      qname(geosite:cn) -> alidns
+      fallback: googledns
+    }
+  }
+`
 
 export const GET_LOG_LEVEL_STEPS = (t: TFunction) => [
   [t('error'), 'error'],

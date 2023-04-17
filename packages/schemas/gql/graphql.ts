@@ -591,6 +591,21 @@ export type TokenQueryVariables = Exact<{
 
 export type TokenQuery = { __typename?: 'Query'; token: string }
 
+export type JsonStorageQueryVariables = Exact<{
+  paths?: InputMaybe<Array<Scalars['String']> | Scalars['String']>
+}>
+
+export type JsonStorageQuery = { __typename?: 'Query'; jsonStorage: Array<string> }
+
+export type GeneralQueryVariables = Exact<{
+  up?: InputMaybe<Scalars['Boolean']>
+}>
+
+export type GeneralQuery = {
+  __typename?: 'Query'
+  general: { __typename?: 'General'; interfaces: Array<{ __typename?: 'Interface'; name: string; ifindex: number }> }
+}
+
 export type SetJsonStorageMutationVariables = Exact<{
   paths: Array<Scalars['String']> | Scalars['String']
   values: Array<Scalars['String']> | Scalars['String']
@@ -598,11 +613,34 @@ export type SetJsonStorageMutationVariables = Exact<{
 
 export type SetJsonStorageMutation = { __typename?: 'Mutation'; setJsonStorage: number }
 
-export type JsonStorageQueryVariables = Exact<{
-  paths?: InputMaybe<Array<Scalars['String']> | Scalars['String']>
+export type CreateConfigMutationVariables = Exact<{
+  name?: InputMaybe<Scalars['String']>
+  global?: InputMaybe<GlobalInput>
 }>
 
-export type JsonStorageQuery = { __typename?: 'Query'; jsonStorage: Array<string> }
+export type CreateConfigMutation = { __typename?: 'Mutation'; createConfig: { __typename?: 'Config'; id: string } }
+
+export type CreateRoutingMutationVariables = Exact<{
+  name?: InputMaybe<Scalars['String']>
+  routing?: InputMaybe<Scalars['String']>
+}>
+
+export type CreateRoutingMutation = { __typename?: 'Mutation'; createRouting: { __typename?: 'Routing'; id: string } }
+
+export type CreateDnsMutationVariables = Exact<{
+  name?: InputMaybe<Scalars['String']>
+  dns?: InputMaybe<Scalars['String']>
+}>
+
+export type CreateDnsMutation = { __typename?: 'Mutation'; createDns: { __typename?: 'Dns'; id: string } }
+
+export type CreateGroupMutationVariables = Exact<{
+  name: Scalars['String']
+  policy: Policy
+  policyParams?: InputMaybe<Array<PolicyParam> | PolicyParam>
+}>
+
+export type CreateGroupMutation = { __typename?: 'Mutation'; createGroup: { __typename?: 'Group'; id: string } }
 
 export type ImportNodesMutationVariables = Exact<{
   rollbackError: Scalars['Boolean']
@@ -738,6 +776,91 @@ export const TokenDocument = {
     },
   ],
 } as unknown as DocumentNode<TokenQuery, TokenQueryVariables>
+export const JsonStorageDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'JsonStorage' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+          type: {
+            kind: 'ListType',
+            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'jsonStorage' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'paths' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<JsonStorageQuery, JsonStorageQueryVariables>
+export const GeneralDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'General' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'up' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'general' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'interfaces' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'up' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'up' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ifindex' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GeneralQuery, GeneralQueryVariables>
 export const SetJsonStorageDocument = {
   kind: 'Document',
   definitions: [
@@ -793,20 +916,171 @@ export const SetJsonStorageDocument = {
     },
   ],
 } as unknown as DocumentNode<SetJsonStorageMutation, SetJsonStorageMutationVariables>
-export const JsonStorageDocument = {
+export const CreateConfigDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'JsonStorage' },
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'CreateConfig' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'global' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'globalInput' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createConfig' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'global' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'global' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateConfigMutation, CreateConfigMutationVariables>
+export const CreateRoutingDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'CreateRouting' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'routing' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createRouting' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'routing' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'routing' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateRoutingMutation, CreateRoutingMutationVariables>
+export const CreateDnsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'CreateDNS' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'dns' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createDns' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'dns' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'dns' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateDnsMutation, CreateDnsMutationVariables>
+export const CreateGroupDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'CreateGroup' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'policy' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Policy' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'policyParams' } },
           type: {
             kind: 'ListType',
-            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'PolicyParam' } } },
           },
         },
       ],
@@ -815,20 +1089,34 @@ export const JsonStorageDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'jsonStorage' },
+            name: { kind: 'Name', value: 'createGroup' },
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'paths' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'policy' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'policy' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'policyParams' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'policyParams' } },
               },
             ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
           },
         ],
       },
     },
   ],
-} as unknown as DocumentNode<JsonStorageQuery, JsonStorageQueryVariables>
+} as unknown as DocumentNode<CreateGroupMutation, CreateGroupMutationVariables>
 export const ImportNodesDocument = {
   kind: 'Document',
   definitions: [
