@@ -10,13 +10,14 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 
 import { Setup } from '~/Setup'
+import { MODE } from '~/constants'
 import { GQLQueryClientProvider } from '~/contexts'
 import { Home } from '~/layouts/Home'
 import { Config } from '~/pages/Config'
 import { DNS } from '~/pages/DNS'
 import { Node, NodeGroup, NodeList } from '~/pages/Node'
 import { Routing } from '~/pages/Routing'
-import { appStateAtom, endpointURLAtom, tokenAtom } from '~/store'
+import { appStateAtom, endpointURLAtom, modeAtom, tokenAtom } from '~/store'
 
 const QueryProvider = ({ children }: { children: React.ReactNode }) => {
   const endpointURL = useStore(endpointURLAtom)
@@ -66,6 +67,7 @@ const QueryProvider = ({ children }: { children: React.ReactNode }) => {
 
 const Main = () => {
   const endpointURL = useStore(endpointURLAtom)
+  const mode = useStore(modeAtom)
 
   const { colorMode } = useColorMode()
 
@@ -77,13 +79,17 @@ const Main = () => {
     createRoutesFromElements(
       <Fragment>
         <Route path="/" element={<Home />}>
-          <Route path="node" element={<Node />}>
-            <Route index element={<NodeList />} />
-            <Route path="group" element={<NodeGroup />} />
-          </Route>
-          <Route path="config" element={<Config />} />
-          <Route path="routing" element={<Routing />} />
-          <Route path="dns" element={<DNS />} />
+          {mode === MODE.advanced && (
+            <Fragment>
+              <Route path="node" element={<Node />}>
+                <Route index element={<NodeList />} />
+                <Route path="group" element={<NodeGroup />} />
+              </Route>
+              <Route path="config" element={<Config />} />
+              <Route path="routing" element={<Routing />} />
+              <Route path="dns" element={<DNS />} />
+            </Fragment>
+          )}
         </Route>
 
         <Route
