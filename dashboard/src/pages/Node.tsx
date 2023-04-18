@@ -17,12 +17,14 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation, useNavigate } from 'react-router'
 
+import { useRemoveNodesMutation } from '~/apis'
 import { QUERY_KEY_NODE } from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
 
 export const NodeList = () => {
   const { t } = useTranslation()
   const gqlClient = useQGLQueryClient()
+  const removeNodesMutation = useRemoveNodesMutation()
 
   const contextMenuState = usePopupState({
     variant: 'popover',
@@ -46,26 +48,26 @@ export const NodeList = () => {
   })
 
   return (
-    <Stack flex={1} {...bindContextMenu(contextMenuState)}>
+    <Stack flex={1}>
       <List>
         {nodesQuery.data?.nodes.edges.map(({ id, name }) => (
-          <ListItem key={id}>
-            <ListItemButton>
+          <ListItem key={id} {...bindContextMenu(contextMenuState)}>
+            <ListItemButton selected>
               <ListItemText>{name}</ListItemText>
             </ListItemButton>
+
+            <Menu {...bindMenu(contextMenuState)}>
+              <MenuItem
+                onClick={async () => {
+                  await removeNodesMutation.mutateAsync([id])
+                  contextMenuState.close()
+                }}
+              >
+                {t('actions.remove')}
+              </MenuItem>
+            </Menu>
           </ListItem>
         ))}
-
-        <Menu {...bindMenu(contextMenuState)}>
-          <MenuItem
-            onClick={() => {
-              nodesQuery.refetch()
-              contextMenuState.close()
-            }}
-          >
-            {t('actions.refresh')}
-          </MenuItem>
-        </Menu>
       </List>
     </Stack>
   )

@@ -103,6 +103,29 @@ export const useCreateConfigMutation = () => {
   })
 }
 
+export const useSelectConfigMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id }: { id: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation SelectConfig($id: ID!) {
+            selectConfig(id: $id)
+          }
+        `),
+        {
+          id,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG })
+    },
+  })
+}
+
 export const useCreateRoutingMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()
@@ -129,6 +152,29 @@ export const useCreateRoutingMutation = () => {
   })
 }
 
+export const useSelectRoutingMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id }: { id: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation SelectRouting($id: ID!) {
+            selectRouting(id: $id)
+          }
+        `),
+        {
+          id,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING })
+    },
+  })
+}
+
 export const useCreateDNSMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()
@@ -146,6 +192,29 @@ export const useCreateDNSMutation = () => {
         {
           name,
           dns,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS })
+    },
+  })
+}
+
+export const useSelectDNSMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id }: { id: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation SelectDNS($id: ID!) {
+            selectDns(id: $id)
+          }
+        `),
+        {
+          id,
         }
       )
     },
@@ -182,6 +251,30 @@ export const useCreateGroupMutation = () => {
   })
 }
 
+export const useGroupAddNodesMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, nodeIDs }: { id: string; nodeIDs: string[] }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation GroupAddNodes($id: ID!, $nodeIDs: [ID!]!) {
+            groupAddNodes(id: $id, nodeIDs: $nodeIDs)
+          }
+        `),
+        {
+          id,
+          nodeIDs,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
 export const useImportNodesMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()
@@ -194,12 +287,38 @@ export const useImportNodesMutation = () => {
             importNodes(rollbackError: $rollbackError, args: $args) {
               link
               error
+              node {
+                id
+              }
             }
           }
         `),
         {
           rollbackError: true,
           args: data,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE })
+    },
+  })
+}
+
+export const useRemoveNodesMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (ids: string[]) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveNodes($ids: [ID!]!) {
+            removeNodes(ids: $ids)
+          }
+        `),
+        {
+          ids,
         }
       )
     },
@@ -222,6 +341,11 @@ export const useImportSubscriptionsMutation = () => {
               mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {
                 importSubscription(rollbackError: $rollbackError, arg: $arg) {
                   link
+                  nodeImportResult {
+                    node {
+                      id
+                    }
+                  }
                 }
               }
             `),

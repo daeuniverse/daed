@@ -28,7 +28,7 @@ export const QUERY_KEY_GROUP = ['group']
 export const DEFAULT_TCP_CHECK_URL = 'http://keep-alv.google.com/generate_204'
 export const DEFAULT_UDP_CHECK_DNS = '1.1.1.1'
 
-export const DEFAULT_CONFIG_withInterface = (interfaceName: string): GlobalInput => ({
+export const DEFAULT_CONFIG_WITH_INTERFACE = (interfaceName: string): GlobalInput => ({
   logLevel: 'info',
   tproxyPort: 7890,
   allowInsecure: true,

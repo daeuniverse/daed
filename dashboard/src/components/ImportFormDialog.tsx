@@ -2,13 +2,16 @@ import { FormDialog, GrowableInputListHandle } from '@daed/components'
 import { ImportArgument } from '@daed/schemas/gql/graphql'
 import { Add, Remove } from '@mui/icons-material'
 import { Avatar, Button, IconButton, Stack, Tab, Tabs, TextField, TextFieldProps } from '@mui/material'
+import { useStore } from '@nanostores/react'
 import { enqueueSnackbar } from 'notistack'
 import { useEffect, useRef, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { useImportNodesMutation, useImportSubscriptionsMutation } from '~/apis'
+import { useGroupAddNodesMutation, useImportNodesMutation, useImportSubscriptionsMutation } from '~/apis'
 import { TabPanel } from '~/components/TabPanel'
+import { MODE } from '~/constants'
+import { defaultResourcesAtom, modeAtom } from '~/store'
 
 export type FormValues = {
   nodes: ImportArgument[]
@@ -65,6 +68,7 @@ const GrowableArgumentsInput = ({
 
 export const ImportFormDialog = ({ open, close }: { open: boolean; close: () => void }) => {
   const { t } = useTranslation()
+  const mode = useStore(modeAtom)
   const form = useForm<FormValues>({
     shouldUnregister: true,
     defaultValues: {
@@ -98,6 +102,8 @@ export const ImportFormDialog = ({ open, close }: { open: boolean; close: () => 
 
   const importNodesMutation = useImportNodesMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
+  const groupAddNodesMutation = useGroupAddNodesMutation()
+  const defaultGroupID = useStore(defaultResourcesAtom).defaultGroupID
 
   const [curTab, setCurTab] = useState<'node' | 'subscription'>('node')
 
@@ -111,10 +117,21 @@ export const ImportFormDialog = ({ open, close }: { open: boolean; close: () => 
         const values = form.getValues()
 
         try {
-          await Promise.all([
+          const [{ importNodes }, importSubscriptions] = await Promise.all([
             importNodesMutation.mutateAsync(values.nodes),
             importSubscriptionsMutation.mutateAsync(values.subscriptions),
           ])
+
+          if (mode === MODE.simple) {
+            const nodeIDSet = new Set<string>()
+            importNodes.forEach(({ node }) => node?.id && nodeIDSet.add(node.id))
+            importSubscriptions.forEach(({ importSubscription }) =>
+              importSubscription.nodeImportResult.forEach(({ node }) => node?.id && nodeIDSet.add(node.id))
+            )
+
+            const nodeIDs = Array.from(nodeIDSet.values())
+            await groupAddNodesMutation.mutateAsync({ id: defaultGroupID, nodeIDs })
+          }
 
           enqueueSnackbar(t('success'))
         } catch {

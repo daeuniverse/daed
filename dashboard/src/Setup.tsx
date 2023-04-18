@@ -15,10 +15,13 @@ import {
   useCreateDNSMutation,
   useCreateGroupMutation,
   useCreateRoutingMutation,
+  useSelectConfigMutation,
+  useSelectDNSMutation,
+  useSelectRoutingMutation,
   useSetJsonStorageMutation,
 } from '~/apis'
 import {
-  DEFAULT_CONFIG_withInterface,
+  DEFAULT_CONFIG_WITH_INTERFACE,
   DEFAULT_DNS,
   DEFAULT_ENDPOINT_URL_INPUT,
   DEFAULT_ROUTING,
@@ -26,7 +29,7 @@ import {
   formatUserInputEndpointURL,
 } from '~/constants'
 import { SetupContext } from '~/contexts'
-import { endpointURLAtom, modeAtom, tokenAtom } from '~/store'
+import { defaultResourcesAtom, endpointURLAtom, modeAtom, tokenAtom } from '~/store'
 
 export const Setup = ({ children }: { children: React.ReactNode }) => {
   const { t } = useTranslation()
@@ -36,8 +39,11 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
   const { protocol } = new URL(location.href)
   const setJsonStorage = useSetJsonStorageMutation()
   const createConfigMutation = useCreateConfigMutation()
+  const selectConfigMutation = useSelectConfigMutation()
   const createRoutingMutation = useCreateRoutingMutation()
+  const selectRoutingMutation = useSelectRoutingMutation()
   const createDNSMutation = useCreateDNSMutation()
+  const selectDNSMutation = useSelectDNSMutation()
   const createGroupMutation = useCreateGroupMutation()
 
   type FormValues = {
@@ -118,6 +124,16 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
             })
             modeAtom.set(MODE.simple)
           }
+
+          if ([defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID].every(Boolean)) {
+            defaultResourcesAtom.set({
+              defaultConfigID,
+              defaultRoutingID,
+              defaultDNSID,
+              defaultGroupID,
+            })
+          }
+
           const interfaceName =
             (await getInterfaces()).general.interfaces.find(({ name }) => name !== 'lo')?.name || 'lan'
 
@@ -126,12 +142,17 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
               createConfig: { id },
             } = await createConfigMutation.mutateAsync({
               name: 'default',
-              global: DEFAULT_CONFIG_withInterface(interfaceName),
+              global: DEFAULT_CONFIG_WITH_INTERFACE(interfaceName),
+            })
+
+            await selectConfigMutation.mutateAsync({
+              id,
             })
 
             await setJsonStorage.mutateAsync({
               defaultConfigID: id,
             })
+            defaultResourcesAtom.setKey('defaultConfigID', id)
           }
 
           if (!defaultRoutingID) {
@@ -142,9 +163,14 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
               routing: DEFAULT_ROUTING,
             })
 
+            await selectRoutingMutation.mutateAsync({
+              id,
+            })
+
             await setJsonStorage.mutateAsync({
               defaultRoutingID: id,
             })
+            defaultResourcesAtom.setKey('defaultRoutingID', id)
           }
 
           if (!defaultDNSID) {
@@ -155,9 +181,14 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
               dns: DEFAULT_DNS,
             })
 
+            await selectDNSMutation.mutateAsync({
+              id,
+            })
+
             await setJsonStorage.mutateAsync({
               defaultDNSID: id,
             })
+            defaultResourcesAtom.setKey('defaultDNSID', id)
           }
 
           if (!defaultGroupID) {
@@ -172,6 +203,7 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
             await setJsonStorage.mutateAsync({
               defaultGroupID: id,
             })
+            defaultResourcesAtom.setKey('defaultGroupID', id)
           }
         }
       } catch (e) {
@@ -181,11 +213,14 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
       }
     },
     [
+      enqueueSnackbar,
       createConfigMutation,
       createDNSMutation,
       createGroupMutation,
       createRoutingMutation,
-      enqueueSnackbar,
+      selectConfigMutation,
+      selectDNSMutation,
+      selectRoutingMutation,
       setJsonStorage,
     ]
   )
@@ -193,8 +228,22 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
   if (!endpointURL || !token) {
     return (
       <Stack minHeight="100dvh" spacing={2} maxWidth={512} mx="auto" alignItems="center" justifyContent="center">
-        <TextField fullWidth label={t('username')} {...register('username')} />
-        <TextField fullWidth type="password" label={t('password')} {...register('password')} />
+        <TextField
+          fullWidth
+          label={t('username')}
+          {...register('username', {
+            required: true,
+          })}
+        />
+
+        <TextField
+          fullWidth
+          type="password"
+          label={t('password')}
+          {...register('password', {
+            required: true,
+          })}
+        />
 
         <TextField
           fullWidth
@@ -205,7 +254,9 @@ export const Setup = ({ children }: { children: React.ReactNode }) => {
             endAdornment: '/graphql',
           }}
           placeholder={DEFAULT_ENDPOINT_URL_INPUT}
-          {...register('endpointURL')}
+          {...register('endpointURL', {
+            required: true,
+          })}
         />
 
         <Button fullWidth variant="contained" onClick={handleSubmit(onSubmit)}>
