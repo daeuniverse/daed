@@ -702,6 +702,12 @@ export type ImportSubscriptionMutation = {
   }
 }
 
+export type RunMutationVariables = Exact<{
+  dry: Scalars['Boolean']
+}>
+
+export type RunMutation = { __typename?: 'Mutation'; run: number }
+
 export type RunningQueryVariables = Exact<{ [key: string]: never }>
 
 export type RunningQuery = {
@@ -1477,6 +1483,39 @@ export const ImportSubscriptionDocument = {
     },
   ],
 } as unknown as DocumentNode<ImportSubscriptionMutation, ImportSubscriptionMutationVariables>
+export const RunDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'run' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'dry' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'run' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'dry' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'dry' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RunMutation, RunMutationVariables>
 export const RunningDocument = {
   kind: 'Document',
   definitions: [

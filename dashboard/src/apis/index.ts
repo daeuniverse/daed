@@ -9,6 +9,7 @@ import {
   QUERY_KEY_GROUP,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
+  QUERY_KEY_RUNNING,
   QUERY_KEY_SUBSCRIPTION,
 } from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
@@ -358,6 +359,29 @@ export const useImportSubscriptionsMutation = () => {
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
+    },
+  })
+}
+
+export const useRunMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (dry: boolean) => {
+      return gqlClient.request(
+        graphql(`
+          mutation run($dry: Boolean!) {
+            run(dry: $dry)
+          }
+        `),
+        {
+          dry,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_RUNNING })
     },
   })
 }

@@ -46,6 +46,7 @@ const documents = {
     types.RemoveNodesDocument,
   '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ':
     types.ImportSubscriptionDocument,
+  '\n          mutation run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ': types.RunDocument,
   '\n          query Running {\n            general {\n              dae {\n                running\n              }\n            }\n          }\n        ':
     types.RunningDocument,
   '\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n              }\n            }\n          }\n        ':
@@ -168,6 +169,12 @@ export function graphql(
 export function graphql(
   source: '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            '
 ): (typeof documents)['\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        '
+): (typeof documents)['\n          mutation run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

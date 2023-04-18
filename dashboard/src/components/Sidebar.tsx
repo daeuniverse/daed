@@ -10,6 +10,7 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
+import { useRunMutation } from '~/apis'
 import { MODE, QUERY_KEY_RUNNING } from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
 import { endpointURLAtom, modeAtom, tokenAtom } from '~/store'
@@ -20,6 +21,7 @@ export const Sidebar = () => {
   const gqlClient = useQGLQueryClient()
   const { colorMode, toggleColorMode } = useColorMode()
   const mode = useStore(modeAtom)
+  const runMutation = useRunMutation()
 
   const isRunningQuery = useQuery({
     queryKey: QUERY_KEY_RUNNING,
@@ -36,14 +38,6 @@ export const Sidebar = () => {
         `)
       ),
   })
-
-  const switchLanguage = () => {
-    if (i18n.language.startsWith('zh')) {
-      i18n.changeLanguage('en')
-    } else {
-      i18n.changeLanguage('zh-Hans')
-    }
-  }
 
   const platform = useRef<HTMLDivElement>(null)
   const dae = useRef<HTMLImageElement>(null)
@@ -115,17 +109,21 @@ export const Sidebar = () => {
         </Tooltip>
 
         <Tooltip title={t('actions.switchRunning')} placement="right">
-          <IconButton
-            onClick={() => {
-              //
-            }}
-          >
+          <IconButton onClick={() => runMutation.mutate(!!isRunningQuery.data?.general.dae.running)}>
             {isRunningQuery.data?.general.dae.running ? <Cloud /> : <CloudOff />}
           </IconButton>
         </Tooltip>
 
         <Tooltip title={t('actions.switchLanguage')} placement="right">
-          <IconButton onClick={switchLanguage}>
+          <IconButton
+            onClick={() => {
+              if (i18n.language.startsWith('zh')) {
+                i18n.changeLanguage('en')
+              } else {
+                i18n.changeLanguage('zh-Hans')
+              }
+            }}
+          >
             <Translate />
           </IconButton>
         </Tooltip>
