@@ -1,8 +1,30 @@
 import { useNodesQuery } from '~/apis'
+import { Table } from '~/components/Table'
 
 export const NodePage = () => {
-  const { data } = useNodesQuery()
-  console.log(data?.nodes.edges)
+  const { data: nodesQueryData } = useNodesQuery()
 
-  return <div>node</div>
+  return (
+    <Table
+      columns={[
+        {
+          title: 'id',
+          dataIndex: 'id',
+        },
+        {
+          title: 'name',
+          dataIndex: 'name',
+        },
+        {
+          title: 'address',
+          dataIndex: 'address',
+        },
+        {
+          title: 'protocol',
+          dataIndex: 'protocol',
+        },
+      ]}
+      dataSource={nodesQueryData?.nodes.edges || []}
+    />
+  )
 }

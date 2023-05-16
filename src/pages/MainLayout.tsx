@@ -89,7 +89,7 @@ export const MainLayout = () => {
         </Navbar.Section>
       </Navbar>
 
-      <main className="flex-1 p-4">
+      <main className="flex-1 overflow-hidden p-4">
         <Outlet />
       </main>
     </Flex>

@@ -98,6 +98,9 @@ export const SetupPage = () => {
         token = loginToken
       }
 
+      endpointURLAtom.set(endpointURL)
+      tokenAtom.set(token)
+
       if (token) {
         const getJsonStorage = getJsonStorageRequest(endpointURL, token)
         const getInterfaces = getInterfacesRequest(endpointURL, token)
@@ -194,9 +197,6 @@ export const SetupPage = () => {
           })
           defaultResourcesAtom.setKey('defaultGroupID', id)
         }
-
-        endpointURLAtom.set(endpointURL)
-        tokenAtom.set(token)
 
         notifications.show({
           variant: 'success',

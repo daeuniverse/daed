@@ -675,13 +675,6 @@ export type RunMutationVariables = Exact<{
 
 export type RunMutation = { __typename?: 'Mutation'; run: number }
 
-export type NodesQueryVariables = Exact<{ [key: string]: never }>
-
-export type NodesQuery = {
-  __typename?: 'Query'
-  nodes: { __typename?: 'NodesConnection'; edges: Array<{ __typename?: 'Node'; id: string; name: string }> }
-}
-
 export type JsonStorageQueryVariables = Exact<{
   paths?: InputMaybe<Array<Scalars['String']> | Scalars['String']>
 }>
@@ -695,6 +688,52 @@ export type GeneralQueryVariables = Exact<{
 export type GeneralQuery = {
   __typename?: 'Query'
   general: { __typename?: 'General'; interfaces: Array<{ __typename?: 'Interface'; name: string; ifindex: number }> }
+}
+
+export type NodesQueryVariables = Exact<{ [key: string]: never }>
+
+export type NodesQuery = {
+  __typename?: 'Query'
+  nodes: {
+    __typename?: 'NodesConnection'
+    edges: Array<{
+      __typename?: 'Node'
+      id: string
+      name: string
+      link: string
+      address: string
+      protocol: string
+      tag?: string | null
+    }>
+  }
+}
+
+export type SubscriptionsQueryVariables = Exact<{ [key: string]: never }>
+
+export type SubscriptionsQuery = {
+  __typename?: 'Query'
+  subscriptions: Array<{ __typename?: 'Subscription'; id: string; status: string; link: string; info: string }>
+}
+
+export type DnSsQueryVariables = Exact<{ [key: string]: never }>
+
+export type DnSsQuery = {
+  __typename?: 'Query'
+  dnss: Array<{
+    __typename?: 'Dns'
+    id: string
+    name: string
+    selected: boolean
+    dns: {
+      __typename?: 'DaeDns'
+      string: string
+      routing: {
+        __typename?: 'DnsRouting'
+        request: { __typename?: 'DaeRouting'; string: string }
+        response: { __typename?: 'DaeRouting'; string: string }
+      }
+    }
+  }>
 }
 
 export type NumberUsersQueryVariables = Exact<{ [key: string]: never }>
@@ -1324,41 +1363,6 @@ export const RunDocument = {
     },
   ],
 } as unknown as DocumentNode<RunMutation, RunMutationVariables>
-export const NodesDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'Nodes' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'nodes' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'edges' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<NodesQuery, NodesQueryVariables>
 export const JsonStorageDocument = {
   kind: 'Document',
   definitions: [
@@ -1444,6 +1448,135 @@ export const GeneralDocument = {
     },
   ],
 } as unknown as DocumentNode<GeneralQuery, GeneralQueryVariables>
+export const NodesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Nodes' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'nodes' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'protocol' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NodesQuery, NodesQueryVariables>
+export const SubscriptionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Subscriptions' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'subscriptions' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'info' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SubscriptionsQuery, SubscriptionsQueryVariables>
+export const DnSsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'DNSs' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'dnss' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'dns' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'string' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'routing' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'request' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'string' } }],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'response' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'string' } }],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'selected' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DnSsQuery, DnSsQueryVariables>
 export const NumberUsersDocument = {
   kind: 'Document',
   definitions: [
