@@ -1,7 +1,0 @@
-{
-  "devDependencies": {
-    "@daed/typings": "workspace:*"
-  },
-  "name": "@daed/schemas",
-  "private": true
-}

@@ -8,7 +8,7 @@
 
 A Web Dashboard For [dae](https://github.com/v2raya/dae)
 
-![preview](dashboard/public/preview.png)
+![preview](public/preview.png)
 
 Project Goals:
 

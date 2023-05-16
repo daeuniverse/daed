@@ -20,5 +20,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-.turbo

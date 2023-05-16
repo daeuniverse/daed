@@ -13,7 +13,7 @@ FROM caddy:alpine
 
 WORKDIR /srv
 
-COPY --from=builder /build/dashboard/dist/. .
+COPY --from=builder /build/dist/. .
 COPY Caddyfile .
 
 CMD ["caddy", "run"]

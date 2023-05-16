@@ -1,4 +1,0 @@
-{
-  "extends": "@daed/typings/tsconfig.json",
-  "include": ["."]
-}

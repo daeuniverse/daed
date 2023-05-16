@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "@daed/i18n": "workspace:*",
-    "@daed/typings": "workspace:*"
-  },
-  "name": "@daed/components",
-  "private": true
-}
