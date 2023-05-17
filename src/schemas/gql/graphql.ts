@@ -613,6 +613,12 @@ export type CreateDnsMutationVariables = Exact<{
 
 export type CreateDnsMutation = { __typename?: 'Mutation'; createDns: { __typename?: 'Dns'; id: string } }
 
+export type RemoveDnsMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type RemoveDnsMutation = { __typename?: 'Mutation'; removeDns: number }
+
 export type SelectDnsMutationVariables = Exact<{
   id: Scalars['ID']
 }>
@@ -713,6 +719,44 @@ export type SubscriptionsQueryVariables = Exact<{ [key: string]: never }>
 export type SubscriptionsQuery = {
   __typename?: 'Query'
   subscriptions: Array<{ __typename?: 'Subscription'; id: string; status: string; link: string; info: string }>
+}
+
+export type ConfigsQueryVariables = Exact<{ [key: string]: never }>
+
+export type ConfigsQuery = {
+  __typename?: 'Query'
+  configs: Array<{
+    __typename?: 'Config'
+    id: string
+    name: string
+    selected: boolean
+    global: {
+      __typename?: 'Global'
+      tproxyPort: number
+      logLevel: string
+      tcpCheckUrl: string
+      udpCheckDns: string
+      checkInterval: any
+      checkTolerance: any
+      dnsUpstream: string
+      lanInterface: Array<string>
+      lanNatDirect: boolean
+      wanInterface: Array<string>
+      allowInsecure: boolean
+      dialMode: string
+    }
+  }>
+}
+
+export type GroupsQueryVariables = Exact<{ [key: string]: never }>
+
+export type GroupsQuery = { __typename?: 'Query'; groups: Array<{ __typename?: 'Group'; id: string; name: string }> }
+
+export type RoutingsQueryVariables = Exact<{ [key: string]: never }>
+
+export type RoutingsQuery = {
+  __typename?: 'Query'
+  routings: Array<{ __typename?: 'Routing'; id: string; name: string; selected: boolean }>
 }
 
 export type DnSsQueryVariables = Exact<{ [key: string]: never }>
@@ -1016,6 +1060,39 @@ export const CreateDnsDocument = {
     },
   ],
 } as unknown as DocumentNode<CreateDnsMutation, CreateDnsMutationVariables>
+export const RemoveDnsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'RemoveDNS' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'removeDns' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveDnsMutation, RemoveDnsMutationVariables>
 export const SelectDnsDocument = {
   kind: 'Document',
   definitions: [
@@ -1515,6 +1592,107 @@ export const SubscriptionsDocument = {
     },
   ],
 } as unknown as DocumentNode<SubscriptionsQuery, SubscriptionsQueryVariables>
+export const ConfigsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Configs' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'configs' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'selected' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'global' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'tproxyPort' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'logLevel' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tcpCheckUrl' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'udpCheckDns' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'checkInterval' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'checkTolerance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'dnsUpstream' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'lanInterface' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'lanNatDirect' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'wanInterface' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'allowInsecure' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'dialMode' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ConfigsQuery, ConfigsQueryVariables>
+export const GroupsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Groups' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'groups' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GroupsQuery, GroupsQueryVariables>
+export const RoutingsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Routings' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'routings' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'selected' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RoutingsQuery, RoutingsQueryVariables>
 export const DnSsDocument = {
   kind: 'Document',
   definitions: [

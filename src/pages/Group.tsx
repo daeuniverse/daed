@@ -2,15 +2,15 @@ import { Button, Flex, Group } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import { useCallback, useMemo, useState } from 'react'
 
-import { useDNSsQuery, useRemoveDNSMutation } from '~/apis'
+import { useGroupsQuery, useRemoveDNSMutation } from '~/apis'
 import { Table } from '~/components/Table'
 import { useMainContainerSize } from '~/contexts'
 import { defaultResourcesAtom } from '~/store'
 
-export const DNSPage = () => {
+export const GroupPage = () => {
   const { height } = useMainContainerSize()
-  const { defaultDNSID } = useStore(defaultResourcesAtom)
-  const { data: dnssQuery } = useDNSsQuery()
+  const { defaultGroupID } = useStore(defaultResourcesAtom)
+  const { data: groupsQuery } = useGroupsQuery()
   const [rowSelection, onRowSelectionChange] = useState({})
   const removeDNSMutation = useRemoveDNSMutation()
   const [removing, setRemoving] = useState(false)
@@ -18,10 +18,10 @@ export const DNSPage = () => {
     () =>
       Object.keys(rowSelection)
         .map((selectedIndex) => {
-          return dnssQuery?.dnss[Number(selectedIndex)].id
+          return groupsQuery?.groups[Number(selectedIndex)].id
         })
         .filter((id) => !!id) as string[],
-    [dnssQuery?.dnss, rowSelection]
+    [rowSelection, groupsQuery?.groups]
   )
 
   const onRemove = useCallback(async () => {
@@ -32,7 +32,7 @@ export const DNSPage = () => {
   }, [removeDNSMutation, selectedRowIds])
 
   return (
-    <Flex h={height} direction="column" justify="space-between">
+    <Flex h={height} direction="column" justify="space-between" className="max-w-full">
       <Table
         columns={[
           {
@@ -44,14 +44,10 @@ export const DNSPage = () => {
             header: 'name',
             accessorKey: 'name',
           },
-          {
-            header: 'selected',
-            accessorKey: 'selected',
-          },
         ]}
-        dataSource={dnssQuery?.dnss || []}
+        dataSource={groupsQuery?.groups || []}
         enableRowSelection={(row) => {
-          return row.getValue('id') !== defaultDNSID
+          return row.getValue('id') !== defaultGroupID
         }}
         rowSelection={rowSelection}
         onRowSelectionChange={onRowSelectionChange}

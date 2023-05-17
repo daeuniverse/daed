@@ -3,7 +3,18 @@ import { useStore } from '@nanostores/react'
 import { GraphiQL } from 'graphiql'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import { DNSPage, HomePage, MainLayout, NodePage, SetupPage, SubscriptionPage, TestPage } from '~/pages'
+import {
+  ConfigPage,
+  DNSPage,
+  GroupPage,
+  HomePage,
+  MainLayout,
+  NodePage,
+  RoutingPage,
+  SetupPage,
+  SubscriptionPage,
+  TestPage,
+} from '~/pages'
 import { endpointURLAtom } from '~/store'
 
 export const Router = () => {
@@ -17,6 +28,9 @@ export const Router = () => {
           <Route path="node" element={<NodePage />} />
           <Route path="subscription" element={<SubscriptionPage />} />
           <Route path="dns" element={<DNSPage />} />
+          <Route path="routing" element={<RoutingPage />} />
+          <Route path="group" element={<GroupPage />} />
+          <Route path="config" element={<ConfigPage />} />
           <Route path="test" element={<TestPage />} />
         </Route>
 

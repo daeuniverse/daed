@@ -160,6 +160,29 @@ export const useCreateDNSMutation = () => {
   })
 }
 
+export const useRemoveDNSMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveDNS($id: ID!) {
+            removeDns(id: $id)
+          }
+        `),
+        {
+          id,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS })
+    },
+  })
+}
+
 export const useSelectDNSMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()

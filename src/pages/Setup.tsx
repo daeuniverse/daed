@@ -7,22 +7,10 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
-import {
-  getInterfacesRequest,
-  getJsonStorageRequest,
-  useCreateConfigMutation,
-  useCreateDNSMutation,
-  useCreateGroupMutation,
-  useCreateRoutingMutation,
-  useSelectConfigMutation,
-  useSelectDNSMutation,
-  useSelectRoutingMutation,
-  useSetJsonStorageMutation,
-} from '~/apis'
-import { DEFAULT_CONFIG_WITH_INTERFACE, DEFAULT_DNS, DEFAULT_ENDPOINT_URL, DEFAULT_ROUTING, MODE } from '~/constants'
+import { getJsonStorageRequest, useSetJsonStorageMutation } from '~/apis'
+import { DEFAULT_ENDPOINT_URL, MODE } from '~/constants'
 import { graphql } from '~/schemas/gql'
-import { Policy } from '~/schemas/gql/graphql'
-import { defaultResourcesAtom, endpointURLAtom, modeAtom, tokenAtom } from '~/store'
+import { endpointURLAtom, modeAtom, tokenAtom } from '~/store'
 
 const schema = z.object({
   username: z.string().min(4).max(20),
@@ -43,13 +31,6 @@ export const SetupPage = () => {
   })
 
   const setJsonStorage = useSetJsonStorageMutation()
-  const createConfigMutation = useCreateConfigMutation()
-  const selectConfigMutation = useSelectConfigMutation()
-  const createRoutingMutation = useCreateRoutingMutation()
-  const selectRoutingMutation = useSelectRoutingMutation()
-  const createDNSMutation = useCreateDNSMutation()
-  const selectDNSMutation = useSelectDNSMutation()
-  const createGroupMutation = useCreateGroupMutation()
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
     const { username, password, endpointURL } = values
@@ -103,10 +84,7 @@ export const SetupPage = () => {
 
       if (token) {
         const getJsonStorage = getJsonStorageRequest(endpointURL, token)
-        const getInterfaces = getInterfacesRequest(endpointURL, token)
-        const [modeResponse, defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID] = (
-          await getJsonStorage(['mode', 'defaultConfigID', 'defaultRoutingID', 'defaultDNSID', 'defaultGroupID'])
-        ).jsonStorage
+        const [modeResponse] = (await getJsonStorage(['mode'])).jsonStorage
 
         if (modeResponse) {
           modeAtom.set(modeResponse as MODE)
@@ -115,87 +93,6 @@ export const SetupPage = () => {
             mode: MODE.simple,
           })
           modeAtom.set(MODE.simple)
-        }
-
-        if ([defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID].every(Boolean)) {
-          defaultResourcesAtom.set({
-            defaultConfigID,
-            defaultRoutingID,
-            defaultDNSID,
-            defaultGroupID,
-          })
-        }
-
-        const interfaceName =
-          (await getInterfaces()).general.interfaces.find(({ name }) => name !== 'lo')?.name || 'lan'
-
-        if (!defaultConfigID) {
-          const {
-            createConfig: { id },
-          } = await createConfigMutation.mutateAsync({
-            name: 'default',
-            global: DEFAULT_CONFIG_WITH_INTERFACE(interfaceName),
-          })
-
-          await selectConfigMutation.mutateAsync({
-            id,
-          })
-
-          await setJsonStorage.mutateAsync({
-            defaultConfigID: id,
-          })
-          defaultResourcesAtom.setKey('defaultConfigID', id)
-        }
-
-        if (!defaultRoutingID) {
-          const {
-            createRouting: { id },
-          } = await createRoutingMutation.mutateAsync({
-            name: 'default',
-            routing: DEFAULT_ROUTING,
-          })
-
-          await selectRoutingMutation.mutateAsync({
-            id,
-          })
-
-          await setJsonStorage.mutateAsync({
-            defaultRoutingID: id,
-          })
-          defaultResourcesAtom.setKey('defaultRoutingID', id)
-        }
-
-        if (!defaultDNSID) {
-          const {
-            createDns: { id },
-          } = await createDNSMutation.mutateAsync({
-            name: 'default',
-            dns: DEFAULT_DNS,
-          })
-
-          await selectDNSMutation.mutateAsync({
-            id,
-          })
-
-          await setJsonStorage.mutateAsync({
-            defaultDNSID: id,
-          })
-          defaultResourcesAtom.setKey('defaultDNSID', id)
-        }
-
-        if (!defaultGroupID) {
-          const {
-            createGroup: { id },
-          } = await createGroupMutation.mutateAsync({
-            name: 'default',
-            policy: Policy.Min,
-            policyParams: [],
-          })
-
-          await setJsonStorage.mutateAsync({
-            defaultGroupID: id,
-          })
-          defaultResourcesAtom.setKey('defaultGroupID', id)
         }
 
         notifications.show({

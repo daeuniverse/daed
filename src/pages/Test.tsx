@@ -1,99 +1,53 @@
 import { faker } from '@faker-js/faker'
-import { Button, Checkbox, Stack, Table } from '@mantine/core'
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { useMemo, useState } from 'react'
+import { Button, Flex, Group } from '@mantine/core'
+import { useState } from 'react'
+
+import { Table } from '~/components/Table'
+import { useMainContainerSize } from '~/contexts'
 
 export const TestPage = () => {
-  const columns: ColumnDef<{ name: string }>[] = useMemo(
-    () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            transitionDuration={0}
-            checked={table.getIsAllRowsSelected()}
-            disabled={!table.options.enableMultiRowSelection}
-            indeterminate={table.getIsSomeRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            transitionDuration={0}
-            checked={row.getIsSelected()}
-            disabled={!row.getCanSelect()}
-            indeterminate={row.getIsSomeSelected()}
-            onChange={row.getToggleSelectedHandler()}
-          />
-        ),
-      },
-      {
-        header: 'name',
-        accessorKey: 'name',
-      },
-    ],
-    []
-  )
+  const { height } = useMainContainerSize()
 
-  const data = useMemo(
-    () =>
-      faker.helpers.multiple(
-        () => ({
-          name: faker.internet.userName(),
-        }),
-        {
-          count: 200,
-        }
-      ),
-    []
+  const [data, setData] = useState(
+    faker.helpers.multiple(
+      () => ({
+        name: faker.internet.userName(),
+      }),
+      {
+        count: 100,
+      }
+    )
   )
 
   const [rowSelection, setRowSelection] = useState({})
 
-  const { getHeaderGroups, getRowModel } = useReactTable({
-    columns,
-    data,
-    getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
-    enableMultiRowSelection: true,
-    state: { rowSelection },
-    onRowSelectionChange: setRowSelection,
-  })
-
   return (
-    <Stack>
-      <Table withBorder withColumnBorders striped highlightOnHover verticalSpacing="sm">
-        <thead>
-          {getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="uppercase">
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} colSpan={header.colSpan}>
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+    <Flex h={height} direction="column" justify="space-between">
+      <Table
+        columns={[
+          {
+            header: 'name',
+            accessorKey: 'name',
+          },
+        ]}
+        dataSource={data}
+        enableRowSelection
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
+      />
 
-        <tbody>
-          {getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      <Button
-        uppercase
-        onClick={() => {
-          console.log(rowSelection)
-        }}
-      >
-        Submit
-      </Button>
-    </Stack>
+      <Group position="right">
+        <Button
+          color="red"
+          uppercase
+          onClick={() => {
+            setRowSelection({})
+            setData((data) => data.filter((_, index) => !Object.keys(rowSelection).includes(String(index))))
+          }}
+        >
+          Delete ({Object.keys(rowSelection).length})
+        </Button>
+      </Group>
+    </Flex>
   )
 }

@@ -1,7 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import request from 'graphql-request'
 
-import { QUERY_KEY_DNS, QUERY_KEY_NODE, QUERY_KEY_SUBSCRIPTION } from '~/constants'
+import {
+  QUERY_KEY_CONFIG,
+  QUERY_KEY_DNS,
+  QUERY_KEY_GROUP,
+  QUERY_KEY_NODE,
+  QUERY_KEY_ROUTING,
+  QUERY_KEY_SUBSCRIPTION,
+} from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
 
@@ -85,6 +92,79 @@ export const useSubscriptionsQuery = () => {
               status
               link
               info
+            }
+          }
+        `)
+      ),
+  })
+}
+
+export const useConfigsQuery = () => {
+  const gqlClient = useQGLQueryClient()
+
+  return useQuery({
+    queryKey: QUERY_KEY_CONFIG,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Configs {
+            configs {
+              id
+              name
+              selected
+              global {
+                tproxyPort
+                logLevel
+                tcpCheckUrl
+                udpCheckDns
+                checkInterval
+                checkTolerance
+                dnsUpstream
+                lanInterface
+                lanNatDirect
+                wanInterface
+                allowInsecure
+                dialMode
+              }
+            }
+          }
+        `)
+      ),
+  })
+}
+
+export const useGroupsQuery = () => {
+  const gqlClient = useQGLQueryClient()
+
+  return useQuery({
+    queryKey: QUERY_KEY_GROUP,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Groups {
+            groups {
+              id
+              name
+            }
+          }
+        `)
+      ),
+  })
+}
+
+export const useRoutingsQuery = () => {
+  const gqlClient = useQGLQueryClient()
+
+  return useQuery({
+    queryKey: QUERY_KEY_ROUTING,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query Routings {
+            routings {
+              id
+              name
+              selected
             }
           }
         `)

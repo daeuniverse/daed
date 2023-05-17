@@ -2,7 +2,6 @@ import { ColorScheme, ColorSchemeProvider, createEmotionCache, MantineProvider }
 import { useColorScheme } from '@mantine/hooks'
 import { Notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useCallback, useEffect, useState } from 'react'
 
 import { QueryProvider } from '~/contexts'
@@ -36,8 +35,6 @@ export const App = () => {
           <Router />
         </MantineProvider>
       </ColorSchemeProvider>
-
-      <ReactQueryDevtools position="bottom-right" />
     </QueryProvider>
   )
 }

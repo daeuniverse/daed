@@ -2,6 +2,7 @@ import { Checkbox, Table as TableImpl, TableProps } from '@mantine/core'
 import {
   ColumnDef,
   OnChangeFn,
+  Row,
   RowData,
   RowSelectionState,
   flexRender,
@@ -10,7 +11,7 @@ import {
 } from '@tanstack/react-table'
 import { useMemo } from 'react'
 
-export const Table = <Row extends RowData>({
+export const Table = <Data extends RowData>({
   rowSelection = {},
   onRowSelectionChange,
   enableRowSelection = true,
@@ -21,12 +22,12 @@ export const Table = <Row extends RowData>({
 }: {
   rowSelection?: RowSelectionState
   onRowSelectionChange?: OnChangeFn<RowSelectionState>
-  enableRowSelection?: boolean
+  enableRowSelection?: boolean | ((row: Row<Data>) => boolean)
   enableMultiRowSelection?: boolean
-  columns: Array<ColumnDef<Row>>
-  dataSource: Array<Row>
+  columns: Array<ColumnDef<Data>>
+  dataSource: Array<Data>
 } & TableProps) => {
-  const tableColumns: Array<ColumnDef<Row>> = useMemo(
+  const tableColumns: Array<ColumnDef<Data>> = useMemo(
     () => [
       {
         id: 'select',
@@ -65,7 +66,15 @@ export const Table = <Row extends RowData>({
   })
 
   return (
-    <TableImpl withBorder withColumnBorders striped highlightOnHover verticalSpacing="sm" {...props}>
+    <TableImpl
+      withBorder
+      withColumnBorders
+      striped
+      highlightOnHover
+      verticalSpacing="sm"
+      {...props}
+      className="w-full overflow-auto"
+    >
       <thead>
         {getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id} className="uppercase">

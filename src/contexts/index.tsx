@@ -62,7 +62,7 @@ export const MainContainerSizeProvider = ({ children }: { children: React.ReactN
 
   return (
     <MainContainerSizeContext.Provider value={state}>
-      <main className="h-full flex-1 p-4" ref={state.ref}>
+      <main className="h-full w-full flex-1 overflow-hidden p-4" ref={state.ref}>
         {children}
       </main>
     </MainContainerSizeContext.Provider>

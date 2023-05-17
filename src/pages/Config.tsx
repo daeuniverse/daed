@@ -2,15 +2,15 @@ import { Button, Flex, Group } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import { useCallback, useMemo, useState } from 'react'
 
-import { useDNSsQuery, useRemoveDNSMutation } from '~/apis'
+import { useConfigsQuery, useRemoveDNSMutation } from '~/apis'
 import { Table } from '~/components/Table'
 import { useMainContainerSize } from '~/contexts'
 import { defaultResourcesAtom } from '~/store'
 
-export const DNSPage = () => {
+export const ConfigPage = () => {
   const { height } = useMainContainerSize()
-  const { defaultDNSID } = useStore(defaultResourcesAtom)
-  const { data: dnssQuery } = useDNSsQuery()
+  const { defaultConfigID } = useStore(defaultResourcesAtom)
+  const { data: configsQuery } = useConfigsQuery()
   const [rowSelection, onRowSelectionChange] = useState({})
   const removeDNSMutation = useRemoveDNSMutation()
   const [removing, setRemoving] = useState(false)
@@ -18,10 +18,10 @@ export const DNSPage = () => {
     () =>
       Object.keys(rowSelection)
         .map((selectedIndex) => {
-          return dnssQuery?.dnss[Number(selectedIndex)].id
+          return configsQuery?.configs[Number(selectedIndex)].id
         })
         .filter((id) => !!id) as string[],
-    [dnssQuery?.dnss, rowSelection]
+    [rowSelection, configsQuery?.configs]
   )
 
   const onRemove = useCallback(async () => {
@@ -32,7 +32,7 @@ export const DNSPage = () => {
   }, [removeDNSMutation, selectedRowIds])
 
   return (
-    <Flex h={height} direction="column" justify="space-between">
+    <Flex h={height} direction="column" justify="space-between" className="max-w-full">
       <Table
         columns={[
           {
@@ -48,10 +48,14 @@ export const DNSPage = () => {
             header: 'selected',
             accessorKey: 'selected',
           },
+          {
+            header: 'global',
+            accessorFn: ({ global }) => JSON.stringify(global),
+          },
         ]}
-        dataSource={dnssQuery?.dnss || []}
+        dataSource={configsQuery?.configs || []}
         enableRowSelection={(row) => {
-          return row.getValue('id') !== defaultDNSID
+          return row.getValue('id') !== defaultConfigID
         }}
         rowSelection={rowSelection}
         onRowSelectionChange={onRowSelectionChange}
