@@ -8,20 +8,20 @@ export const NodePage = () => {
     <Table
       columns={[
         {
-          title: 'id',
-          dataIndex: 'id',
+          header: 'id',
+          accessorKey: 'id',
         },
         {
-          title: 'name',
-          dataIndex: 'name',
+          header: 'name',
+          accessorKey: 'name',
         },
         {
-          title: 'address',
-          dataIndex: 'address',
+          header: 'address',
+          accessorKey: 'address',
         },
         {
-          title: 'protocol',
-          dataIndex: 'protocol',
+          header: 'protocol',
+          accessorKey: 'protocol',
         },
       ]}
       dataSource={nodesQueryData?.nodes.edges || []}

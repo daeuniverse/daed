@@ -1,3 +1,4 @@
+export * from './DNS'
 export * from './Home'
 export * from './MainLayout'
 export * from './Node'

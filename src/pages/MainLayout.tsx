@@ -7,6 +7,7 @@ import {
   IconRoute,
   IconSubtask,
   IconTable,
+  IconTestPipe,
   IconUsersGroup,
 } from '@tabler/icons-react'
 import { useEffect } from 'react'
@@ -30,6 +31,7 @@ export const MainLayout = () => {
     { link: '/dns', label: t('dns'), icon: <IconRoute /> },
     { link: '/routing', label: t('routing'), icon: <IconMap /> },
     { link: '/group', label: t('group'), icon: <IconUsersGroup /> },
+    { link: '/test', label: 'test', icon: <IconTestPipe /> },
   ]
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export const MainLayout = () => {
         <Navbar.Section grow>
           {navLinks.map((navLink) => (
             <NavLink
+              className="uppercase"
               component={Link}
               key={navLink.label}
               label={navLink.label}

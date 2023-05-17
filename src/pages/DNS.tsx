@@ -1,8 +1,8 @@
-import { useSubscriptionsQuery } from '~/apis'
+import { useDNSsQuery } from '~/apis'
 import { Table } from '~/components/Table'
 
-export const SubscriptionPage = () => {
-  const { data: subscriptionsQueryData } = useSubscriptionsQuery()
+export const DNSPage = () => {
+  const { data: dnssQuery } = useDNSsQuery()
 
   return (
     <Table
@@ -17,10 +17,10 @@ export const SubscriptionPage = () => {
         },
         {
           header: 'status',
-          accessorKey: 'status',
+          accessorKey: 'dns',
         },
       ]}
-      dataSource={subscriptionsQueryData?.subscriptions || []}
+      dataSource={dnssQuery?.dnss || []}
     />
   )
 }

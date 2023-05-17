@@ -1,73 +1,73 @@
 import { Checkbox, ScrollArea, Table as TableImpl, TableProps } from '@mantine/core'
-import { useState } from 'react'
+import { ColumnDef, RowData, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { useMemo } from 'react'
 
-export const Table = <
-  DataSource extends Array<
-    Record<PropertyKey, string | number | boolean | null | undefined> & {
-      id: string
-    }
-  >,
-  Columns extends Array<{
-    title: string
-    dataIndex: keyof DataSource[number]
-  }>
->({
-  dataSource,
+export const Table = <Row extends RowData>({
   columns,
+  dataSource,
   ...props
 }: {
-  dataSource: DataSource
-  columns: Columns
+  columns: Array<ColumnDef<Row>>
+  dataSource: Array<Row>
 } & TableProps) => {
-  const [selection, setSelection] = useState<Array<DataSource[number]['id']>>([])
-  const toggleRow = (id: string) => {
-    setSelection((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))
-  }
-  const toggleAll = () => {
-    setSelection((current) => (current.length === dataSource.length ? [] : dataSource.map((item) => item.id)))
-  }
+  const tableColumns: Array<ColumnDef<Row>> = useMemo(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            transitionDuration={0}
+            checked={table.getIsAllRowsSelected()}
+            indeterminate={table.getIsSomeRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            transitionDuration={0}
+            checked={row.getIsSelected()}
+            disabled={!row.getCanSelect()}
+            indeterminate={row.getIsSomeSelected()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        ),
+      },
+      ...columns,
+    ],
+    [columns]
+  )
+
+  const { getHeaderGroups, getRowModel } = useReactTable({
+    columns: tableColumns,
+    data: dataSource,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   return (
-    <ScrollArea>
-      <TableImpl verticalSpacing="sm" withBorder withColumnBorders striped highlightOnHover {...props}>
+    <ScrollArea.Autosize h="100%">
+      <TableImpl withBorder withColumnBorders striped highlightOnHover verticalSpacing="sm" {...props}>
         <thead>
-          <tr>
-            <th>
-              <Checkbox
-                onChange={toggleAll}
-                checked={dataSource.length > 0 && selection.length === dataSource.length}
-                indeterminate={selection.length > 0 && selection.length !== dataSource.length}
-                transitionDuration={0}
-              />
-            </th>
-            {columns.map(({ title }, i) => (
-              <th key={i} className="uppercase">
-                {title}
-              </th>
-            ))}
-          </tr>
+          {getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id} className="uppercase">
+              {headerGroup.headers.map((header) => (
+                <th key={header.id} colSpan={header.colSpan}>
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                </th>
+              ))}
+            </tr>
+          ))}
         </thead>
 
         <tbody>
-          {dataSource.map((data) => (
-            <tr key={data.id}>
-              <td>
-                <Checkbox
-                  checked={selection.includes(data.id)}
-                  onChange={() => toggleRow(data.id)}
-                  transitionDuration={0}
-                />
-              </td>
-
-              {columns
-                .map(({ dataIndex }) => data[dataIndex])
-                .map((val, i) => (
-                  <td key={i}>{val}</td>
-                ))}
+          {getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+              ))}
             </tr>
           ))}
         </tbody>
       </TableImpl>
-    </ScrollArea>
+    </ScrollArea.Autosize>
   )
 }
