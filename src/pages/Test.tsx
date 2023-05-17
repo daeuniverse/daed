@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
-import { Checkbox, ScrollArea, Table } from '@mantine/core'
+import { Button, Checkbox, Stack, Table } from '@mantine/core'
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 export const TestPage = () => {
   const columns: ColumnDef<{ name: string }>[] = useMemo(
@@ -12,6 +12,7 @@ export const TestPage = () => {
           <Checkbox
             transitionDuration={0}
             checked={table.getIsAllRowsSelected()}
+            disabled={!table.options.enableMultiRowSelection}
             indeterminate={table.getIsSomeRowsSelected()}
             onChange={table.getToggleAllRowsSelectedHandler()}
           />
@@ -41,20 +42,26 @@ export const TestPage = () => {
           name: faker.internet.userName(),
         }),
         {
-          count: 1000,
+          count: 200,
         }
       ),
     []
   )
 
+  const [rowSelection, setRowSelection] = useState({})
+
   const { getHeaderGroups, getRowModel } = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+    enableMultiRowSelection: true,
+    state: { rowSelection },
+    onRowSelectionChange: setRowSelection,
   })
 
   return (
-    <ScrollArea.Autosize h="100%">
+    <Stack>
       <Table withBorder withColumnBorders striped highlightOnHover verticalSpacing="sm">
         <thead>
           {getHeaderGroups().map((headerGroup) => (
@@ -78,6 +85,15 @@ export const TestPage = () => {
           ))}
         </tbody>
       </Table>
-    </ScrollArea.Autosize>
+
+      <Button
+        uppercase
+        onClick={() => {
+          console.log(rowSelection)
+        }}
+      >
+        Submit
+      </Button>
+    </Stack>
   )
 }

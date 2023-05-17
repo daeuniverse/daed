@@ -1,4 +1,4 @@
-import { Flex, Group, Image, NavLink, Navbar } from '@mantine/core'
+import { Flex, Group, Image, NavLink, Navbar, ScrollArea } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import {
   IconLanguage,
@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import { ColorSchemeToggle } from '~/components/ColorSchemeToggle'
+import { MainContainerSizeProvider } from '~/contexts'
 import { i18n } from '~/i18n'
 import { endpointURLAtom, tokenAtom } from '~/store'
 
@@ -92,9 +93,11 @@ export const MainLayout = () => {
         </Navbar.Section>
       </Navbar>
 
-      <main className="flex-1 overflow-hidden p-4">
-        <Outlet />
-      </main>
+      <MainContainerSizeProvider>
+        <ScrollArea.Autosize className="h-full overflow-auto">
+          <Outlet />
+        </ScrollArea.Autosize>
+      </MainContainerSizeProvider>
     </Flex>
   )
 }

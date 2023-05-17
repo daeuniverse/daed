@@ -1,3 +1,4 @@
+import { useElementSize } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -51,3 +52,21 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
     </QueryClientProvider>
   )
 }
+
+export const MainContainerSizeContext = createContext<ReturnType<typeof useElementSize>>(
+  null as unknown as ReturnType<typeof useElementSize>
+)
+
+export const MainContainerSizeProvider = ({ children }: { children: React.ReactNode }) => {
+  const state = useElementSize()
+
+  return (
+    <MainContainerSizeContext.Provider value={state}>
+      <main className="h-full flex-1 p-4" ref={state.ref}>
+        {children}
+      </main>
+    </MainContainerSizeContext.Provider>
+  )
+}
+
+export const useMainContainerSize = () => useContext(MainContainerSizeContext)
