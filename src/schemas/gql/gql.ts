@@ -50,6 +50,8 @@ const documents = {
     types.JsonStorageDocument,
   '\n        query General($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      ':
     types.GeneralDocument,
+  '\n          query General($up: Boolean) {\n            general {\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        ':
+    types.GeneralDocument,
   '\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n                link\n                address\n                protocol\n                tag\n              }\n            }\n          }\n        ':
     types.NodesDocument,
   '\n          query Subscriptions {\n            subscriptions {\n              id\n              status\n              link\n              info\n            }\n          }\n        ':
@@ -197,6 +199,12 @@ export function graphql(
 export function graphql(
   source: '\n        query General($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      '
 ): (typeof documents)['\n        query General($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          query General($up: Boolean) {\n            general {\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        '
+): (typeof documents)['\n          query General($up: Boolean) {\n            general {\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

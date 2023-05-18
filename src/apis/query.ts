@@ -5,6 +5,7 @@ import {
   QUERY_KEY_CONFIG,
   QUERY_KEY_DNS,
   QUERY_KEY_GROUP,
+  QUERY_KEY_INTERFACES,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
   QUERY_KEY_SUBSCRIPTION,
@@ -51,6 +52,30 @@ export const getInterfacesRequest = (endpointURL: string, token: string) => {
         authorization: `Bearer ${token}`,
       }
     )
+}
+
+export const useInterfacesQuery = () => {
+  const gqlClient = useQGLQueryClient()
+
+  return useQuery({
+    queryKey: QUERY_KEY_INTERFACES,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query General($up: Boolean) {
+            general {
+              interfaces(up: $up) {
+                name
+                ifindex
+              }
+            }
+          }
+        `),
+        {
+          up: true,
+        }
+      ),
+  })
 }
 
 export const useNodesQuery = () => {

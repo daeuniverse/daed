@@ -1,5 +1,5 @@
 import { ActionIcon, Button, Flex, Group, TextInput } from '@mantine/core'
-import { Form, useForm, zodResolver } from '@mantine/form'
+import { useForm, zodResolver } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
 import { IconMinus, IconPlus } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
@@ -78,15 +78,14 @@ export const NodePage = () => {
       }}
       createModalTitle={t('node')}
       createModalContent={(close) => (
-        <Form
-          form={form}
-          onSubmit={async (values) => {
+        <form
+          onSubmit={form.onSubmit(async (values) => {
             await importNodesMutation.mutateAsync(values.nodes.map(({ link, tag }) => ({ link, tag })))
             close()
             form.reset()
-          }}
+          })}
         >
-          <Flex gap={4} direction="column">
+          <Flex gap={20} direction="column">
             {form.values.nodes.map(({ id }, i) => (
               <Flex key={id} gap={10}>
                 <Flex w="100%" align="start" gap={10}>
@@ -136,7 +135,7 @@ export const NodePage = () => {
               <Button type="submit">{t('actions.submit')}</Button>
             </Group>
           </Group>
-        </Form>
+        </form>
       )}
       onRemove={async (records) => {
         await removeNodesMutation.mutateAsync(records.map(({ id }) => id))
