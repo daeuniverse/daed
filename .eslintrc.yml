@@ -40,7 +40,6 @@ rules:
   react/display-name: off
   react/self-closing-comp: error
   import/newline-after-import: error
-  import/no-default-export: error
   import/order:
     - error
     - newlines-between: always

@@ -29,7 +29,6 @@ import {
 } from '~/apis'
 import { ColorSchemeToggle } from '~/components/ColorSchemeToggle'
 import { DEFAULT_CONFIG_WITH_INTERFACE, DEFAULT_DNS, DEFAULT_ROUTING } from '~/constants'
-import { MainContainerSizeProvider } from '~/contexts'
 import { i18n } from '~/i18n'
 import { Policy } from '~/schemas/gql/graphql'
 import { defaultResourcesAtom, endpointURLAtom, tokenAtom } from '~/store'
@@ -155,12 +154,12 @@ export const MainLayout = () => {
   const init = useInit()
 
   const navLinks = [
+    { link: '/config', label: t('config'), icon: <IconSettings /> },
     { link: '/node', label: t('node'), icon: <IconSubtask /> },
     { link: '/subscription', label: t('subscription'), icon: <IconTable /> },
     { link: '/dns', label: t('dns'), icon: <IconRoute /> },
     { link: '/routing', label: t('routing'), icon: <IconMap /> },
     { link: '/group', label: t('group'), icon: <IconUsersGroup /> },
-    { link: '/config', label: t('config'), icon: <IconSettings /> },
     { link: '/test', label: 'test', icon: <IconTestPipe /> },
   ]
 
@@ -176,7 +175,7 @@ export const MainLayout = () => {
 
   return (
     <Flex h="100%">
-      <Navbar h="100%" w={240}>
+      <Navbar h="100%" w={200}>
         <Navbar.Section py={20} px={10} className="border-b border-gray-300">
           <Group position="apart">
             <Link to="/">
@@ -226,11 +225,11 @@ export const MainLayout = () => {
         </Navbar.Section>
       </Navbar>
 
-      <MainContainerSizeProvider>
-        <ScrollArea>
+      <main className="h-full flex-1 overflow-hidden">
+        <ScrollArea w="100%" h="100%" className="p-6">
           <Outlet />
         </ScrollArea>
-      </MainContainerSizeProvider>
+      </main>
     </Flex>
   )
 }

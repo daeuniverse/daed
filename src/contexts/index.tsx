@@ -1,6 +1,6 @@
-import { useElementSize } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
+import { IconX } from '@tabler/icons-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GraphQLClient } from 'graphql-request'
 import { createContext, useContext, useMemo } from 'react'
@@ -26,7 +26,8 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
           mutations: {
             onError(err) {
               notifications.show({
-                variant: 'error',
+                color: 'red',
+                icon: <IconX />,
                 message: (err as Error).message,
               })
             },
@@ -52,21 +53,3 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
     </QueryClientProvider>
   )
 }
-
-export const MainContainerSizeContext = createContext<ReturnType<typeof useElementSize>>(
-  null as unknown as ReturnType<typeof useElementSize>
-)
-
-export const MainContainerSizeProvider = ({ children }: { children: React.ReactNode }) => {
-  const state = useElementSize()
-
-  return (
-    <MainContainerSizeContext.Provider value={state}>
-      <main className="h-full w-full flex-1 overflow-hidden p-4" ref={state.ref}>
-        {children}
-      </main>
-    </MainContainerSizeContext.Provider>
-  )
-}
-
-export const useMainContainerSize = () => useContext(MainContainerSizeContext)

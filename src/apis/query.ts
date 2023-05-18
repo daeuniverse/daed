@@ -113,17 +113,15 @@ export const useConfigsQuery = () => {
               name
               selected
               global {
-                tproxyPort
                 logLevel
-                tcpCheckUrl
-                udpCheckDns
+                tproxyPort
+                allowInsecure
                 checkInterval
                 checkTolerance
-                dnsUpstream
                 lanInterface
-                lanNatDirect
                 wanInterface
-                allowInsecure
+                udpCheckDns
+                tcpCheckUrl
                 dialMode
               }
             }
@@ -145,6 +143,40 @@ export const useGroupsQuery = () => {
             groups {
               id
               name
+              nodes {
+                id
+                link
+                name
+                address
+                protocol
+                tag
+                subscriptionID
+              }
+              subscriptions {
+                id
+                updatedAt
+                tag
+                link
+                status
+                info
+
+                nodes {
+                  edges {
+                    id
+                    link
+                    name
+                    address
+                    protocol
+                    tag
+                    subscriptionID
+                  }
+                }
+              }
+              policy
+              policyParams {
+                key
+                val
+              }
             }
           }
         `)
@@ -165,6 +197,9 @@ export const useRoutingsQuery = () => {
               id
               name
               selected
+              routing {
+                string
+              }
             }
           }
         `)
@@ -186,6 +221,7 @@ export const useDNSsQuery = () => {
               name
               dns {
                 string
+
                 routing {
                   request {
                     string

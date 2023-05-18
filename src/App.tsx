@@ -30,7 +30,26 @@ export const App = () => {
   return (
     <QueryProvider>
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider theme={{ colorScheme }} emotionCache={emotionCache} withGlobalStyles withNormalizeCSS>
+        <MantineProvider
+          theme={{
+            colorScheme,
+            components: {
+              Button: {
+                defaultProps: {
+                  uppercase: true,
+                },
+              },
+              Modal: {
+                defaultProps: {
+                  centered: true,
+                },
+              },
+            },
+          }}
+          emotionCache={emotionCache}
+          withGlobalStyles
+          withNormalizeCSS
+        >
           <Notifications />
           <Router />
         </MantineProvider>

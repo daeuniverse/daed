@@ -587,6 +587,12 @@ export type CreateConfigMutationVariables = Exact<{
 
 export type CreateConfigMutation = { __typename?: 'Mutation'; createConfig: { __typename?: 'Config'; id: string } }
 
+export type RemoveConfigMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type RemoveConfigMutation = { __typename?: 'Mutation'; removeConfig: number }
+
 export type SelectConfigMutationVariables = Exact<{
   id: Scalars['ID']
 }>
@@ -599,6 +605,12 @@ export type CreateRoutingMutationVariables = Exact<{
 }>
 
 export type CreateRoutingMutation = { __typename?: 'Mutation'; createRouting: { __typename?: 'Routing'; id: string } }
+
+export type RemoveRoutingMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type RemoveRoutingMutation = { __typename?: 'Mutation'; removeRouting: number }
 
 export type SelectRoutingMutationVariables = Exact<{
   id: Scalars['ID']
@@ -632,6 +644,12 @@ export type CreateGroupMutationVariables = Exact<{
 }>
 
 export type CreateGroupMutation = { __typename?: 'Mutation'; createGroup: { __typename?: 'Group'; id: string } }
+
+export type RemoveGroupMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type RemoveGroupMutation = { __typename?: 'Mutation'; removeGroup: number }
 
 export type GroupAddNodesMutationVariables = Exact<{
   id: Scalars['ID']
@@ -732,17 +750,15 @@ export type ConfigsQuery = {
     selected: boolean
     global: {
       __typename?: 'Global'
-      tproxyPort: number
       logLevel: string
-      tcpCheckUrl: string
-      udpCheckDns: string
+      tproxyPort: number
+      allowInsecure: boolean
       checkInterval: any
       checkTolerance: any
-      dnsUpstream: string
       lanInterface: Array<string>
-      lanNatDirect: boolean
       wanInterface: Array<string>
-      allowInsecure: boolean
+      udpCheckDns: string
+      tcpCheckUrl: string
       dialMode: string
     }
   }>
@@ -750,13 +766,60 @@ export type ConfigsQuery = {
 
 export type GroupsQueryVariables = Exact<{ [key: string]: never }>
 
-export type GroupsQuery = { __typename?: 'Query'; groups: Array<{ __typename?: 'Group'; id: string; name: string }> }
+export type GroupsQuery = {
+  __typename?: 'Query'
+  groups: Array<{
+    __typename?: 'Group'
+    id: string
+    name: string
+    policy: Policy
+    nodes: Array<{
+      __typename?: 'Node'
+      id: string
+      link: string
+      name: string
+      address: string
+      protocol: string
+      tag?: string | null
+      subscriptionID?: string | null
+    }>
+    subscriptions: Array<{
+      __typename?: 'Subscription'
+      id: string
+      updatedAt: any
+      tag?: string | null
+      link: string
+      status: string
+      info: string
+      nodes: {
+        __typename?: 'NodesConnection'
+        edges: Array<{
+          __typename?: 'Node'
+          id: string
+          link: string
+          name: string
+          address: string
+          protocol: string
+          tag?: string | null
+          subscriptionID?: string | null
+        }>
+      }
+    }>
+    policyParams: Array<{ __typename?: 'Param'; key: string; val: string }>
+  }>
+}
 
 export type RoutingsQueryVariables = Exact<{ [key: string]: never }>
 
 export type RoutingsQuery = {
   __typename?: 'Query'
-  routings: Array<{ __typename?: 'Routing'; id: string; name: string; selected: boolean }>
+  routings: Array<{
+    __typename?: 'Routing'
+    id: string
+    name: string
+    selected: boolean
+    routing: { __typename?: 'DaeRouting'; string: string }
+  }>
 }
 
 export type DnSsQueryVariables = Exact<{ [key: string]: never }>
@@ -900,6 +963,39 @@ export const CreateConfigDocument = {
     },
   ],
 } as unknown as DocumentNode<CreateConfigMutation, CreateConfigMutationVariables>
+export const RemoveConfigDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'RemoveConfig' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'removeConfig' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveConfigMutation, RemoveConfigMutationVariables>
 export const SelectConfigDocument = {
   kind: 'Document',
   definitions: [
@@ -980,6 +1076,39 @@ export const CreateRoutingDocument = {
     },
   ],
 } as unknown as DocumentNode<CreateRoutingMutation, CreateRoutingMutationVariables>
+export const RemoveRoutingDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'RemoveRouting' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'removeRouting' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveRoutingMutation, RemoveRoutingMutationVariables>
 export const SelectRoutingDocument = {
   kind: 'Document',
   definitions: [
@@ -1186,6 +1315,39 @@ export const CreateGroupDocument = {
     },
   ],
 } as unknown as DocumentNode<CreateGroupMutation, CreateGroupMutationVariables>
+export const RemoveGroupDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'RemoveGroup' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'removeGroup' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveGroupMutation, RemoveGroupMutationVariables>
 export const GroupAddNodesDocument = {
   kind: 'Document',
   definitions: [
@@ -1617,17 +1779,15 @@ export const ConfigsDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'tproxyPort' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'logLevel' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'tcpCheckUrl' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'udpCheckDns' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tproxyPort' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'allowInsecure' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'checkInterval' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'checkTolerance' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'dnsUpstream' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'lanInterface' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'lanNatDirect' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'wanInterface' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'allowInsecure' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'udpCheckDns' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tcpCheckUrl' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'dialMode' } },
                     ],
                   },
@@ -1658,6 +1818,74 @@ export const GroupsDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'protocol' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'subscriptionID' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'subscriptions' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'info' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'nodes' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'edges' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'protocol' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'subscriptionID' } },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'policy' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'policyParams' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'key' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'val' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -1685,6 +1913,14 @@ export const RoutingsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'selected' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'routing' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'string' } }],
+                  },
+                },
               ],
             },
           },

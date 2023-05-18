@@ -62,6 +62,29 @@ export const useCreateConfigMutation = () => {
   })
 }
 
+export const useRemoveConfigMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveConfig($id: ID!) {
+            removeConfig(id: $id)
+          }
+        `),
+        {
+          id,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG })
+    },
+  })
+}
+
 export const useSelectConfigMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()
@@ -102,6 +125,29 @@ export const useCreateRoutingMutation = () => {
         {
           name,
           routing,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING })
+    },
+  })
+}
+
+export const useRemoveRoutingMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveRouting($id: ID!) {
+            removeRouting(id: $id)
+          }
+        `),
+        {
+          id,
         }
       )
     },
@@ -224,6 +270,29 @@ export const useCreateGroupMutation = () => {
           name,
           policy,
           policyParams,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
+export const useRemoveGroupMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RemoveGroup($id: ID!) {
+            removeGroup(id: $id)
+          }
+        `),
+        {
+          id,
         }
       )
     },

@@ -141,9 +141,7 @@ export const SetupPage = () => {
             withAsterisk
             {...form.getInputProps('password')}
           />
-          <Button type="submit" uppercase>
-            {t('actions.login')}
-          </Button>
+          <Button type="submit">{t('actions.login')}</Button>
         </Stack>
       </Form>
     </Container>

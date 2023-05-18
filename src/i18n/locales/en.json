@@ -12,7 +12,9 @@
     "refresh": "Refresh",
     "remove": "Remove",
     "rename": "Rename",
+    "reset": "Reset",
     "save dae": "Save dae",
+    "submit": "Submit",
     "switchLanguage": "Switch Language",
     "switchRunning": "Switch Running",
     "switchTheme": "Switch Theme"
@@ -57,6 +59,7 @@
   "routing": "Routing",
   "seconds": "seconds",
   "select": "select",
+  "selected": "selected",
   "subscription": "Subscription",
   "success": "Success",
   "tag": "tag",

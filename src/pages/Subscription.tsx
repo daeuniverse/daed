@@ -2,25 +2,26 @@ import { useSubscriptionsQuery } from '~/apis'
 import { Table } from '~/components/Table'
 
 export const SubscriptionPage = () => {
-  const { data: subscriptionsQueryData } = useSubscriptionsQuery()
+  const { isLoading, data } = useSubscriptionsQuery()
 
   return (
     <Table
+      fetching={isLoading}
       columns={[
         {
-          header: 'id',
-          accessorKey: 'id',
+          title: 'id',
+          accessor: 'id',
         },
         {
-          header: 'link',
-          accessorKey: 'link',
+          title: 'link',
+          accessor: 'link',
         },
         {
-          header: 'status',
-          accessorKey: 'status',
+          title: 'status',
+          accessor: 'status',
         },
       ]}
-      dataSource={subscriptionsQueryData?.subscriptions || []}
+      records={data?.subscriptions || []}
     />
   )
 }

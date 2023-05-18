@@ -1,71 +1,44 @@
-import { Button, Flex, Group } from '@mantine/core'
+import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { useCallback, useMemo, useState } from 'react'
+import { IconDeselect, IconSelect } from '@tabler/icons-react'
+import { useTranslation } from 'react-i18next'
 
-import { useConfigsQuery, useRemoveDNSMutation } from '~/apis'
+import { useConfigsQuery, useRemoveConfigMutation } from '~/apis'
 import { Table } from '~/components/Table'
-import { useMainContainerSize } from '~/contexts'
 import { defaultResourcesAtom } from '~/store'
 
 export const ConfigPage = () => {
-  const { height } = useMainContainerSize()
+  const { t } = useTranslation()
   const { defaultConfigID } = useStore(defaultResourcesAtom)
-  const { data: configsQuery } = useConfigsQuery()
-  const [rowSelection, onRowSelectionChange] = useState({})
-  const removeDNSMutation = useRemoveDNSMutation()
-  const [removing, setRemoving] = useState(false)
-  const selectedRowIds: string[] = useMemo(
-    () =>
-      Object.keys(rowSelection)
-        .map((selectedIndex) => {
-          return configsQuery?.configs[Number(selectedIndex)].id
-        })
-        .filter((id) => !!id) as string[],
-    [rowSelection, configsQuery?.configs]
-  )
-
-  const onRemove = useCallback(async () => {
-    setRemoving(true)
-    onRowSelectionChange({})
-    await Promise.all(selectedRowIds.map((selectedRowId) => removeDNSMutation.mutateAsync(selectedRowId)))
-    setRemoving(false)
-  }, [removeDNSMutation, selectedRowIds])
+  const { isLoading, data } = useConfigsQuery()
+  const removeConfigMutation = useRemoveConfigMutation()
 
   return (
-    <Flex h={height} direction="column" justify="space-between" className="max-w-full">
-      <Table
-        columns={[
-          {
-            id: 'id',
-            header: 'id',
-            accessorKey: 'id',
-          },
-          {
-            header: 'name',
-            accessorKey: 'name',
-          },
-          {
-            header: 'selected',
-            accessorKey: 'selected',
-          },
-          {
-            header: 'global',
-            accessorFn: ({ global }) => JSON.stringify(global),
-          },
-        ]}
-        dataSource={configsQuery?.configs || []}
-        enableRowSelection={(row) => {
-          return row.getValue('id') !== defaultConfigID
-        }}
-        rowSelection={rowSelection}
-        onRowSelectionChange={onRowSelectionChange}
-      />
-
-      <Group position="right">
-        <Button color="red" uppercase loading={removing} onClick={onRemove}>
-          Delete ({Object.keys(rowSelection).length})
-        </Button>
-      </Group>
-    </Flex>
+    <Table
+      fetching={isLoading}
+      columns={[
+        {
+          title: 'id',
+          accessor: 'id',
+        },
+        {
+          title: t('name'),
+          accessor: 'name',
+        },
+        {
+          title: t('selected'),
+          accessor: 'selected',
+          render: (record) => (record.selected ? <IconSelect /> : <IconDeselect />),
+        },
+      ]}
+      records={data?.configs || []}
+      isRecordSelectable={(record) => record.id !== defaultConfigID}
+      rowExpansion={{
+        content: ({ record }) => <Prism language="json">{JSON.stringify(record.global, null, 2)}</Prism>,
+      }}
+      onRemove={async (records) => {
+        await Promise.all(records.map(({ id }) => removeConfigMutation.mutateAsync(id)))
+      }}
+    />
   )
 }

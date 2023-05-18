@@ -1,63 +1,42 @@
-import { Button, Flex, Group } from '@mantine/core'
+import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { useCallback, useMemo, useState } from 'react'
+import { IconDeselect, IconSelect } from '@tabler/icons-react'
 
-import { useRemoveDNSMutation, useRoutingsQuery } from '~/apis'
+import { useRemoveRoutingMutation, useRoutingsQuery } from '~/apis'
 import { Table } from '~/components/Table'
-import { useMainContainerSize } from '~/contexts'
 import { defaultResourcesAtom } from '~/store'
 
 export const RoutingPage = () => {
-  const { height } = useMainContainerSize()
   const { defaultRoutingID } = useStore(defaultResourcesAtom)
-  const { data: routingsQuery } = useRoutingsQuery()
-  const [rowSelection, onRowSelectionChange] = useState({})
-  const removeDNSMutation = useRemoveDNSMutation()
-  const [removing, setRemoving] = useState(false)
-  const selectedRowIds: string[] = useMemo(
-    () =>
-      Object.keys(rowSelection)
-        .map((selectedIndex) => {
-          return routingsQuery?.routings[Number(selectedIndex)].id
-        })
-        .filter((id) => !!id) as string[],
-    [routingsQuery?.routings, rowSelection]
-  )
-
-  const onRemove = useCallback(async () => {
-    setRemoving(true)
-    onRowSelectionChange({})
-    await Promise.all(selectedRowIds.map((selectedRowId) => removeDNSMutation.mutateAsync(selectedRowId)))
-    setRemoving(false)
-  }, [removeDNSMutation, selectedRowIds])
+  const { isLoading, data } = useRoutingsQuery()
+  const removeRoutingMutation = useRemoveRoutingMutation()
 
   return (
-    <Flex h={height} direction="column" justify="space-between" className="max-w-full">
-      <Table
-        columns={[
-          {
-            id: 'id',
-            header: 'id',
-            accessorKey: 'id',
-          },
-          {
-            header: 'name',
-            accessorKey: 'name',
-          },
-        ]}
-        dataSource={routingsQuery?.routings || []}
-        enableRowSelection={(row) => {
-          return row.getValue('id') !== defaultRoutingID
-        }}
-        rowSelection={rowSelection}
-        onRowSelectionChange={onRowSelectionChange}
-      />
-
-      <Group position="right">
-        <Button color="red" uppercase loading={removing} onClick={onRemove}>
-          Delete ({Object.keys(rowSelection).length})
-        </Button>
-      </Group>
-    </Flex>
+    <Table
+      fetching={isLoading}
+      columns={[
+        {
+          title: 'id',
+          accessor: 'id',
+        },
+        {
+          title: 'name',
+          accessor: 'name',
+        },
+        {
+          title: 'selected',
+          accessor: 'selected',
+          render: (record) => (record.selected ? <IconSelect /> : <IconDeselect />),
+        },
+      ]}
+      records={data?.routings || []}
+      isRecordSelectable={(record) => record.id !== defaultRoutingID}
+      rowExpansion={{
+        content: ({ record }) => <Prism language="bash">{record.routing.string}</Prism>,
+      }}
+      onRemove={async (records) => {
+        await Promise.all(records.map(({ id }) => removeRoutingMutation.mutateAsync(id)))
+      }}
+    />
   )
 }
