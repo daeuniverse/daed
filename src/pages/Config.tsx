@@ -2,12 +2,12 @@ import { Flex, Group, MultiSelect, NumberInput, Radio, SimpleGrid, Slider, Switc
 import { useForm, zodResolver } from '@mantine/form'
 import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { IconDeselect, IconSelect } from '@tabler/icons-react'
+import { IconCheck, IconX } from '@tabler/icons-react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { useConfigsQuery, useInterfacesQuery, useRemoveConfigMutation } from '~/apis'
+import { useConfigsQuery, useCreateConfigMutation, useInterfacesQuery, useRemoveConfigMutation } from '~/apis'
 import { FormActions } from '~/components/FormActions'
 import { Table } from '~/components/Table'
 import {
@@ -22,6 +22,7 @@ import {
 import { defaultResourcesAtom } from '~/store'
 
 const schema = z.object({
+  name: z.string().nonempty(),
   logLevelNumber: z.number().min(0).max(4),
   tproxyPort: z.number(),
   allowInsecure: z.boolean(),
@@ -42,6 +43,7 @@ export const ConfigPage = () => {
   const form = useForm<z.infer<typeof schema>>({
     validate: zodResolver(schema),
     initialValues: {
+      name: '',
       logLevelNumber: 2,
       tproxyPort: DEFAULT_TPROXY_PORT,
       allowInsecure: DEFAULT_ALLOW_INSECURE,
@@ -55,14 +57,16 @@ export const ConfigPage = () => {
     },
   })
 
-  const logLevelMarks = useMemo(() => {
-    const steps = GET_LOG_LEVEL_STEPS(t)
+  const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
 
-    return steps.map(([label], value) => ({
-      value,
-      label,
-    }))
-  }, [t])
+  const logLevelMarks = useMemo(
+    () =>
+      logLevelSteps.map(([label], value) => ({
+        value,
+        label,
+      })),
+    [logLevelSteps]
+  )
 
   const { data: interfacesQuery } = useInterfacesQuery()
 
@@ -79,6 +83,8 @@ export const ConfigPage = () => {
     return []
   }, [interfacesQuery?.general.interfaces])
 
+  const createConfigMutation = useCreateConfigMutation()
+
   return (
     <Table
       fetching={isLoading}
@@ -94,7 +100,7 @@ export const ConfigPage = () => {
         {
           title: t('selected'),
           accessor: 'selected',
-          render: (record) => (record.selected ? <IconSelect /> : <IconDeselect />),
+          render: (record) => (record.selected ? <IconCheck /> : <IconX />),
         },
       ]}
       records={data?.configs || []}
@@ -105,19 +111,32 @@ export const ConfigPage = () => {
       createModalTitle={t('config')}
       createModalContent={(close) => (
         <form
-          onSubmit={form.onSubmit(
-            (values) => {
-              console.log(values)
-              close()
-              form.reset()
-            },
-            (err) => {
-              console.log(err)
-            }
-          )}
+          onSubmit={form.onSubmit(async (values) => {
+            const logLevel = logLevelSteps[values.logLevelNumber][1]
+
+            await createConfigMutation.mutateAsync({
+              name: values.name,
+              global: {
+                logLevel,
+                tproxyPort: values.tproxyPort,
+                tcpCheckUrl: values.tcpCheckUrl,
+                udpCheckDns: values.udpCheckDns,
+                allowInsecure: values.allowInsecure,
+                checkInterval: `${values.checkIntervalSeconds}s`,
+                checkTolerance: `${values.checkToleranceMS}ms`,
+                lanInterface: values.lanInterface,
+                wanInterface: values.wanInterface,
+                dialMode: values.dialMode,
+              },
+            })
+            close()
+            form.reset()
+          })}
         >
           <Flex gap={20} direction="column">
-            <div className="px-4 py-8">
+            <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} />
+
+            <div className="p-4">
               <Slider
                 min={0}
                 max={4}
