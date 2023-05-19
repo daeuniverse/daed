@@ -4,8 +4,8 @@ import request from 'graphql-request'
 import {
   QUERY_KEY_CONFIG,
   QUERY_KEY_DNS,
+  QUERY_KEY_GENERAL,
   QUERY_KEY_GROUP,
-  QUERY_KEY_INTERFACES,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
   QUERY_KEY_SUBSCRIPTION,
@@ -36,7 +36,7 @@ export const getInterfacesRequest = (endpointURL: string, token: string) => {
     request(
       endpointURL,
       graphql(`
-        query General($up: Boolean) {
+        query Interfaces($up: Boolean) {
           general {
             interfaces(up: $up) {
               name
@@ -54,16 +54,20 @@ export const getInterfacesRequest = (endpointURL: string, token: string) => {
     )
 }
 
-export const useInterfacesQuery = () => {
+export const useGeneralQuery = () => {
   const gqlClient = useQGLQueryClient()
 
   return useQuery({
-    queryKey: QUERY_KEY_INTERFACES,
+    queryKey: QUERY_KEY_GENERAL,
     queryFn: async () =>
       gqlClient.request(
         graphql(`
           query General($up: Boolean) {
             general {
+              dae {
+                running
+                modified
+              }
               interfaces(up: $up) {
                 name
                 ifindex

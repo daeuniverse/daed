@@ -1,3 +1,9 @@
+import { Center, Text } from '@mantine/core'
+
 export const HomePage = () => {
-  return <div>Welcome!</div>
+  return (
+    <Center>
+      <Text>Welcome!</Text>
+    </Center>
+  )
 }

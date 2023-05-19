@@ -28,9 +28,6 @@ importers:
       '@faker-js/faker':
         specifier: ^8.0.1
         version: 8.0.1
-      '@formkit/auto-animate':
-        specifier: 1.0.0-beta.6
-        version: 1.0.0-beta.6
       '@graphiql/toolkit':
         specifier: ^0.8.4
         version: 0.8.4(@types/node@20.2.0)(graphql@16.6.0)
@@ -1542,10 +1539,6 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       tabbable: 6.1.2
-    dev: false
-
-  /@formkit/auto-animate@1.0.0-beta.6:
-    resolution: {integrity: sha512-PVDhLAlr+B4Xb7e+1wozBUWmXa6BFU8xUPR/W/E+TsQhPS1qkAdAsJ25keEnFrcePSnXHrOsh3tiFbEToOzV9w==}
     dev: false
 
   /@graphiql/react@0.17.4(@codemirror/language@6.0.0)(@types/node@20.2.0)(@types/react@18.2.6)(graphql@16.6.0)(react-dom@18.2.0)(react-is@17.0.2)(react@18.2.0):

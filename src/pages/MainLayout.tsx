@@ -1,4 +1,4 @@
-import { Flex, Group, Image, NavLink, Navbar, ScrollArea } from '@mantine/core'
+import { Flex, Group, Image, NavLink, Navbar, ScrollArea, Switch } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import {
   IconLanguage,
@@ -22,6 +22,8 @@ import {
   useCreateDNSMutation,
   useCreateGroupMutation,
   useCreateRoutingMutation,
+  useGeneralQuery,
+  useRunMutation,
   useSelectConfigMutation,
   useSelectDNSMutation,
   useSelectRoutingMutation,
@@ -152,6 +154,8 @@ export const MainLayout = () => {
   const token = useStore(tokenAtom)
   const endpointURL = useStore(endpointURLAtom)
   const init = useInit()
+  const { data: generalQuery } = useGeneralQuery()
+  const runMutation = useRunMutation()
 
   const navLinks = [
     { link: '/config', label: t('config'), icon: <IconSettings /> },
@@ -182,7 +186,16 @@ export const MainLayout = () => {
               <Image width={40} radius={4} src="/logo.svg" alt="logo" />
             </Link>
 
-            <ColorSchemeToggle />
+            <Group>
+              <ColorSchemeToggle />
+
+              <Switch
+                checked={generalQuery?.general.dae.running}
+                onChange={async (e) => {
+                  await runMutation.mutateAsync(!e.target.checked)
+                }}
+              />
+            </Group>
           </Group>
         </Navbar.Section>
 

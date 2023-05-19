@@ -705,13 +705,26 @@ export type JsonStorageQueryVariables = Exact<{
 
 export type JsonStorageQuery = { __typename?: 'Query'; jsonStorage: Array<string> }
 
+export type InterfacesQueryVariables = Exact<{
+  up?: InputMaybe<Scalars['Boolean']>
+}>
+
+export type InterfacesQuery = {
+  __typename?: 'Query'
+  general: { __typename?: 'General'; interfaces: Array<{ __typename?: 'Interface'; name: string; ifindex: number }> }
+}
+
 export type GeneralQueryVariables = Exact<{
   up?: InputMaybe<Scalars['Boolean']>
 }>
 
 export type GeneralQuery = {
   __typename?: 'Query'
-  general: { __typename?: 'General'; interfaces: Array<{ __typename?: 'Interface'; name: string; ifindex: number }> }
+  general: {
+    __typename?: 'General'
+    dae: { __typename?: 'Dae'; running: boolean; modified: boolean }
+    interfaces: Array<{ __typename?: 'Interface'; name: string; ifindex: number }>
+  }
 }
 
 export type NodesQueryVariables = Exact<{ [key: string]: never }>
@@ -1638,6 +1651,55 @@ export const JsonStorageDocument = {
     },
   ],
 } as unknown as DocumentNode<JsonStorageQuery, JsonStorageQueryVariables>
+export const InterfacesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Interfaces' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'up' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'general' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'interfaces' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'up' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'up' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ifindex' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InterfacesQuery, InterfacesQueryVariables>
 export const GeneralDocument = {
   kind: 'Document',
   definitions: [
@@ -1661,6 +1723,17 @@ export const GeneralDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'dae' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'running' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'modified' } },
+                    ],
+                  },
+                },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'interfaces' },

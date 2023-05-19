@@ -5,5 +5,5 @@
 @tailwind utilities;
 
 #root {
-  height: 100dvh;
+  display: contents;
 }

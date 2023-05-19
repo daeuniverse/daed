@@ -48,9 +48,9 @@ const documents = {
   '\n          mutation run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ': types.RunDocument,
   '\n        query JsonStorage($paths: [String!]) {\n          jsonStorage(paths: $paths)\n        }\n      ':
     types.JsonStorageDocument,
-  '\n        query General($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      ':
-    types.GeneralDocument,
-  '\n          query General($up: Boolean) {\n            general {\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        ':
+  '\n        query Interfaces($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      ':
+    types.InterfacesDocument,
+  '\n          query General($up: Boolean) {\n            general {\n              dae {\n                running\n                modified\n              }\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        ':
     types.GeneralDocument,
   '\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n                link\n                address\n                protocol\n                tag\n              }\n            }\n          }\n        ':
     types.NodesDocument,
@@ -197,14 +197,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n        query General($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      '
-): (typeof documents)['\n        query General($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      ']
+  source: '\n        query Interfaces($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      '
+): (typeof documents)['\n        query Interfaces($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n          query General($up: Boolean) {\n            general {\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        '
-): (typeof documents)['\n          query General($up: Boolean) {\n            general {\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        ']
+  source: '\n          query General($up: Boolean) {\n            general {\n              dae {\n                running\n                modified\n              }\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        '
+): (typeof documents)['\n          query General($up: Boolean) {\n            general {\n              dae {\n                running\n                modified\n              }\n              interfaces(up: $up) {\n                name\n                ifindex\n              }\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

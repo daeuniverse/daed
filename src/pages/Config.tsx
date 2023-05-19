@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { useConfigsQuery, useCreateConfigMutation, useInterfacesQuery, useRemoveConfigMutation } from '~/apis'
+import { useConfigsQuery, useCreateConfigMutation, useGeneralQuery, useRemoveConfigMutation } from '~/apis'
 import { FormActions } from '~/components/FormActions'
 import { Table } from '~/components/Table'
 import {
@@ -68,10 +68,10 @@ export const ConfigPage = () => {
     [logLevelSteps]
   )
 
-  const { data: interfacesQuery } = useInterfacesQuery()
+  const { data: generalQuery } = useGeneralQuery()
 
   const interfacesData: { value: string; label: string }[] = useMemo(() => {
-    const interfaces = interfacesQuery?.general.interfaces
+    const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
       return interfaces.map(({ name }) => ({
@@ -81,7 +81,7 @@ export const ConfigPage = () => {
     }
 
     return []
-  }, [interfacesQuery?.general.interfaces])
+  }, [generalQuery?.general.interfaces])
 
   const createConfigMutation = useCreateConfigMutation()
 

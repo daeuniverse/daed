@@ -28,32 +28,34 @@ export const App = () => {
   }, [setColorScheme, preferredColorScheme, appState.preferredColorScheme])
 
   return (
-    <QueryProvider>
-      <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider
-          theme={{
-            colorScheme,
-            components: {
-              Button: {
-                defaultProps: {
-                  uppercase: true,
+    <main className="h-screen">
+      <QueryProvider>
+        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+          <MantineProvider
+            theme={{
+              colorScheme,
+              components: {
+                Button: {
+                  defaultProps: {
+                    uppercase: true,
+                  },
+                },
+                Modal: {
+                  defaultProps: {
+                    centered: true,
+                  },
                 },
               },
-              Modal: {
-                defaultProps: {
-                  centered: true,
-                },
-              },
-            },
-          }}
-          emotionCache={emotionCache}
-          withGlobalStyles
-          withNormalizeCSS
-        >
-          <Notifications />
-          <Router />
-        </MantineProvider>
-      </ColorSchemeProvider>
-    </QueryProvider>
+            }}
+            emotionCache={emotionCache}
+            withGlobalStyles
+            withNormalizeCSS
+          >
+            <Notifications />
+            <Router />
+          </MantineProvider>
+        </ColorSchemeProvider>
+      </QueryProvider>
+    </main>
   )
 }

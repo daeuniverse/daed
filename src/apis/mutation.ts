@@ -3,10 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   QUERY_KEY_CONFIG,
   QUERY_KEY_DNS,
+  QUERY_KEY_GENERAL,
   QUERY_KEY_GROUP,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
-  QUERY_KEY_RUNNING,
   QUERY_KEY_SUBSCRIPTION,
 } from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
@@ -431,7 +431,7 @@ export const useRunMutation = () => {
       )
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY_RUNNING })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }

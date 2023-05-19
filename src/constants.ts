@@ -11,8 +11,7 @@ export enum MODE {
 
 export const COLS_PER_ROW = 3
 export const QUERY_KEY_HEALTH_CHECK = ['healthCheck']
-export const QUERY_KEY_INTERFACES = ['interfaces']
-export const QUERY_KEY_RUNNING = ['running']
+export const QUERY_KEY_GENERAL = ['general']
 export const QUERY_KEY_NODE = ['node']
 export const QUERY_KEY_SUBSCRIPTION = ['subscription']
 export const QUERY_KEY_CONFIG = ['config']

@@ -1,12 +1,14 @@
 import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { IconDeselect, IconSelect } from '@tabler/icons-react'
+import { IconCheck, IconX } from '@tabler/icons-react'
+import { useTranslation } from 'react-i18next'
 
 import { useRemoveRoutingMutation, useRoutingsQuery } from '~/apis'
 import { Table } from '~/components/Table'
 import { defaultResourcesAtom } from '~/store'
 
 export const RoutingPage = () => {
+  const { t } = useTranslation()
   const { defaultRoutingID } = useStore(defaultResourcesAtom)
   const { isLoading, data } = useRoutingsQuery()
   const removeRoutingMutation = useRemoveRoutingMutation()
@@ -20,13 +22,13 @@ export const RoutingPage = () => {
           accessor: 'id',
         },
         {
-          title: 'name',
+          title: t('name'),
           accessor: 'name',
         },
         {
-          title: 'selected',
+          title: t('selected'),
           accessor: 'selected',
-          render: (record) => (record.selected ? <IconSelect /> : <IconDeselect />),
+          render: (record) => (record.selected ? <IconCheck /> : <IconX />),
         },
       ]}
       records={data?.routings || []}
