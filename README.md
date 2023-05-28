@@ -28,6 +28,8 @@ Project Goals:
 
 This project is currently under heavy development
 
+Feel free to open issues or submit your PR, any feedback or help will be welcome and greatly appreciated
+
 ## Contribute to daed
 
 ### How to run and build this project
