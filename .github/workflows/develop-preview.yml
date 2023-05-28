@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - "feature*"
-      - "patch*"
-      - "hotfix*"
-      - "fix*"
-      - "ci*"
+      - 'feature*'
+      - 'patch*'
+      - 'hotfix*'
+      - 'fix*'
+      - 'ci*'
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifact
-          path: dashboard/dist
+          path: dist
 
   release:
     runs-on: self-hosted
