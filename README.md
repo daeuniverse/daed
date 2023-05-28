@@ -1,7 +1,7 @@
 # daed
 
 <p align="center" width="100%">
-  <img width="100" src="dashboard/public/logo.svg" />
+  <img width="100" src="public/logo.svg" />
 </p>
 
 ## What this project is for
