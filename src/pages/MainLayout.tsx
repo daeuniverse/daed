@@ -169,7 +169,7 @@ export const MainLayout = () => {
 
   useEffect(() => {
     init()
-  }, [init])
+  }, [])
 
   useEffect(() => {
     if (!endpointURL || !token) {

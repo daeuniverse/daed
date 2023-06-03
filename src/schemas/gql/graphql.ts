@@ -108,16 +108,18 @@ export type GeneralInterfacesArgs = {
 export type Global = {
   __typename?: 'Global'
   allowInsecure: Scalars['Boolean']['output']
+  autoConfigKernelParameter: Scalars['Boolean']['output']
   checkInterval: Scalars['Duration']['output']
   checkTolerance: Scalars['Duration']['output']
   dialMode: Scalars['String']['output']
-  dnsUpstream: Scalars['String']['output']
+  disableWaitingNetwork: Scalars['Boolean']['output']
   lanInterface: Array<Scalars['String']['output']>
-  lanNatDirect: Scalars['Boolean']['output']
   logLevel: Scalars['String']['output']
-  tcpCheckUrl: Scalars['String']['output']
+  sniffingTimeout: Scalars['Duration']['output']
+  tcpCheckHttpMethod: Scalars['String']['output']
+  tcpCheckUrl: Array<Scalars['String']['output']>
   tproxyPort: Scalars['Int']['output']
-  udpCheckDns: Scalars['String']['output']
+  udpCheckDns: Array<Scalars['String']['output']>
   wanInterface: Array<Scalars['String']['output']>
 }
 
@@ -562,16 +564,18 @@ export type _Service = {
 
 export type GlobalInput = {
   allowInsecure?: InputMaybe<Scalars['Boolean']['input']>
+  autoConfigKernelParameter?: InputMaybe<Scalars['Boolean']['input']>
   checkInterval?: InputMaybe<Scalars['Duration']['input']>
   checkTolerance?: InputMaybe<Scalars['Duration']['input']>
   dialMode?: InputMaybe<Scalars['String']['input']>
-  dnsUpstream?: InputMaybe<Scalars['String']['input']>
+  disableWaitingNetwork?: InputMaybe<Scalars['Boolean']['input']>
   lanInterface?: InputMaybe<Array<Scalars['String']['input']>>
-  lanNatDirect?: InputMaybe<Scalars['Boolean']['input']>
   logLevel?: InputMaybe<Scalars['String']['input']>
-  tcpCheckUrl?: InputMaybe<Scalars['String']['input']>
+  sniffingTimeout?: InputMaybe<Scalars['Duration']['input']>
+  tcpCheckHttpMethod?: InputMaybe<Scalars['String']['input']>
+  tcpCheckUrl?: InputMaybe<Array<Scalars['String']['input']>>
   tproxyPort?: InputMaybe<Scalars['Int']['input']>
-  udpCheckDns?: InputMaybe<Scalars['String']['input']>
+  udpCheckDns?: InputMaybe<Array<Scalars['String']['input']>>
   wanInterface?: InputMaybe<Array<Scalars['String']['input']>>
 }
 
@@ -772,8 +776,8 @@ export type ConfigsQuery = {
       checkTolerance: any
       lanInterface: Array<string>
       wanInterface: Array<string>
-      udpCheckDns: string
-      tcpCheckUrl: string
+      udpCheckDns: Array<string>
+      tcpCheckUrl: Array<string>
       dialMode: string
     }
   }>
