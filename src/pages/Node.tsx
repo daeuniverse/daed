@@ -106,7 +106,7 @@ export const NodePage = () => {
                     form.removeListItem('nodes', i)
                   }}
                 >
-                  <IconMinus size={40} />
+                  <IconMinus />
                 </ActionIcon>
               </Flex>
             ))}
@@ -124,7 +124,7 @@ export const NodePage = () => {
                 })
               }}
             >
-              <IconPlus size={40} />
+              <IconPlus />
             </ActionIcon>
 
             <Group spacing="xs">

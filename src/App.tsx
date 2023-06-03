@@ -51,7 +51,7 @@ export const App = () => {
             withGlobalStyles
             withNormalizeCSS
           >
-            <Notifications />
+            <Notifications limit={5} />
             <Router />
           </MantineProvider>
         </ColorSchemeProvider>
