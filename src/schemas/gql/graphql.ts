@@ -755,7 +755,18 @@ export type SubscriptionsQueryVariables = Exact<{ [key: string]: never }>
 
 export type SubscriptionsQuery = {
   __typename?: 'Query'
-  subscriptions: Array<{ __typename?: 'Subscription'; id: string; status: string; link: string; info: string }>
+  subscriptions: Array<{
+    __typename?: 'Subscription'
+    id: string
+    status: string
+    link: string
+    info: string
+    updatedAt: any
+    nodes: {
+      __typename?: 'NodesConnection'
+      edges: Array<{ __typename?: 'Node'; name: string; protocol: string; link: string }>
+    }
+  }>
 }
 
 export type ConfigsQueryVariables = Exact<{ [key: string]: never }>
@@ -779,6 +790,10 @@ export type ConfigsQuery = {
       udpCheckDns: Array<string>
       tcpCheckUrl: Array<string>
       dialMode: string
+      tcpCheckHttpMethod: string
+      disableWaitingNetwork: boolean
+      autoConfigKernelParameter: boolean
+      sniffingTimeout: any
     }
   }>
 }
@@ -1825,6 +1840,28 @@ export const SubscriptionsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'link' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'info' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'edges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'protocol' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -1868,6 +1905,10 @@ export const ConfigsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'udpCheckDns' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'tcpCheckUrl' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'dialMode' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tcpCheckHttpMethod' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'disableWaitingNetwork' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'autoConfigKernelParameter' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'sniffingTimeout' } },
                     ],
                   },
                 },

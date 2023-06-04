@@ -53,6 +53,7 @@
     "login succeeded": "登录成功",
     "success": "成功"
   },
+  "operations": "操作",
   "password": "密码",
   "please select a config first": "请先选择配置",
   "policy": "策略",
@@ -72,6 +73,7 @@
   "tproxyPort": "透明代理端口",
   "trace": "跟踪",
   "udpCheckDns": "UDP 检测 DNS",
+  "updatedAt": "更新时间",
   "username": "用户名",
   "utlsImitate": "uTLS 模仿",
   "value": "值",

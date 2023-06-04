@@ -121,6 +121,14 @@ export const useSubscriptionsQuery = () => {
               status
               link
               info
+              updatedAt
+              nodes {
+                edges {
+                  name
+                  protocol
+                  link
+                }
+              }
             }
           }
         `)
@@ -152,6 +160,10 @@ export const useConfigsQuery = () => {
                 udpCheckDns
                 tcpCheckUrl
                 dialMode
+                tcpCheckHttpMethod
+                disableWaitingNetwork
+                autoConfigKernelParameter
+                sniffingTimeout
               }
             }
           }

@@ -16,12 +16,18 @@ import {
 import { UseFormReturnType, useForm, zodResolver } from '@mantine/form'
 import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { IconCheck, IconMinus, IconPlus, IconX } from '@tabler/icons-react'
+import { IconEdit, IconMinus, IconPlus } from '@tabler/icons-react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { useConfigsQuery, useCreateConfigMutation, useGeneralQuery, useRemoveConfigMutation } from '~/apis'
+import {
+  useConfigsQuery,
+  useCreateConfigMutation,
+  useGeneralQuery,
+  useRemoveConfigMutation,
+  useSelectConfigMutation,
+} from '~/apis'
 import { FormActions } from '~/components/FormActions'
 import { Table } from '~/components/Table'
 import {
@@ -114,6 +120,7 @@ export const ConfigPage = () => {
   const { t } = useTranslation()
   const { defaultConfigID } = useStore(defaultResourcesAtom)
   const { isLoading, data } = useConfigsQuery()
+  const selectConfigMutation = useSelectConfigMutation()
   const removeConfigMutation = useRemoveConfigMutation()
   const form = useForm<z.infer<typeof schema>>({
     validate: zodResolver(schema),
@@ -179,9 +186,28 @@ export const ConfigPage = () => {
           accessor: 'name',
         },
         {
-          title: t('selected'),
-          accessor: 'selected',
-          render: (record) => (record.selected ? <IconCheck /> : <IconX />),
+          title: t('operations'),
+          accessor: 'actions',
+          render: (record) => (
+            <Group>
+              <ActionIcon>
+                <IconEdit />
+              </ActionIcon>
+
+              <Radio
+                label={t('selected')}
+                checked={record.selected}
+                onClick={(e) => {
+                  e.stopPropagation()
+                }}
+                onChange={() => {
+                  selectConfigMutation.mutateAsync({
+                    id: record.id,
+                  })
+                }}
+              />
+            </Group>
+          ),
         },
       ]}
       records={data?.configs || []}

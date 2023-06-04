@@ -1,6 +1,7 @@
 import { Button, Container, PasswordInput, Stack, TextInput, Title } from '@mantine/core'
 import { Form, useForm, zodResolver } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
+import { useStore } from '@nanostores/react'
 import { IconLink, IconPassword, IconUser } from '@tabler/icons-react'
 import request from 'graphql-request'
 import { useTranslation } from 'react-i18next'
@@ -21,10 +22,11 @@ const schema = z.object({
 export const SetupPage = () => {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const defaultEndpointURL = useStore(endpointURLAtom)
   const form = useForm<z.infer<typeof schema>>({
     validate: zodResolver(schema),
     initialValues: {
-      endpointURL: DEFAULT_ENDPOINT_URL,
+      endpointURL: defaultEndpointURL,
       username: '',
       password: '',
     },

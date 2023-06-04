@@ -53,6 +53,7 @@
     "login succeeded": "Login Succeeded",
     "success": "Success"
   },
+  "operations": "operations",
   "password": "password",
   "please select a config first": "Please select a config first",
   "policy": "policy",
@@ -72,6 +73,7 @@
   "tproxyPort": "tproxyPort",
   "trace": "trace",
   "udpCheckDns": "udpCheckDns",
+  "updatedAt": "updatedAt",
   "username": "username",
   "utlsImitate": "utlsImitate",
   "value": "value",

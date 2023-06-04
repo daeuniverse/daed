@@ -229,7 +229,6 @@ export const MainLayout = () => {
             label={t('actions.logout')}
             icon={<IconLogout />}
             onClick={() => {
-              endpointURLAtom.set('')
               tokenAtom.set('')
 
               navigate('/setup')

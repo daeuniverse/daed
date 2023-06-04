@@ -10,13 +10,15 @@ import { ExpandedTableRow } from '~/components/ExpandedTableRow'
 import { Table } from '~/components/Table'
 
 const schema = z.object({
-  nodes: z.array(
-    z.object({
-      id: z.string(),
-      link: z.string().url(),
-      tag: z.string(),
-    })
-  ),
+  nodes: z
+    .array(
+      z.object({
+        id: z.string(),
+        link: z.string().url().nonempty(),
+        tag: z.string().nonempty(),
+      })
+    )
+    .min(1),
 })
 
 export const NodePage = () => {
@@ -95,7 +97,7 @@ export const NodePage = () => {
                     label={t('link')}
                     {...form.getInputProps(`nodes.${i}.link`)}
                   />
-                  <TextInput w="6rem" label={t('tag')} {...form.getInputProps(`nodes.${i}.tag`)} />
+                  <TextInput w="6rem" withAsterisk label={t('tag')} {...form.getInputProps(`nodes.${i}.tag`)} />
                 </Flex>
 
                 <ActionIcon
