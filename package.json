@@ -20,6 +20,8 @@
     "@dnd-kit/utilities": "^3.2.1",
     "@emotion/react": "^11.11.0",
     "@faker-js/faker": "^8.0.2",
+    "@fontsource/fira-sans": "^5.0.2",
+    "@fontsource/source-code-pro": "^5.0.2",
     "@graphiql/toolkit": "^0.8.4",
     "@graphql-codegen/cli": "4.0.1",
     "@graphql-codegen/client-preset": "4.0.0",

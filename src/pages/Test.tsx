@@ -3,40 +3,30 @@ import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
 import { faker } from '@faker-js/faker'
 import {
   ActionIcon,
+  Anchor,
   Badge,
   Button,
   Card,
   Flex,
   Group,
-  Modal,
+  HoverCard,
+  List,
   SimpleGrid,
   Stack,
   Text,
-  TextInput,
   Title,
   createStyles,
 } from '@mantine/core'
-import { Form, useForm, zodResolver } from '@mantine/form'
-import { randomId, useDisclosure } from '@mantine/hooks'
+import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
-import { IconMinus, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
+import { IconPlus, IconTrash, IconX } from '@tabler/icons-react'
 import { produce } from 'immer'
 import { DataTable } from 'mantine-datatable'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
+import { ImportNodeFormModal } from '~/components/ImportNodeFormModal'
 import { Policy } from '~/schemas/gql/graphql'
-
-const schema = z.object({
-  nodes: z.array(
-    z.object({
-      id: z.string(),
-      link: z.string().url(),
-      tag: z.string(),
-    })
-  ),
-})
 
 const useStyles = createStyles(() => ({
   header: {
@@ -67,15 +57,17 @@ const DroppableGroup = ({
       withBorder
       shadow="sm"
       style={{
-        backgroundColor: isOver ? 'darkcyan' : undefined,
+        opacity: isOver ? 0.5 : undefined,
       }}
     >
       <Card.Section withBorder inheritPadding py="sm">
         <Group position="apart">
-          <Badge>{name}</Badge>
+          <Title order={3}>{name}</Title>
 
           <Group>
             <ActionIcon
+              color="red"
+              size="sm"
               onClick={() => {
                 modals.openConfirmModal({
                   title: 'Remove',
@@ -138,6 +130,8 @@ const DraggableNode = ({
           </Badge>
 
           <ActionIcon
+            color="red"
+            size="sm"
             onClick={() => {
               modals.openConfirmModal({
                 title: 'Remove',
@@ -208,6 +202,7 @@ export const ExperimentPage = () => {
       () => ({
         id: faker.string.uuid(),
         name: faker.lorem.word(),
+        protocol: faker.helpers.arrayElement(['vmess', 'vless', 'shadowsocks', 'trojan']),
         tag: faker.lorem.word(),
         link: faker.internet.url(),
       }),
@@ -217,27 +212,14 @@ export const ExperimentPage = () => {
     )
   )
 
-  const [opened, { open, close }] = useDisclosure(false)
-
   const [selectedRecords, onSelectedRecordsChange] = useState<typeof data>([])
-
-  const form = useForm<z.infer<typeof schema>>({
-    validate: zodResolver(schema),
-    initialValues: {
-      nodes: [
-        {
-          id: randomId(),
-          link: '',
-          tag: '',
-        },
-      ],
-    },
-  })
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
 
+  const [openedImportNodeModal, { open: openImportNodeModal, close: closeImportNodeModal }] = useDisclosure(false)
+
   return (
-    <div className="p-2">
+    <div>
       <Stack>
         <DndContext
           modifiers={[restrictToFirstScrollableAncestor]}
@@ -263,8 +245,23 @@ export const ExperimentPage = () => {
             setActiveId(null)
           }}
         >
-          <Stack>
-            <Title>Groups</Title>
+          <Stack id="groups">
+            <Group position="apart">
+              <Anchor href="#groups">
+                <Title>Groups</Title>
+              </Anchor>
+
+              <ActionIcon
+                onClick={() => {
+                  modals.open({
+                    title: t('group'),
+                    children: <form />,
+                  })
+                }}
+              >
+                <IconPlus />
+              </ActionIcon>
+            </Group>
 
             <SimpleGrid cols={3}>
               {fakeGroups.map(({ id: groupId, name, policy, policyParams, nodes }) => (
@@ -276,8 +273,15 @@ export const ExperimentPage = () => {
                     setFakeGroups((groups) => groups.filter((group) => group.id !== groupId))
                   }}
                 >
-                  <Text variant="gradient">Policy: {policy}</Text>
-                  <Text>Policy Params: {policyParams.join(',')}</Text>
+                  <Text fw={600} color="violet">
+                    {policy}
+                  </Text>
+
+                  <List listStyleType="disc">
+                    {policyParams.map((policyParam, i) => (
+                      <List.Item key={i}>{policyParam}</List.Item>
+                    ))}
+                  </List>
 
                   <Flex py="sm" gap={10} wrap="wrap">
                     {nodes.map(({ id: nodeId, name }) => (
@@ -315,11 +319,19 @@ export const ExperimentPage = () => {
             </SimpleGrid>
           </Stack>
 
-          <Stack>
-            <Title>Nodes</Title>
+          <Stack id="nodes">
+            <Group position="apart">
+              <Anchor href="#nodes">
+                <Title>Nodes</Title>
+              </Anchor>
+
+              <ActionIcon onClick={openImportNodeModal}>
+                <IconPlus />
+              </ActionIcon>
+            </Group>
 
             <SimpleGrid cols={3}>
-              {fakeNodes.map(({ id, name, tag, link }) => (
+              {fakeNodes.map(({ id, name, tag, protocol, link }) => (
                 <DraggableNode
                   key={id}
                   id={id}
@@ -328,8 +340,18 @@ export const ExperimentPage = () => {
                     setFakeNodes((nodes) => nodes.filter((node) => node.id !== id))
                   }}
                 >
-                  <Text variant="gradient">Tag: {tag}</Text>
-                  <Text>Link: {link}</Text>
+                  <Text fw={600} color="violet">
+                    {tag}
+                  </Text>
+                  <Text fw={600}>{protocol}</Text>
+                  <HoverCard withArrow>
+                    <HoverCard.Target>
+                      <Text truncate>{link}</Text>
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                      <Text>{link}</Text>
+                    </HoverCard.Dropdown>
+                  </HoverCard>
                 </DraggableNode>
               ))}
             </SimpleGrid>
@@ -344,7 +366,7 @@ export const ExperimentPage = () => {
           <Title>Table</Title>
 
           <Group>
-            <Button onClick={open}>{t('actions.add')}</Button>
+            <Button>{t('actions.add')}</Button>
 
             <Button
               color="red"
@@ -377,65 +399,7 @@ export const ExperimentPage = () => {
             onSelectedRecordsChange={onSelectedRecordsChange}
           />
 
-          <Modal opened={opened} onClose={close} title="Add new content" centered>
-            <Form
-              form={form}
-              onSubmit={(values) => {
-                console.log(values)
-              }}
-            >
-              <Flex gap={4} direction="column">
-                {form.values.nodes.map(({ id }, i) => (
-                  <Flex key={id} gap={10}>
-                    <Flex w="100%" align="start" gap={10}>
-                      <TextInput
-                        className="flex-1"
-                        withAsterisk
-                        label={t('link')}
-                        {...form.getInputProps(`nodes.${i}.link`)}
-                      />
-                      <TextInput w="6rem" label={t('tag')} {...form.getInputProps(`nodes.${i}.tag`)} />
-                    </Flex>
-
-                    <ActionIcon
-                      variant="filled"
-                      color="red"
-                      mt={30}
-                      onClick={() => {
-                        form.removeListItem('nodes', i)
-                      }}
-                    >
-                      <IconMinus size={40} />
-                    </ActionIcon>
-                  </Flex>
-                ))}
-              </Flex>
-
-              <Group position="apart" mt={20}>
-                <ActionIcon
-                  variant="filled"
-                  color="green"
-                  onClick={() => {
-                    form.insertListItem('nodes', {
-                      id: randomId(),
-                      link: '',
-                      tag: '',
-                    })
-                  }}
-                >
-                  <IconPlus size={40} />
-                </ActionIcon>
-
-                <Group spacing="xs">
-                  <Button type="reset" color="red">
-                    {t('actions.reset')}
-                  </Button>
-
-                  <Button type="submit">{t('actions.submit')}</Button>
-                </Group>
-              </Group>
-            </Form>
-          </Modal>
+          <ImportNodeFormModal opened={openedImportNodeModal} onClose={closeImportNodeModal} />
         </Stack>
       </Stack>
     </div>

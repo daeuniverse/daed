@@ -1,12 +1,12 @@
 import { Button, Group } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 
-export const FormActions = () => {
+export const FormActions = ({ reset }: { reset: () => void }) => {
   const { t } = useTranslation()
 
   return (
-    <Group position="right" spacing="xs" mt={20}>
-      <Button type="reset" color="red">
+    <Group position="right" spacing="xs">
+      <Button type="reset" color="red" onClick={() => reset()}>
         {t('actions.reset')}
       </Button>
 

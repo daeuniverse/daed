@@ -28,6 +28,7 @@ settings:
   react:
     version: detect
 rules:
+  '@typescript-eslint/no-non-null-assertion': off
   padding-line-between-statements:
     - error
     - blankLine: always

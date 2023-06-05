@@ -1,9 +1,11 @@
+import { createFormContext } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
 import { IconX } from '@tabler/icons-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GraphQLClient } from 'graphql-request'
 import { createContext, useContext, useMemo } from 'react'
+import { z } from 'zod'
 
 import { endpointURLAtom, tokenAtom } from '~/store'
 
@@ -53,3 +55,17 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
     </QueryClientProvider>
   )
 }
+
+const importNodeFormSchema = z.object({
+  nodes: z
+    .array(
+      z.object({
+        id: z.string(),
+        link: z.string().url().nonempty(),
+        tag: z.string().nonempty(),
+      })
+    )
+    .min(1),
+})
+
+export const importNodeFormContext = createFormContext<z.infer<typeof importNodeFormSchema>>()

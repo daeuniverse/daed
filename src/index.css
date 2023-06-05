@@ -1,3 +1,5 @@
+@import '@fontsource/fira-sans';
+@import '@fontsource/source-code-pro';
 @import 'graphiql/graphiql.css';
 
 @tailwind base;

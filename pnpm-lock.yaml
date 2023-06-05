@@ -32,6 +32,12 @@ importers:
       '@faker-js/faker':
         specifier: ^8.0.2
         version: 8.0.2
+      '@fontsource/fira-sans':
+        specifier: ^5.0.2
+        version: 5.0.2
+      '@fontsource/source-code-pro':
+        specifier: ^5.0.2
+        version: 5.0.2
       '@graphiql/toolkit':
         specifier: ^0.8.4
         version: 0.8.4(@types/node@20.2.5)(graphql@16.6.0)
@@ -1546,6 +1552,14 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       tabbable: 6.1.2
+    dev: false
+
+  /@fontsource/fira-sans@5.0.2:
+    resolution: {integrity: sha512-IxJGsXvkH6yV3fRw9mrbmgrdt6jDy7b/6gVoXgUroXSjC6WNbengREvCLSd2rLsYpOueR/bydAq6jjwmjljaig==}
+    dev: false
+
+  /@fontsource/source-code-pro@5.0.2:
+    resolution: {integrity: sha512-AElk4UAIUGl3TesV4CAkxWLC0S66Rb+jNIMM5F5rOKyxMg3CeH+VyXtUE7p2R8n2nKzgtBTGe6pJUcHOpuwBtw==}
     dev: false
 
   /@graphiql/react@0.17.6(@codemirror/language@6.0.0)(@types/node@20.2.5)(@types/react@18.2.8)(graphql@16.6.0)(react-dom@18.2.0)(react-is@17.0.2)(react@18.2.0):
