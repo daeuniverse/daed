@@ -5,7 +5,6 @@ import {
   ActionIcon,
   Anchor,
   Badge,
-  Button,
   Card,
   Flex,
   Group,
@@ -21,10 +20,10 @@ import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { IconPlus, IconTrash, IconX } from '@tabler/icons-react'
 import { produce } from 'immer'
-import { DataTable } from 'mantine-datatable'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
 import { ImportNodeFormModal } from '~/components/ImportNodeFormModal'
 import { Policy } from '~/schemas/gql/graphql'
 
@@ -157,19 +156,8 @@ const DraggableNode = ({
 }
 
 export const ExperimentPage = () => {
-  const { classes } = useStyles()
+  const { theme } = useStyles()
   const { t } = useTranslation()
-  const [data, setData] = useState(
-    faker.helpers.multiple(
-      () => ({
-        id: faker.string.uuid(),
-        name: faker.internet.userName(),
-      }),
-      {
-        count: 100,
-      }
-    )
-  )
 
   const [fakeGroups, setFakeGroups] = useState(
     faker.helpers.multiple(
@@ -212,10 +200,9 @@ export const ExperimentPage = () => {
     )
   )
 
-  const [selectedRecords, onSelectedRecordsChange] = useState<typeof data>([])
-
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
 
+  const [openedCreateGroupModal, { open: openCreateGroupModal, close: closeCreateGroupModal }] = useDisclosure(false)
   const [openedImportNodeModal, { open: openImportNodeModal, close: closeImportNodeModal }] = useDisclosure(false)
 
   return (
@@ -245,18 +232,15 @@ export const ExperimentPage = () => {
             setActiveId(null)
           }}
         >
-          <Stack id="groups">
+          <Stack id="group">
             <Group position="apart">
-              <Anchor href="#groups">
-                <Title>Groups</Title>
+              <Anchor href="#group">
+                <Title>{t('group')}</Title>
               </Anchor>
 
               <ActionIcon
                 onClick={() => {
-                  modals.open({
-                    title: t('group'),
-                    children: <form />,
-                  })
+                  openCreateGroupModal()
                 }}
               >
                 <IconPlus />
@@ -273,7 +257,7 @@ export const ExperimentPage = () => {
                     setFakeGroups((groups) => groups.filter((group) => group.id !== groupId))
                   }}
                 >
-                  <Text fw={600} color="violet">
+                  <Text fw={600} color={theme.primaryColor}>
                     {policy}
                   </Text>
 
@@ -319,10 +303,10 @@ export const ExperimentPage = () => {
             </SimpleGrid>
           </Stack>
 
-          <Stack id="nodes">
+          <Stack id="node">
             <Group position="apart">
-              <Anchor href="#nodes">
-                <Title>Nodes</Title>
+              <Anchor href="#node">
+                <Title>{t('node')}</Title>
               </Anchor>
 
               <ActionIcon onClick={openImportNodeModal}>
@@ -340,7 +324,7 @@ export const ExperimentPage = () => {
                     setFakeNodes((nodes) => nodes.filter((node) => node.id !== id))
                   }}
                 >
-                  <Text fw={600} color="violet">
+                  <Text fw={600} color={theme.primaryColor}>
                     {tag}
                   </Text>
                   <Text fw={600}>{protocol}</Text>
@@ -362,45 +346,8 @@ export const ExperimentPage = () => {
           </DragOverlay>
         </DndContext>
 
-        <Stack>
-          <Title>Table</Title>
-
-          <Group>
-            <Button>{t('actions.add')}</Button>
-
-            <Button
-              color="red"
-              disabled={selectedRecords.length === 0}
-              onClick={() => {
-                onSelectedRecordsChange([])
-                setData((data) => data.filter(({ id }) => selectedRecords.findIndex((record) => record.id === id) < 0))
-              }}
-            >
-              {t('actions.remove')} ({selectedRecords.length})
-            </Button>
-          </Group>
-
-          <DataTable
-            classNames={classes}
-            withBorder
-            withColumnBorders
-            striped
-            highlightOnHover
-            verticalSpacing="sm"
-            height={768}
-            columns={[
-              {
-                title: 'name',
-                accessor: 'name',
-              },
-            ]}
-            records={data}
-            selectedRecords={selectedRecords}
-            onSelectedRecordsChange={onSelectedRecordsChange}
-          />
-
-          <ImportNodeFormModal opened={openedImportNodeModal} onClose={closeImportNodeModal} />
-        </Stack>
+        <CreateGroupFormModal opened={openedCreateGroupModal} onClose={closeCreateGroupModal} />
+        <ImportNodeFormModal opened={openedImportNodeModal} onClose={closeImportNodeModal} />
       </Stack>
     </div>
   )

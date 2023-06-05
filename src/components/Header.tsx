@@ -41,7 +41,7 @@ const useStyles = createStyles((theme) => ({
   header: {
     paddingTop: theme.spacing.sm,
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    borderBottom: `${rem(1)} solid ${theme.colorScheme === 'dark' ? 'transparent' : theme.colors.gray[2]}`,
+    boxShadow: theme.shadows.sm,
   },
 
   mainSection: {
@@ -108,7 +108,7 @@ export const Header = () => {
         <Group position="apart">
           <Link to="/">
             <Group>
-              <Image radius="sm" src={logoPng} width={28} height={28} />
+              <Image radius="sm" src={logoPng} width={32} height={32} />
 
               <Title order={2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
                 daed
@@ -136,11 +136,12 @@ export const Header = () => {
                 <UnstyledButton className={cx(classes.user, { [classes.userActive]: userMenuOpened })}>
                   <Group spacing={7}>
                     <Avatar
-                      src="https://images.unsplash.com/photo-1511216335778-7cb8f49fa7a3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+                      src="https://avatars.githubusercontent.com/u/126714249?s=200&v=4"
                       alt="avatar"
                       radius="xl"
                       size={20}
                     />
+
                     <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
                       kunish
                     </Text>
@@ -149,7 +150,12 @@ export const Header = () => {
                 </UnstyledButton>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Label>User</Menu.Label>
+                <Menu.Label>{t('debug')}</Menu.Label>
+                <Menu.Item component={Link} target="_blank" to="/graphiql">
+                  GraphiQL
+                </Menu.Item>
+
+                <Menu.Label>{t('user')}</Menu.Label>
                 <Menu.Item
                   icon={<IconLogout size="0.9rem" stroke={1.5} />}
                   onClick={() => {

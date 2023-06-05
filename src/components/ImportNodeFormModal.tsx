@@ -1,4 +1,4 @@
-import { ActionIcon, Flex, Group, Modal, ScrollArea, TextInput } from '@mantine/core'
+import { ActionIcon, Flex, Group, Modal, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
 import { IconMinus, IconPlus } from '@tabler/icons-react'
@@ -37,7 +37,7 @@ export const ImportNodeFormModal = ({ opened, onClose }: { opened: boolean; onCl
   })
 
   return (
-    <Modal title={t('node')} opened={opened} onClose={onClose} scrollAreaComponent={ScrollArea.Autosize}>
+    <Modal title={t('node')} opened={opened} onClose={onClose}>
       <form
         onSubmit={importNodeForm.onSubmit(async (values) => {
           await importNodesMutation.mutateAsync(values.nodes.map(({ link, tag }) => ({ link, tag })))

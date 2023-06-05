@@ -153,7 +153,7 @@ const ModalContent = <T extends z.infer<typeof schema>>({
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Flex gap={20} direction="column">
+      <Stack>
         <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} />
 
         <Stack>
@@ -271,9 +271,9 @@ const ModalContent = <T extends z.infer<typeof schema>>({
             })}
           />
         </SimpleGrid>
-      </Flex>
 
-      <FormActions />
+        <FormActions reset={form.reset} />
+      </Stack>
     </form>
   )
 }

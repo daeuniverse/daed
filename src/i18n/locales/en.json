@@ -74,6 +74,7 @@
   "trace": "trace",
   "udpCheckDns": "udpCheckDns",
   "updatedAt": "updatedAt",
+  "user": "User",
   "username": "username",
   "utlsImitate": "utlsImitate",
   "value": "value",

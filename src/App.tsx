@@ -1,4 +1,4 @@
-import { ColorScheme, ColorSchemeProvider, createEmotionCache, MantineProvider } from '@mantine/core'
+import { ColorScheme, ColorSchemeProvider, createEmotionCache, MantineProvider, ScrollArea } from '@mantine/core'
 import { useColorScheme } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
@@ -36,15 +36,29 @@ export const App = () => {
             colorScheme,
             fontFamily: 'Fira Sans, sans-serif',
             fontFamilyMonospace: 'Source Code Pro, Monaco, Courier, monospace',
+            primaryColor: 'violet',
             components: {
               Button: {
                 defaultProps: {
                   uppercase: true,
                 },
               },
+              Select: {
+                defaultProps: {
+                  withinPortal: true,
+                },
+              },
               Modal: {
                 defaultProps: {
                   centered: true,
+                  scrollAreaComponent: ScrollArea.Autosize,
+                },
+              },
+              Menu: {
+                styles: {
+                  label: {
+                    textTransform: 'uppercase',
+                  },
                 },
               },
             },
