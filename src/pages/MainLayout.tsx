@@ -164,7 +164,7 @@ export const MainLayout = () => {
     { link: '/dns', label: t('dns'), icon: <IconRoute /> },
     { link: '/routing', label: t('routing'), icon: <IconMap /> },
     { link: '/group', label: t('group'), icon: <IconUsersGroup /> },
-    { link: '/test', label: 'test', icon: <IconTestPipe /> },
+    { link: '/experiment', label: 'Experiment', icon: <IconTestPipe /> },
   ]
 
   useEffect(() => {

@@ -70,6 +70,7 @@
     "husky": "^8.0.3",
     "i18next": "^22.5.0",
     "i18next-browser-languagedetector": "^7.0.2",
+    "immer": "^10.0.2",
     "lint-staged": "^13.2.2",
     "mantine-datatable": "^2.5.4",
     "nanostores": "^0.9.1",

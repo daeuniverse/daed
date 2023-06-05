@@ -1,5 +1,6 @@
 import { ColorScheme, ColorSchemeProvider, createEmotionCache, MantineProvider } from '@mantine/core'
 import { useColorScheme } from '@mantine/hooks'
+import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect, useState } from 'react'
@@ -28,34 +29,36 @@ export const App = () => {
   }, [setColorScheme, preferredColorScheme, appState.preferredColorScheme])
 
   return (
-    <main className="h-screen">
-      <QueryProvider>
-        <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-          <MantineProvider
-            theme={{
-              colorScheme,
-              components: {
-                Button: {
-                  defaultProps: {
-                    uppercase: true,
-                  },
-                },
-                Modal: {
-                  defaultProps: {
-                    centered: true,
-                  },
+    <QueryProvider>
+      <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+        <MantineProvider
+          theme={{
+            colorScheme,
+            components: {
+              Button: {
+                defaultProps: {
+                  uppercase: true,
                 },
               },
-            }}
-            emotionCache={emotionCache}
-            withGlobalStyles
-            withNormalizeCSS
-          >
-            <Notifications limit={5} />
-            <Router />
-          </MantineProvider>
-        </ColorSchemeProvider>
-      </QueryProvider>
-    </main>
+              Modal: {
+                defaultProps: {
+                  centered: true,
+                },
+              },
+            },
+          }}
+          emotionCache={emotionCache}
+          withGlobalStyles
+          withNormalizeCSS
+        >
+          <ModalsProvider>
+            <main className="h-screen">
+              <Notifications limit={5} />
+              <Router />
+            </main>
+          </ModalsProvider>
+        </MantineProvider>
+      </ColorSchemeProvider>
+    </QueryProvider>
   )
 }

@@ -116,13 +116,175 @@ const InputList = <T extends z.infer<typeof schema>>({
   )
 }
 
+const ModalContent = <T extends z.infer<typeof schema>>({
+  form,
+  handleSubmit,
+}: {
+  form: UseFormReturnType<T>
+  handleSubmit: (values: T) => void
+}) => {
+  const { t } = useTranslation()
+
+  const { data: generalQuery } = useGeneralQuery()
+
+  const interfacesData: { value: string; label: string }[] = useMemo(() => {
+    const interfaces = generalQuery?.general.interfaces
+
+    if (interfaces) {
+      return interfaces.map(({ name }) => ({
+        label: name,
+        value: name,
+      }))
+    }
+
+    return []
+  }, [generalQuery?.general.interfaces])
+
+  const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
+
+  const logLevelMarks = useMemo(
+    () =>
+      logLevelSteps.map(([label], value) => ({
+        value,
+        label,
+      })),
+    [logLevelSteps]
+  )
+
+  return (
+    <form onSubmit={form.onSubmit(handleSubmit)}>
+      <Flex gap={20} direction="column">
+        <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} />
+
+        <Stack>
+          <Input.Label>{t('logLevel')}</Input.Label>
+
+          <div className="px-4 pb-4">
+            <Slider
+              min={0}
+              max={4}
+              step={1}
+              label={null}
+              marks={logLevelMarks}
+              {...form.getInputProps('logLevelNumber')}
+            />
+          </div>
+        </Stack>
+
+        <Radio.Group label={t('dialMode')} {...form.getInputProps('dialMode')}>
+          <Group>
+            {Object.values(DialMode).map((dialMode) => (
+              <Radio key={dialMode} value={dialMode} label={dialMode} />
+            ))}
+          </Group>
+        </Radio.Group>
+
+        <SimpleGrid cols={3}>
+          <NumberInput label={t('tproxyPort')} withAsterisk {...form.getInputProps('tproxyPort')} />
+
+          <MultiSelect
+            label={t('lanInterface')}
+            withAsterisk
+            data={interfacesData}
+            {...form.getInputProps('lanInterface')}
+          />
+
+          <MultiSelect
+            label={t('wanInterface')}
+            withAsterisk
+            data={interfacesData}
+            {...form.getInputProps('wanInterface')}
+          />
+        </SimpleGrid>
+
+        <SimpleGrid cols={3}>
+          <NumberInput
+            label={`${t('checkInterval')} (s)`}
+            withAsterisk
+            {...form.getInputProps('checkIntervalSeconds')}
+          />
+
+          <NumberInput
+            label={`${t('checkTolerance')} (ms)`}
+            withAsterisk
+            step={500}
+            {...form.getInputProps('checkToleranceMS')}
+          />
+
+          <NumberInput label={`${t('sniffingTimeout')} (ms)`} step={500} {...form.getInputProps('sniffingTimeoutMS')} />
+        </SimpleGrid>
+
+        <Select
+          label={t('tcpCheckHttpMethod')}
+          data={Object.values(TcpCheckHttpMethod).map((tcpCheckHttpMethod) => ({
+            label: tcpCheckHttpMethod,
+            value: tcpCheckHttpMethod,
+          }))}
+          {...form.getInputProps('tcpCheckHttpMethod')}
+        />
+
+        <SimpleGrid cols={2}>
+          <InputList form={form} label={t('udpCheckDns')} fieldName="udpCheckDns" values={form.values.udpCheckDns} />
+
+          <InputList form={form} label={t('tcpCheckUrl')} fieldName="tcpCheckUrl" values={form.values.tcpCheckUrl} />
+        </SimpleGrid>
+
+        <SimpleGrid cols={2}>
+          <Select
+            label={t('tlsImplementation')}
+            data={Object.values(TLSImplementation).map((tlsImplementation) => ({
+              label: tlsImplementation,
+              value: tlsImplementation,
+            }))}
+            {...form.getInputProps('tlsImplementation')}
+          />
+
+          <Select
+            label={t('utlsImitate')}
+            data={Object.values(UTLSImitate).map((utlsImitate) => ({
+              label: utlsImitate,
+              value: utlsImitate,
+            }))}
+            {...form.getInputProps('utlsImitate')}
+          />
+        </SimpleGrid>
+
+        <SimpleGrid cols={2}>
+          <Checkbox
+            label={t('allowInsecure')}
+            {...form.getInputProps('allowInsecure', {
+              type: 'checkbox',
+            })}
+          />
+
+          <Checkbox
+            label={t('autoConfigKernelParameter')}
+            {...form.getInputProps('autoConfigKernelParameter', {
+              type: 'checkbox',
+            })}
+          />
+
+          <Checkbox
+            label={t('disableWaitingNetwork')}
+            {...form.getInputProps('disableWaitingNetwork', {
+              type: 'checkbox',
+            })}
+          />
+        </SimpleGrid>
+      </Flex>
+
+      <FormActions />
+    </form>
+  )
+}
+
 export const ConfigPage = () => {
   const { t } = useTranslation()
   const { defaultConfigID } = useStore(defaultResourcesAtom)
   const { isLoading, data } = useConfigsQuery()
   const selectConfigMutation = useSelectConfigMutation()
   const removeConfigMutation = useRemoveConfigMutation()
-  const form = useForm<z.infer<typeof schema>>({
+  const createForm = useForm<z.infer<typeof schema>>({
     validate: zodResolver(schema),
     initialValues: {
       name: '',
@@ -147,30 +309,6 @@ export const ConfigPage = () => {
 
   const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
 
-  const logLevelMarks = useMemo(
-    () =>
-      logLevelSteps.map(([label], value) => ({
-        value,
-        label,
-      })),
-    [logLevelSteps]
-  )
-
-  const { data: generalQuery } = useGeneralQuery()
-
-  const interfacesData: { value: string; label: string }[] = useMemo(() => {
-    const interfaces = generalQuery?.general.interfaces
-
-    if (interfaces) {
-      return interfaces.map(({ name }) => ({
-        label: name,
-        value: name,
-      }))
-    }
-
-    return []
-  }, [generalQuery?.general.interfaces])
-
   const createConfigMutation = useCreateConfigMutation()
 
   return (
@@ -189,7 +327,11 @@ export const ConfigPage = () => {
           title: t('operations'),
           accessor: 'actions',
           render: (record) => (
-            <Group>
+            <Group
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
+            >
               <ActionIcon>
                 <IconEdit />
               </ActionIcon>
@@ -197,11 +339,8 @@ export const ConfigPage = () => {
               <Radio
                 label={t('selected')}
                 checked={record.selected}
-                onClick={(e) => {
-                  e.stopPropagation()
-                }}
                 onChange={() => {
-                  selectConfigMutation.mutateAsync({
+                  selectConfigMutation.mutate({
                     id: record.id,
                   })
                 }}
@@ -217,8 +356,9 @@ export const ConfigPage = () => {
       }}
       createModalTitle={t('config')}
       createModalContent={(close) => (
-        <form
-          onSubmit={form.onSubmit(async (values) => {
+        <ModalContent
+          form={createForm}
+          handleSubmit={async (values) => {
             const logLevel = logLevelSteps[values.logLevelNumber][1]
 
             await createConfigMutation.mutateAsync({
@@ -238,145 +378,9 @@ export const ConfigPage = () => {
               },
             })
             close()
-            form.reset()
-          })}
-        >
-          <Flex gap={20} direction="column">
-            <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} />
-
-            <Stack>
-              <Input.Label>{t('logLevel')}</Input.Label>
-
-              <div className="px-4 pb-4">
-                <Slider
-                  min={0}
-                  max={4}
-                  step={1}
-                  label={null}
-                  marks={logLevelMarks}
-                  {...form.getInputProps('logLevelNumber')}
-                />
-              </div>
-            </Stack>
-
-            <Radio.Group label={t('dialMode')} {...form.getInputProps('dialMode')}>
-              <Group>
-                {Object.values(DialMode).map((dialMode) => (
-                  <Radio key={dialMode} value={dialMode} label={dialMode} />
-                ))}
-              </Group>
-            </Radio.Group>
-
-            <SimpleGrid cols={3}>
-              <NumberInput label={t('tproxyPort')} withAsterisk {...form.getInputProps('tproxyPort')} />
-
-              <MultiSelect
-                label={t('lanInterface')}
-                withAsterisk
-                data={interfacesData}
-                {...form.getInputProps('lanInterface')}
-              />
-
-              <MultiSelect
-                label={t('wanInterface')}
-                withAsterisk
-                data={interfacesData}
-                {...form.getInputProps('wanInterface')}
-              />
-            </SimpleGrid>
-
-            <SimpleGrid cols={3}>
-              <NumberInput
-                label={`${t('checkInterval')} (s)`}
-                withAsterisk
-                {...form.getInputProps('checkIntervalSeconds')}
-              />
-
-              <NumberInput
-                label={`${t('checkTolerance')} (ms)`}
-                withAsterisk
-                step={500}
-                {...form.getInputProps('checkToleranceMS')}
-              />
-
-              <NumberInput
-                label={`${t('sniffingTimeout')} (ms)`}
-                step={500}
-                {...form.getInputProps('sniffingTimeoutMS')}
-              />
-            </SimpleGrid>
-
-            <Select
-              label={t('tcpCheckHttpMethod')}
-              data={Object.values(TcpCheckHttpMethod).map((tcpCheckHttpMethod) => ({
-                label: tcpCheckHttpMethod,
-                value: tcpCheckHttpMethod,
-              }))}
-              {...form.getInputProps('tcpCheckHttpMethod')}
-            />
-
-            <SimpleGrid cols={2}>
-              <InputList
-                form={form}
-                label={t('udpCheckDns')}
-                fieldName="udpCheckDns"
-                values={form.values.udpCheckDns}
-              />
-
-              <InputList
-                form={form}
-                label={t('tcpCheckUrl')}
-                fieldName="tcpCheckUrl"
-                values={form.values.tcpCheckUrl}
-              />
-            </SimpleGrid>
-
-            <SimpleGrid cols={2}>
-              <Select
-                label={t('tlsImplementation')}
-                data={Object.values(TLSImplementation).map((tlsImplementation) => ({
-                  label: tlsImplementation,
-                  value: tlsImplementation,
-                }))}
-                {...form.getInputProps('tlsImplementation')}
-              />
-
-              <Select
-                label={t('utlsImitate')}
-                data={Object.values(UTLSImitate).map((utlsImitate) => ({
-                  label: utlsImitate,
-                  value: utlsImitate,
-                }))}
-                {...form.getInputProps('utlsImitate')}
-              />
-            </SimpleGrid>
-
-            <SimpleGrid cols={2}>
-              <Checkbox
-                label={t('allowInsecure')}
-                {...form.getInputProps('allowInsecure', {
-                  type: 'checkbox',
-                })}
-              />
-
-              <Checkbox
-                label={t('autoConfigKernelParameter')}
-                {...form.getInputProps('autoConfigKernelParameter', {
-                  type: 'checkbox',
-                })}
-              />
-
-              <Checkbox
-                label={t('disableWaitingNetwork')}
-                {...form.getInputProps('disableWaitingNetwork', {
-                  type: 'checkbox',
-                })}
-              />
-            </SimpleGrid>
-          </Flex>
-
-          <FormActions />
-        </form>
+            createForm.reset()
+          }}
+        />
       )}
       onRemove={async (records) => {
         await Promise.all(records.map(({ id }) => removeConfigMutation.mutateAsync(id)))

@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import {
   ConfigPage,
   DNSPage,
+  ExperimentPage,
   GroupPage,
   HomePage,
   MainLayout,
@@ -13,7 +14,6 @@ import {
   RoutingPage,
   SetupPage,
   SubscriptionPage,
-  TestPage,
 } from '~/pages'
 import { endpointURLAtom } from '~/store'
 
@@ -31,7 +31,7 @@ export const Router = () => {
           <Route path="routing" element={<RoutingPage />} />
           <Route path="group" element={<GroupPage />} />
           <Route path="config" element={<ConfigPage />} />
-          <Route path="test" element={<TestPage />} />
+          <Route path="experiment" element={<ExperimentPage />} />
         </Route>
 
         <Route path="/setup" element={<SetupPage />} />
