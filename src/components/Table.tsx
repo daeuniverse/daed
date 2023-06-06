@@ -1,4 +1,4 @@
-import { Button, Group, Modal, ScrollArea, createStyles } from '@mantine/core'
+import { Button, Group, Modal, createStyles } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { DataTable, DataTableColumn, DataTableRowExpansionProps } from 'mantine-datatable'
 import { useState } from 'react'
@@ -81,7 +81,7 @@ export const Table = <Data extends Record<string, unknown>>({
         rowExpansion={rowExpansion}
       />
 
-      <Modal opened={opened} onClose={close} title={createModalTitle} scrollAreaComponent={ScrollArea.Autosize}>
+      <Modal opened={opened} onClose={close} title={createModalTitle}>
         {createModalContent && createModalContent(close)}
       </Modal>
     </div>

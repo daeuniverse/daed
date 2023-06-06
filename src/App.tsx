@@ -50,6 +50,7 @@ export const App = () => {
               },
               Modal: {
                 defaultProps: {
+                  size: 'lg',
                   centered: true,
                   scrollAreaComponent: ScrollArea.Autosize,
                 },
@@ -68,10 +69,10 @@ export const App = () => {
           withNormalizeCSS
         >
           <ModalsProvider>
-            <main className="h-screen">
+            <div className="h-screen min-w-[1024px]">
               <Notifications limit={5} />
               <Router />
-            </main>
+            </div>
           </ModalsProvider>
         </MantineProvider>
       </ColorSchemeProvider>

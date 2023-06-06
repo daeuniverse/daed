@@ -1,16 +1,17 @@
 import { DndContext, DragOverlay, UniqueIdentifier, useDraggable, useDroppable } from '@dnd-kit/core'
-import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
+import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd-kit/modifiers'
+import { SortableContext, rectSwappingStrategy, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { faker } from '@faker-js/faker'
 import {
+  Accordion,
   ActionIcon,
-  Anchor,
   Badge,
   Card,
-  Flex,
   Group,
   HoverCard,
-  List,
   SimpleGrid,
+  Space,
   Stack,
   Text,
   Title,
@@ -19,19 +20,33 @@ import {
 import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { IconPlus, IconTrash, IconX } from '@tabler/icons-react'
+import dayjs from 'dayjs'
 import { produce } from 'immer'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useImportNodesMutation, useImportSubscriptionsMutation } from '~/apis'
+import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
-import { ImportNodeFormModal } from '~/components/ImportNodeFormModal'
+import { ImportResourceFormModal } from '~/components/ImportNodeFormModal'
 import { Policy } from '~/schemas/gql/graphql'
 
-const useStyles = createStyles(() => ({
+enum ResourceType {
+  node,
+  subscription,
+}
+
+const useStyles = createStyles((theme) => ({
   header: {
     '&& th': {
       textTransform: 'uppercase',
     },
+  },
+  section: {
+    border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.gray[8] : theme.colors.gray[2]}`,
+    borderRadius: theme.radius.md,
+    padding: theme.spacing.xs,
+    boxShadow: theme.shadows.md,
   },
 }))
 
@@ -44,7 +59,7 @@ const DroppableGroup = ({
   id: string
   name: string
   onRemove: () => void
-  children: React.ReactNode
+  children?: React.ReactNode
 }) => {
   const { isOver, setNodeRef } = useDroppable({
     id,
@@ -66,7 +81,7 @@ const DroppableGroup = ({
           <Group>
             <ActionIcon
               color="red"
-              size="sm"
+              size="xs"
               onClick={() => {
                 modals.openConfirmModal({
                   title: 'Remove',
@@ -85,40 +100,74 @@ const DroppableGroup = ({
         </Group>
       </Card.Section>
 
-      <Card.Section inheritPadding py="sm">
-        {children}
-      </Card.Section>
+      {children && (
+        <Card.Section inheritPadding py="sm">
+          {children}
+        </Card.Section>
+      )}
     </Card>
   )
 }
 
-const DraggableNode = ({
+const SortableNode = ({ id, name, onRemove }: { id: string; name: string; onRemove: () => void }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
+
+  return (
+    <Badge
+      ref={setNodeRef}
+      pr={3}
+      rightSection={
+        <ActionIcon color="blue" size="xs" radius="xl" variant="transparent" onClick={onRemove}>
+          <IconX size={12} />
+        </ActionIcon>
+      }
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+    >
+      <Text {...listeners} {...attributes}>
+        {name}
+      </Text>
+    </Badge>
+  )
+}
+
+const DraggableResourceCard = ({
   id,
+  type,
   name,
   onRemove,
   children,
 }: {
   id: string
+  type: ResourceType
   name: string
   onRemove: () => void
   children: React.ReactNode
 }) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id,
+
+    data: {
+      type,
+    },
   })
 
   return (
     <Card
       ref={setNodeRef}
+      p="sm"
       withBorder
       shadow="sm"
       style={{
         opacity: isDragging ? 0.5 : undefined,
       }}
     >
-      <Card.Section withBorder inheritPadding py="sm">
+      <Card.Section withBorder p="sm">
         <Group position="apart">
           <Badge
+            size="lg"
             style={{
               cursor: 'grab',
             }}
@@ -130,7 +179,7 @@ const DraggableNode = ({
 
           <ActionIcon
             color="red"
-            size="sm"
+            size="xs"
             onClick={() => {
               modals.openConfirmModal({
                 title: 'Remove',
@@ -148,16 +197,56 @@ const DraggableNode = ({
         </Group>
       </Card.Section>
 
-      <Card.Section inheritPadding py="sm">
-        {children}
-      </Card.Section>
+      <Card.Section p="sm">{children}</Card.Section>
     </Card>
+  )
+}
+
+const Section = ({
+  title,
+  bordered,
+  onCreate,
+  children,
+}: {
+  title: string
+  bordered?: boolean
+  onCreate: () => void
+  children: React.ReactNode
+}) => {
+  const { classes, theme, cx } = useStyles()
+
+  return (
+    <Stack className={cx({ [classes.section]: bordered })}>
+      <Group position="apart">
+        <Title order={3} color={theme.primaryColor}>
+          {title}
+        </Title>
+
+        <ActionIcon onClick={onCreate}>
+          <IconPlus />
+        </ActionIcon>
+      </Group>
+
+      {children}
+    </Stack>
   )
 }
 
 export const ExperimentPage = () => {
   const { theme } = useStyles()
   const { t } = useTranslation()
+
+  const [fakeConfigs, setFakeConfigs] = useState(
+    faker.helpers.multiple(
+      () => ({
+        id: faker.string.uuid(),
+        name: faker.lorem.word(),
+      }),
+      {
+        count: 4,
+      }
+    )
+  )
 
   const [fakeGroups, setFakeGroups] = useState(
     faker.helpers.multiple(
@@ -168,19 +257,24 @@ export const ExperimentPage = () => {
           () => ({
             id: faker.string.uuid(),
             name: faker.lorem.word(),
-            tag: faker.lorem.word(),
-            link: faker.internet.url(),
           }),
           {
             count: faker.number.int({ min: 5, max: 10 }),
           }
         ),
-        subscriptions: [],
+        subscriptions: faker.helpers.multiple(
+          () => ({
+            id: faker.string.uuid(),
+            name: faker.lorem.word(),
+          }),
+          {
+            count: 5,
+          }
+        ),
         policy: faker.helpers.enumValue(Policy),
-        policyParams: faker.helpers.multiple(() => faker.lorem.word(), { count: faker.number.int({ min: 1, max: 3 }) }),
       }),
       {
-        count: 6,
+        count: 4,
       }
     )
   )
@@ -204,60 +298,112 @@ export const ExperimentPage = () => {
         link: faker.internet.url(),
       }),
       {
-        count: 20,
+        count: 5,
+      }
+    )
+  )
+
+  const [fakeSubscriptions, setFakeSubscriptions] = useState(
+    faker.helpers.multiple(
+      () => ({
+        id: faker.string.uuid(),
+        name: faker.lorem.word(),
+        tag: faker.lorem.word(),
+        link: faker.internet.url(),
+        updatedAt: dayjs(faker.date.recent()).format('YYYY-MM-DD HH:mm:ss'),
+      }),
+      {
+        count: 5,
       }
     )
   )
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
+  const [activeType, setActiveType] = useState<ResourceType | null>(null)
 
+  const [openedCreateConfigModal, { open: openCreateConfigModal, close: closeCreateConfigModal }] = useDisclosure(false)
   const [openedCreateGroupModal, { open: openCreateGroupModal, close: closeCreateGroupModal }] = useDisclosure(false)
   const [openedImportNodeModal, { open: openImportNodeModal, close: closeImportNodeModal }] = useDisclosure(false)
+  const [openedImportSubscriptionModal, { open: openImportSubscriptionModal, close: closeImportSubscriptionModal }] =
+    useDisclosure(false)
+
+  const importNodesMutation = useImportNodesMutation()
+  const importSubscriptionsMutation = useImportSubscriptionsMutation()
 
   return (
-    <div>
-      <Stack>
+    <Stack>
+      <Section title={t('config')} onCreate={openCreateConfigModal}>
+        <SimpleGrid cols={4}>
+          {fakeConfigs.map(({ id: configId, name }) => (
+            <DroppableGroup
+              key={configId}
+              id={configId}
+              name={name}
+              onRemove={() => {
+                setFakeConfigs((configs) => configs.filter((config) => config.id !== configId))
+              }}
+            />
+          ))}
+        </SimpleGrid>
+      </Section>
+
+      <Space />
+
+      <SimpleGrid cols={3}>
         <DndContext
           modifiers={[restrictToFirstScrollableAncestor]}
           onDragStart={(e) => {
             setActiveId(e.active.id)
+            setActiveType(
+              (
+                e.active.data.current as {
+                  type: ResourceType
+                }
+              ).type
+            )
           }}
           onDragEnd={(e) => {
             const { active, over } = e
-            const activeNode = fakeNodes.find((node) => node.id === active.id)
 
-            if (activeNode) {
-              const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                const group = groups.find((group) => group.id === over?.id)
+            if (activeType === ResourceType.node) {
+              const activeNode = fakeNodes.find((node) => node.id === active.id)
 
-                if (!group?.nodes.find((node) => node.id === active.id)) {
-                  group?.nodes.push(activeNode)
-                }
-              })
+              if (activeNode) {
+                const updatedFakeGrups = produce(fakeGroups, (groups) => {
+                  const group = groups.find((group) => group.id === over?.id)
 
-              setFakeGroups(updatedFakeGrups)
+                  if (!group?.nodes.find((node) => node.id === active.id)) {
+                    group?.nodes.push(activeNode)
+                  }
+                })
+
+                setFakeGroups(updatedFakeGrups)
+              }
+            }
+
+            if (activeType === ResourceType.subscription) {
+              const activeSubscription = fakeSubscriptions.find((subscription) => subscription.id === active.id)
+
+              if (activeSubscription) {
+                const updatedFakeGrups = produce(fakeGroups, (groups) => {
+                  const group = groups.find((group) => group.id === over?.id)
+
+                  if (!group?.subscriptions.find((subscription) => subscription.id === active.id)) {
+                    group?.subscriptions.push(activeSubscription)
+                  }
+                })
+
+                setFakeGroups(updatedFakeGrups)
+              }
             }
 
             setActiveId(null)
+            setActiveType(null)
           }}
         >
-          <Stack id="group">
-            <Group position="apart">
-              <Anchor href="#group">
-                <Title>{t('group')}</Title>
-              </Anchor>
-
-              <ActionIcon
-                onClick={() => {
-                  openCreateGroupModal()
-                }}
-              >
-                <IconPlus />
-              </ActionIcon>
-            </Group>
-
-            <SimpleGrid cols={3}>
-              {fakeGroups.map(({ id: groupId, name, policy, policyParams, nodes }) => (
+          <Section title={t('group')} onCreate={openCreateGroupModal} bordered>
+            <Stack>
+              {fakeGroups.map(({ id: groupId, name, policy, nodes, subscriptions }) => (
                 <DroppableGroup
                   key={groupId}
                   id={groupId}
@@ -270,64 +416,85 @@ export const ExperimentPage = () => {
                     {policy}
                   </Text>
 
-                  <List listStyleType="disc">
-                    {policyParams.map((policyParam, i) => (
-                      <List.Item key={i}>{policyParam}</List.Item>
-                    ))}
-                  </List>
+                  <Space h={10} />
 
-                  <Flex py="sm" gap={10} wrap="wrap">
-                    {nodes.map(({ id: nodeId, name }) => (
-                      <Badge
-                        key={nodeId}
-                        pr={3}
-                        rightSection={
-                          <ActionIcon
-                            color="blue"
-                            size="xs"
-                            radius="xl"
-                            variant="transparent"
-                            onClick={() => {
-                              const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                                const group = groups.find((group) => group.id === groupId)
+                  <Accordion defaultValue={['node', 'subscription']} multiple>
+                    <Accordion.Item value="node">
+                      <Accordion.Control>{t('node')}</Accordion.Control>
 
-                                if (group) {
-                                  group.nodes = group.nodes.filter((node) => node.id !== nodeId)
-                                }
-                              })
+                      <Accordion.Panel>
+                        <SimpleGrid cols={2}>
+                          <DndContext modifiers={[restrictToParentElement]}>
+                            <SortableContext items={nodes} strategy={rectSwappingStrategy}>
+                              {nodes.map(({ id: nodeId, name }) => (
+                                <SortableNode
+                                  key={nodeId}
+                                  id={nodeId}
+                                  name={name}
+                                  onRemove={() => {
+                                    const updatedFakeGrups = produce(fakeGroups, (groups) => {
+                                      const group = groups.find((group) => group.id === groupId)
 
-                              setFakeGroups(updatedFakeGrups)
-                            }}
-                          >
-                            <IconX size={12} />
-                          </ActionIcon>
-                        }
-                      >
-                        {name}
-                      </Badge>
-                    ))}
-                  </Flex>
+                                      if (group) {
+                                        group.nodes = group.nodes.filter((node) => node.id !== nodeId)
+                                      }
+                                    })
+
+                                    setFakeGroups(updatedFakeGrups)
+                                  }}
+                                />
+                              ))}
+                            </SortableContext>
+                          </DndContext>
+                        </SimpleGrid>
+                      </Accordion.Panel>
+                    </Accordion.Item>
+
+                    <Accordion.Item value="subscription">
+                      <Accordion.Control>{t('subscription')}</Accordion.Control>
+
+                      <Accordion.Panel>
+                        <SimpleGrid cols={2}>
+                          <DndContext modifiers={[restrictToParentElement]}>
+                            <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
+                              {subscriptions.map(({ id: subscriptionId, name }) => (
+                                <SortableNode
+                                  key={subscriptionId}
+                                  id={subscriptionId}
+                                  name={name}
+                                  onRemove={() => {
+                                    const updatedFakeGrups = produce(fakeGroups, (groups) => {
+                                      const group = groups.find((group) => group.id === groupId)
+
+                                      if (group) {
+                                        group.nodes = group.subscriptions.filter(
+                                          (subscription) => subscription.id !== subscriptionId
+                                        )
+                                      }
+                                    })
+
+                                    setFakeGroups(updatedFakeGrups)
+                                  }}
+                                />
+                              ))}
+                            </SortableContext>
+                          </DndContext>
+                        </SimpleGrid>
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  </Accordion>
                 </DroppableGroup>
               ))}
-            </SimpleGrid>
-          </Stack>
+            </Stack>
+          </Section>
 
-          <Stack id="node">
-            <Group position="apart">
-              <Anchor href="#node">
-                <Title>{t('node')}</Title>
-              </Anchor>
-
-              <ActionIcon onClick={openImportNodeModal}>
-                <IconPlus />
-              </ActionIcon>
-            </Group>
-
-            <SimpleGrid cols={3}>
+          <Section title={t('node')} onCreate={openImportNodeModal} bordered>
+            <Stack>
               {fakeNodes.map(({ id, name, tag, protocol, link }) => (
-                <DraggableNode
+                <DraggableResourceCard
                   key={id}
                   id={id}
+                  type={ResourceType.node}
                   name={name}
                   onRemove={() => {
                     setFakeNodes((nodes) => nodes.filter((node) => node.id !== id))
@@ -345,19 +512,69 @@ export const ExperimentPage = () => {
                       <Text>{link}</Text>
                     </HoverCard.Dropdown>
                   </HoverCard>
-                </DraggableNode>
+                </DraggableResourceCard>
               ))}
-            </SimpleGrid>
-          </Stack>
+            </Stack>
+          </Section>
+
+          <Section title={t('subscription')} onCreate={openImportSubscriptionModal} bordered>
+            <Stack>
+              {fakeSubscriptions.map(({ id, name, tag, link, updatedAt }) => (
+                <DraggableResourceCard
+                  key={id}
+                  id={id}
+                  type={ResourceType.subscription}
+                  name={name}
+                  onRemove={() => {
+                    setFakeSubscriptions((subscriptions) =>
+                      subscriptions.filter((subscription) => subscription.id !== id)
+                    )
+                  }}
+                >
+                  <Text fw={600} color={theme.primaryColor}>
+                    {tag}
+                  </Text>
+                  <Text fw={600}>{updatedAt}</Text>
+                  <HoverCard withArrow>
+                    <HoverCard.Target>
+                      <Text truncate>{link}</Text>
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                      <Text>{link}</Text>
+                    </HoverCard.Dropdown>
+                  </HoverCard>
+                </DraggableResourceCard>
+              ))}
+            </Stack>
+          </Section>
 
           <DragOverlay dropAnimation={null}>
             {activeId ? <Badge>{fakeNodes.find((node) => node.id === activeId)?.name}</Badge> : null}
           </DragOverlay>
         </DndContext>
 
+        <CreateConfigFormModal opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
         <CreateGroupFormModal opened={openedCreateGroupModal} onClose={closeCreateGroupModal} />
-        <ImportNodeFormModal opened={openedImportNodeModal} onClose={closeImportNodeModal} />
-      </Stack>
-    </div>
+        <ImportResourceFormModal
+          title={t('node')}
+          opened={openedImportNodeModal}
+          onClose={closeImportNodeModal}
+          handleSubmit={async (values) => {
+            await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
+            closeImportNodeModal()
+          }}
+        />
+
+        <ImportResourceFormModal
+          title={t('subscription')}
+          opened={openedImportSubscriptionModal}
+          onClose={closeImportSubscriptionModal}
+          handleSubmit={async (values) => {
+            await importSubscriptionsMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
+            closeImportNodeModal()
+          }}
+        />
+      </SimpleGrid>
+    </Stack>
   )
 }

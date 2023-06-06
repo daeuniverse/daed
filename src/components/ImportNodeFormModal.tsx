@@ -5,11 +5,10 @@ import { IconMinus, IconPlus } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { useImportNodesMutation } from '~/apis'
 import { FormActions } from '~/components/FormActions'
 
-const importNodeFormSchema = z.object({
-  nodes: z
+const importResourceFormSchema = z.object({
+  resources: z
     .array(
       z.object({
         id: z.string(),
@@ -20,13 +19,22 @@ const importNodeFormSchema = z.object({
     .min(1),
 })
 
-export const ImportNodeFormModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
+export const ImportResourceFormModal = ({
+  title,
+  opened,
+  onClose,
+  handleSubmit,
+}: {
+  title: string
+  opened: boolean
+  onClose: () => void
+  handleSubmit: (values: z.infer<typeof importResourceFormSchema>) => Promise<void>
+}) => {
   const { t } = useTranslation()
-  const importNodesMutation = useImportNodesMutation()
-  const importNodeForm = useForm<z.infer<typeof importNodeFormSchema>>({
-    validate: zodResolver(importNodeFormSchema),
+  const importResourceForm = useForm<z.infer<typeof importResourceFormSchema>>({
+    validate: zodResolver(importResourceFormSchema),
     initialValues: {
-      nodes: [
+      resources: [
         {
           id: randomId(),
           link: '',
@@ -37,25 +45,30 @@ export const ImportNodeFormModal = ({ opened, onClose }: { opened: boolean; onCl
   })
 
   return (
-    <Modal title={t('node')} opened={opened} onClose={onClose}>
+    <Modal title={title} opened={opened} onClose={onClose}>
       <form
-        onSubmit={importNodeForm.onSubmit(async (values) => {
-          await importNodesMutation.mutateAsync(values.nodes.map(({ link, tag }) => ({ link, tag })))
-          close()
-          importNodeForm.reset()
-        })}
+        onSubmit={importResourceForm.onSubmit((values) =>
+          handleSubmit(values).then(() => {
+            importResourceForm.reset()
+          })
+        )}
       >
         <Flex gap={20} direction="column">
-          {importNodeForm.values.nodes.map(({ id }, i) => (
+          {importResourceForm.values.resources.map(({ id }, i) => (
             <Flex key={id} gap={10}>
               <Flex w="100%" align="start" gap={10}>
                 <TextInput
                   className="flex-1"
                   withAsterisk
                   label={t('link')}
-                  {...importNodeForm.getInputProps(`nodes.${i}.link`)}
+                  {...importResourceForm.getInputProps(`nodes.${i}.link`)}
                 />
-                <TextInput w="6rem" withAsterisk label={t('tag')} {...importNodeForm.getInputProps(`nodes.${i}.tag`)} />
+                <TextInput
+                  w="6rem"
+                  withAsterisk
+                  label={t('tag')}
+                  {...importResourceForm.getInputProps(`nodes.${i}.tag`)}
+                />
               </Flex>
 
               <ActionIcon
@@ -64,7 +77,7 @@ export const ImportNodeFormModal = ({ opened, onClose }: { opened: boolean; onCl
                 size="sm"
                 mt={32}
                 onClick={() => {
-                  importNodeForm.removeListItem('nodes', i)
+                  importResourceForm.removeListItem('nodes', i)
                 }}
               >
                 <IconMinus />
@@ -78,7 +91,7 @@ export const ImportNodeFormModal = ({ opened, onClose }: { opened: boolean; onCl
             variant="filled"
             color="green"
             onClick={() => {
-              importNodeForm.insertListItem('nodes', {
+              importResourceForm.insertListItem('nodes', {
                 id: randomId(),
                 link: '',
                 tag: '',
@@ -88,7 +101,7 @@ export const ImportNodeFormModal = ({ opened, onClose }: { opened: boolean; onCl
             <IconPlus />
           </ActionIcon>
 
-          <FormActions reset={importNodeForm.reset} />
+          <FormActions reset={importResourceForm.reset} />
         </Group>
       </form>
     </Modal>

@@ -152,9 +152,11 @@ export const MainLayout = () => {
     <Stack h="100%">
       <Header />
 
-      <main className="h-full w-full flex-1 overflow-hidden">
-        <ScrollArea w="100%" h="100%" className="p-6">
-          <Outlet />
+      <main className="w-full overflow-auto">
+        <ScrollArea w="100%" h="100%">
+          <div className="p-6">
+            <Outlet />
+          </div>
         </ScrollArea>
       </main>
     </Stack>
