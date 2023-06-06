@@ -153,7 +153,7 @@ export const MainLayout = () => {
       <Header />
 
       <main className="w-full overflow-auto">
-        <ScrollArea w="100%" h="100%">
+        <ScrollArea w="100%" h="100%" type="scroll">
           <div className="p-6">
             <Outlet />
           </div>

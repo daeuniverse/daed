@@ -1,4 +1,4 @@
-import { DndContext, DragOverlay, UniqueIdentifier, useDraggable, useDroppable } from '@dnd-kit/core'
+import { DndContext, DragOverlay, UniqueIdentifier, useDraggable } from '@dnd-kit/core'
 import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd-kit/modifiers'
 import { SortableContext, rectSwappingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { useImportNodesMutation, useImportSubscriptionsMutation } from '~/apis'
 import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
+import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { ImportResourceFormModal } from '~/components/ImportNodeFormModal'
 import { Policy } from '~/schemas/gql/graphql'
 
@@ -39,68 +40,11 @@ enum ResourceType {
 const useStyles = createStyles((theme) => ({
   section: {
     border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.gray[8] : theme.colors.gray[2]}`,
-    borderRadius: theme.radius.md,
-    padding: theme.spacing.xs,
+    borderRadius: theme.radius.sm,
+    padding: theme.spacing.sm,
     boxShadow: theme.shadows.md,
   },
 }))
-
-const DroppableGroup = ({
-  id,
-  name,
-  onRemove,
-  children,
-}: {
-  id: string
-  name: string
-  onRemove: () => void
-  children?: React.ReactNode
-}) => {
-  const { isOver, setNodeRef } = useDroppable({ id })
-
-  return (
-    <Card
-      ref={setNodeRef}
-      withBorder
-      shadow="sm"
-      style={{
-        opacity: isOver ? 0.5 : undefined,
-      }}
-    >
-      <Card.Section withBorder inheritPadding py="sm">
-        <Group position="apart">
-          <Title order={3}>{name}</Title>
-
-          <Group>
-            <ActionIcon
-              color="red"
-              size="xs"
-              onClick={() => {
-                modals.openConfirmModal({
-                  title: 'Remove',
-                  labels: {
-                    cancel: 'No',
-                    confirm: "Yes, I'm sure",
-                  },
-                  children: 'Are you sure you want to remove this?',
-                  onConfirm: onRemove,
-                })
-              }}
-            >
-              <IconTrash />
-            </ActionIcon>
-          </Group>
-        </Group>
-      </Card.Section>
-
-      {children && (
-        <Card.Section inheritPadding py="sm">
-          {children}
-        </Card.Section>
-      )}
-    </Card>
-  )
-}
 
 const SortableNodeBadge = ({ id, name, onRemove }: { id: string; name: string; onRemove: () => void }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
@@ -221,7 +165,7 @@ const Section = ({
 }
 
 export const ExperimentPage = () => {
-  const { theme } = useStyles()
+  const { classes, theme } = useStyles()
   const { t } = useTranslation()
 
   const [fakeConfigs, setFakeConfigs] = useState(
@@ -323,14 +267,34 @@ export const ExperimentPage = () => {
       <Section title={t('config')} onCreate={openCreateConfigModal}>
         <SimpleGrid cols={4}>
           {fakeConfigs.map(({ id: configId, name }) => (
-            <DroppableGroup
-              key={configId}
-              id={configId}
-              name={name}
-              onRemove={() => {
-                setFakeConfigs((configs) => configs.filter((config) => config.id !== configId))
-              }}
-            />
+            <Card key={configId} withBorder shadow="sm">
+              <Card.Section withBorder inheritPadding py="sm">
+                <Group position="apart">
+                  <Title order={4}>{name}</Title>
+
+                  <Group>
+                    <ActionIcon
+                      color="red"
+                      size="xs"
+                      onClick={() => {
+                        modals.openConfirmModal({
+                          title: 'Remove',
+                          labels: {
+                            cancel: 'No',
+                            confirm: "Yes, I'm sure",
+                          },
+                          children: 'Are you sure you want to remove this?',
+                          onConfirm: () =>
+                            setFakeConfigs((configs) => configs.filter((config) => config.id !== configId)),
+                        })
+                      }}
+                    >
+                      <IconTrash />
+                    </ActionIcon>
+                  </Group>
+                </Group>
+              </Card.Section>
+            </Card>
           ))}
         </SimpleGrid>
       </Section>
@@ -392,7 +356,7 @@ export const ExperimentPage = () => {
           <Section title={t('group')} onCreate={openCreateGroupModal} bordered>
             <Stack>
               {fakeGroups.map(({ id: groupId, name, policy, nodes, subscriptions }) => (
-                <DroppableGroup
+                <DroppableGroupCard
                   key={groupId}
                   id={groupId}
                   name={name}
@@ -406,9 +370,11 @@ export const ExperimentPage = () => {
 
                   <Space h={10} />
 
-                  <Accordion defaultValue={['node', 'subscription']} multiple>
+                  <Accordion variant="filled" defaultValue={[]} multiple>
                     <Accordion.Item value="node">
-                      <Accordion.Control>{t('node')}</Accordion.Control>
+                      <Accordion.Control fz="xs" px="xs">
+                        {t('node')}
+                      </Accordion.Control>
 
                       <Accordion.Panel>
                         <SimpleGrid cols={2}>
@@ -439,7 +405,9 @@ export const ExperimentPage = () => {
                     </Accordion.Item>
 
                     <Accordion.Item value="subscription">
-                      <Accordion.Control>{t('subscription')}</Accordion.Control>
+                      <Accordion.Control fz="xs" px="xs">
+                        {t('subscription')}
+                      </Accordion.Control>
 
                       <Accordion.Panel>
                         <SimpleGrid cols={2}>
@@ -471,7 +439,7 @@ export const ExperimentPage = () => {
                       </Accordion.Panel>
                     </Accordion.Item>
                   </Accordion>
-                </DroppableGroup>
+                </DroppableGroupCard>
               ))}
             </Stack>
           </Section>
