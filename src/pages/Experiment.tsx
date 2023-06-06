@@ -37,11 +37,6 @@ enum ResourceType {
 }
 
 const useStyles = createStyles((theme) => ({
-  header: {
-    '&& th': {
-      textTransform: 'uppercase',
-    },
-  },
   section: {
     border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.gray[8] : theme.colors.gray[2]}`,
     borderRadius: theme.radius.md,
@@ -61,9 +56,7 @@ const DroppableGroup = ({
   onRemove: () => void
   children?: React.ReactNode
 }) => {
-  const { isOver, setNodeRef } = useDroppable({
-    id,
-  })
+  const { isOver, setNodeRef } = useDroppable({ id })
 
   return (
     <Card
@@ -109,8 +102,8 @@ const DroppableGroup = ({
   )
 }
 
-const SortableNode = ({ id, name, onRemove }: { id: string; name: string; onRemove: () => void }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
+const SortableNodeBadge = ({ id, name, onRemove }: { id: string; name: string; onRemove: () => void }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
   return (
     <Badge
@@ -124,6 +117,7 @@ const SortableNode = ({ id, name, onRemove }: { id: string; name: string; onRemo
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
+        zIndex: isDragging ? 10 : 0,
       }}
     >
       <Text {...listeners} {...attributes}>
@@ -146,13 +140,7 @@ const DraggableResourceCard = ({
   onRemove: () => void
   children: React.ReactNode
 }) => {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id,
-
-    data: {
-      type,
-    },
-  })
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { type } })
 
   return (
     <Card
@@ -427,7 +415,7 @@ export const ExperimentPage = () => {
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={nodes} strategy={rectSwappingStrategy}>
                               {nodes.map(({ id: nodeId, name }) => (
-                                <SortableNode
+                                <SortableNodeBadge
                                   key={nodeId}
                                   id={nodeId}
                                   name={name}
@@ -458,7 +446,7 @@ export const ExperimentPage = () => {
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
                               {subscriptions.map(({ id: subscriptionId, name }) => (
-                                <SortableNode
+                                <SortableNodeBadge
                                   key={subscriptionId}
                                   id={subscriptionId}
                                   name={name}
@@ -467,7 +455,7 @@ export const ExperimentPage = () => {
                                       const group = groups.find((group) => group.id === groupId)
 
                                       if (group) {
-                                        group.nodes = group.subscriptions.filter(
+                                        group.subscriptions = group.subscriptions.filter(
                                           (subscription) => subscription.id !== subscriptionId
                                         )
                                       }

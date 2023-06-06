@@ -9,3 +9,8 @@
 #root {
   display: contents;
 }
+
+::selection {
+  color: whitesmoke;
+  background-color: goldenrod;
+}

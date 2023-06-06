@@ -61,13 +61,13 @@ export const ImportResourceFormModal = ({
                   className="flex-1"
                   withAsterisk
                   label={t('link')}
-                  {...importResourceForm.getInputProps(`nodes.${i}.link`)}
+                  {...importResourceForm.getInputProps(`resources.${i}.link`)}
                 />
                 <TextInput
                   w="6rem"
                   withAsterisk
                   label={t('tag')}
-                  {...importResourceForm.getInputProps(`nodes.${i}.tag`)}
+                  {...importResourceForm.getInputProps(`resources.${i}.tag`)}
                 />
               </Flex>
 
@@ -77,7 +77,7 @@ export const ImportResourceFormModal = ({
                 size="sm"
                 mt={32}
                 onClick={() => {
-                  importResourceForm.removeListItem('nodes', i)
+                  importResourceForm.removeListItem('resources', i)
                 }}
               >
                 <IconMinus />
@@ -91,7 +91,7 @@ export const ImportResourceFormModal = ({
             variant="filled"
             color="green"
             onClick={() => {
-              importResourceForm.insertListItem('nodes', {
+              importResourceForm.insertListItem('resources', {
                 id: randomId(),
                 link: '',
                 tag: '',
