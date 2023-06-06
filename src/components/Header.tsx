@@ -3,9 +3,12 @@ import {
   Avatar,
   Center,
   Container,
+  FileButton,
   Group,
   Image,
   Menu,
+  Modal,
+  Stack,
   Switch,
   Tabs,
   Text,
@@ -14,6 +17,7 @@ import {
   createStyles,
   rem,
 } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import {
   IconChevronDown,
   IconLanguage,
@@ -26,16 +30,51 @@ import {
   IconTestPipe,
   IconUsersGroup,
 } from '@tabler/icons-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-import { useGeneralQuery, useRunMutation } from '~/apis'
+import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUserQuery } from '~/apis'
 import logoPng from '~/assets/logo.png'
 import { i18n } from '~/i18n'
 import { tokenAtom } from '~/store'
 
 import { ColorSchemeToggle } from './ColorSchemeToggle'
+import { FormActions } from './FormActions'
+
+class Defer<T> {
+  promise: Promise<T>
+  resolve?: (value: T | PromiseLike<T>) => void
+  reject?: (reason?: unknown) => void
+
+  constructor() {
+    this.promise = new Promise((resolve, reject) => {
+      this.resolve = resolve
+      this.reject = reject
+    })
+  }
+}
+
+const fileToBase64 = (file: File) => {
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+
+  const defer = new Defer<string>()
+
+  reader.onload = () => {
+    if (defer.resolve) {
+      defer.resolve(reader.result as string)
+    }
+  }
+
+  reader.onerror = (err) => {
+    if (defer.reject) {
+      defer.reject(err)
+    }
+  }
+
+  return defer.promise
+}
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -89,8 +128,14 @@ export const Header = () => {
   const navigate = useNavigate()
   const { classes, theme, cx } = useStyles()
   const [userMenuOpened, setUserMenuOpened] = useState(false)
+  const [openedAccountSettingsFormModal, { open: openAccountSettingsFormModal, close: closeAccountSettingsFormModal }] =
+    useDisclosure(false)
+  const { data: userQuery } = useUserQuery()
   const { data: generalQuery } = useGeneralQuery()
   const runMutation = useRunMutation()
+  const updateAvatarMutation = useUpdateAvatarMutation()
+  const [uploadingAvatarBase64, setUploadingAvatarBase64] = useState<string | null>(null)
+  const resetUploadingAvatarRef = useRef<() => void>(null)
 
   const links = [
     { link: '/config', label: t('config'), icon: <IconSettings /> },
@@ -136,14 +181,14 @@ export const Header = () => {
                 <UnstyledButton className={cx(classes.user, { [classes.userActive]: userMenuOpened })}>
                   <Group spacing={7}>
                     <Avatar
-                      src="https://avatars.githubusercontent.com/u/126714249?s=200&v=4"
+                      src={userQuery?.user.avatar || 'https://avatars.githubusercontent.com/u/126714249?s=200&v=4'}
                       alt="avatar"
                       radius="xl"
                       size={20}
                     />
 
                     <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
-                      kunish
+                      {userQuery?.user.username || 'unknown'}
                     </Text>
                     <IconChevronDown size={rem(12)} stroke={1.5} />
                   </Group>
@@ -155,7 +200,16 @@ export const Header = () => {
                   GraphiQL
                 </Menu.Item>
 
-                <Menu.Label>{t('user')}</Menu.Label>
+                <Menu.Label>{t('settings')}</Menu.Label>
+                <Menu.Item
+                  icon={<IconSettings size="0.9rem" stroke={1.5} />}
+                  onClick={() => {
+                    openAccountSettingsFormModal()
+                  }}
+                >
+                  {t('account settings')}
+                </Menu.Item>
+
                 <Menu.Item
                   icon={<IconLogout size="0.9rem" stroke={1.5} />}
                   onClick={() => {
@@ -203,6 +257,53 @@ export const Header = () => {
           </Tabs.List>
         </Tabs>
       </Center>
+
+      <Modal
+        title={t('account settings')}
+        opened={openedAccountSettingsFormModal}
+        onClose={closeAccountSettingsFormModal}
+        keepMounted={false}
+      >
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault()
+
+            if (uploadingAvatarBase64) {
+              await updateAvatarMutation.mutateAsync(uploadingAvatarBase64)
+            }
+          }}
+        >
+          <Stack>
+            <FileButton
+              resetRef={resetUploadingAvatarRef}
+              accept="image/png,image/jpeg"
+              onChange={async (avatar) => {
+                if (avatar) {
+                  const avatarBase64 = await fileToBase64(avatar)
+                  setUploadingAvatarBase64(avatarBase64)
+                }
+              }}
+            >
+              {(props) => (
+                <ActionIcon mx="auto" w={100} h={100} {...props}>
+                  {uploadingAvatarBase64 ? (
+                    <Image h="100%" w="100%" radius="100%" src={uploadingAvatarBase64} alt={t('avatar')} />
+                  ) : (
+                    <Avatar h="100%" w="100%" />
+                  )}
+                </ActionIcon>
+              )}
+            </FileButton>
+
+            <FormActions
+              reset={() => {
+                setUploadingAvatarBase64(null)
+                resetUploadingAvatarRef.current?.()
+              }}
+            />
+          </Stack>
+        </form>
+      </Modal>
     </header>
   )
 }

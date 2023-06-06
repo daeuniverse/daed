@@ -218,6 +218,8 @@ export type Mutation = {
   tagNode: Scalars['Int']['output']
   /** tagSubscription is to give the subscription a new tag. */
   tagSubscription: Scalars['Int']['output']
+  /** updateAvatar set avatar for current user. Remove avatar if avatar is null. Blob base64 encoded image is recommended. */
+  updateAvatar: Scalars['Int']['output']
   /** updateConfig allows to partially update global config with given id. */
   updateConfig: Config
   /** updateDns is to update dns config with given id. */
@@ -369,6 +371,10 @@ export type MutationTagSubscriptionArgs = {
   tag: Scalars['String']['input']
 }
 
+export type MutationUpdateAvatarArgs = {
+  avatar?: InputMaybe<Scalars['String']['input']>
+}
+
 export type MutationUpdateConfigArgs = {
   global: GlobalInput
   id: Scalars['ID']['input']
@@ -462,6 +468,7 @@ export type Query = {
   routings: Array<Routing>
   subscriptions: Array<Subscription>
   token: Scalars['String']['output']
+  user: User
 }
 
 export type QueryConfigsArgs = {
@@ -555,6 +562,13 @@ export type SubscriptionImportResult = {
   link: Scalars['String']['output']
   nodeImportResult: Array<NodeImportResult>
   sub: Subscription
+}
+
+export type User = {
+  __typename?: 'User'
+  avatar?: Maybe<Scalars['String']['output']>
+  name?: Maybe<Scalars['String']['output']>
+  username: Scalars['String']['output']
 }
 
 export type _Service = {
@@ -704,6 +718,12 @@ export type RunMutationVariables = Exact<{
 }>
 
 export type RunMutation = { __typename?: 'Mutation'; run: number }
+
+export type UpdateAvatarMutationVariables = Exact<{
+  avatar?: InputMaybe<Scalars['String']['input']>
+}>
+
+export type UpdateAvatarMutation = { __typename?: 'Mutation'; updateAvatar: number }
 
 export type JsonStorageQueryVariables = Exact<{
   paths?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
@@ -875,6 +895,13 @@ export type DnSsQuery = {
       }
     }
   }>
+}
+
+export type UserQueryVariables = Exact<{ [key: string]: never }>
+
+export type UserQuery = {
+  __typename?: 'Query'
+  user: { __typename?: 'User'; username: string; name?: string | null; avatar?: string | null }
 }
 
 export type NumberUsersQueryVariables = Exact<{ [key: string]: never }>
@@ -1609,7 +1636,7 @@ export const RunDocument = {
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'run' },
+      name: { kind: 'Name', value: 'Run' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -1636,6 +1663,39 @@ export const RunDocument = {
     },
   ],
 } as unknown as DocumentNode<RunMutation, RunMutationVariables>
+export const UpdateAvatarDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateAvatar' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'avatar' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateAvatar' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'avatar' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'avatar' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateAvatarMutation, UpdateAvatarMutationVariables>
 export const JsonStorageDocument = {
   kind: 'Document',
   definitions: [
@@ -2111,6 +2171,33 @@ export const DnSsDocument = {
     },
   ],
 } as unknown as DocumentNode<DnSsQuery, DnSsQueryVariables>
+export const UserDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'User' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'user' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'username' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserQuery, UserQueryVariables>
 export const NumberUsersDocument = {
   kind: 'Document',
   definitions: [

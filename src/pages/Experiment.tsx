@@ -138,7 +138,7 @@ const DraggableNode = ({
                   cancel: 'No',
                   confirm: "Yes, I'm sure",
                 },
-                children: 'Are you sure you want to remove this node?',
+                children: 'Are you sure you want to remove this?',
                 onConfirm: onRemove,
               })
             }}
@@ -190,7 +190,16 @@ export const ExperimentPage = () => {
       () => ({
         id: faker.string.uuid(),
         name: faker.lorem.word(),
-        protocol: faker.helpers.arrayElement(['vmess', 'vless', 'shadowsocks', 'trojan']),
+        protocol: faker.helpers.arrayElement([
+          'vmess',
+          'vless',
+          'shadowsocks',
+          'trojan',
+          'hysteria',
+          'socks5',
+          'direct',
+          'http',
+        ]),
         tag: faker.lorem.word(),
         link: faker.internet.url(),
       }),

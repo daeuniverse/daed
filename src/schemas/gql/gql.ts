@@ -45,7 +45,9 @@ const documents = {
     types.RemoveNodesDocument,
   '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ':
     types.ImportSubscriptionDocument,
-  '\n          mutation run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ': types.RunDocument,
+  '\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ': types.RunDocument,
+  '\n          mutation UpdateAvatar($avatar: String) {\n            updateAvatar(avatar: $avatar)\n          }\n        ':
+    types.UpdateAvatarDocument,
   '\n        query JsonStorage($paths: [String!]) {\n          jsonStorage(paths: $paths)\n        }\n      ':
     types.JsonStorageDocument,
   '\n        query Interfaces($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n            }\n          }\n        }\n      ':
@@ -64,6 +66,8 @@ const documents = {
     types.RoutingsDocument,
   '\n          query DNSs {\n            dnss {\n              id\n              name\n              dns {\n                string\n\n                routing {\n                  request {\n                    string\n                  }\n                  response {\n                    string\n                  }\n                }\n              }\n              selected\n            }\n          }\n        ':
     types.DnSsDocument,
+  '\n          query User {\n            user {\n              username\n              name\n              avatar\n            }\n          }\n        ':
+    types.UserDocument,
   '\n          query NumberUsers {\n            numberUsers\n          }\n        ': types.NumberUsersDocument,
   '\n            mutation CreateUser($username: String!, $password: String!) {\n              createUser(username: $username, password: $password)\n            }\n          ':
     types.CreateUserDocument,
@@ -185,8 +189,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n          mutation run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        '
-): (typeof documents)['\n          mutation run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ']
+  source: '\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        '
+): (typeof documents)['\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation UpdateAvatar($avatar: String) {\n            updateAvatar(avatar: $avatar)\n          }\n        '
+): (typeof documents)['\n          mutation UpdateAvatar($avatar: String) {\n            updateAvatar(avatar: $avatar)\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -241,6 +251,12 @@ export function graphql(
 export function graphql(
   source: '\n          query DNSs {\n            dnss {\n              id\n              name\n              dns {\n                string\n\n                routing {\n                  request {\n                    string\n                  }\n                  response {\n                    string\n                  }\n                }\n              }\n              selected\n            }\n          }\n        '
 ): (typeof documents)['\n          query DNSs {\n            dnss {\n              id\n              name\n              dns {\n                string\n\n                routing {\n                  request {\n                    string\n                  }\n                  response {\n                    string\n                  }\n                }\n              }\n              selected\n            }\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          query User {\n            user {\n              username\n              name\n              avatar\n            }\n          }\n        '
+): (typeof documents)['\n          query User {\n            user {\n              username\n              name\n              avatar\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

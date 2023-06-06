@@ -1,4 +1,5 @@
 {
+  "account settings": "账户设置",
   "actions": {
     "add": "添加",
     "cancel": "取消",
@@ -22,6 +23,7 @@
   "address": "地址",
   "allowInsecure": "允许不安全",
   "autoConfigKernelParameter": "自动配置内核参数",
+  "avatar": "头像",
   "checkInterval": "检测间隔",
   "checkTolerance": "检测公差",
   "collapse": "折叠",
@@ -63,6 +65,7 @@
   "seconds": "秒",
   "select": "选择",
   "selected": "已选中",
+  "settings": "设置",
   "sniffingTimeout": "嗅探超时",
   "subscription": "订阅",
   "success": "成功",

@@ -8,6 +8,7 @@ import {
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
   QUERY_KEY_SUBSCRIPTION,
+  QUERY_KEY_USER,
 } from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
@@ -421,7 +422,7 @@ export const useRunMutation = () => {
     mutationFn: (dry: boolean) => {
       return gqlClient.request(
         graphql(`
-          mutation run($dry: Boolean!) {
+          mutation Run($dry: Boolean!) {
             run(dry: $dry)
           }
         `),
@@ -432,6 +433,29 @@ export const useRunMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
+    },
+  })
+}
+
+export const useUpdateAvatarMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (avatar: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateAvatar($avatar: String) {
+            updateAvatar(avatar: $avatar)
+          }
+        `),
+        {
+          avatar,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_USER })
     },
   })
 }

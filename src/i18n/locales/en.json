@@ -1,4 +1,5 @@
 {
+  "account settings": "Account Settings",
   "actions": {
     "add": "Add",
     "cancel": "Cancel",
@@ -22,6 +23,7 @@
   "address": "address",
   "allowInsecure": "allowInsecure",
   "autoConfigKernelParameter": "autoConfigKernelParameter",
+  "avatar": "avatar",
   "checkInterval": "checkInterval",
   "checkTolerance": "checkTolerance",
   "collapse": "collapse",
@@ -63,6 +65,7 @@
   "seconds": "seconds",
   "select": "select",
   "selected": "selected",
+  "settings": "Settings",
   "sniffingTimeout": "sniffingTimeout",
   "subscription": "Subscription",
   "success": "Success",

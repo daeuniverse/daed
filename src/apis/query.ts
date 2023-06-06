@@ -9,6 +9,7 @@ import {
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
   QUERY_KEY_SUBSCRIPTION,
+  QUERY_KEY_USER,
 } from '~/constants'
 import { useQGLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
@@ -273,6 +274,26 @@ export const useDNSsQuery = () => {
                 }
               }
               selected
+            }
+          }
+        `)
+      ),
+  })
+}
+
+export const useUserQuery = () => {
+  const gqlClient = useQGLQueryClient()
+
+  return useQuery({
+    queryKey: QUERY_KEY_USER,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query User {
+            user {
+              username
+              name
+              avatar
             }
           }
         `)
