@@ -6,10 +6,13 @@ import { faker } from '@faker-js/faker'
 import {
   Accordion,
   ActionIcon,
+  Anchor,
   Badge,
   Card,
+  Code,
   Group,
   HoverCard,
+  Indicator,
   SimpleGrid,
   Space,
   Stack,
@@ -19,17 +22,25 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
+import { Prism } from '@mantine/prism'
 import { IconPlus, IconTrash, IconX } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useImportNodesMutation, useImportSubscriptionsMutation } from '~/apis'
+import {
+  useCreateDNSMutation,
+  useCreateRoutingMutation,
+  useImportNodesMutation,
+  useImportSubscriptionsMutation,
+} from '~/apis'
 import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
-import { ImportResourceFormModal } from '~/components/ImportNodeFormModal'
+import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
+import { PlainTextFormModal } from '~/components/PlainTextFormModal'
+import { DialMode, LogLevel } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
 enum ResourceType {
@@ -84,6 +95,7 @@ const DraggableResourceCard = ({
   onRemove: () => void
   children: React.ReactNode
 }) => {
+  const { t } = useTranslation()
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { type } })
 
   return (
@@ -114,7 +126,7 @@ const DraggableResourceCard = ({
             size="xs"
             onClick={() => {
               modals.openConfirmModal({
-                title: 'Remove',
+                title: t('actions.remove'),
                 labels: {
                   cancel: 'No',
                   confirm: "Yes, I'm sure",
@@ -173,6 +185,54 @@ export const ExperimentPage = () => {
       () => ({
         id: faker.string.uuid(),
         name: faker.lorem.word(),
+        selected: faker.datatype.boolean(),
+        global: {
+          tproxyPort: faker.internet.port(),
+          logLevel: faker.helpers.enumValue(LogLevel),
+          tcpCheckUrl: faker.helpers.multiple(() => faker.internet.url(), { count: { min: 1, max: 4 } }),
+          udpCheckDns: faker.helpers.multiple(() => faker.internet.url(), { count: { min: 1, max: 4 } }),
+          checkInterval: faker.number.int(),
+          checkTolerence: faker.number.int(),
+          sniffingTimeout: faker.number.int(),
+          lanInterface: faker.helpers.multiple(() => faker.system.networkInterface(), { count: { min: 1, max: 4 } }),
+          wanInterface: faker.helpers.multiple(() => faker.system.networkInterface(), { count: { min: 1, max: 4 } }),
+          allowInsecure: faker.datatype.boolean(),
+          dialMode: faker.helpers.enumValue(DialMode),
+          disableWaitingNetwork: faker.datatype.boolean(),
+          autoConfigKernelParameter: faker.datatype.boolean(),
+        },
+      }),
+      {
+        count: 4,
+      }
+    )
+  )
+
+  const [fakeDnss, setFakeDnss] = useState(
+    faker.helpers.multiple(
+      () => ({
+        id: faker.string.uuid(),
+        name: faker.lorem.word(),
+        selected: faker.datatype.boolean(),
+        dns: faker.lorem.paragraph(),
+      }),
+      {
+        count: 4,
+      }
+    )
+  )
+
+  const [fakeRoutings, setFakeRoutings] = useState(
+    faker.helpers.multiple(
+      () => ({
+        id: faker.string.uuid(),
+        name: faker.lorem.word(),
+        selected: faker.datatype.boolean(),
+        routing: {
+          string: faker.lorem.paragraph(),
+          rules: [],
+        },
+        referenceGroups: [],
       }),
       {
         count: 4,
@@ -243,6 +303,27 @@ export const ExperimentPage = () => {
         tag: faker.lorem.word(),
         link: faker.internet.url(),
         updatedAt: dayjs(faker.date.recent()).format('YYYY-MM-DD HH:mm:ss'),
+        nodes: faker.helpers.multiple(
+          () => ({
+            id: faker.string.uuid(),
+            name: faker.lorem.word(),
+            protocol: faker.helpers.arrayElement([
+              'vmess',
+              'vless',
+              'shadowsocks',
+              'trojan',
+              'hysteria',
+              'socks5',
+              'direct',
+              'http',
+            ]),
+            tag: faker.lorem.word(),
+            link: faker.internet.url(),
+          }),
+          {
+            count: { min: 5, max: 10 },
+          }
+        ),
       }),
       {
         count: 5,
@@ -254,11 +335,16 @@ export const ExperimentPage = () => {
   const [activeType, setActiveType] = useState<ResourceType | null>(null)
 
   const [openedCreateConfigModal, { open: openCreateConfigModal, close: closeCreateConfigModal }] = useDisclosure(false)
+  const [openedCreateDnsModal, { open: openCreateDnsModal, close: closeCreateDnsModal }] = useDisclosure(false)
+  const [openedCreateRoutingModal, { open: openCreateRoutingModal, close: closeCreateRoutingModal }] =
+    useDisclosure(false)
   const [openedCreateGroupModal, { open: openCreateGroupModal, close: closeCreateGroupModal }] = useDisclosure(false)
   const [openedImportNodeModal, { open: openImportNodeModal, close: closeImportNodeModal }] = useDisclosure(false)
   const [openedImportSubscriptionModal, { open: openImportSubscriptionModal, close: closeImportSubscriptionModal }] =
     useDisclosure(false)
 
+  const createDNSMutation = useCreateDNSMutation()
+  const createRoutingMutation = useCreateRoutingMutation()
   const importNodesMutation = useImportNodesMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
 
@@ -266,40 +352,142 @@ export const ExperimentPage = () => {
     <Stack>
       <Section title={t('config')} onCreate={openCreateConfigModal}>
         <SimpleGrid cols={4}>
-          {fakeConfigs.map(({ id: configId, name }) => (
-            <Card key={configId} withBorder shadow="sm">
-              <Card.Section withBorder inheritPadding py="sm">
-                <Group position="apart">
-                  <Title order={4}>{name}</Title>
+          {fakeConfigs.map((config, i) => (
+            <HoverCard key={config.id} withArrow withinPortal>
+              <HoverCard.Target>
+                <Indicator position="bottom-center" size={18} disabled={i !== 1}>
+                  <Card withBorder shadow="sm">
+                    <Card.Section withBorder inheritPadding py="sm">
+                      <Group position="apart">
+                        <Title order={4}>{config.name}</Title>
 
-                  <Group>
-                    <ActionIcon
-                      color="red"
-                      size="xs"
-                      onClick={() => {
-                        modals.openConfirmModal({
-                          title: 'Remove',
-                          labels: {
-                            cancel: 'No',
-                            confirm: "Yes, I'm sure",
-                          },
-                          children: 'Are you sure you want to remove this?',
-                          onConfirm: () =>
-                            setFakeConfigs((configs) => configs.filter((config) => config.id !== configId)),
-                        })
-                      }}
-                    >
-                      <IconTrash />
-                    </ActionIcon>
-                  </Group>
-                </Group>
-              </Card.Section>
-            </Card>
+                        <Group>
+                          <ActionIcon
+                            color="red"
+                            size="xs"
+                            onClick={() => {
+                              modals.openConfirmModal({
+                                title: t('actions.remove'),
+                                labels: {
+                                  cancel: 'No',
+                                  confirm: "Yes, I'm sure",
+                                },
+                                children: 'Are you sure you want to remove this?',
+                                onConfirm: () => setFakeConfigs((configs) => configs.filter((c) => c.id !== config.id)),
+                              })
+                            }}
+                          >
+                            <IconTrash />
+                          </ActionIcon>
+                        </Group>
+                      </Group>
+                    </Card.Section>
+                  </Card>
+                </Indicator>
+              </HoverCard.Target>
+
+              <HoverCard.Dropdown>
+                <Prism language="json">{JSON.stringify(config, null, 2)}</Prism>
+              </HoverCard.Dropdown>
+            </HoverCard>
           ))}
         </SimpleGrid>
       </Section>
 
-      <Space />
+      <SimpleGrid cols={2}>
+        <Section title={t('dns')} onCreate={openCreateDnsModal}>
+          <Stack>
+            {fakeDnss.map((dns, i) => (
+              <HoverCard key={dns.id} withArrow withinPortal>
+                <HoverCard.Target>
+                  <Indicator position="bottom-center" size={18} disabled={i !== 1}>
+                    <Card withBorder shadow="sm">
+                      <Card.Section withBorder inheritPadding py="sm">
+                        <Group position="apart">
+                          <Title order={4}>{dns.name}</Title>
+
+                          <Group>
+                            <ActionIcon
+                              color="red"
+                              size="xs"
+                              onClick={() => {
+                                modals.openConfirmModal({
+                                  title: t('actions.remove'),
+                                  labels: {
+                                    cancel: 'No',
+                                    confirm: "Yes, I'm sure",
+                                  },
+                                  children: 'Are you sure you want to remove this?',
+                                  onConfirm: () => setFakeDnss((dnss) => dnss.filter((c) => c.id !== dns.id)),
+                                })
+                              }}
+                            >
+                              <IconTrash />
+                            </ActionIcon>
+                          </Group>
+                        </Group>
+                      </Card.Section>
+                    </Card>
+                  </Indicator>
+                </HoverCard.Target>
+
+                <HoverCard.Dropdown>
+                  <Code block>{dns.dns}</Code>
+                </HoverCard.Dropdown>
+              </HoverCard>
+            ))}
+          </Stack>
+        </Section>
+
+        <Section title={t('routing')} onCreate={openCreateRoutingModal}>
+          <Stack>
+            {fakeRoutings.map((routing, i) => (
+              <HoverCard key={routing.id} withArrow withinPortal>
+                <HoverCard.Target>
+                  <Indicator position="bottom-center" size={18} disabled={i !== 1}>
+                    <Card withBorder shadow="sm">
+                      <Card.Section withBorder inheritPadding py="sm">
+                        <Group position="apart">
+                          <Title order={4}>{routing.name}</Title>
+
+                          <Group>
+                            <ActionIcon
+                              color="red"
+                              size="xs"
+                              onClick={() => {
+                                modals.openConfirmModal({
+                                  title: t('actions.remove'),
+                                  labels: {
+                                    cancel: 'No',
+                                    confirm: "Yes, I'm sure",
+                                  },
+                                  children: 'Are you sure you want to remove this?',
+                                  onConfirm: () =>
+                                    setFakeRoutings((routings) => routings.filter((c) => c.id !== routing.id)),
+                                })
+                              }}
+                            >
+                              <IconTrash />
+                            </ActionIcon>
+                          </Group>
+                        </Group>
+                      </Card.Section>
+                    </Card>
+                  </Indicator>
+                </HoverCard.Target>
+
+                <HoverCard.Dropdown>
+                  <Code>{routing.routing.string}</Code>
+                </HoverCard.Dropdown>
+              </HoverCard>
+            ))}
+          </Stack>
+        </Section>
+      </SimpleGrid>
+
+      <Title id="resource" order={3}>
+        <Anchor href="#resource">{t('resource')}</Anchor>
+      </Title>
 
       <SimpleGrid cols={3}>
         <DndContext
@@ -475,7 +663,7 @@ export const ExperimentPage = () => {
 
           <Section title={t('subscription')} onCreate={openImportSubscriptionModal} bordered>
             <Stack>
-              {fakeSubscriptions.map(({ id, name, tag, link, updatedAt }) => (
+              {fakeSubscriptions.map(({ id, name, tag, link, updatedAt, nodes }) => (
                 <DraggableResourceCard
                   key={id}
                   id={id}
@@ -499,6 +687,14 @@ export const ExperimentPage = () => {
                       <Text>{link}</Text>
                     </HoverCard.Dropdown>
                   </HoverCard>
+
+                  <Space h={10} />
+
+                  <Group spacing="sm">
+                    {nodes.map(({ id, name }) => (
+                      <Badge key={id}>{name}</Badge>
+                    ))}
+                  </Group>
                 </DraggableResourceCard>
               ))}
             </Stack>
@@ -514,29 +710,53 @@ export const ExperimentPage = () => {
             ) : null}
           </DragOverlay>
         </DndContext>
-
-        <CreateConfigFormModal opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
-        <CreateGroupFormModal opened={openedCreateGroupModal} onClose={closeCreateGroupModal} />
-        <ImportResourceFormModal
-          title={t('node')}
-          opened={openedImportNodeModal}
-          onClose={closeImportNodeModal}
-          handleSubmit={async (values) => {
-            await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
-            closeImportNodeModal()
-          }}
-        />
-
-        <ImportResourceFormModal
-          title={t('subscription')}
-          opened={openedImportSubscriptionModal}
-          onClose={closeImportSubscriptionModal}
-          handleSubmit={async (values) => {
-            await importSubscriptionsMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
-            closeImportNodeModal()
-          }}
-        />
       </SimpleGrid>
+
+      <CreateConfigFormModal opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
+
+      <PlainTextFormModal
+        title={t('dns')}
+        opened={openedCreateDnsModal}
+        onClose={closeCreateDnsModal}
+        handleSubmit={async (values) => {
+          await createDNSMutation.mutateAsync({
+            name: values.name,
+            dns: values.text,
+          })
+        }}
+      />
+      <PlainTextFormModal
+        title={t('routing')}
+        opened={openedCreateRoutingModal}
+        onClose={closeCreateRoutingModal}
+        handleSubmit={async (values) => {
+          await createRoutingMutation.mutateAsync({
+            name: values.name,
+            routing: values.text,
+          })
+        }}
+      />
+
+      <CreateGroupFormModal opened={openedCreateGroupModal} onClose={closeCreateGroupModal} />
+      <ImportResourceFormModal
+        title={t('node')}
+        opened={openedImportNodeModal}
+        onClose={closeImportNodeModal}
+        handleSubmit={async (values) => {
+          await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
+          closeImportNodeModal()
+        }}
+      />
+
+      <ImportResourceFormModal
+        title={t('subscription')}
+        opened={openedImportSubscriptionModal}
+        onClose={closeImportSubscriptionModal}
+        handleSubmit={async (values) => {
+          await importSubscriptionsMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
+          closeImportNodeModal()
+        }}
+      />
     </Stack>
   )
 }
