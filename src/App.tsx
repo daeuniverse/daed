@@ -34,8 +34,8 @@ export const App = () => {
         <MantineProvider
           theme={{
             colorScheme,
-            fontFamily: 'Fira Sans, sans-serif',
-            fontFamilyMonospace: 'Source Code Pro, Monaco, Courier, monospace',
+            fontFamily: 'Fira Sans, Monaco, Consolas, sans-serif',
+            fontFamilyMonospace: 'Source Code Pro, Monaco, Consolas, monospace',
             primaryColor: 'violet',
             components: {
               Button: {

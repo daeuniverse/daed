@@ -165,7 +165,7 @@ const Section = ({
 }
 
 export const ExperimentPage = () => {
-  const { classes, theme } = useStyles()
+  const { theme } = useStyles()
   const { t } = useTranslation()
 
   const [fakeConfigs, setFakeConfigs] = useState(
@@ -505,7 +505,13 @@ export const ExperimentPage = () => {
           </Section>
 
           <DragOverlay dropAnimation={null}>
-            {activeId ? <Badge>{fakeNodes.find((node) => node.id === activeId)?.name}</Badge> : null}
+            {activeId ? (
+              <Badge>
+                {activeType === ResourceType.node
+                  ? fakeNodes.find((node) => node.id === activeId)?.name
+                  : fakeSubscriptions.find((subscription) => subscription.id === activeId)?.name}
+              </Badge>
+            ) : null}
           </DragOverlay>
         </DndContext>
 
