@@ -7,6 +7,7 @@ const useStyles = createStyles((theme) => ({
     borderRadius: theme.radius.sm,
     padding: theme.spacing.sm,
     boxShadow: theme.shadows.md,
+    transition: 'background 300ms ease-in-out',
   },
 }))
 

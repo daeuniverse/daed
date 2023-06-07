@@ -32,6 +32,7 @@ import {
 } from '~/apis'
 import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
+import { CreateNodeFormModal } from '~/components/CreateNodeFormModal'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
@@ -543,6 +544,13 @@ export const ExperimentPage = () => {
         handleSubmit={async (values) => {
           await importSubscriptionsMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
           closeImportNodeModal()
+        }}
+      />
+
+      <CreateNodeFormModal
+        opened={false}
+        onClose={() => {
+          //
         }}
       />
     </Stack>

@@ -18,7 +18,7 @@ const schema = z.object({
         tag: z.string().nonempty(),
       })
     )
-    .min(1),
+    .nonempty(),
 })
 
 export const NodePage = () => {

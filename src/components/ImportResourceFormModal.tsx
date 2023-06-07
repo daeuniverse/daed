@@ -16,7 +16,7 @@ const importResourceFormSchema = z.object({
         tag: z.string().nonempty(),
       })
     )
-    .min(1),
+    .nonempty(),
 })
 
 export const ImportResourceFormModal = ({

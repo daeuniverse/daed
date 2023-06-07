@@ -12,7 +12,7 @@ export const SimpleCard = ({
 }: {
   name: string
   selected: boolean
-  onSelect: () => void
+  onSelect?: () => void
   onRemove?: () => void
   children: React.ReactNode
 }) => {
