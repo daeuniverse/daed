@@ -1,11 +1,12 @@
-import { Button, Container, PasswordInput, Stack, TextInput, Title } from '@mantine/core'
-import { Form, useForm, zodResolver } from '@mantine/form'
+import { Button, Center, Container, PasswordInput, Space, Stack, Stepper, TextInput, Title } from '@mantine/core'
+import { useForm, zodResolver } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
 import { IconLink, IconPassword, IconUser } from '@tabler/icons-react'
 import request from 'graphql-request'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
 import { getJsonStorageRequest, useSetJsonStorageMutation } from '~/apis'
@@ -13,20 +14,44 @@ import { DEFAULT_ENDPOINT_URL, MODE } from '~/constants'
 import { graphql } from '~/schemas/gql'
 import { endpointURLAtom, modeAtom, tokenAtom } from '~/store'
 
-const schema = z.object({
-  username: z.string().min(4).max(20),
-  password: z.string().min(6).max(20),
-  endpointURL: z.string().url(),
+const endpointURLSchema = z.object({
+  endpointURL: z.string().url().nonempty(),
+})
+
+const signupSchema = z.object({
+  username: z.string().min(4).max(20).nonempty(),
+  password: z.string().min(6).max(20).nonempty(),
+})
+
+const loginSchema = z.object({
+  username: z.string().min(4).max(20).nonempty(),
+  password: z.string().min(6).max(20).nonempty(),
 })
 
 export const SetupPage = () => {
-  const navigate = useNavigate()
   const { t } = useTranslation()
+
+  const [active, setActive] = useState(0)
+  const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current))
+
   const defaultEndpointURL = useStore(endpointURLAtom)
-  const form = useForm<z.infer<typeof schema>>({
-    validate: zodResolver(schema),
+
+  const endpointURLForm = useForm<z.infer<typeof endpointURLSchema>>({
+    validate: zodResolver(endpointURLSchema),
+    initialValues: { endpointURL: defaultEndpointURL },
+  })
+
+  const signupForm = useForm<z.infer<typeof signupSchema>>({
+    validate: zodResolver(signupSchema),
     initialValues: {
-      endpointURL: defaultEndpointURL,
+      username: '',
+      password: '',
+    },
+  })
+
+  const loginForm = useForm<z.infer<typeof loginSchema>>({
+    validate: zodResolver(loginSchema),
+    initialValues: {
       username: '',
       password: '',
     },
@@ -34,54 +59,51 @@ export const SetupPage = () => {
 
   const setJsonStorage = useSetJsonStorageMutation()
 
-  const onSubmit = async (values: z.infer<typeof schema>) => {
-    const { username, password, endpointURL } = values
-
-    let token: string | undefined
+  const handleSignupSubmit = async (values: z.infer<typeof signupSchema>) => {
+    const endpointURL = endpointURLForm.values.endpointURL
+    const { username, password } = values
 
     try {
-      const { numberUsers } = await request(
+      await request(
         endpointURL,
         graphql(`
-          query NumberUsers {
-            numberUsers
+          mutation CreateUser($username: String!, $password: String!) {
+            createUser(username: $username, password: $password)
           }
-        `)
+        `),
+        {
+          username,
+          password,
+        }
       )
 
-      if (numberUsers === 0) {
-        const { createUser: createUserToken } = await request(
-          endpointURL,
-          graphql(`
-            mutation CreateUser($username: String!, $password: String!) {
-              createUser(username: $username, password: $password)
-            }
-          `),
-          {
-            username,
-            password,
+      setActive(2)
+    } catch (err) {
+      notifications.show({
+        variant: 'error',
+        message: (err as Error).message,
+      })
+    }
+  }
+
+  const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
+    const endpointURL = endpointURLForm.values.endpointURL
+    const { username, password } = values
+
+    try {
+      const { token } = await request(
+        endpointURL,
+        graphql(`
+          query Token($username: String!, $password: String!) {
+            token(username: $username, password: $password)
           }
-        )
+        `),
+        {
+          username,
+          password,
+        }
+      )
 
-        token = createUserToken
-      } else {
-        const { token: loginToken } = await request(
-          endpointURL,
-          graphql(`
-            query Token($username: String!, $password: String!) {
-              token(username: $username, password: $password)
-            }
-          `),
-          {
-            username,
-            password,
-          }
-        )
-
-        token = loginToken
-      }
-
-      endpointURLAtom.set(endpointURL)
       tokenAtom.set(token)
 
       if (token) {
@@ -102,7 +124,7 @@ export const SetupPage = () => {
           message: t('notifications.login succeeded'),
         })
 
-        navigate('/')
+        nextStep()
       }
     } catch (err) {
       notifications.show({
@@ -114,38 +136,93 @@ export const SetupPage = () => {
 
   return (
     <Container h="100%">
-      <Form
-        className="flex h-full flex-col items-center justify-center gap-10 md:flex-row md:gap-2"
-        form={form}
-        onSubmit={onSubmit}
-      >
-        <Title mx="auto">{t('welcome back')}</Title>
+      <Stack pt="20vh">
+        <Title ta="center">daed</Title>
 
-        <Stack maw={480} w="100%">
-          <TextInput
-            icon={<IconLink />}
-            label={t('endpointURL')}
-            placeholder={DEFAULT_ENDPOINT_URL}
-            withAsterisk
-            {...form.getInputProps('endpointURL')}
-          />
-          <TextInput
-            icon={<IconUser />}
-            label={t('username')}
-            placeholder="admin"
-            withAsterisk
-            {...form.getInputProps('username')}
-          />
-          <PasswordInput
-            icon={<IconPassword />}
-            label={t('password')}
-            placeholder="password"
-            withAsterisk
-            {...form.getInputProps('password')}
-          />
-          <Button type="submit">{t('actions.login')}</Button>
-        </Stack>
-      </Form>
+        <Space h={20} />
+
+        <Stepper active={active} onStepClick={setActive} allowNextStepsSelect={false}>
+          <Stepper.Step label={`${t('step')} 1`} description={t('setup endpoint')}>
+            <form
+              onSubmit={endpointURLForm.onSubmit((values) => {
+                endpointURLAtom.set(values.endpointURL)
+
+                nextStep()
+              })}
+            >
+              <Stack maw={480} mx="auto">
+                <TextInput
+                  icon={<IconLink />}
+                  label={t('endpointURL')}
+                  placeholder={DEFAULT_ENDPOINT_URL}
+                  withAsterisk
+                  {...endpointURLForm.getInputProps('endpointURL')}
+                />
+
+                <Button type="submit">{t('actions.continue')}</Button>
+              </Stack>
+            </form>
+          </Stepper.Step>
+
+          <Stepper.Step label={`${t('step')} 2`} description={t('create account')}>
+            <form onSubmit={signupForm.onSubmit(handleSignupSubmit)}>
+              <Stack maw={480} mx="auto">
+                <TextInput
+                  icon={<IconUser />}
+                  label={t('username')}
+                  placeholder="admin"
+                  withAsterisk
+                  {...signupForm.getInputProps('username')}
+                />
+                <PasswordInput
+                  icon={<IconPassword />}
+                  label={t('password')}
+                  placeholder="password"
+                  withAsterisk
+                  {...signupForm.getInputProps('password')}
+                />
+                <Button type="submit">{t('actions.create account')}</Button>
+
+                <Button variant="default" onClick={nextStep}>
+                  {t('actions.login')}
+                </Button>
+              </Stack>
+            </form>
+          </Stepper.Step>
+
+          <Stepper.Step label={`${t('step')} 3`} description={t('login account')}>
+            <form onSubmit={loginForm.onSubmit(handleLoginSubmit)}>
+              <Stack maw={480} mx="auto">
+                <TextInput
+                  icon={<IconUser />}
+                  label={t('username')}
+                  placeholder="admin"
+                  withAsterisk
+                  {...loginForm.getInputProps('username')}
+                />
+                <PasswordInput
+                  icon={<IconPassword />}
+                  label={t('password')}
+                  placeholder="password"
+                  withAsterisk
+                  {...loginForm.getInputProps('password')}
+                />
+                <Button type="submit">{t('actions.login')}</Button>
+              </Stack>
+            </form>
+          </Stepper.Step>
+
+          <Stepper.Completed>
+            <Space h={20} />
+
+            <Center>
+              <Button component={Link} to="/">
+                <Title order={3}>{t('actions.start your journey')}</Title>
+              </Button>
+            </Center>
+          </Stepper.Completed>
+        </Stepper>
+      </Stack>
     </Container>
   )
 }

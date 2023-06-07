@@ -983,10 +983,6 @@ export type UserQuery = {
   user: { __typename?: 'User'; username: string; name?: string | null; avatar?: string | null }
 }
 
-export type NumberUsersQueryVariables = Exact<{ [key: string]: never }>
-
-export type NumberUsersQuery = { __typename?: 'Query'; numberUsers: number }
-
 export type CreateUserMutationVariables = Exact<{
   username: Scalars['String']['input']
   password: Scalars['String']['input']
@@ -2772,20 +2768,6 @@ export const UserDocument = {
     },
   ],
 } as unknown as DocumentNode<UserQuery, UserQueryVariables>
-export const NumberUsersDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'NumberUsers' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'numberUsers' } }],
-      },
-    },
-  ],
-} as unknown as DocumentNode<NumberUsersQuery, NumberUsersQueryVariables>
 export const CreateUserDocument = {
   kind: 'Document',
   definitions: [
