@@ -22,39 +22,37 @@ export const SimpleCard = ({
     <HoverCard withArrow withinPortal>
       <HoverCard.Target>
         <Indicator position="bottom-center" size={18} disabled={!selected}>
-          <UnstyledButton w="100%" onClick={onSelect}>
-            <Card withBorder shadow="sm">
-              <Card.Section withBorder inheritPadding py="sm">
-                <Group position="apart">
+          <Card withBorder shadow="sm">
+            <Card.Section withBorder inheritPadding py="sm">
+              <Group position="apart">
+                <UnstyledButton onClick={onSelect}>
                   <Title order={4}>{name}</Title>
+                </UnstyledButton>
 
-                  <Group>
-                    {onRemove && (
-                      <ActionIcon
-                        color="red"
-                        size="xs"
-                        onClick={(e) => {
-                          e.stopPropagation()
-
-                          modals.openConfirmModal({
-                            title: t('actions.remove'),
-                            labels: {
-                              cancel: t('confirmModal.cancel'),
-                              confirm: t('confirmModal.confirm'),
-                            },
-                            children: t('confirmModal.removeConfirmDescription'),
-                            onConfirm: onRemove,
-                          })
-                        }}
-                      >
-                        <IconTrash />
-                      </ActionIcon>
-                    )}
-                  </Group>
+                <Group>
+                  {onRemove && (
+                    <ActionIcon
+                      color="red"
+                      size="xs"
+                      onClick={() => {
+                        modals.openConfirmModal({
+                          title: t('actions.remove'),
+                          labels: {
+                            cancel: t('confirmModal.cancel'),
+                            confirm: t('confirmModal.confirm'),
+                          },
+                          children: t('confirmModal.removeConfirmDescription'),
+                          onConfirm: onRemove,
+                        })
+                      }}
+                    >
+                      <IconTrash />
+                    </ActionIcon>
+                  )}
                 </Group>
-              </Card.Section>
-            </Card>
-          </UnstyledButton>
+              </Group>
+            </Card.Section>
+          </Card>
         </Indicator>
       </HoverCard.Target>
 

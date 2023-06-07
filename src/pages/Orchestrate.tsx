@@ -6,6 +6,7 @@ import {
   ActionIcon,
   Anchor,
   Badge,
+  Center,
   Code,
   Divider,
   Group,
@@ -19,7 +20,7 @@ import {
 import { useDisclosure } from '@mantine/hooks'
 import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { IconRefresh } from '@tabler/icons-react'
+import { IconDatabaseOff, IconRefresh } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -252,7 +253,7 @@ export const OrchestratePage = () => {
             setDraggingResource(null)
           }}
         >
-          <Section title={t('group')} onCreate={openCreateGroupModal} bordered>
+          <Section title={t('group')} onCreate={openCreateGroupModal} highlight={!!draggingResource} bordered>
             <Stack>
               {groupsQuery?.groups.map(({ id: groupId, name, policy, nodes, subscriptions }) => (
                 <DroppableGroupCard
@@ -277,25 +278,31 @@ export const OrchestratePage = () => {
                       </Accordion.Control>
 
                       <Accordion.Panel>
-                        <SimpleGrid cols={2}>
-                          <DndContext modifiers={[restrictToParentElement]}>
-                            <SortableContext items={nodes} strategy={rectSwappingStrategy}>
-                              {nodes.map(({ id: nodeId, name }) => (
-                                <SortableResourceBadge
-                                  key={nodeId}
-                                  id={nodeId}
-                                  name={name}
-                                  onRemove={() =>
-                                    groupDelNodesMutation.mutate({
-                                      id: groupId,
-                                      nodeIDs: [nodeId],
-                                    })
-                                  }
-                                />
-                              ))}
-                            </SortableContext>
-                          </DndContext>
-                        </SimpleGrid>
+                        {nodes.length === 0 ? (
+                          <Center>
+                            <IconDatabaseOff />
+                          </Center>
+                        ) : (
+                          <SimpleGrid cols={2}>
+                            <DndContext modifiers={[restrictToParentElement]}>
+                              <SortableContext items={nodes} strategy={rectSwappingStrategy}>
+                                {nodes.map(({ id: nodeId, name }) => (
+                                  <SortableResourceBadge
+                                    key={nodeId}
+                                    id={nodeId}
+                                    name={name}
+                                    onRemove={() =>
+                                      groupDelNodesMutation.mutate({
+                                        id: groupId,
+                                        nodeIDs: [nodeId],
+                                      })
+                                    }
+                                  />
+                                ))}
+                              </SortableContext>
+                            </DndContext>
+                          </SimpleGrid>
+                        )}
                       </Accordion.Panel>
                     </Accordion.Item>
 
@@ -305,25 +312,31 @@ export const OrchestratePage = () => {
                       </Accordion.Control>
 
                       <Accordion.Panel>
-                        <SimpleGrid cols={2}>
-                          <DndContext modifiers={[restrictToParentElement]}>
-                            <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
-                              {subscriptions.map(({ id: subscriptionId, tag, link }) => (
-                                <SortableResourceBadge
-                                  key={subscriptionId}
-                                  id={subscriptionId}
-                                  name={tag || link}
-                                  onRemove={() =>
-                                    groupDelSubscriptionsMutation.mutate({
-                                      id: groupId,
-                                      subscriptionIDs: [subscriptionId],
-                                    })
-                                  }
-                                />
-                              ))}
-                            </SortableContext>
-                          </DndContext>
-                        </SimpleGrid>
+                        {subscriptions.length === 0 ? (
+                          <Center>
+                            <IconDatabaseOff />
+                          </Center>
+                        ) : (
+                          <SimpleGrid cols={2}>
+                            <DndContext modifiers={[restrictToParentElement]}>
+                              <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
+                                {subscriptions.map(({ id: subscriptionId, tag, link }) => (
+                                  <SortableResourceBadge
+                                    key={subscriptionId}
+                                    id={subscriptionId}
+                                    name={tag || link}
+                                    onRemove={() =>
+                                      groupDelSubscriptionsMutation.mutate({
+                                        id: groupId,
+                                        subscriptionIDs: [subscriptionId],
+                                      })
+                                    }
+                                  />
+                                ))}
+                              </SortableContext>
+                            </DndContext>
+                          </SimpleGrid>
+                        )}
                       </Accordion.Panel>
                     </Accordion.Item>
                   </Accordion>

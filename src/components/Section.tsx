@@ -15,18 +15,23 @@ export const Section = ({
   bordered,
   onCreate,
   actions,
+  highlight,
   children,
 }: {
   title: string
   bordered?: boolean
   onCreate: () => void
   actions?: React.ReactNode
+  highlight?: boolean
   children: React.ReactNode
 }) => {
   const { classes, theme, cx } = useStyles()
 
   return (
-    <Stack className={cx({ [classes.section]: bordered })}>
+    <Stack
+      className={cx({ [classes.section]: bordered })}
+      bg={highlight ? theme.fn.lighten(theme.fn.primaryColor(), 0.5) : undefined}
+    >
       <Group position="apart">
         <Title order={4} color={theme.primaryColor}>
           {title}
