@@ -1,4 +1,4 @@
-import { ScrollArea, Stack } from '@mantine/core'
+import { Container, ScrollArea, Stack } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -154,9 +154,9 @@ export const MainLayout = () => {
 
       <main className="w-full overflow-auto">
         <ScrollArea w="100%" h="100%" type="scroll">
-          <div className="p-6">
+          <Container size="lg" p="sm">
             <Outlet />
-          </div>
+          </Container>
         </ScrollArea>
       </main>
     </Stack>

@@ -63,6 +63,32 @@ export const useCreateConfigMutation = () => {
   })
 }
 
+export const useUpdateConfigMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, global }: { id: string; global: GlobalInput }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateConfig($id: ID!, $global: globalInput!) {
+            updateConfig(id: $id, global: $global) {
+              id
+            }
+          }
+        `),
+        {
+          id,
+          global,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG })
+    },
+  })
+}
+
 export const useRemoveConfigMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()
@@ -109,6 +135,30 @@ export const useSelectConfigMutation = () => {
   })
 }
 
+export const useRenameConfigMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RenameConfig($id: ID!, $name: String!) {
+            renameConfig(id: $id, name: $name)
+          }
+        `),
+        {
+          id,
+          name,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG })
+    },
+  })
+}
+
 export const useCreateRoutingMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()
@@ -125,6 +175,32 @@ export const useCreateRoutingMutation = () => {
         `),
         {
           name,
+          routing,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING })
+    },
+  })
+}
+
+export const useUpdateRoutingMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, routing }: { id: string; routing: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateRouting($id: ID!, $routing: String!) {
+            updateRouting(id: $id, routing: $routing) {
+              id
+            }
+          }
+        `),
+        {
+          id,
           routing,
         }
       )
@@ -181,6 +257,30 @@ export const useSelectRoutingMutation = () => {
   })
 }
 
+export const useRenameRoutingMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RenameRouting($id: ID!, $name: String!) {
+            renameRouting(id: $id, name: $name)
+          }
+        `),
+        {
+          id,
+          name,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING })
+    },
+  })
+}
+
 export const useCreateDNSMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()
@@ -197,6 +297,32 @@ export const useCreateDNSMutation = () => {
         `),
         {
           name,
+          dns,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS })
+    },
+  })
+}
+
+export const useUpdateDNSMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, dns }: { id: string; dns: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateDNS($id: ID!, $dns: String!) {
+            updateDns(id: $id, dns: $dns) {
+              id
+            }
+          }
+        `),
+        {
+          id,
           dns,
         }
       )
@@ -244,6 +370,30 @@ export const useSelectDNSMutation = () => {
         `),
         {
           id,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS })
+    },
+  })
+}
+
+export const useRenameDNSMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RenameDNS($id: ID!, $name: String!) {
+            renameDns(id: $id, name: $name)
+          }
+        `),
+        {
+          id,
+          name,
         }
       )
     },
@@ -476,6 +626,34 @@ export const useImportSubscriptionsMutation = () => {
             {
               rollbackError: true,
               arg: subscription,
+            }
+          )
+        )
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
+    },
+  })
+}
+
+export const useUpdateSubscriptionsMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (ids: string[]) =>
+      Promise.all(
+        ids.map((id) =>
+          gqlClient.request(
+            graphql(`
+              mutation UpdateSubscription($id: ID!) {
+                updateSubscription(id: $id) {
+                  id
+                }
+              }
+            `),
+            {
+              id,
             }
           )
         )

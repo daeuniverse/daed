@@ -258,9 +258,11 @@ export const Header = () => {
           onSubmit={async (e) => {
             e.preventDefault()
 
-            if (uploadingAvatarBase64) {
-              await updateAvatarMutation.mutateAsync(uploadingAvatarBase64)
+            if (!uploadingAvatarBase64) {
+              return
             }
+
+            await updateAvatarMutation.mutateAsync(uploadingAvatarBase64)
           }}
         >
           <Stack>

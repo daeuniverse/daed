@@ -21,7 +21,7 @@ export const SortableNodeBadge = ({ id, name, onRemove }: { id: string; name: st
         zIndex: isDragging ? 10 : 0,
       }}
     >
-      <Text {...listeners} {...attributes}>
+      <Text {...listeners} {...attributes} truncate>
         {name}
       </Text>
     </Badge>

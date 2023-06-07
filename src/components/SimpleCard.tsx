@@ -1,4 +1,4 @@
-import { ActionIcon, Card, Group, HoverCard, Indicator, Title } from '@mantine/core'
+import { ActionIcon, Card, Group, HoverCard, Indicator, Title, UnstyledButton } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { IconTrash } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
@@ -6,11 +6,13 @@ import { useTranslation } from 'react-i18next'
 export const SimpleCard = ({
   name,
   selected,
+  onSelect,
   onRemove,
   children,
 }: {
   name: string
   selected: boolean
+  onSelect: () => void
   onRemove: () => void
   children: React.ReactNode
 }) => {
@@ -20,33 +22,35 @@ export const SimpleCard = ({
     <HoverCard withArrow withinPortal>
       <HoverCard.Target>
         <Indicator position="bottom-center" size={18} disabled={!selected}>
-          <Card withBorder shadow="sm">
-            <Card.Section withBorder inheritPadding py="sm">
-              <Group position="apart">
-                <Title order={4}>{name}</Title>
+          <UnstyledButton w="100%" onClick={onSelect}>
+            <Card withBorder shadow="sm">
+              <Card.Section withBorder inheritPadding py="sm">
+                <Group position="apart">
+                  <Title order={4}>{name}</Title>
 
-                <Group>
-                  <ActionIcon
-                    color="red"
-                    size="xs"
-                    onClick={() => {
-                      modals.openConfirmModal({
-                        title: t('actions.remove'),
-                        labels: {
-                          cancel: 'No',
-                          confirm: "Yes, I'm sure",
-                        },
-                        children: 'Are you sure you want to remove this?',
-                        onConfirm: onRemove,
-                      })
-                    }}
-                  >
-                    <IconTrash />
-                  </ActionIcon>
+                  <Group>
+                    <ActionIcon
+                      color="red"
+                      size="xs"
+                      onClick={() => {
+                        modals.openConfirmModal({
+                          title: t('actions.remove'),
+                          labels: {
+                            cancel: 'No',
+                            confirm: "Yes, I'm sure",
+                          },
+                          children: 'Are you sure you want to remove this?',
+                          onConfirm: onRemove,
+                        })
+                      }}
+                    >
+                      <IconTrash />
+                    </ActionIcon>
+                  </Group>
                 </Group>
-              </Group>
-            </Card.Section>
-          </Card>
+              </Card.Section>
+            </Card>
+          </UnstyledButton>
         </Indicator>
       </HoverCard.Target>
 

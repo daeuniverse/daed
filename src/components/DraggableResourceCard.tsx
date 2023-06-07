@@ -52,6 +52,8 @@ export const DraggableResourceCard = ({
           </Badge>
 
           <Group>
+            {actions}
+
             <ActionIcon
               color="red"
               size="xs"
@@ -69,8 +71,6 @@ export const DraggableResourceCard = ({
             >
               <IconTrash />
             </ActionIcon>
-
-            {actions}
           </Group>
         </Group>
       </Card.Section>

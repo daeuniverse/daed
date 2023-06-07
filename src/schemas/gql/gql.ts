@@ -17,22 +17,34 @@ const documents = {
     types.SetJsonStorageDocument,
   '\n          mutation CreateConfig($name: String, $global: globalInput) {\n            createConfig(name: $name, global: $global) {\n              id\n            }\n          }\n        ':
     types.CreateConfigDocument,
+  '\n          mutation UpdateConfig($id: ID!, $global: globalInput!) {\n            updateConfig(id: $id, global: $global) {\n              id\n            }\n          }\n        ':
+    types.UpdateConfigDocument,
   '\n          mutation RemoveConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ':
     types.RemoveConfigDocument,
   '\n          mutation SelectConfig($id: ID!) {\n            selectConfig(id: $id)\n          }\n        ':
     types.SelectConfigDocument,
+  '\n          mutation RenameConfig($id: ID!, $name: String!) {\n            renameConfig(id: $id, name: $name)\n          }\n        ':
+    types.RenameConfigDocument,
   '\n          mutation CreateRouting($name: String, $routing: String) {\n            createRouting(name: $name, routing: $routing) {\n              id\n            }\n          }\n        ':
     types.CreateRoutingDocument,
+  '\n          mutation UpdateRouting($id: ID!, $routing: String!) {\n            updateRouting(id: $id, routing: $routing) {\n              id\n            }\n          }\n        ':
+    types.UpdateRoutingDocument,
   '\n          mutation RemoveRouting($id: ID!) {\n            removeRouting(id: $id)\n          }\n        ':
     types.RemoveRoutingDocument,
   '\n          mutation SelectRouting($id: ID!) {\n            selectRouting(id: $id)\n          }\n        ':
     types.SelectRoutingDocument,
+  '\n          mutation RenameRouting($id: ID!, $name: String!) {\n            renameRouting(id: $id, name: $name)\n          }\n        ':
+    types.RenameRoutingDocument,
   '\n          mutation CreateDNS($name: String, $dns: String) {\n            createDns(name: $name, dns: $dns) {\n              id\n            }\n          }\n        ':
     types.CreateDnsDocument,
+  '\n          mutation UpdateDNS($id: ID!, $dns: String!) {\n            updateDns(id: $id, dns: $dns) {\n              id\n            }\n          }\n        ':
+    types.UpdateDnsDocument,
   '\n          mutation RemoveDNS($id: ID!) {\n            removeDns(id: $id)\n          }\n        ':
     types.RemoveDnsDocument,
   '\n          mutation SelectDNS($id: ID!) {\n            selectDns(id: $id)\n          }\n        ':
     types.SelectDnsDocument,
+  '\n          mutation RenameDNS($id: ID!, $name: String!) {\n            renameDns(id: $id, name: $name)\n          }\n        ':
+    types.RenameDnsDocument,
   '\n          mutation CreateGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            createGroup(name: $name, policy: $policy, policyParams: $policyParams) {\n              id\n            }\n          }\n        ':
     types.CreateGroupDocument,
   '\n          mutation RemoveGroup($id: ID!) {\n            removeGroup(id: $id)\n          }\n        ':
@@ -51,6 +63,8 @@ const documents = {
     types.RemoveNodesDocument,
   '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ':
     types.ImportSubscriptionDocument,
+  '\n              mutation UpdateSubscription($id: ID!) {\n                updateSubscription(id: $id) {\n                  id\n                }\n              }\n            ':
+    types.UpdateSubscriptionDocument,
   '\n          mutation RemoveSubscriptions($ids: [ID!]!) {\n            removeSubscriptions(ids: $ids)\n          }\n        ':
     types.RemoveSubscriptionsDocument,
   '\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ': types.RunDocument,
@@ -113,6 +127,12 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n          mutation UpdateConfig($id: ID!, $global: globalInput!) {\n            updateConfig(id: $id, global: $global) {\n              id\n            }\n          }\n        '
+): (typeof documents)['\n          mutation UpdateConfig($id: ID!, $global: globalInput!) {\n            updateConfig(id: $id, global: $global) {\n              id\n            }\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n          mutation RemoveConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        '
 ): (typeof documents)['\n          mutation RemoveConfig($id: ID!) {\n            removeConfig(id: $id)\n          }\n        ']
 /**
@@ -125,8 +145,20 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n          mutation RenameConfig($id: ID!, $name: String!) {\n            renameConfig(id: $id, name: $name)\n          }\n        '
+): (typeof documents)['\n          mutation RenameConfig($id: ID!, $name: String!) {\n            renameConfig(id: $id, name: $name)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n          mutation CreateRouting($name: String, $routing: String) {\n            createRouting(name: $name, routing: $routing) {\n              id\n            }\n          }\n        '
 ): (typeof documents)['\n          mutation CreateRouting($name: String, $routing: String) {\n            createRouting(name: $name, routing: $routing) {\n              id\n            }\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation UpdateRouting($id: ID!, $routing: String!) {\n            updateRouting(id: $id, routing: $routing) {\n              id\n            }\n          }\n        '
+): (typeof documents)['\n          mutation UpdateRouting($id: ID!, $routing: String!) {\n            updateRouting(id: $id, routing: $routing) {\n              id\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -143,8 +175,20 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n          mutation RenameRouting($id: ID!, $name: String!) {\n            renameRouting(id: $id, name: $name)\n          }\n        '
+): (typeof documents)['\n          mutation RenameRouting($id: ID!, $name: String!) {\n            renameRouting(id: $id, name: $name)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n          mutation CreateDNS($name: String, $dns: String) {\n            createDns(name: $name, dns: $dns) {\n              id\n            }\n          }\n        '
 ): (typeof documents)['\n          mutation CreateDNS($name: String, $dns: String) {\n            createDns(name: $name, dns: $dns) {\n              id\n            }\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation UpdateDNS($id: ID!, $dns: String!) {\n            updateDns(id: $id, dns: $dns) {\n              id\n            }\n          }\n        '
+): (typeof documents)['\n          mutation UpdateDNS($id: ID!, $dns: String!) {\n            updateDns(id: $id, dns: $dns) {\n              id\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -157,6 +201,12 @@ export function graphql(
 export function graphql(
   source: '\n          mutation SelectDNS($id: ID!) {\n            selectDns(id: $id)\n          }\n        '
 ): (typeof documents)['\n          mutation SelectDNS($id: ID!) {\n            selectDns(id: $id)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation RenameDNS($id: ID!, $name: String!) {\n            renameDns(id: $id, name: $name)\n          }\n        '
+): (typeof documents)['\n          mutation RenameDNS($id: ID!, $name: String!) {\n            renameDns(id: $id, name: $name)\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -211,6 +261,12 @@ export function graphql(
 export function graphql(
   source: '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            '
 ): (typeof documents)['\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n              mutation UpdateSubscription($id: ID!) {\n                updateSubscription(id: $id) {\n                  id\n                }\n              }\n            '
+): (typeof documents)['\n              mutation UpdateSubscription($id: ID!) {\n                updateSubscription(id: $id) {\n                  id\n                }\n              }\n            ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

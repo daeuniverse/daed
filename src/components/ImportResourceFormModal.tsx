@@ -47,7 +47,12 @@ export const ImportResourceFormModal = ({
   return (
     <Modal title={title} opened={opened} onClose={onClose}>
       <form
-        onSubmit={importResourceForm.onSubmit((values) => handleSubmit(values).then(() => importResourceForm.reset()))}
+        onSubmit={importResourceForm.onSubmit((values) =>
+          handleSubmit(values).then(() => {
+            onClose()
+            importResourceForm.reset()
+          })
+        )}
       >
         <Flex gap={20} direction="column">
           {importResourceForm.values.resources.map(({ id }, i) => (

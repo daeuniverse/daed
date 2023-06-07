@@ -32,7 +32,7 @@ export const CreateGroupFormModal = ({ opened, onClose }: { opened: boolean; onC
             policy: values.policy,
             policyParams: [],
           })
-          close()
+          onClose()
           createGroupForm.reset()
         })}
       >

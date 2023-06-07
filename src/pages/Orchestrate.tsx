@@ -3,6 +3,7 @@ import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd
 import { SortableContext, rectSwappingStrategy } from '@dnd-kit/sortable'
 import {
   Accordion,
+  ActionIcon,
   Anchor,
   Badge,
   Code,
@@ -17,6 +18,7 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Prism } from '@mantine/prism'
+import { IconRefresh } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -41,7 +43,11 @@ import {
   useRemoveRoutingMutation,
   useRemoveSubscriptionsMutation,
   useRoutingsQuery,
+  useSelectConfigMutation,
+  useSelectDNSMutation,
+  useSelectRoutingMutation,
   useSubscriptionsQuery,
+  useUpdateSubscriptionsMutation,
 } from '~/apis'
 import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
@@ -59,12 +65,15 @@ export const OrchestratePage = () => {
   const theme = useMantineTheme()
 
   const { data: configsQuery } = useConfigsQuery()
+  const selectConfigMutation = useSelectConfigMutation()
   const removeConfigMutation = useRemoveConfigMutation()
 
   const { data: dnssQuery } = useDNSsQuery()
+  const selectDNSMutation = useSelectDNSMutation()
   const removeDNSMutation = useRemoveDNSMutation()
 
   const { data: routingsQuery } = useRoutingsQuery()
+  const selectRoutingMutation = useSelectRoutingMutation()
   const removeRoutingMutation = useRemoveRoutingMutation()
 
   const { data: groupsQuery } = useGroupsQuery()
@@ -100,6 +109,7 @@ export const OrchestratePage = () => {
   const createRoutingMutation = useCreateRoutingMutation()
   const importNodesMutation = useImportNodesMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
+  const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
 
   return (
     <Stack>
@@ -111,6 +121,7 @@ export const OrchestratePage = () => {
                 key={config.id}
                 name={config.name}
                 selected={config.selected}
+                onSelect={() => selectConfigMutation.mutate({ id: config.id })}
                 onRemove={() => removeConfigMutation.mutate(config.id)}
               >
                 <Prism language="json">{JSON.stringify(config, null, 2)}</Prism>
@@ -126,6 +137,7 @@ export const OrchestratePage = () => {
                 key={dns.id}
                 name={dns.name}
                 selected={dns.selected}
+                onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
                 onRemove={() => removeDNSMutation.mutate(dns.id)}
               >
                 <Code block>
@@ -149,6 +161,7 @@ export const OrchestratePage = () => {
                 key={routing.id}
                 name={routing.name}
                 selected={routing.selected}
+                onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
                 onRemove={() => removeRoutingMutation.mutate(routing.id)}
               >
                 <Code block>
@@ -317,6 +330,11 @@ export const OrchestratePage = () => {
                   id={id}
                   type={ResourceType.subscription}
                   name={link}
+                  actions={
+                    <ActionIcon size="sm" onClick={() => updateSubscriptionsMutation.mutate([id])}>
+                      <IconRefresh />
+                    </ActionIcon>
+                  }
                   onRemove={() => removeSubscriptionsMutation.mutate([id])}
                 >
                   <Text fw={600} color={theme.primaryColor}>
@@ -392,7 +410,6 @@ export const OrchestratePage = () => {
         onClose={closeImportNodeModal}
         handleSubmit={async (values) => {
           await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
-          closeImportNodeModal()
         }}
       />
 
@@ -402,7 +419,6 @@ export const OrchestratePage = () => {
         onClose={closeImportSubscriptionModal}
         handleSubmit={async (values) => {
           await importSubscriptionsMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
-          closeImportNodeModal()
         }}
       />
     </Stack>

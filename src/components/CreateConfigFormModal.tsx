@@ -184,7 +184,7 @@ export const CreateConfigFormModal = ({ opened, onClose }: { opened: boolean; on
               dialMode: values.dialMode,
             },
           })
-          close()
+          onClose()
           form.reset()
         })}
       >

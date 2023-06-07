@@ -32,7 +32,14 @@ export const PlainTextFormModal = ({
 
   return (
     <Modal title={title} opened={opened} onClose={onClose}>
-      <form onSubmit={form.onSubmit((values) => handleSubmit(values).then(() => form.reset()))}>
+      <form
+        onSubmit={form.onSubmit((values) =>
+          handleSubmit(values).then(() => {
+            onClose()
+            form.reset()
+          })
+        )}
+      >
         <Stack>
           <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} />
 
