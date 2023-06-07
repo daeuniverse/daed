@@ -119,12 +119,14 @@ export const useSubscriptionsQuery = () => {
           query Subscriptions {
             subscriptions {
               id
+              tag
               status
               link
               info
               updatedAt
               nodes {
                 edges {
+                  id
                   name
                   protocol
                   link

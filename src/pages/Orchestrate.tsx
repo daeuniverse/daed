@@ -1,7 +1,6 @@
-import { DndContext, DragOverlay, UniqueIdentifier } from '@dnd-kit/core'
+import { DndContext, DragOverlay } from '@dnd-kit/core'
 import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd-kit/modifiers'
 import { SortableContext, rectSwappingStrategy } from '@dnd-kit/sortable'
-import { faker } from '@faker-js/faker'
 import {
   Accordion,
   Anchor,
@@ -9,7 +8,6 @@ import {
   Code,
   Divider,
   Group,
-  HoverCard,
   SimpleGrid,
   Space,
   Stack,
@@ -20,15 +18,30 @@ import {
 import { useDisclosure } from '@mantine/hooks'
 import { Prism } from '@mantine/prism'
 import dayjs from 'dayjs'
-import { produce } from 'immer'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
+  useConfigsQuery,
   useCreateDNSMutation,
   useCreateRoutingMutation,
+  useDNSsQuery,
+  useGroupAddNodesMutation,
+  useGroupAddSubscriptionsMutation,
+  useGroupDelNodesMutation,
+  useGroupDelSubscriptionsMutation,
+  useGroupsQuery,
   useImportNodesMutation,
   useImportSubscriptionsMutation,
+  useNodesQuery,
+  useRemoveConfigMutation,
+  useRemoveDNSMutation,
+  useRemoveGroupMutation,
+  useRemoveNodesMutation,
+  useRemoveRoutingMutation,
+  useRemoveSubscriptionsMutation,
+  useRoutingsQuery,
+  useSubscriptionsQuery,
 } from '~/apis'
 import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
@@ -39,168 +52,38 @@ import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { SortableNodeBadge } from '~/components/SortableNodeBadge'
-import { DialMode, LogLevel, ResourceType } from '~/constants'
-import { Policy } from '~/schemas/gql/graphql'
+import { ResourceType } from '~/constants'
 
-export const ExperimentPage = () => {
+export const OrchestratePage = () => {
   const { t } = useTranslation()
   const theme = useMantineTheme()
 
-  const [fakeConfigs, setFakeConfigs] = useState(
-    faker.helpers.multiple(
-      () => ({
-        id: faker.string.uuid(),
-        name: faker.lorem.word(),
-        selected: faker.datatype.boolean(),
-        global: {
-          tproxyPort: faker.internet.port(),
-          logLevel: faker.helpers.enumValue(LogLevel),
-          tcpCheckUrl: faker.helpers.multiple(() => faker.internet.url(), { count: { min: 1, max: 4 } }),
-          udpCheckDns: faker.helpers.multiple(() => faker.internet.url(), { count: { min: 1, max: 4 } }),
-          checkInterval: faker.number.int(),
-          checkTolerence: faker.number.int(),
-          sniffingTimeout: faker.number.int(),
-          lanInterface: faker.helpers.multiple(() => faker.system.networkInterface(), { count: { min: 1, max: 4 } }),
-          wanInterface: faker.helpers.multiple(() => faker.system.networkInterface(), { count: { min: 1, max: 4 } }),
-          allowInsecure: faker.datatype.boolean(),
-          dialMode: faker.helpers.enumValue(DialMode),
-          disableWaitingNetwork: faker.datatype.boolean(),
-          autoConfigKernelParameter: faker.datatype.boolean(),
-        },
-      }),
-      {
-        count: 2,
-      }
-    )
-  )
+  const { data: configsQuery } = useConfigsQuery()
+  const removeConfigMutation = useRemoveConfigMutation()
 
-  const [fakeDnss, setFakeDnss] = useState(
-    faker.helpers.multiple(
-      () => ({
-        id: faker.string.uuid(),
-        name: faker.lorem.word(),
-        selected: faker.datatype.boolean(),
-        dns: faker.lorem.paragraph(),
-      }),
-      {
-        count: 2,
-      }
-    )
-  )
+  const { data: dnssQuery } = useDNSsQuery()
+  const removeDNSMutation = useRemoveDNSMutation()
 
-  const [fakeRoutings, setFakeRoutings] = useState(
-    faker.helpers.multiple(
-      () => ({
-        id: faker.string.uuid(),
-        name: faker.lorem.word(),
-        selected: faker.datatype.boolean(),
-        routing: {
-          string: faker.lorem.paragraph(),
-          rules: [],
-        },
-        referenceGroups: [],
-      }),
-      {
-        count: 4,
-      }
-    )
-  )
+  const { data: routingsQuery } = useRoutingsQuery()
+  const removeRoutingMutation = useRemoveRoutingMutation()
 
-  const [fakeGroups, setFakeGroups] = useState(
-    faker.helpers.multiple(
-      () => ({
-        id: faker.string.uuid(),
-        name: faker.lorem.word(),
-        nodes: faker.helpers.multiple(
-          () => ({
-            id: faker.string.uuid(),
-            name: faker.lorem.word(),
-          }),
-          {
-            count: faker.number.int({ min: 5, max: 10 }),
-          }
-        ),
-        subscriptions: faker.helpers.multiple(
-          () => ({
-            id: faker.string.uuid(),
-            name: faker.lorem.word(),
-          }),
-          {
-            count: 5,
-          }
-        ),
-        policy: faker.helpers.enumValue(Policy),
-      }),
-      {
-        count: 4,
-      }
-    )
-  )
+  const { data: groupsQuery } = useGroupsQuery()
+  const removeGroupMutation = useRemoveGroupMutation()
+  const groupAddNodesMutation = useGroupAddNodesMutation()
+  const groupAddSubscriptionsMutation = useGroupAddSubscriptionsMutation()
+  const groupDelNodesMutation = useGroupDelNodesMutation()
+  const groupDelSubscriptionsMutation = useGroupDelSubscriptionsMutation()
 
-  const [fakeNodes, setFakeNodes] = useState(
-    faker.helpers.multiple(
-      () => ({
-        id: faker.string.uuid(),
-        name: faker.lorem.word(),
-        protocol: faker.helpers.arrayElement([
-          'vmess',
-          'vless',
-          'shadowsocks',
-          'trojan',
-          'hysteria',
-          'socks5',
-          'direct',
-          'http',
-        ]),
-        tag: faker.lorem.word(),
-        link: faker.internet.url(),
-      }),
-      {
-        count: 5,
-      }
-    )
-  )
+  const { data: nodesQuery } = useNodesQuery()
+  const removeNodesMutation = useRemoveNodesMutation()
 
-  const [fakeSubscriptions, setFakeSubscriptions] = useState(
-    faker.helpers.multiple(
-      () => ({
-        id: faker.string.uuid(),
-        name: faker.lorem.word(),
-        tag: faker.lorem.word(),
-        link: faker.internet.url(),
-        updatedAt: dayjs(faker.date.recent()).format('YYYY-MM-DD HH:mm:ss'),
-        nodes: faker.helpers.multiple(
-          () => ({
-            id: faker.string.uuid(),
-            name: faker.lorem.word(),
-            protocol: faker.helpers.arrayElement([
-              'vmess',
-              'vless',
-              'shadowsocks',
-              'trojan',
-              'hysteria',
-              'socks5',
-              'direct',
-              'http',
-            ]),
-            tag: faker.lorem.word(),
-            link: faker.internet.url(),
-          }),
-          {
-            count: { min: 5, max: 10 },
-          }
-        ),
-      }),
-      {
-        count: 5,
-      }
-    )
-  )
+  const { data: subscriptionsQuery } = useSubscriptionsQuery()
+  const removeSubscriptionsMutation = useRemoveSubscriptionsMutation()
 
   const [droppableGroupCardAccordionValues, setDroppableGroupCardAccordionValues] = useState<string[]>([])
 
   const [draggingResource, setDraggingResource] = useState<{
-    id: UniqueIdentifier
+    id: string
     type: ResourceType
   } | null>(null)
 
@@ -223,12 +106,12 @@ export const ExperimentPage = () => {
       <SimpleGrid cols={3}>
         <Section title={t('config')} onCreate={openCreateConfigModal}>
           <Stack>
-            {fakeConfigs.map((config) => (
+            {configsQuery?.configs.map((config) => (
               <SimpleCard
                 key={config.id}
                 name={config.name}
-                selected={false}
-                onRemove={() => setFakeConfigs((configs) => configs.filter((c) => c.id !== config.id))}
+                selected={config.selected}
+                onRemove={() => removeConfigMutation.mutate(config.id)}
               >
                 <Prism language="json">{JSON.stringify(config, null, 2)}</Prism>
               </SimpleCard>
@@ -238,14 +121,22 @@ export const ExperimentPage = () => {
 
         <Section title={t('dns')} onCreate={openCreateDnsModal}>
           <Stack>
-            {fakeDnss.map((dns) => (
+            {dnssQuery?.dnss.map((dns) => (
               <SimpleCard
                 key={dns.id}
                 name={dns.name}
-                selected={false}
-                onRemove={() => setFakeDnss((dnss) => dnss.filter((c) => c.id !== dns.id))}
+                selected={dns.selected}
+                onRemove={() => removeDNSMutation.mutate(dns.id)}
               >
-                <Code block>{dns.dns}</Code>
+                <Code block>
+                  <pre
+                    style={{
+                      display: 'contents',
+                    }}
+                  >
+                    {dns.dns.string}
+                  </pre>
+                </Code>
               </SimpleCard>
             ))}
           </Stack>
@@ -253,14 +144,22 @@ export const ExperimentPage = () => {
 
         <Section title={t('routing')} onCreate={openCreateRoutingModal}>
           <Stack>
-            {fakeRoutings.map((routing) => (
+            {routingsQuery?.routings.map((routing) => (
               <SimpleCard
                 key={routing.id}
                 name={routing.name}
-                selected={false}
-                onRemove={() => setFakeRoutings((routings) => routings.filter((c) => c.id !== routing.id))}
+                selected={routing.selected}
+                onRemove={() => removeRoutingMutation.mutate(routing.id)}
               >
-                <Code>{routing.routing.string}</Code>
+                <Code block>
+                  <pre
+                    style={{
+                      display: 'contents',
+                    }}
+                  >
+                    {routing.routing.string}
+                  </pre>
+                </Code>
               </SimpleCard>
             ))}
           </Stack>
@@ -278,7 +177,7 @@ export const ExperimentPage = () => {
           modifiers={[restrictToFirstScrollableAncestor]}
           onDragStart={(e) => {
             setDraggingResource({
-              id: e.active.id,
+              id: e.active.id as string,
               type: (
                 e.active.data.current as {
                   type: ResourceType
@@ -287,37 +186,15 @@ export const ExperimentPage = () => {
             })
           }}
           onDragEnd={(e) => {
-            const { active, over } = e
+            const { over } = e
 
-            if (draggingResource?.type === ResourceType.node) {
-              const activeNode = fakeNodes.find((node) => node.id === active.id)
-
-              if (activeNode) {
-                const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                  const group = groups.find((group) => group.id === over?.id)
-
-                  if (!group?.nodes.find((node) => node.id === active.id)) {
-                    group?.nodes.push(activeNode)
-                  }
-                })
-
-                setFakeGroups(updatedFakeGrups)
+            if (over?.id && draggingResource?.id) {
+              if (draggingResource.type === ResourceType.node) {
+                groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.id] })
               }
-            }
 
-            if (draggingResource?.type === ResourceType.subscription) {
-              const activeSubscription = fakeSubscriptions.find((subscription) => subscription.id === active.id)
-
-              if (activeSubscription) {
-                const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                  const group = groups.find((group) => group.id === over?.id)
-
-                  if (!group?.subscriptions.find((subscription) => subscription.id === active.id)) {
-                    group?.subscriptions.push(activeSubscription)
-                  }
-                })
-
-                setFakeGroups(updatedFakeGrups)
+              if (draggingResource.type === ResourceType.subscription) {
+                groupAddSubscriptionsMutation.mutate({ id: over.id as string, subscriptionIDs: [draggingResource.id] })
               }
             }
 
@@ -326,14 +203,12 @@ export const ExperimentPage = () => {
         >
           <Section title={t('group')} onCreate={openCreateGroupModal} bordered>
             <Stack>
-              {fakeGroups.map(({ id: groupId, name, policy, nodes, subscriptions }) => (
+              {groupsQuery?.groups.map(({ id: groupId, name, policy, nodes, subscriptions }) => (
                 <DroppableGroupCard
                   key={groupId}
                   id={groupId}
                   name={name}
-                  onRemove={() => {
-                    setFakeGroups((groups) => groups.filter((group) => group.id !== groupId))
-                  }}
+                  onRemove={() => removeGroupMutation.mutate(groupId)}
                 >
                   <Text fw={600}>{policy}</Text>
 
@@ -359,17 +234,12 @@ export const ExperimentPage = () => {
                                   key={nodeId}
                                   id={nodeId}
                                   name={name}
-                                  onRemove={() => {
-                                    const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                                      const group = groups.find((group) => group.id === groupId)
-
-                                      if (group) {
-                                        group.nodes = group.nodes.filter((node) => node.id !== nodeId)
-                                      }
+                                  onRemove={() =>
+                                    groupDelNodesMutation.mutate({
+                                      id: groupId,
+                                      nodeIDs: [nodeId],
                                     })
-
-                                    setFakeGroups(updatedFakeGrups)
-                                  }}
+                                  }
                                 />
                               ))}
                             </SortableContext>
@@ -387,24 +257,17 @@ export const ExperimentPage = () => {
                         <SimpleGrid cols={2}>
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
-                              {subscriptions.map(({ id: subscriptionId, name }) => (
+                              {subscriptions.map(({ id: subscriptionId, link }) => (
                                 <SortableNodeBadge
                                   key={subscriptionId}
                                   id={subscriptionId}
-                                  name={name}
-                                  onRemove={() => {
-                                    const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                                      const group = groups.find((group) => group.id === groupId)
-
-                                      if (group) {
-                                        group.subscriptions = group.subscriptions.filter(
-                                          (subscription) => subscription.id !== subscriptionId
-                                        )
-                                      }
+                                  name={link}
+                                  onRemove={() =>
+                                    groupDelSubscriptionsMutation.mutate({
+                                      id: groupId,
+                                      subscriptionIDs: [subscriptionId],
                                     })
-
-                                    setFakeGroups(updatedFakeGrups)
-                                  }}
+                                  }
                                 />
                               ))}
                             </SortableContext>
@@ -420,28 +283,27 @@ export const ExperimentPage = () => {
 
           <Section title={t('node')} onCreate={openImportNodeModal} bordered>
             <Stack>
-              {fakeNodes.map(({ id, name, tag, protocol, link }) => (
+              {nodesQuery?.nodes.edges.map(({ id, name, tag, protocol, link }) => (
                 <DraggableResourceCard
                   key={id}
                   id={id}
                   type={ResourceType.node}
                   name={name}
-                  onRemove={() => {
-                    setFakeNodes((nodes) => nodes.filter((node) => node.id !== id))
-                  }}
+                  onRemove={() => removeNodesMutation.mutate([id])}
                 >
                   <Text fw={600} color={theme.primaryColor}>
                     {tag}
                   </Text>
                   <Text fw={600}>{protocol}</Text>
-                  <HoverCard withArrow>
-                    <HoverCard.Target>
-                      <Text truncate>{link}</Text>
-                    </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Text>{link}</Text>
-                    </HoverCard.Dropdown>
-                  </HoverCard>
+
+                  <Text
+                    fz="sm"
+                    style={{
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {link}
+                  </Text>
                 </DraggableResourceCard>
               ))}
             </Stack>
@@ -449,35 +311,32 @@ export const ExperimentPage = () => {
 
           <Section title={t('subscription')} onCreate={openImportSubscriptionModal} bordered>
             <Stack>
-              {fakeSubscriptions.map(({ id, name, tag, link, updatedAt, nodes }) => (
+              {subscriptionsQuery?.subscriptions.map(({ id, tag, link, updatedAt, nodes }) => (
                 <DraggableResourceCard
                   key={id}
                   id={id}
                   type={ResourceType.subscription}
-                  name={name}
-                  onRemove={() => {
-                    setFakeSubscriptions((subscriptions) =>
-                      subscriptions.filter((subscription) => subscription.id !== id)
-                    )
-                  }}
+                  name={link}
+                  onRemove={() => removeSubscriptionsMutation.mutate([id])}
                 >
                   <Text fw={600} color={theme.primaryColor}>
                     {tag}
                   </Text>
-                  <Text fw={600}>{updatedAt}</Text>
-                  <HoverCard withArrow>
-                    <HoverCard.Target>
-                      <Text truncate>{link}</Text>
-                    </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Text>{link}</Text>
-                    </HoverCard.Dropdown>
-                  </HoverCard>
+                  <Text fw={600}>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</Text>
+
+                  <Text
+                    fz="sm"
+                    style={{
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {link}
+                  </Text>
 
                   <Space h={10} />
 
                   <Group spacing="sm">
-                    {nodes.map(({ id, name }) => (
+                    {nodes.edges.map(({ id, name }) => (
                       <Badge key={id}>{name}</Badge>
                     ))}
                   </Group>
@@ -490,8 +349,9 @@ export const ExperimentPage = () => {
             {draggingResource ? (
               <Badge>
                 {draggingResource?.type === ResourceType.node
-                  ? fakeNodes.find((node) => node.id === draggingResource.id)?.name
-                  : fakeSubscriptions.find((subscription) => subscription.id === draggingResource.id)?.name}
+                  ? nodesQuery?.nodes.edges.find((node) => node.id === draggingResource.id)?.name
+                  : subscriptionsQuery?.subscriptions.find((subscription) => subscription.id === draggingResource.id)
+                      ?.link}
               </Badge>
             ) : null}
           </DragOverlay>

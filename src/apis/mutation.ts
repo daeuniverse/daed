@@ -327,6 +327,78 @@ export const useGroupAddNodesMutation = () => {
   })
 }
 
+export const useGroupDelNodesMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, nodeIDs }: { id: string; nodeIDs: string[] }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation GroupDelNodes($id: ID!, $nodeIDs: [ID!]!) {
+            groupDelNodes(id: $id, nodeIDs: $nodeIDs)
+          }
+        `),
+        {
+          id,
+          nodeIDs,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
+export const useGroupAddSubscriptionsMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, subscriptionIDs }: { id: string; subscriptionIDs: string[] }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation GroupAddSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {
+            groupAddSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)
+          }
+        `),
+        {
+          id,
+          subscriptionIDs,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
+export const useGroupDelSubscriptionsMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, subscriptionIDs }: { id: string; subscriptionIDs: string[] }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation GroupDelSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {
+            groupDelSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)
+          }
+        `),
+        {
+          id,
+          subscriptionIDs,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
 export const useImportNodesMutation = () => {
   const gqlClient = useQGLQueryClient()
   const queryClient = useQueryClient()
@@ -407,6 +479,28 @@ export const useImportSubscriptionsMutation = () => {
             }
           )
         )
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
+    },
+  })
+}
+
+export const useRemoveSubscriptionsMutation = () => {
+  const gqlClient = useQGLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (ids: string[]) =>
+      gqlClient.request(
+        graphql(`
+          mutation RemoveSubscriptions($ids: [ID!]!) {
+            removeSubscriptions(ids: $ids)
+          }
+        `),
+        {
+          ids,
+        }
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })

@@ -11,6 +11,7 @@ import {
   HomePage,
   MainLayout,
   NodePage,
+  OrchestratePage,
   RoutingPage,
   SetupPage,
   SubscriptionPage,
@@ -31,6 +32,7 @@ export const Router = () => {
           <Route path="routing" element={<RoutingPage />} />
           <Route path="group" element={<GroupPage />} />
           <Route path="config" element={<ConfigPage />} />
+          <Route path="orchestrate" element={<OrchestratePage />} />
           <Route path="experiment" element={<ExperimentPage />} />
         </Route>
 

@@ -151,3 +151,8 @@ export const DEFAULT_DNS = `
     }
   }
 `
+
+export enum ResourceType {
+  node,
+  subscription,
+}

@@ -20,6 +20,7 @@ import {
 import { useDisclosure } from '@mantine/hooks'
 import {
   IconChevronDown,
+  IconCloudComputing,
   IconLanguage,
   IconLogout,
   IconMap,
@@ -38,22 +39,10 @@ import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUserQuery 
 import logoPng from '~/assets/logo.png'
 import { i18n } from '~/i18n'
 import { tokenAtom } from '~/store'
+import { Defer } from '~/utils'
 
 import { ColorSchemeToggle } from './ColorSchemeToggle'
 import { FormActions } from './FormActions'
-
-class Defer<T> {
-  promise: Promise<T>
-  resolve?: (value: T | PromiseLike<T>) => void
-  reject?: (reason?: unknown) => void
-
-  constructor() {
-    this.promise = new Promise((resolve, reject) => {
-      this.resolve = resolve
-      this.reject = reject
-    })
-  }
-}
 
 const fileToBase64 = (file: File) => {
   const reader = new FileReader()
@@ -144,6 +133,7 @@ export const Header = () => {
     { link: '/dns', label: t('dns'), icon: <IconRoute /> },
     { link: '/routing', label: t('routing'), icon: <IconMap /> },
     { link: '/group', label: t('group'), icon: <IconUsersGroup /> },
+    { link: '/orchestrate', label: t('orchestrate'), icon: <IconCloudComputing /> },
     { link: '/experiment', label: 'Experiment', icon: <IconTestPipe /> },
   ]
 

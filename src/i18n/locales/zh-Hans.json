@@ -56,6 +56,7 @@
     "success": "成功"
   },
   "operations": "操作",
+  "orchestrate": "编排",
   "password": "密码",
   "please select a config first": "请先选择配置",
   "policy": "策略",

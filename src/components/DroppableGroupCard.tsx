@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core'
 import { ActionIcon, Card, Group, Title } from '@mantine/core'
 import { modals } from '@mantine/modals'
-import { IconFoldDown, IconTrash } from '@tabler/icons-react'
+import { IconTrash } from '@tabler/icons-react'
 
 export const DroppableGroupCard = ({
   id,
@@ -27,31 +27,25 @@ export const DroppableGroupCard = ({
     >
       <Card.Section withBorder inheritPadding py="sm">
         <Group position="apart">
-          <Title order={4}>{name}</Title>
+          <Title order={5}>{name}</Title>
 
-          <Group>
-            <ActionIcon>
-              <IconFoldDown />
-            </ActionIcon>
-
-            <ActionIcon
-              color="red"
-              size="xs"
-              onClick={() => {
-                modals.openConfirmModal({
-                  title: 'Remove',
-                  labels: {
-                    cancel: 'No',
-                    confirm: "Yes, I'm sure",
-                  },
-                  children: 'Are you sure you want to remove this?',
-                  onConfirm: onRemove,
-                })
-              }}
-            >
-              <IconTrash />
-            </ActionIcon>
-          </Group>
+          <ActionIcon
+            color="red"
+            size="xs"
+            onClick={() => {
+              modals.openConfirmModal({
+                title: 'Remove',
+                labels: {
+                  cancel: 'No',
+                  confirm: "Yes, I'm sure",
+                },
+                children: 'Are you sure you want to remove this?',
+                onConfirm: onRemove,
+              })
+            }}
+          >
+            <IconTrash />
+          </ActionIcon>
         </Group>
       </Card.Section>
 

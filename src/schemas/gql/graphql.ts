@@ -678,6 +678,27 @@ export type GroupAddNodesMutationVariables = Exact<{
 
 export type GroupAddNodesMutation = { __typename?: 'Mutation'; groupAddNodes: number }
 
+export type GroupDelNodesMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  nodeIDs: Array<Scalars['ID']['input']> | Scalars['ID']['input']
+}>
+
+export type GroupDelNodesMutation = { __typename?: 'Mutation'; groupDelNodes: number }
+
+export type GroupAddSubscriptionsMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  subscriptionIDs: Array<Scalars['ID']['input']> | Scalars['ID']['input']
+}>
+
+export type GroupAddSubscriptionsMutation = { __typename?: 'Mutation'; groupAddSubscriptions: number }
+
+export type GroupDelSubscriptionsMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  subscriptionIDs: Array<Scalars['ID']['input']> | Scalars['ID']['input']
+}>
+
+export type GroupDelSubscriptionsMutation = { __typename?: 'Mutation'; groupDelSubscriptions: number }
+
 export type ImportNodesMutationVariables = Exact<{
   rollbackError: Scalars['Boolean']['input']
   args: Array<ImportArgument> | ImportArgument
@@ -712,6 +733,12 @@ export type ImportSubscriptionMutation = {
     nodeImportResult: Array<{ __typename?: 'NodeImportResult'; node?: { __typename?: 'Node'; id: string } | null }>
   }
 }
+
+export type RemoveSubscriptionsMutationVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input']
+}>
+
+export type RemoveSubscriptionsMutation = { __typename?: 'Mutation'; removeSubscriptions: number }
 
 export type RunMutationVariables = Exact<{
   dry: Scalars['Boolean']['input']
@@ -778,13 +805,14 @@ export type SubscriptionsQuery = {
   subscriptions: Array<{
     __typename?: 'Subscription'
     id: string
+    tag?: string | null
     status: string
     link: string
     info: string
     updatedAt: any
     nodes: {
       __typename?: 'NodesConnection'
-      edges: Array<{ __typename?: 'Node'; name: string; protocol: string; link: string }>
+      edges: Array<{ __typename?: 'Node'; id: string; name: string; protocol: string; link: string }>
     }
   }>
 }
@@ -1458,6 +1486,153 @@ export const GroupAddNodesDocument = {
     },
   ],
 } as unknown as DocumentNode<GroupAddNodesMutation, GroupAddNodesMutationVariables>
+export const GroupDelNodesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'GroupDelNodes' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'nodeIDs' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'groupDelNodes' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'nodeIDs' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'nodeIDs' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GroupDelNodesMutation, GroupDelNodesMutationVariables>
+export const GroupAddSubscriptionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'GroupAddSubscriptions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'subscriptionIDs' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'groupAddSubscriptions' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'subscriptionIDs' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'subscriptionIDs' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GroupAddSubscriptionsMutation, GroupAddSubscriptionsMutationVariables>
+export const GroupDelSubscriptionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'GroupDelSubscriptions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'subscriptionIDs' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'groupDelSubscriptions' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'subscriptionIDs' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'subscriptionIDs' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GroupDelSubscriptionsMutation, GroupDelSubscriptionsMutationVariables>
 export const ImportNodesDocument = {
   kind: 'Document',
   definitions: [
@@ -1630,6 +1805,45 @@ export const ImportSubscriptionDocument = {
     },
   ],
 } as unknown as DocumentNode<ImportSubscriptionMutation, ImportSubscriptionMutationVariables>
+export const RemoveSubscriptionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'RemoveSubscriptions' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'ids' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'removeSubscriptions' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'ids' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'ids' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveSubscriptionsMutation, RemoveSubscriptionsMutationVariables>
 export const RunDocument = {
   kind: 'Document',
   definitions: [
@@ -1897,6 +2111,7 @@ export const SubscriptionsDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'status' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'link' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'info' } },
@@ -1913,6 +2128,7 @@ export const SubscriptionsDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'protocol' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'link' } },

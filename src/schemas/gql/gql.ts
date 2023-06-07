@@ -39,12 +39,20 @@ const documents = {
     types.RemoveGroupDocument,
   '\n          mutation GroupAddNodes($id: ID!, $nodeIDs: [ID!]!) {\n            groupAddNodes(id: $id, nodeIDs: $nodeIDs)\n          }\n        ':
     types.GroupAddNodesDocument,
+  '\n          mutation GroupDelNodes($id: ID!, $nodeIDs: [ID!]!) {\n            groupDelNodes(id: $id, nodeIDs: $nodeIDs)\n          }\n        ':
+    types.GroupDelNodesDocument,
+  '\n          mutation GroupAddSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {\n            groupAddSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)\n          }\n        ':
+    types.GroupAddSubscriptionsDocument,
+  '\n          mutation GroupDelSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {\n            groupDelSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)\n          }\n        ':
+    types.GroupDelSubscriptionsDocument,
   '\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n              node {\n                id\n              }\n            }\n          }\n        ':
     types.ImportNodesDocument,
   '\n          mutation RemoveNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ':
     types.RemoveNodesDocument,
   '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ':
     types.ImportSubscriptionDocument,
+  '\n          mutation RemoveSubscriptions($ids: [ID!]!) {\n            removeSubscriptions(ids: $ids)\n          }\n        ':
+    types.RemoveSubscriptionsDocument,
   '\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ': types.RunDocument,
   '\n          mutation UpdateAvatar($avatar: String) {\n            updateAvatar(avatar: $avatar)\n          }\n        ':
     types.UpdateAvatarDocument,
@@ -56,7 +64,7 @@ const documents = {
     types.GeneralDocument,
   '\n          query Nodes {\n            nodes {\n              edges {\n                id\n                name\n                link\n                address\n                protocol\n                tag\n              }\n            }\n          }\n        ':
     types.NodesDocument,
-  '\n          query Subscriptions {\n            subscriptions {\n              id\n              status\n              link\n              info\n              updatedAt\n              nodes {\n                edges {\n                  name\n                  protocol\n                  link\n                }\n              }\n            }\n          }\n        ':
+  '\n          query Subscriptions {\n            subscriptions {\n              id\n              tag\n              status\n              link\n              info\n              updatedAt\n              nodes {\n                edges {\n                  id\n                  name\n                  protocol\n                  link\n                }\n              }\n            }\n          }\n        ':
     types.SubscriptionsDocument,
   '\n          query Configs {\n            configs {\n              id\n              name\n              selected\n              global {\n                logLevel\n                tproxyPort\n                allowInsecure\n                checkInterval\n                checkTolerance\n                lanInterface\n                wanInterface\n                udpCheckDns\n                tcpCheckUrl\n                dialMode\n                tcpCheckHttpMethod\n                disableWaitingNetwork\n                autoConfigKernelParameter\n                sniffingTimeout\n              }\n            }\n          }\n        ':
     types.ConfigsDocument,
@@ -171,6 +179,24 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n          mutation GroupDelNodes($id: ID!, $nodeIDs: [ID!]!) {\n            groupDelNodes(id: $id, nodeIDs: $nodeIDs)\n          }\n        '
+): (typeof documents)['\n          mutation GroupDelNodes($id: ID!, $nodeIDs: [ID!]!) {\n            groupDelNodes(id: $id, nodeIDs: $nodeIDs)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation GroupAddSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {\n            groupAddSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)\n          }\n        '
+): (typeof documents)['\n          mutation GroupAddSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {\n            groupAddSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation GroupDelSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {\n            groupDelSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)\n          }\n        '
+): (typeof documents)['\n          mutation GroupDelSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {\n            groupDelSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n              node {\n                id\n              }\n            }\n          }\n        '
 ): (typeof documents)['\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n              node {\n                id\n              }\n            }\n          }\n        ']
 /**
@@ -185,6 +211,12 @@ export function graphql(
 export function graphql(
   source: '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            '
 ): (typeof documents)['\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation RemoveSubscriptions($ids: [ID!]!) {\n            removeSubscriptions(ids: $ids)\n          }\n        '
+): (typeof documents)['\n          mutation RemoveSubscriptions($ids: [ID!]!) {\n            removeSubscriptions(ids: $ids)\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -225,8 +257,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n          query Subscriptions {\n            subscriptions {\n              id\n              status\n              link\n              info\n              updatedAt\n              nodes {\n                edges {\n                  name\n                  protocol\n                  link\n                }\n              }\n            }\n          }\n        '
-): (typeof documents)['\n          query Subscriptions {\n            subscriptions {\n              id\n              status\n              link\n              info\n              updatedAt\n              nodes {\n                edges {\n                  name\n                  protocol\n                  link\n                }\n              }\n            }\n          }\n        ']
+  source: '\n          query Subscriptions {\n            subscriptions {\n              id\n              tag\n              status\n              link\n              info\n              updatedAt\n              nodes {\n                edges {\n                  id\n                  name\n                  protocol\n                  link\n                }\n              }\n            }\n          }\n        '
+): (typeof documents)['\n          query Subscriptions {\n            subscriptions {\n              id\n              tag\n              status\n              link\n              info\n              updatedAt\n              nodes {\n                edges {\n                  id\n                  name\n                  protocol\n                  link\n                }\n              }\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

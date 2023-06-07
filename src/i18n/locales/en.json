@@ -56,6 +56,7 @@
     "success": "Success"
   },
   "operations": "operations",
+  "orchestrate": "Orchestrate",
   "password": "password",
   "please select a config first": "Please select a config first",
   "policy": "policy",
