@@ -28,6 +28,11 @@
   "checkTolerance": "检测公差",
   "collapse": "折叠",
   "config": "配置",
+  "confirmModal": {
+    "cancel": "不， 我点错了",
+    "confirm": "是，我确定",
+    "removeConfirmDescription": "你确定要移除这个吗？"
+  },
   "connected": "已连接",
   "dark mode": "暗黑模式",
   "debug": "调试",

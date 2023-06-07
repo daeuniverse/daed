@@ -13,7 +13,7 @@ export const SimpleCard = ({
   name: string
   selected: boolean
   onSelect: () => void
-  onRemove: () => void
+  onRemove?: () => void
   children: React.ReactNode
 }) => {
   const { t } = useTranslation()
@@ -29,23 +29,27 @@ export const SimpleCard = ({
                   <Title order={4}>{name}</Title>
 
                   <Group>
-                    <ActionIcon
-                      color="red"
-                      size="xs"
-                      onClick={() => {
-                        modals.openConfirmModal({
-                          title: t('actions.remove'),
-                          labels: {
-                            cancel: 'No',
-                            confirm: "Yes, I'm sure",
-                          },
-                          children: 'Are you sure you want to remove this?',
-                          onConfirm: onRemove,
-                        })
-                      }}
-                    >
-                      <IconTrash />
-                    </ActionIcon>
+                    {onRemove && (
+                      <ActionIcon
+                        color="red"
+                        size="xs"
+                        onClick={(e) => {
+                          e.stopPropagation()
+
+                          modals.openConfirmModal({
+                            title: t('actions.remove'),
+                            labels: {
+                              cancel: t('confirmModal.cancel'),
+                              confirm: t('confirmModal.confirm'),
+                            },
+                            children: t('confirmModal.removeConfirmDescription'),
+                            onConfirm: onRemove,
+                          })
+                        }}
+                      >
+                        <IconTrash />
+                      </ActionIcon>
+                    )}
                   </Group>
                 </Group>
               </Card.Section>

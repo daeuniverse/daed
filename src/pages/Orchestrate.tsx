@@ -18,9 +18,10 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Prism } from '@mantine/prism'
+import { useStore } from '@nanostores/react'
 import { IconRefresh } from '@tabler/icons-react'
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -57,8 +58,9 @@ import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
-import { SortableNodeBadge } from '~/components/SortableNodeBadge'
+import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { ResourceType } from '~/constants'
+import { defaultResourcesAtom } from '~/store'
 
 export const OrchestratePage = () => {
   const { t } = useTranslation()
@@ -96,6 +98,26 @@ export const OrchestratePage = () => {
     type: ResourceType
   } | null>(null)
 
+  const draggingResourceDisplayName = useMemo(() => {
+    if (draggingResource) {
+      const { type, id } = draggingResource
+
+      if (type === ResourceType.node) {
+        const node = nodesQuery?.nodes.edges.find((node) => node.id === id)
+
+        return node?.name
+      }
+
+      if (type === ResourceType.subscription) {
+        const subscription = subscriptionsQuery?.subscriptions.find(
+          (subscription) => subscription.id === draggingResource.id
+        )
+
+        return subscription?.tag || subscription?.link
+      }
+    }
+  }, [draggingResource, nodesQuery, subscriptionsQuery])
+
   const [openedCreateConfigModal, { open: openCreateConfigModal, close: closeCreateConfigModal }] = useDisclosure(false)
   const [openedCreateDnsModal, { open: openCreateDnsModal, close: closeCreateDnsModal }] = useDisclosure(false)
   const [openedCreateRoutingModal, { open: openCreateRoutingModal, close: closeCreateRoutingModal }] =
@@ -111,8 +133,20 @@ export const OrchestratePage = () => {
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
 
+  const { defaultConfigID, defaultDNSID, defaultGroupID, defaultRoutingID } = useStore(defaultResourcesAtom)
+
   return (
     <Stack>
+      <Divider
+        variant="dashed"
+        labelPosition="center"
+        label={
+          <Title id="rule" order={3} tt="uppercase">
+            <Anchor href="#rule">{t('rule')}</Anchor>
+          </Title>
+        }
+      />
+
       <SimpleGrid cols={3}>
         <Section title={t('config')} onCreate={openCreateConfigModal}>
           <Stack>
@@ -122,7 +156,7 @@ export const OrchestratePage = () => {
                 name={config.name}
                 selected={config.selected}
                 onSelect={() => selectConfigMutation.mutate({ id: config.id })}
-                onRemove={() => removeConfigMutation.mutate(config.id)}
+                onRemove={config.id !== defaultConfigID ? () => removeConfigMutation.mutate(config.id) : undefined}
               >
                 <Prism language="json">{JSON.stringify(config, null, 2)}</Prism>
               </SimpleCard>
@@ -138,7 +172,7 @@ export const OrchestratePage = () => {
                 name={dns.name}
                 selected={dns.selected}
                 onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
-                onRemove={() => removeDNSMutation.mutate(dns.id)}
+                onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}
               >
                 <Code block>
                   <pre
@@ -162,7 +196,7 @@ export const OrchestratePage = () => {
                 name={routing.name}
                 selected={routing.selected}
                 onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
-                onRemove={() => removeRoutingMutation.mutate(routing.id)}
+                onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}
               >
                 <Code block>
                   <pre
@@ -179,11 +213,15 @@ export const OrchestratePage = () => {
         </Section>
       </SimpleGrid>
 
-      <Divider />
-
-      <Title id="resource" order={3}>
-        <Anchor href="#resource">{t('resource')}</Anchor>
-      </Title>
+      <Divider
+        variant="dashed"
+        labelPosition="center"
+        label={
+          <Title id="resource" order={3} tt="uppercase">
+            <Anchor href="#resource">{t('resource')}</Anchor>
+          </Title>
+        }
+      />
 
       <SimpleGrid cols={3}>
         <DndContext
@@ -221,7 +259,7 @@ export const OrchestratePage = () => {
                   key={groupId}
                   id={groupId}
                   name={name}
-                  onRemove={() => removeGroupMutation.mutate(groupId)}
+                  onRemove={defaultGroupID !== groupId ? () => removeGroupMutation.mutate(groupId) : undefined}
                 >
                   <Text fw={600}>{policy}</Text>
 
@@ -243,7 +281,7 @@ export const OrchestratePage = () => {
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={nodes} strategy={rectSwappingStrategy}>
                               {nodes.map(({ id: nodeId, name }) => (
-                                <SortableNodeBadge
+                                <SortableResourceBadge
                                   key={nodeId}
                                   id={nodeId}
                                   name={name}
@@ -270,11 +308,11 @@ export const OrchestratePage = () => {
                         <SimpleGrid cols={2}>
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
-                              {subscriptions.map(({ id: subscriptionId, link }) => (
-                                <SortableNodeBadge
+                              {subscriptions.map(({ id: subscriptionId, tag, link }) => (
+                                <SortableResourceBadge
                                   key={subscriptionId}
                                   id={subscriptionId}
-                                  name={link}
+                                  name={tag || link}
                                   onRemove={() =>
                                     groupDelSubscriptionsMutation.mutate({
                                       id: groupId,
@@ -329,7 +367,7 @@ export const OrchestratePage = () => {
                   key={id}
                   id={id}
                   type={ResourceType.subscription}
-                  name={link}
+                  name={tag || link}
                   actions={
                     <ActionIcon size="sm" onClick={() => updateSubscriptionsMutation.mutate([id])}>
                       <IconRefresh />
@@ -337,9 +375,6 @@ export const OrchestratePage = () => {
                   }
                   onRemove={() => removeSubscriptionsMutation.mutate([id])}
                 >
-                  <Text fw={600} color={theme.primaryColor}>
-                    {tag}
-                  </Text>
                   <Text fw={600}>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</Text>
 
                   <Text
@@ -364,14 +399,7 @@ export const OrchestratePage = () => {
           </Section>
 
           <DragOverlay dropAnimation={null}>
-            {draggingResource ? (
-              <Badge>
-                {draggingResource?.type === ResourceType.node
-                  ? nodesQuery?.nodes.edges.find((node) => node.id === draggingResource.id)?.name
-                  : subscriptionsQuery?.subscriptions.find((subscription) => subscription.id === draggingResource.id)
-                      ?.link}
-              </Badge>
-            ) : null}
+            {draggingResource ? <Badge>{draggingResourceDisplayName}</Badge> : null}
           </DragOverlay>
         </DndContext>
       </SimpleGrid>

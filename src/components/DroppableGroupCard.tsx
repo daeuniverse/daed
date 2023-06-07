@@ -11,7 +11,7 @@ export const DroppableGroupCard = ({
 }: {
   id: string
   name: string
-  onRemove: () => void
+  onRemove?: () => void
   children?: React.ReactNode
 }) => {
   const { isOver, setNodeRef } = useDroppable({ id })
@@ -29,23 +29,25 @@ export const DroppableGroupCard = ({
         <Group position="apart">
           <Title order={5}>{name}</Title>
 
-          <ActionIcon
-            color="red"
-            size="xs"
-            onClick={() => {
-              modals.openConfirmModal({
-                title: 'Remove',
-                labels: {
-                  cancel: 'No',
-                  confirm: "Yes, I'm sure",
-                },
-                children: 'Are you sure you want to remove this?',
-                onConfirm: onRemove,
-              })
-            }}
-          >
-            <IconTrash />
-          </ActionIcon>
+          {onRemove && (
+            <ActionIcon
+              color="red"
+              size="xs"
+              onClick={() => {
+                modals.openConfirmModal({
+                  title: 'Remove',
+                  labels: {
+                    cancel: 'No',
+                    confirm: "Yes, I'm sure",
+                  },
+                  children: 'Are you sure you want to remove this?',
+                  onConfirm: onRemove,
+                })
+              }}
+            >
+              <IconTrash />
+            </ActionIcon>
+          )}
         </Group>
       </Card.Section>
 

@@ -38,7 +38,7 @@ import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
-import { SortableNodeBadge } from '~/components/SortableNodeBadge'
+import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { DialMode, LogLevel, ResourceType } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
@@ -355,7 +355,7 @@ export const ExperimentPage = () => {
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={nodes} strategy={rectSwappingStrategy}>
                               {nodes.map(({ id: nodeId, name }) => (
-                                <SortableNodeBadge
+                                <SortableResourceBadge
                                   key={nodeId}
                                   id={nodeId}
                                   name={name}
@@ -388,7 +388,7 @@ export const ExperimentPage = () => {
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
                               {subscriptions.map(({ id: subscriptionId, name }) => (
-                                <SortableNodeBadge
+                                <SortableResourceBadge
                                   key={subscriptionId}
                                   id={subscriptionId}
                                   name={name}

@@ -28,6 +28,11 @@
   "checkTolerance": "Check Tolerance",
   "collapse": "collapse",
   "config": "Config",
+  "confirmModal": {
+    "cancel": "No, It's a mistake",
+    "confirm": "Yes, I'm sure",
+    "removeConfirmDescription": "Are you sure you want to remove this?"
+  },
   "connected": "connected",
   "dark mode": "Dark Mode",
   "debug": "debug",

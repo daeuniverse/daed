@@ -61,10 +61,10 @@ export const DraggableResourceCard = ({
                 modals.openConfirmModal({
                   title: t('actions.remove'),
                   labels: {
-                    cancel: 'No',
-                    confirm: "Yes, I'm sure",
+                    cancel: t('confirmModal.cancel'),
+                    confirm: t('confirmModal.confirm'),
                   },
-                  children: 'Are you sure you want to remove this?',
+                  children: t('confirmModal.removeConfirmDescription'),
                   onConfirm: onRemove,
                 })
               }}
