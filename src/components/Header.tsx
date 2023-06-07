@@ -33,7 +33,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUserQuery } from '~/apis'
-import logoPng from '~/assets/logo.png'
+import logo from '~/assets/logo.svg'
 import { i18n } from '~/i18n'
 import { tokenAtom } from '~/store'
 import { Defer } from '~/utils'
@@ -141,7 +141,7 @@ export const Header = () => {
         <Group position="apart">
           <Link to="/">
             <Group>
-              <Image radius="sm" src={logoPng} width={32} height={32} />
+              <Image radius="sm" src={logo} width={32} height={32} />
 
               <Title order={2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
                 daed

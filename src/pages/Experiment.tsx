@@ -1,6 +1,6 @@
-import { DndContext, DragOverlay, UniqueIdentifier } from '@dnd-kit/core'
+import { DndContext, DragOverlay, UniqueIdentifier, closestCenter } from '@dnd-kit/core'
 import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd-kit/modifiers'
-import { SortableContext, rectSwappingStrategy } from '@dnd-kit/sortable'
+import { SortableContext, arrayMove, rectSwappingStrategy } from '@dnd-kit/sortable'
 import { faker } from '@faker-js/faker'
 import {
   Accordion,
@@ -353,7 +353,26 @@ export const ExperimentPage = () => {
 
                       <Accordion.Panel>
                         <SimpleGrid cols={2}>
-                          <DndContext modifiers={[restrictToParentElement]}>
+                          <DndContext
+                            modifiers={[restrictToParentElement]}
+                            collisionDetection={closestCenter}
+                            onDragEnd={({ active, over }) => {
+                              if (active && over && active.id !== over.id) {
+                                const updatedFakeGrups = produce(fakeGroups, (groups) => {
+                                  const group = groups.find((group) => group.id === groupId)
+
+                                  if (group) {
+                                    const from = group?.nodes.findIndex((node) => node.id === active.id)
+                                    const to = group?.nodes.findIndex((node) => node.id === over.id)
+
+                                    group.nodes = arrayMove(group.nodes, from, to)
+                                  }
+                                })
+
+                                setFakeGroups(updatedFakeGrups)
+                              }
+                            }}
+                          >
                             <SortableContext items={nodes} strategy={rectSwappingStrategy}>
                               {nodes.map(({ id: nodeId, name }) => (
                                 <SortableResourceBadge
