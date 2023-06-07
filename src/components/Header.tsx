@@ -20,16 +20,13 @@ import {
 import { useDisclosure } from '@mantine/hooks'
 import {
   IconChevronDown,
+  IconCloudCheck,
   IconCloudComputing,
+  IconCloudPause,
   IconLanguage,
   IconLogout,
-  IconMap,
-  IconRoute,
   IconSettings,
-  IconSubtask,
-  IconTable,
   IconTestPipe,
-  IconUsersGroup,
 } from '@tabler/icons-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -73,6 +70,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   mainSection: {
+    position: 'relative',
     paddingBottom: theme.spacing.sm,
   },
 
@@ -127,14 +125,14 @@ export const Header = () => {
   const resetUploadingAvatarRef = useRef<() => void>(null)
 
   const links = [
-    { link: '/config', label: t('config'), icon: <IconSettings /> },
-    { link: '/node', label: t('node'), icon: <IconSubtask /> },
-    { link: '/subscription', label: t('subscription'), icon: <IconTable /> },
-    { link: '/dns', label: t('dns'), icon: <IconRoute /> },
-    { link: '/routing', label: t('routing'), icon: <IconMap /> },
-    { link: '/group', label: t('group'), icon: <IconUsersGroup /> },
+    // { link: '/config', label: t('config'), icon: <IconSettings /> },
+    // { link: '/node', label: t('node'), icon: <IconSubtask /> },
+    // { link: '/subscription', label: t('subscription'), icon: <IconTable /> },
+    // { link: '/dns', label: t('dns'), icon: <IconRoute /> },
+    // { link: '/routing', label: t('routing'), icon: <IconMap /> },
+    // { link: '/group', label: t('group'), icon: <IconUsersGroup /> },
     { link: '/orchestrate', label: t('orchestrate'), icon: <IconCloudComputing /> },
-    { link: '/experiment', label: 'Experiment', icon: <IconTestPipe /> },
+    { link: '/experiment', label: t('experiment'), icon: <IconTestPipe /> },
   ]
 
   return (
@@ -151,13 +149,24 @@ export const Header = () => {
             </Group>
           </Link>
 
-          <Switch
-            size="md"
-            checked={generalQuery?.general.dae.running}
-            onChange={(e) => {
-              runMutation.mutateAsync(!e.target.checked)
+          <Center
+            sx={{
+              position: 'absolute',
+              width: 0,
+              insetInline: 0,
+              marginInline: 'auto',
             }}
-          />
+          >
+            <Switch
+              onLabel={<IconCloudCheck size="1.5rem" stroke={2.5} />}
+              offLabel={<IconCloudPause size="1.5rem" stroke={2.5} />}
+              size="lg"
+              checked={generalQuery?.general.dae.running}
+              onChange={(e) => {
+                runMutation.mutateAsync(!e.target.checked)
+              }}
+            />
+          </Center>
 
           <Group>
             <Menu

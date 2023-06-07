@@ -22,7 +22,7 @@ export const SimpleCard = ({
     <HoverCard withArrow withinPortal>
       <HoverCard.Target>
         <Indicator position="bottom-center" size={18} disabled={!selected}>
-          <Card withBorder shadow="sm">
+          <Card withBorder shadow="sm" p="sm">
             <Card.Section withBorder inheritPadding py="sm">
               <Group position="apart">
                 <UnstyledButton onClick={onSelect}>

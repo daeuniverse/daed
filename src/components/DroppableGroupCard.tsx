@@ -21,6 +21,7 @@ export const DroppableGroupCard = ({
       ref={setNodeRef}
       withBorder
       shadow="sm"
+      p="sm"
       style={{
         opacity: isOver ? 0.5 : undefined,
       }}
