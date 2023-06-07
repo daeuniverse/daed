@@ -25,8 +25,8 @@ import {
   IconCloudPause,
   IconLanguage,
   IconLogout,
-  IconSettings,
   IconTestPipe,
+  IconUserEdit,
 } from '@tabler/icons-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -200,12 +200,7 @@ export const Header = () => {
                 </Menu.Item>
 
                 <Menu.Label>{t('settings')}</Menu.Label>
-                <Menu.Item
-                  icon={<IconSettings size="0.9rem" stroke={1.5} />}
-                  onClick={() => {
-                    openAccountSettingsFormModal()
-                  }}
-                >
+                <Menu.Item icon={<IconUserEdit size="0.9rem" stroke={1.5} />} onClick={openAccountSettingsFormModal}>
                   {t('account settings')}
                 </Menu.Item>
 

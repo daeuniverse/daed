@@ -20,7 +20,16 @@ import {
 import { useDisclosure } from '@mantine/hooks'
 import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { IconDatabaseOff, IconRefresh } from '@tabler/icons-react'
+import {
+  IconCloud,
+  IconCloudComputing,
+  IconDatabaseOff,
+  IconMap,
+  IconRefresh,
+  IconRoute,
+  IconSettings,
+  IconTable,
+} from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -149,7 +158,7 @@ export const OrchestratePage = () => {
       />
 
       <SimpleGrid cols={3}>
-        <Section title={t('config')} onCreate={openCreateConfigModal}>
+        <Section title={t('config')} icon={<IconSettings />} onCreate={openCreateConfigModal}>
           <Stack>
             {configsQuery?.configs.map((config) => (
               <SimpleCard
@@ -165,7 +174,7 @@ export const OrchestratePage = () => {
           </Stack>
         </Section>
 
-        <Section title={t('dns')} onCreate={openCreateDnsModal}>
+        <Section title={t('dns')} icon={<IconRoute />} onCreate={openCreateDnsModal}>
           <Stack>
             {dnssQuery?.dnss.map((dns) => (
               <SimpleCard
@@ -189,7 +198,7 @@ export const OrchestratePage = () => {
           </Stack>
         </Section>
 
-        <Section title={t('routing')} onCreate={openCreateRoutingModal}>
+        <Section title={t('routing')} icon={<IconMap />} onCreate={openCreateRoutingModal}>
           <Stack>
             {routingsQuery?.routings.map((routing) => (
               <SimpleCard
@@ -253,7 +262,13 @@ export const OrchestratePage = () => {
             setDraggingResource(null)
           }}
         >
-          <Section title={t('group')} onCreate={openCreateGroupModal} highlight={!!draggingResource} bordered>
+          <Section
+            title={t('group')}
+            icon={<IconTable />}
+            onCreate={openCreateGroupModal}
+            highlight={!!draggingResource}
+            bordered
+          >
             <Stack>
               {groupsQuery?.groups.map(({ id: groupId, name, policy, nodes, subscriptions }) => (
                 <DroppableGroupCard
@@ -345,7 +360,7 @@ export const OrchestratePage = () => {
             </Stack>
           </Section>
 
-          <Section title={t('node')} onCreate={openImportNodeModal} bordered>
+          <Section title={t('node')} icon={<IconCloud />} onCreate={openImportNodeModal} bordered>
             <Stack>
               {nodesQuery?.nodes.edges.map(({ id, name, tag, protocol, link }) => (
                 <DraggableResourceCard
@@ -373,7 +388,12 @@ export const OrchestratePage = () => {
             </Stack>
           </Section>
 
-          <Section title={t('subscription')} onCreate={openImportSubscriptionModal} bordered>
+          <Section
+            title={t('subscription')}
+            icon={<IconCloudComputing />}
+            onCreate={openImportSubscriptionModal}
+            bordered
+          >
             <Stack>
               {subscriptionsQuery?.subscriptions.map(({ id, tag, link, updatedAt, nodes }) => (
                 <DraggableResourceCard

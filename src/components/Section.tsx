@@ -13,6 +13,7 @@ const useStyles = createStyles((theme) => ({
 
 export const Section = ({
   title,
+  icon,
   bordered,
   onCreate,
   actions,
@@ -20,6 +21,7 @@ export const Section = ({
   children,
 }: {
   title: string
+  icon?: React.ReactNode
   bordered?: boolean
   onCreate: () => void
   actions?: React.ReactNode
@@ -34,9 +36,13 @@ export const Section = ({
       bg={highlight ? theme.fn.lighten(theme.fn.primaryColor(), 0.5) : undefined}
     >
       <Group position="apart">
-        <Title order={4} color={theme.primaryColor}>
-          {title}
-        </Title>
+        <Group spacing="xs">
+          {icon}
+
+          <Title order={4} color={theme.primaryColor}>
+            {title}
+          </Title>
+        </Group>
 
         <Group>
           {actions}
