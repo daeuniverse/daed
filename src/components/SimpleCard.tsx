@@ -1,6 +1,6 @@
 import { ActionIcon, Card, Group, HoverCard, Indicator, Title, UnstyledButton } from '@mantine/core'
 import { modals } from '@mantine/modals'
-import { IconTrash } from '@tabler/icons-react'
+import { IconDetails, IconTrash } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
 export const SimpleCard = ({
@@ -21,46 +21,50 @@ export const SimpleCard = ({
   const { t } = useTranslation()
 
   return (
-    <HoverCard withArrow withinPortal>
-      <HoverCard.Target>
-        <Indicator position="bottom-center" size={18} disabled={!selected}>
-          <Card withBorder shadow="sm" p="sm">
-            <Card.Section withBorder inheritPadding py="sm">
-              <Group position="apart">
-                <UnstyledButton onClick={onSelect}>
-                  <Title order={4}>{name}</Title>
-                </UnstyledButton>
+    <Indicator position="bottom-center" size={18} disabled={!selected}>
+      <Card withBorder shadow="sm" p="sm">
+        <Card.Section withBorder inheritPadding py="sm">
+          <Group position="apart">
+            <UnstyledButton onClick={onSelect}>
+              <Title order={4}>{name}</Title>
+            </UnstyledButton>
 
-                <Group>
-                  {actions}
+            <Group>
+              {actions}
 
-                  {onRemove && (
-                    <ActionIcon
-                      color="red"
-                      size="xs"
-                      onClick={() => {
-                        modals.openConfirmModal({
-                          title: t('actions.remove'),
-                          labels: {
-                            cancel: t('confirmModal.cancel'),
-                            confirm: t('confirmModal.confirm'),
-                          },
-                          children: t('confirmModal.removeConfirmDescription'),
-                          onConfirm: onRemove,
-                        })
-                      }}
-                    >
-                      <IconTrash />
-                    </ActionIcon>
-                  )}
-                </Group>
-              </Group>
-            </Card.Section>
-          </Card>
-        </Indicator>
-      </HoverCard.Target>
+              <HoverCard withArrow withinPortal>
+                <HoverCard.Target>
+                  <ActionIcon size="xs">
+                    <IconDetails />
+                  </ActionIcon>
+                </HoverCard.Target>
 
-      <HoverCard.Dropdown>{children}</HoverCard.Dropdown>
-    </HoverCard>
+                <HoverCard.Dropdown>{children}</HoverCard.Dropdown>
+              </HoverCard>
+
+              {onRemove && (
+                <ActionIcon
+                  color="red"
+                  size="xs"
+                  onClick={() => {
+                    modals.openConfirmModal({
+                      title: t('actions.remove'),
+                      labels: {
+                        cancel: t('confirmModal.cancel'),
+                        confirm: t('confirmModal.confirm'),
+                      },
+                      children: t('confirmModal.removeConfirmDescription'),
+                      onConfirm: onRemove,
+                    })
+                  }}
+                >
+                  <IconTrash />
+                </ActionIcon>
+              )}
+            </Group>
+          </Group>
+        </Card.Section>
+      </Card>
+    </Indicator>
   )
 }
