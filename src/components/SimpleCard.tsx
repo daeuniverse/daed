@@ -8,12 +8,14 @@ export const SimpleCard = ({
   selected,
   onSelect,
   onRemove,
+  actions,
   children,
 }: {
   name: string
   selected: boolean
   onSelect?: () => void
   onRemove?: () => void
+  actions?: React.ReactNode
   children: React.ReactNode
 }) => {
   const { t } = useTranslation()
@@ -30,6 +32,8 @@ export const SimpleCard = ({
                 </UnstyledButton>
 
                 <Group>
+                  {actions}
+
                   {onRemove && (
                     <ActionIcon
                       color="red"

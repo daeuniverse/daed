@@ -24,6 +24,7 @@ import {
   IconCloud,
   IconCloudComputing,
   IconDatabaseOff,
+  IconForms,
   IconMap,
   IconRefresh,
   IconRoute,
@@ -31,7 +32,7 @@ import {
   IconTable,
 } from '@tabler/icons-react'
 import dayjs from 'dayjs'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -53,6 +54,9 @@ import {
   useRemoveNodesMutation,
   useRemoveRoutingMutation,
   useRemoveSubscriptionsMutation,
+  useRenameConfigMutation,
+  useRenameDNSMutation,
+  useRenameRoutingMutation,
   useRoutingsQuery,
   useSelectConfigMutation,
   useSelectDNSMutation,
@@ -66,10 +70,11 @@ import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
+import { RenameModal, RenameModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
-import { ResourceType } from '~/constants'
+import { ResourceType, RuleType } from '~/constants'
 import { defaultResourcesAtom } from '~/store'
 
 export const OrchestratePage = () => {
@@ -128,6 +133,7 @@ export const OrchestratePage = () => {
     }
   }, [draggingResource, nodesQuery, subscriptionsQuery])
 
+  const [openedRenameModal, { open: openRenameModal, close: closeRenameModal }] = useDisclosure(false)
   const [openedCreateConfigModal, { open: openCreateConfigModal, close: closeCreateConfigModal }] = useDisclosure(false)
   const [openedCreateDnsModal, { open: openCreateDnsModal, close: closeCreateDnsModal }] = useDisclosure(false)
   const [openedCreateRoutingModal, { open: openCreateRoutingModal, close: closeCreateRoutingModal }] =
@@ -142,6 +148,11 @@ export const OrchestratePage = () => {
   const importNodesMutation = useImportNodesMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
+
+  const renameModalRef = useRef<RenameModalRef>(null)
+  const renameConfigMutation = useRenameConfigMutation()
+  const renameDNSMutation = useRenameDNSMutation()
+  const renameRoutingMutation = useRenameRoutingMutation()
 
   const { defaultConfigID, defaultDNSID, defaultGroupID, defaultRoutingID } = useStore(defaultResourcesAtom)
 
@@ -164,6 +175,23 @@ export const OrchestratePage = () => {
               <SimpleCard
                 key={config.id}
                 name={config.name}
+                actions={
+                  <ActionIcon
+                    size="xs"
+                    onClick={() => {
+                      if (renameModalRef.current) {
+                        renameModalRef.current.setProps({
+                          id: config.id,
+                          type: RuleType.config,
+                          oldName: config.name,
+                        })
+                      }
+                      openRenameModal()
+                    }}
+                  >
+                    <IconForms />
+                  </ActionIcon>
+                }
                 selected={config.selected}
                 onSelect={() => selectConfigMutation.mutate({ id: config.id })}
                 onRemove={config.id !== defaultConfigID ? () => removeConfigMutation.mutate(config.id) : undefined}
@@ -180,6 +208,23 @@ export const OrchestratePage = () => {
               <SimpleCard
                 key={dns.id}
                 name={dns.name}
+                actions={
+                  <ActionIcon
+                    size="xs"
+                    onClick={() => {
+                      if (renameModalRef.current) {
+                        renameModalRef.current.setProps({
+                          id: dns.id,
+                          type: RuleType.dns,
+                          oldName: dns.name,
+                        })
+                      }
+                      openRenameModal()
+                    }}
+                  >
+                    <IconForms />
+                  </ActionIcon>
+                }
                 selected={dns.selected}
                 onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
                 onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}
@@ -204,6 +249,23 @@ export const OrchestratePage = () => {
               <SimpleCard
                 key={routing.id}
                 name={routing.name}
+                actions={
+                  <ActionIcon
+                    size="xs"
+                    onClick={() => {
+                      if (renameModalRef.current) {
+                        renameModalRef.current.setProps({
+                          id: routing.id,
+                          type: RuleType.routing,
+                          oldName: routing.name,
+                        })
+                      }
+                      openRenameModal()
+                    }}
+                  >
+                    <IconForms />
+                  </ActionIcon>
+                }
                 selected={routing.selected}
                 onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
                 onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}
@@ -480,6 +542,31 @@ export const OrchestratePage = () => {
         onClose={closeImportSubscriptionModal}
         handleSubmit={async (values) => {
           await importSubscriptionsMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
+        }}
+      />
+
+      <RenameModal
+        ref={renameModalRef}
+        opened={openedRenameModal}
+        onClose={closeRenameModal}
+        handleSubmit={(type, id) => async (values) => {
+          const { name } = values
+
+          if (!type || !id) {
+            return
+          }
+
+          if (type === RuleType.config) {
+            renameConfigMutation.mutate({ id, name })
+          }
+
+          if (type === RuleType.dns) {
+            renameDNSMutation.mutate({ id, name })
+          }
+
+          if (type === RuleType.routing) {
+            renameRoutingMutation.mutate({ id, name })
+          }
         }}
       />
     </Stack>

@@ -218,16 +218,22 @@ export type Mutation = {
   tagNode: Scalars['Int']['output']
   /** tagSubscription is to give the subscription a new tag. */
   tagSubscription: Scalars['Int']['output']
-  /** updateAvatar set avatar for current user. Remove avatar if avatar is null. Blob base64 encoded image is recommended. */
+  /** updateAvatar update avatar for current user. Remove avatar if avatar is null. Blob base64 encoded image is recommended. */
   updateAvatar: Scalars['Int']['output']
   /** updateConfig allows to partially update global config with given id. */
   updateConfig: Config
   /** updateDns is to update dns config with given id. */
   updateDns: Dns
+  /** updateName update name for current user. Remove name if name is null. */
+  updateName: Scalars['Int']['output']
+  /** updatePassword update password for current user. currentPassword is needed to authenticate. Return new token. */
+  updatePassword: Scalars['String']['output']
   /** updateRouting is to update routing config with given id. */
   updateRouting: Routing
   /** updateSubscription is to re-fetch subscription and resolve subscription into nodes. Old nodes that independently belong to any groups will not be removed. */
   updateSubscription: Subscription
+  /** updateUsername update username for current user. */
+  updateUsername: Scalars['Int']['output']
 }
 
 export type MutationCreateConfigArgs = {
@@ -385,6 +391,15 @@ export type MutationUpdateDnsArgs = {
   id: Scalars['ID']['input']
 }
 
+export type MutationUpdateNameArgs = {
+  name?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MutationUpdatePasswordArgs = {
+  currentPassword: Scalars['String']['input']
+  newPassword: Scalars['String']['input']
+}
+
 export type MutationUpdateRoutingArgs = {
   id: Scalars['ID']['input']
   routing: Scalars['String']['input']
@@ -392,6 +407,10 @@ export type MutationUpdateRoutingArgs = {
 
 export type MutationUpdateSubscriptionArgs = {
   id: Scalars['ID']['input']
+}
+
+export type MutationUpdateUsernameArgs = {
+  username: Scalars['String']['input']
 }
 
 export type Node = {

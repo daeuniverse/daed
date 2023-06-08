@@ -154,8 +154,14 @@ export const DEFAULT_DNS = `
 `
 
 export enum ResourceType {
-  node,
-  subscription,
+  node = 'node',
+  subscription = 'subscription',
+}
+
+export enum RuleType {
+  config = 'config',
+  dns = 'dns',
+  routing = 'routing',
 }
 
 export const v2raySchema = z.object({

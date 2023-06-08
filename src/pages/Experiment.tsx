@@ -4,6 +4,7 @@ import { SortableContext, arrayMove, rectSwappingStrategy } from '@dnd-kit/sorta
 import { faker } from '@faker-js/faker'
 import {
   Accordion,
+  ActionIcon,
   Anchor,
   Badge,
   Code,
@@ -19,9 +20,10 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Prism } from '@mantine/prism'
+import { IconForms } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -29,6 +31,9 @@ import {
   useCreateRoutingMutation,
   useImportNodesMutation,
   useImportSubscriptionsMutation,
+  useRenameConfigMutation,
+  useRenameDNSMutation,
+  useRenameRoutingMutation,
 } from '~/apis'
 import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
@@ -37,10 +42,11 @@ import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
+import { RenameModal, RenameModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
-import { DialMode, LogLevel, ResourceType } from '~/constants'
+import { DialMode, LogLevel, ResourceType, RuleType } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
 export const ExperimentPage = () => {
@@ -205,6 +211,7 @@ export const ExperimentPage = () => {
     type: ResourceType
   } | null>(null)
 
+  const [openedRenameModal, { open: openRenameModal, close: closeRenameModal }] = useDisclosure(false)
   const [openedCreateConfigModal, { open: openCreateConfigModal, close: closeCreateConfigModal }] = useDisclosure(false)
   const [openedCreateDnsModal, { open: openCreateDnsModal, close: closeCreateDnsModal }] = useDisclosure(false)
   const [openedCreateRoutingModal, { open: openCreateRoutingModal, close: closeCreateRoutingModal }] =
@@ -219,6 +226,11 @@ export const ExperimentPage = () => {
   const importNodesMutation = useImportNodesMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
 
+  const renameModalRef = useRef<RenameModalRef>(null)
+  const renameConfigMutation = useRenameConfigMutation()
+  const renameDNSMutation = useRenameDNSMutation()
+  const renameRoutingMutation = useRenameRoutingMutation()
+
   return (
     <Stack>
       <SimpleGrid cols={3}>
@@ -229,6 +241,23 @@ export const ExperimentPage = () => {
                 key={config.id}
                 name={config.name}
                 selected={false}
+                actions={
+                  <ActionIcon
+                    size="xs"
+                    onClick={() => {
+                      if (renameModalRef.current) {
+                        renameModalRef.current.setProps({
+                          id: config.id,
+                          type: RuleType.config,
+                          oldName: config.name,
+                        })
+                      }
+                      openRenameModal()
+                    }}
+                  >
+                    <IconForms />
+                  </ActionIcon>
+                }
                 onRemove={() => setFakeConfigs((configs) => configs.filter((c) => c.id !== config.id))}
               >
                 <Prism language="json">{JSON.stringify(config, null, 2)}</Prism>
@@ -244,6 +273,23 @@ export const ExperimentPage = () => {
                 key={dns.id}
                 name={dns.name}
                 selected={false}
+                actions={
+                  <ActionIcon
+                    size="xs"
+                    onClick={() => {
+                      if (renameModalRef.current) {
+                        renameModalRef.current.setProps({
+                          id: dns.id,
+                          type: RuleType.dns,
+                          oldName: dns.name,
+                        })
+                      }
+                      openRenameModal()
+                    }}
+                  >
+                    <IconForms />
+                  </ActionIcon>
+                }
                 onRemove={() => setFakeDnss((dnss) => dnss.filter((c) => c.id !== dns.id))}
               >
                 <Code block>{dns.dns}</Code>
@@ -259,6 +305,23 @@ export const ExperimentPage = () => {
                 key={routing.id}
                 name={routing.name}
                 selected={false}
+                actions={
+                  <ActionIcon
+                    size="xs"
+                    onClick={() => {
+                      if (renameModalRef.current) {
+                        renameModalRef.current.setProps({
+                          id: routing.id,
+                          type: RuleType.routing,
+                          oldName: routing.name,
+                        })
+                      }
+                      openRenameModal()
+                    }}
+                  >
+                    <IconForms />
+                  </ActionIcon>
+                }
                 onRemove={() => setFakeRoutings((routings) => routings.filter((c) => c.id !== routing.id))}
               >
                 <Code>{routing.routing.string}</Code>
@@ -570,6 +633,31 @@ export const ExperimentPage = () => {
         opened={false}
         onClose={() => {
           //
+        }}
+      />
+
+      <RenameModal
+        ref={renameModalRef}
+        opened={openedRenameModal}
+        onClose={closeRenameModal}
+        handleSubmit={(type, id) => async (values) => {
+          const { name } = values
+
+          if (!type || !id) {
+            return
+          }
+
+          if (type === RuleType.config) {
+            renameConfigMutation.mutate({ id, name })
+          }
+
+          if (type === RuleType.dns) {
+            renameDNSMutation.mutate({ id, name })
+          }
+
+          if (type === RuleType.routing) {
+            renameRoutingMutation.mutate({ id, name })
+          }
         }}
       />
     </Stack>
