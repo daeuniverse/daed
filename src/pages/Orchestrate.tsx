@@ -234,8 +234,8 @@ export const OrchestratePage = () => {
                           sniffingTimeoutMS: Number.parseInt(sniffingTimeout.split('ms')[0]),
                           ...global,
                           // FIXME: these values are not presented in query as of now
-                          tlsImplementation: '',
-                          utlsImitate: '',
+                          // tlsImplementation: '',
+                          // utlsImitate: '',
                         })
 
                         openUpdateConfigFormModal()

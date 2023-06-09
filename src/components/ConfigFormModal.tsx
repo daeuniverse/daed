@@ -28,14 +28,11 @@ import {
   DEFAULT_DISABLE_WAITING_NETWORK,
   DEFAULT_TCP_CHECK_HTTP_METHOD,
   DEFAULT_TCP_CHECK_URL,
-  DEFAULT_TLS_IMPLEMENTATION,
   DEFAULT_TPROXY_PORT,
   DEFAULT_UDP_CHECK_DNS,
   DialMode,
   GET_LOG_LEVEL_STEPS,
-  TLSImplementation,
   TcpCheckHttpMethod,
-  UTLSImitate,
 } from '~/constants'
 
 import { FormActions } from './FormActions'
@@ -56,8 +53,8 @@ const schema = z.object({
   tcpCheckHttpMethod: z.string(),
   disableWaitingNetwork: z.boolean(),
   autoConfigKernelParameter: z.boolean(),
-  tlsImplementation: z.string(),
-  utlsImitate: z.string(),
+  // tlsImplementation: z.string(),
+  // utlsImitate: z.string(),
 })
 
 const InputList = <T extends z.infer<typeof schema>>({
@@ -137,8 +134,8 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
       tcpCheckHttpMethod: DEFAULT_TCP_CHECK_HTTP_METHOD,
       disableWaitingNetwork: DEFAULT_DISABLE_WAITING_NETWORK,
       autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
-      tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
-      utlsImitate: '',
+      // tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
+      // utlsImitate: '',
     },
   })
 
@@ -297,7 +294,7 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
             <InputList form={form} label={t('tcpCheckUrl')} fieldName="tcpCheckUrl" values={form.values.tcpCheckUrl} />
           </SimpleGrid>
 
-          <SimpleGrid cols={2}>
+          {/* <SimpleGrid cols={2}>
             <Select
               label={t('tlsImplementation')}
               data={Object.values(TLSImplementation).map((tlsImplementation) => ({
@@ -315,7 +312,7 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
               }))}
               {...form.getInputProps('utlsImitate')}
             />
-          </SimpleGrid>
+          </SimpleGrid> */}
 
           <SimpleGrid cols={2}>
             <Checkbox
