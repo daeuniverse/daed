@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
+  MODE,
   QUERY_KEY_CONFIG,
   QUERY_KEY_DNS,
   QUERY_KEY_GENERAL,
@@ -10,12 +11,12 @@ import {
   QUERY_KEY_SUBSCRIPTION,
   QUERY_KEY_USER,
 } from '~/constants'
-import { useQGLQueryClient } from '~/contexts'
+import { useGQLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
 import { GlobalInput, ImportArgument, Policy, PolicyParam } from '~/schemas/gql/graphql'
 
 export const useSetJsonStorageMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useMutation({
     mutationFn: (object: Record<string, string>) => {
@@ -37,8 +38,28 @@ export const useSetJsonStorageMutation = () => {
   })
 }
 
+export const useSetModeMutation = () => {
+  const gqlClient = useGQLQueryClient()
+
+  return useMutation({
+    mutationFn: (mode: MODE) => {
+      return gqlClient.request(
+        graphql(`
+          mutation SetMode($paths: [String!]!, $values: [String!]!) {
+            setJsonStorage(paths: $paths, values: $values)
+          }
+        `),
+        {
+          paths: ['mode'],
+          values: [mode],
+        }
+      )
+    },
+  })
+}
+
 export const useCreateConfigMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -64,7 +85,7 @@ export const useCreateConfigMutation = () => {
 }
 
 export const useUpdateConfigMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -90,7 +111,7 @@ export const useUpdateConfigMutation = () => {
 }
 
 export const useRemoveConfigMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -113,7 +134,7 @@ export const useRemoveConfigMutation = () => {
 }
 
 export const useSelectConfigMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -136,7 +157,7 @@ export const useSelectConfigMutation = () => {
 }
 
 export const useRenameConfigMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -160,7 +181,7 @@ export const useRenameConfigMutation = () => {
 }
 
 export const useCreateRoutingMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -186,7 +207,7 @@ export const useCreateRoutingMutation = () => {
 }
 
 export const useUpdateRoutingMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -212,7 +233,7 @@ export const useUpdateRoutingMutation = () => {
 }
 
 export const useRemoveRoutingMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -235,7 +256,7 @@ export const useRemoveRoutingMutation = () => {
 }
 
 export const useSelectRoutingMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -258,7 +279,7 @@ export const useSelectRoutingMutation = () => {
 }
 
 export const useRenameRoutingMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -282,7 +303,7 @@ export const useRenameRoutingMutation = () => {
 }
 
 export const useCreateDNSMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -308,7 +329,7 @@ export const useCreateDNSMutation = () => {
 }
 
 export const useUpdateDNSMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -334,7 +355,7 @@ export const useUpdateDNSMutation = () => {
 }
 
 export const useRemoveDNSMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -357,7 +378,7 @@ export const useRemoveDNSMutation = () => {
 }
 
 export const useSelectDNSMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -380,7 +401,7 @@ export const useSelectDNSMutation = () => {
 }
 
 export const useRenameDNSMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -404,7 +425,7 @@ export const useRenameDNSMutation = () => {
 }
 
 export const useCreateGroupMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -431,7 +452,7 @@ export const useCreateGroupMutation = () => {
 }
 
 export const useRemoveGroupMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -454,7 +475,7 @@ export const useRemoveGroupMutation = () => {
 }
 
 export const useGroupAddNodesMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -478,7 +499,7 @@ export const useGroupAddNodesMutation = () => {
 }
 
 export const useGroupDelNodesMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -502,7 +523,7 @@ export const useGroupDelNodesMutation = () => {
 }
 
 export const useGroupAddSubscriptionsMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -526,7 +547,7 @@ export const useGroupAddSubscriptionsMutation = () => {
 }
 
 export const useGroupDelSubscriptionsMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -550,7 +571,7 @@ export const useGroupDelSubscriptionsMutation = () => {
 }
 
 export const useImportNodesMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -580,7 +601,7 @@ export const useImportNodesMutation = () => {
 }
 
 export const useRemoveNodesMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -603,7 +624,7 @@ export const useRemoveNodesMutation = () => {
 }
 
 export const useImportSubscriptionsMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -615,6 +636,9 @@ export const useImportSubscriptionsMutation = () => {
               mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {
                 importSubscription(rollbackError: $rollbackError, arg: $arg) {
                   link
+                  sub {
+                    id
+                  }
                   nodeImportResult {
                     node {
                       id
@@ -637,7 +661,7 @@ export const useImportSubscriptionsMutation = () => {
 }
 
 export const useUpdateSubscriptionsMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -665,7 +689,7 @@ export const useUpdateSubscriptionsMutation = () => {
 }
 
 export const useRemoveSubscriptionsMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -687,7 +711,7 @@ export const useRemoveSubscriptionsMutation = () => {
 }
 
 export const useRunMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -710,7 +734,7 @@ export const useRunMutation = () => {
 }
 
 export const useUpdateAvatarMutation = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({

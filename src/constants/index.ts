@@ -20,6 +20,7 @@ export const QUERY_KEY_CONFIG = ['config']
 export const QUERY_KEY_ROUTING = ['routing']
 export const QUERY_KEY_DNS = ['dns']
 export const QUERY_KEY_GROUP = ['group']
+export const QUERY_KEY_STORAGE = ['storage']
 
 export enum LogLevel {
   error = 'error',

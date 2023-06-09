@@ -2,6 +2,7 @@
   "account settings": "Account Settings",
   "actions": {
     "add": "Add",
+    "advanced mode": "Advanced Mode",
     "already have an account, login instead": "Already have an account, login instead",
     "cancel": "Cancel",
     "change endpoint": "Change Endpoint",
@@ -12,6 +13,7 @@
     "edit": "Edit",
     "hide": "Hide",
     "import": "Import",
+    "import resource": "Import {{ name }}",
     "login": "Login",
     "logout": "Logout",
     "refresh": "Refresh",
@@ -20,6 +22,7 @@
     "reset": "Reset",
     "save dae": "Save dae",
     "show content": "Show content",
+    "simple mode": "Simple Mode",
     "skip": "Skip",
     "start your journey": "Start your journey",
     "submit": "Submit",

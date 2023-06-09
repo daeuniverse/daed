@@ -13,7 +13,7 @@ export const GQLQueryClientProvider = ({ client, children }: { client: GraphQLCl
   return <GQLClientContext.Provider value={client}>{children}</GQLClientContext.Provider>
 }
 
-export const useQGLQueryClient = () => useContext(GQLClientContext)
+export const useGQLQueryClient = () => useContext(GQLClientContext)
 
 export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
   const endpointURL = useStore(endpointURLAtom)

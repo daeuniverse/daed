@@ -4,8 +4,9 @@ import { useCallback, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 import {
+  getDefaultsRequest,
   getInterfacesRequest,
-  getJsonStorageRequest,
+  getModeRequest,
   useCreateConfigMutation,
   useCreateDNSMutation,
   useCreateGroupMutation,
@@ -16,13 +17,12 @@ import {
   useSetJsonStorageMutation,
 } from '~/apis'
 import { Header } from '~/components/Header'
-import { DEFAULT_CONFIG_WITH_INTERFACE, DEFAULT_DNS, DEFAULT_ROUTING } from '~/constants'
+import { DEFAULT_CONFIG_WITH_INTERFACE, DEFAULT_DNS, DEFAULT_ROUTING, MODE } from '~/constants'
+import { useGQLQueryClient } from '~/contexts'
 import { Policy } from '~/schemas/gql/graphql'
-import { defaultResourcesAtom, endpointURLAtom, tokenAtom } from '~/store'
+import { defaultResourcesAtom, endpointURLAtom, modeAtom, tokenAtom } from '~/store'
 
 const useInit = () => {
-  const endpointURL = useStore(endpointURLAtom)
-  const token = useStore(tokenAtom)
   const createConfigMutation = useCreateConfigMutation()
   const selectConfigMutation = useSelectConfigMutation()
   const createRoutingMutation = useCreateRoutingMutation()
@@ -30,16 +30,16 @@ const useInit = () => {
   const createDNSMutation = useCreateDNSMutation()
   const selectDNSMutation = useSelectDNSMutation()
   const createGroupMutation = useCreateGroupMutation()
-  const setJsonStorage = useSetJsonStorageMutation()
-  const getJsonStorage = getJsonStorageRequest(endpointURL, token)
-  const getInterfaces = getInterfacesRequest(endpointURL, token)
+  const setJsonStorageMutation = useSetJsonStorageMutation()
+  const gqlClient = useGQLQueryClient()
+  const getInterfaces = getInterfacesRequest(gqlClient)
+  const getMode = getModeRequest(gqlClient)
+  const getDefaults = getDefaultsRequest(gqlClient)
 
   return useCallback(async () => {
-    const [defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID] = (
-      await getJsonStorage(['defaultConfigID', 'defaultRoutingID', 'defaultDNSID', 'defaultGroupID'])
-    ).jsonStorage
-
     const interfaceName = (await getInterfaces()).general.interfaces.find(({ name }) => name !== 'lo')?.name || 'lan'
+
+    const { defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID } = await getDefaults()
 
     if (!defaultConfigID) {
       const {
@@ -53,7 +53,7 @@ const useInit = () => {
         id,
       })
 
-      await setJsonStorage.mutateAsync({
+      await setJsonStorageMutation.mutateAsync({
         defaultConfigID: id,
       })
     }
@@ -70,7 +70,7 @@ const useInit = () => {
         id,
       })
 
-      await setJsonStorage.mutateAsync({
+      await setJsonStorageMutation.mutateAsync({
         defaultRoutingID: id,
       })
     }
@@ -87,7 +87,7 @@ const useInit = () => {
         id,
       })
 
-      await setJsonStorage.mutateAsync({
+      await setJsonStorageMutation.mutateAsync({
         defaultDNSID: id,
       })
     }
@@ -101,21 +101,31 @@ const useInit = () => {
         policyParams: [],
       })
 
-      await setJsonStorage.mutateAsync({
+      await setJsonStorageMutation.mutateAsync({
         defaultGroupID: id,
       })
     }
 
+    const mode = await getMode()
+
+    if (!mode) {
+      await setJsonStorageMutation.mutateAsync({
+        mode: MODE.simple,
+      })
+
+      modeAtom.set(MODE.simple)
+    } else {
+      modeAtom.set(mode as MODE)
+    }
+
     {
-      const [defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID] = (
-        await getJsonStorage(['defaultConfigID', 'defaultRoutingID', 'defaultDNSID', 'defaultGroupID'])
-      ).jsonStorage
+      const { defaultConfigID, defaultDNSID, defaultGroupID, defaultRoutingID } = await getDefaults()
 
       defaultResourcesAtom.set({
         defaultConfigID,
-        defaultRoutingID,
         defaultDNSID,
         defaultGroupID,
+        defaultRoutingID,
       })
     }
   }, [
@@ -123,12 +133,13 @@ const useInit = () => {
     createDNSMutation,
     createGroupMutation,
     createRoutingMutation,
+    getDefaults,
     getInterfaces,
-    getJsonStorage,
+    getMode,
     selectConfigMutation,
     selectDNSMutation,
     selectRoutingMutation,
-    setJsonStorage,
+    setJsonStorageMutation,
   ])
 }
 
@@ -140,6 +151,7 @@ export const MainLayout = () => {
 
   useEffect(() => {
     init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

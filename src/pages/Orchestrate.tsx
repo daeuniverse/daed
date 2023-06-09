@@ -440,7 +440,7 @@ export const OrchestratePage = () => {
                   >
                     <Accordion.Item value="node">
                       <Accordion.Control fz="xs" px="xs">
-                        {t('node')}
+                        {t('node')} ({nodes.length})
                       </Accordion.Control>
 
                       <Accordion.Panel>
@@ -474,7 +474,7 @@ export const OrchestratePage = () => {
 
                     <Accordion.Item value="subscription">
                       <Accordion.Control fz="xs" px="xs">
-                        {t('subscription')}
+                        {t('subscription')} ({subscriptions.length})
                       </Accordion.Control>
 
                       <Accordion.Panel>
@@ -582,7 +582,9 @@ export const OrchestratePage = () => {
                     </Text>
                   </Spoiler>
 
-                  <Space h={10} />
+                  <Text fz="xs" py="xs">
+                    {t('node')} ({nodes.edges.length})
+                  </Text>
 
                   <Group spacing="sm">
                     {nodes.edges.map(({ id, name }) => (

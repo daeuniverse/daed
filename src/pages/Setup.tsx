@@ -9,10 +9,9 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
-import { getJsonStorageRequest, useSetJsonStorageMutation } from '~/apis'
-import { DEFAULT_ENDPOINT_URL, MODE } from '~/constants'
+import { DEFAULT_ENDPOINT_URL } from '~/constants'
 import { graphql } from '~/schemas/gql'
-import { endpointURLAtom, modeAtom, tokenAtom } from '~/store'
+import { endpointURLAtom, tokenAtom } from '~/store'
 
 const endpointURLSchema = z.object({
   endpointURL: z.string().url().nonempty(),
@@ -56,8 +55,6 @@ export const SetupPage = () => {
       password: '',
     },
   })
-
-  const setJsonStorage = useSetJsonStorageMutation()
 
   const handleSignupSubmit = async (values: z.infer<typeof signupSchema>) => {
     const endpointURL = endpointURLForm.values.endpointURL
@@ -104,28 +101,14 @@ export const SetupPage = () => {
         }
       )
 
+      notifications.show({
+        variant: 'success',
+        message: t('notifications.login succeeded'),
+      })
+
       tokenAtom.set(token)
 
-      if (token) {
-        const getJsonStorage = getJsonStorageRequest(endpointURL, token)
-        const [modeResponse] = (await getJsonStorage(['mode'])).jsonStorage
-
-        if (modeResponse) {
-          modeAtom.set(modeResponse as MODE)
-        } else {
-          await setJsonStorage.mutateAsync({
-            mode: MODE.simple,
-          })
-          modeAtom.set(MODE.simple)
-        }
-
-        notifications.show({
-          variant: 'success',
-          message: t('notifications.login succeeded'),
-        })
-
-        nextStep()
-      }
+      nextStep()
     } catch (err) {
       notifications.show({
         variant: 'error',

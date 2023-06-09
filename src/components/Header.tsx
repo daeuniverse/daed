@@ -8,6 +8,7 @@ import {
   Image,
   Menu,
   Modal,
+  SegmentedControl,
   Stack,
   Switch,
   Tabs,
@@ -18,6 +19,7 @@ import {
   rem,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { useStore } from '@nanostores/react'
 import {
   IconChevronDown,
   IconCloudCheck,
@@ -32,10 +34,11 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUserQuery } from '~/apis'
+import { useGeneralQuery, useRunMutation, useSetModeMutation, useUpdateAvatarMutation, useUserQuery } from '~/apis'
 import logo from '~/assets/logo.svg'
+import { MODE } from '~/constants'
 import { i18n } from '~/i18n'
-import { tokenAtom } from '~/store'
+import { modeAtom, tokenAtom } from '~/store'
 import { Defer } from '~/utils'
 
 import { ColorSchemeToggle } from './ColorSchemeToggle'
@@ -121,33 +124,51 @@ export const Header = () => {
   const { data: generalQuery } = useGeneralQuery()
   const runMutation = useRunMutation()
   const updateAvatarMutation = useUpdateAvatarMutation()
+  const setModeMutation = useSetModeMutation()
   const [uploadingAvatarBase64, setUploadingAvatarBase64] = useState<string | null>(null)
   const resetUploadingAvatarRef = useRef<() => void>(null)
 
   const links = [
-    // { link: '/config', label: t('config'), icon: <IconSettings /> },
-    // { link: '/node', label: t('node'), icon: <IconSubtask /> },
-    // { link: '/subscription', label: t('subscription'), icon: <IconTable /> },
-    // { link: '/dns', label: t('dns'), icon: <IconRoute /> },
-    // { link: '/routing', label: t('routing'), icon: <IconMap /> },
-    // { link: '/group', label: t('group'), icon: <IconUsersGroup /> },
     { link: '/orchestrate', label: t('orchestrate'), icon: <IconCloudComputing /> },
     { link: '/experiment', label: t('experiment'), icon: <IconTestPipe /> },
   ]
+
+  const mode = useStore(modeAtom)
 
   return (
     <header className={classes.header}>
       <Container className={classes.mainSection}>
         <Group position="apart">
-          <Link to="/">
-            <Group>
-              <Image radius="sm" src={logo} width={32} height={32} />
+          <Group>
+            <Link to="/">
+              <Group>
+                <Image radius="sm" src={logo} width={32} height={32} />
 
-              <Title order={2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
-                daed
-              </Title>
-            </Group>
-          </Link>
+                <Title order={2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
+                  daed
+                </Title>
+              </Group>
+            </Link>
+
+            <SegmentedControl
+              value={mode}
+              onChange={async (mode) => {
+                await setModeMutation.mutateAsync(mode as MODE)
+
+                if (mode === MODE.simple) {
+                  navigate('/')
+                } else {
+                  navigate('/orchestrate')
+                }
+
+                modeAtom.set(mode as MODE)
+              }}
+              data={[
+                { label: t('actions.simple mode'), value: MODE.simple },
+                { label: t('actions.advanced mode'), value: MODE.advanced },
+              ]}
+            />
+          </Group>
 
           <Center
             sx={{
@@ -232,25 +253,27 @@ export const Header = () => {
         </Group>
       </Container>
 
-      <Center>
-        <Tabs
-          variant="outline"
-          value={location.pathname}
-          onTabChange={(to) => navigate(`${to}`)}
-          classNames={{
-            tabsList: classes.tabsList,
-            tab: classes.tab,
-          }}
-        >
-          <Tabs.List>
-            {links.map(({ link, icon, label }) => (
-              <Tabs.Tab key={link} value={link} icon={icon}>
-                {label}
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-        </Tabs>
-      </Center>
+      {mode === MODE.advanced && (
+        <Center>
+          <Tabs
+            variant="outline"
+            value={location.pathname}
+            onTabChange={(to) => navigate(`${to}`)}
+            classNames={{
+              tabsList: classes.tabsList,
+              tab: classes.tab,
+            }}
+          >
+            <Tabs.List>
+              {links.map(({ link, icon, label }) => (
+                <Tabs.Tab key={link} value={link} icon={icon}>
+                  {label}
+                </Tabs.Tab>
+              ))}
+            </Tabs.List>
+          </Tabs>
+        </Center>
+      )}
 
       <Modal
         title={t('account settings')}

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import request from 'graphql-request'
+import { GraphQLClient } from 'graphql-request'
 
 import {
   QUERY_KEY_CONFIG,
@@ -8,34 +8,57 @@ import {
   QUERY_KEY_GROUP,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
+  QUERY_KEY_STORAGE,
   QUERY_KEY_SUBSCRIPTION,
   QUERY_KEY_USER,
 } from '~/constants'
-import { useQGLQueryClient } from '~/contexts'
+import { useGQLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
 
-export const getJsonStorageRequest = (endpointURL: string, token: string) => {
-  return (paths: string[]) =>
-    request(
-      endpointURL,
+export const getModeRequest = (gqlClient: GraphQLClient) => {
+  return async () => {
+    const { jsonStorage } = await gqlClient.request(
       graphql(`
-        query JsonStorage($paths: [String!]) {
+        query Mode($paths: [String!]) {
           jsonStorage(paths: $paths)
         }
       `),
       {
-        paths,
-      },
-      {
-        authorization: `Bearer ${token}`,
+        paths: ['mode'],
       }
     )
+
+    return jsonStorage[0]
+  }
 }
 
-export const getInterfacesRequest = (endpointURL: string, token: string) => {
+export const getDefaultsRequest = (gqlClient: GraphQLClient) => {
+  return async () => {
+    const data = await gqlClient.request(
+      graphql(`
+        query Defaults($paths: [String!]) {
+          jsonStorage(paths: $paths)
+        }
+      `),
+      {
+        paths: ['defaultConfigID', 'defaultRoutingID', 'defaultDNSID', 'defaultGroupID'],
+      }
+    )
+
+    const [defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID] = data.jsonStorage
+
+    return {
+      defaultConfigID,
+      defaultRoutingID,
+      defaultDNSID,
+      defaultGroupID,
+    }
+  }
+}
+
+export const getInterfacesRequest = (gqlClient: GraphQLClient) => {
   return () =>
-    request(
-      endpointURL,
+    gqlClient.request(
       graphql(`
         query Interfaces($up: Boolean) {
           general {
@@ -48,15 +71,44 @@ export const getInterfacesRequest = (endpointURL: string, token: string) => {
       `),
       {
         up: true,
-      },
-      {
-        authorization: `Bearer ${token}`,
       }
     )
 }
 
+export const useDefaultsQuery = () => {
+  const gqlClient = useGQLQueryClient()
+
+  const { data } = useQuery({
+    queryKey: QUERY_KEY_STORAGE,
+    queryFn: async () =>
+      gqlClient.request(
+        graphql(`
+          query JsonStorage($paths: [String!]) {
+            jsonStorage(paths: $paths)
+          }
+        `),
+        {
+          paths: ['defaultConfigID', 'defaultRoutingID', 'defaultDNSID', 'defaultGroupID'],
+        }
+      ),
+  })
+
+  if (!data) {
+    return
+  }
+
+  const [defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID] = data.jsonStorage
+
+  return {
+    defaultConfigID,
+    defaultRoutingID,
+    defaultDNSID,
+    defaultGroupID,
+  }
+}
+
 export const useGeneralQuery = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY_GENERAL,
@@ -84,7 +136,7 @@ export const useGeneralQuery = () => {
 }
 
 export const useNodesQuery = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY_NODE,
@@ -109,7 +161,7 @@ export const useNodesQuery = () => {
 }
 
 export const useSubscriptionsQuery = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY_SUBSCRIPTION,
@@ -140,7 +192,7 @@ export const useSubscriptionsQuery = () => {
 }
 
 export const useConfigsQuery = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY_CONFIG,
@@ -176,7 +228,7 @@ export const useConfigsQuery = () => {
 }
 
 export const useGroupsQuery = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY_GROUP,
@@ -229,7 +281,7 @@ export const useGroupsQuery = () => {
 }
 
 export const useRoutingsQuery = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY_ROUTING,
@@ -252,7 +304,7 @@ export const useRoutingsQuery = () => {
 }
 
 export const useDNSsQuery = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY_DNS,
@@ -284,7 +336,7 @@ export const useDNSsQuery = () => {
 }
 
 export const useUserQuery = () => {
-  const gqlClient = useQGLQueryClient()
+  const gqlClient = useGQLQueryClient()
 
   return useQuery({
     queryKey: QUERY_KEY_USER,

@@ -619,6 +619,13 @@ export type SetJsonStorageMutationVariables = Exact<{
 
 export type SetJsonStorageMutation = { __typename?: 'Mutation'; setJsonStorage: number }
 
+export type SetModeMutationVariables = Exact<{
+  paths: Array<Scalars['String']['input']> | Scalars['String']['input']
+  values: Array<Scalars['String']['input']> | Scalars['String']['input']
+}>
+
+export type SetModeMutation = { __typename?: 'Mutation'; setJsonStorage: number }
+
 export type CreateConfigMutationVariables = Exact<{
   name?: InputMaybe<Scalars['String']['input']>
   global?: InputMaybe<GlobalInput>
@@ -791,6 +798,7 @@ export type ImportSubscriptionMutation = {
   importSubscription: {
     __typename?: 'SubscriptionImportResult'
     link: string
+    sub: { __typename?: 'Subscription'; id: string }
     nodeImportResult: Array<{ __typename?: 'NodeImportResult'; node?: { __typename?: 'Node'; id: string } | null }>
   }
 }
@@ -822,11 +830,17 @@ export type UpdateAvatarMutationVariables = Exact<{
 
 export type UpdateAvatarMutation = { __typename?: 'Mutation'; updateAvatar: number }
 
-export type JsonStorageQueryVariables = Exact<{
+export type ModeQueryVariables = Exact<{
   paths?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
 }>
 
-export type JsonStorageQuery = { __typename?: 'Query'; jsonStorage: Array<string> }
+export type ModeQuery = { __typename?: 'Query'; jsonStorage: Array<string> }
+
+export type DefaultsQueryVariables = Exact<{
+  paths?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
+}>
+
+export type DefaultsQuery = { __typename?: 'Query'; jsonStorage: Array<string> }
 
 export type InterfacesQueryVariables = Exact<{
   up?: InputMaybe<Scalars['Boolean']['input']>
@@ -836,6 +850,12 @@ export type InterfacesQuery = {
   __typename?: 'Query'
   general: { __typename?: 'General'; interfaces: Array<{ __typename?: 'Interface'; name: string; ifindex: number }> }
 }
+
+export type JsonStorageQueryVariables = Exact<{
+  paths?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
+}>
+
+export type JsonStorageQuery = { __typename?: 'Query'; jsonStorage: Array<string> }
 
 export type GeneralQueryVariables = Exact<{
   up?: InputMaybe<Scalars['Boolean']['input']>
@@ -1002,6 +1022,21 @@ export type UserQuery = {
   user: { __typename?: 'User'; username: string; name?: string | null; avatar?: string | null }
 }
 
+export type GroupQueryVariables = Exact<{
+  name: Scalars['String']['input']
+}>
+
+export type GroupQuery = {
+  __typename?: 'Query'
+  group: {
+    __typename?: 'Group'
+    id: string
+    name: string
+    nodes: Array<{ __typename?: 'Node'; id: string; name: string; tag?: string | null; link: string }>
+    subscriptions: Array<{ __typename?: 'Subscription'; id: string; tag?: string | null; link: string }>
+  }
+}
+
 export type CreateUserMutationVariables = Exact<{
   username: Scalars['String']['input']
   password: Scalars['String']['input']
@@ -1071,6 +1106,61 @@ export const SetJsonStorageDocument = {
     },
   ],
 } as unknown as DocumentNode<SetJsonStorageMutation, SetJsonStorageMutationVariables>
+export const SetModeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'SetMode' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'values' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'setJsonStorage' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'paths' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'values' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'values' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SetModeMutation, SetModeMutationVariables>
 export const CreateConfigDocument = {
   kind: 'Document',
   definitions: [
@@ -2118,6 +2208,14 @@ export const ImportSubscriptionDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'link' } },
                 {
                   kind: 'Field',
+                  name: { kind: 'Name', value: 'sub' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                {
+                  kind: 'Field',
                   name: { kind: 'Name', value: 'nodeImportResult' },
                   selectionSet: {
                     kind: 'SelectionSet',
@@ -2283,13 +2381,13 @@ export const UpdateAvatarDocument = {
     },
   ],
 } as unknown as DocumentNode<UpdateAvatarMutation, UpdateAvatarMutationVariables>
-export const JsonStorageDocument = {
+export const ModeDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'JsonStorage' },
+      name: { kind: 'Name', value: 'Mode' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -2318,7 +2416,43 @@ export const JsonStorageDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<JsonStorageQuery, JsonStorageQueryVariables>
+} as unknown as DocumentNode<ModeQuery, ModeQueryVariables>
+export const DefaultsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Defaults' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+          type: {
+            kind: 'ListType',
+            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'jsonStorage' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'paths' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DefaultsQuery, DefaultsQueryVariables>
 export const InterfacesDocument = {
   kind: 'Document',
   definitions: [
@@ -2368,6 +2502,42 @@ export const InterfacesDocument = {
     },
   ],
 } as unknown as DocumentNode<InterfacesQuery, InterfacesQueryVariables>
+export const JsonStorageDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'JsonStorage' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+          type: {
+            kind: 'ListType',
+            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'jsonStorage' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'paths' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'paths' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<JsonStorageQuery, JsonStorageQueryVariables>
 export const GeneralDocument = {
   kind: 'Document',
   definitions: [
@@ -2787,6 +2957,71 @@ export const UserDocument = {
     },
   ],
 } as unknown as DocumentNode<UserQuery, UserQueryVariables>
+export const GroupDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Group' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'group' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'subscriptions' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GroupQuery, GroupQueryVariables>
 export const CreateUserDocument = {
   kind: 'Document',
   definitions: [
