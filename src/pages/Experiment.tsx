@@ -108,7 +108,7 @@ export const ExperimentPage = () => {
         referenceGroups: [],
       }),
       {
-        count: 4,
+        count: 2,
       }
     )
   )
@@ -139,7 +139,7 @@ export const ExperimentPage = () => {
         policy: faker.helpers.enumValue(Policy),
       }),
       {
-        count: 4,
+        count: 2,
       }
     )
   )
@@ -199,7 +199,7 @@ export const ExperimentPage = () => {
         ),
       }),
       {
-        count: 5,
+        count: 3,
       }
     )
   )
