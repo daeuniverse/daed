@@ -72,6 +72,8 @@ const documents = {
   '\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ': types.RunDocument,
   '\n          mutation UpdateAvatar($avatar: String) {\n            updateAvatar(avatar: $avatar)\n          }\n        ':
     types.UpdateAvatarDocument,
+  '\n          mutation UpdateName($name: String) {\n            updateName(name: $name)\n          }\n        ':
+    types.UpdateNameDocument,
   '\n        query Mode($paths: [String!]) {\n          jsonStorage(paths: $paths)\n        }\n      ':
     types.ModeDocument,
   '\n        query Defaults($paths: [String!]) {\n          jsonStorage(paths: $paths)\n        }\n      ':
@@ -298,6 +300,12 @@ export function graphql(
 export function graphql(
   source: '\n          mutation UpdateAvatar($avatar: String) {\n            updateAvatar(avatar: $avatar)\n          }\n        '
 ): (typeof documents)['\n          mutation UpdateAvatar($avatar: String) {\n            updateAvatar(avatar: $avatar)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation UpdateName($name: String) {\n            updateName(name: $name)\n          }\n        '
+): (typeof documents)['\n          mutation UpdateName($name: String) {\n            updateName(name: $name)\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

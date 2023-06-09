@@ -830,6 +830,12 @@ export type UpdateAvatarMutationVariables = Exact<{
 
 export type UpdateAvatarMutation = { __typename?: 'Mutation'; updateAvatar: number }
 
+export type UpdateNameMutationVariables = Exact<{
+  name?: InputMaybe<Scalars['String']['input']>
+}>
+
+export type UpdateNameMutation = { __typename?: 'Mutation'; updateName: number }
+
 export type ModeQueryVariables = Exact<{
   paths?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
 }>
@@ -2381,6 +2387,39 @@ export const UpdateAvatarDocument = {
     },
   ],
 } as unknown as DocumentNode<UpdateAvatarMutation, UpdateAvatarMutationVariables>
+export const UpdateNameDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateName' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateName' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateNameMutation, UpdateNameMutationVariables>
 export const ModeDocument = {
   kind: 'Document',
   definitions: [

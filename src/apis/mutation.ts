@@ -755,3 +755,26 @@ export const useUpdateAvatarMutation = () => {
     },
   })
 }
+
+export const useUpdateNameMutation = () => {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (name: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateName($name: String) {
+            updateName(name: $name)
+          }
+        `),
+        {
+          name,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_USER })
+    },
+  })
+}

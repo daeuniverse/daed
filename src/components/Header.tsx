@@ -13,11 +13,13 @@ import {
   Switch,
   Tabs,
   Text,
+  TextInput,
   Title,
   UnstyledButton,
   createStyles,
   rem,
 } from '@mantine/core'
+import { useForm, zodResolver } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import { useStore } from '@nanostores/react'
 import {
@@ -33,37 +35,24 @@ import {
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { z } from 'zod'
 
-import { useGeneralQuery, useRunMutation, useSetModeMutation, useUpdateAvatarMutation, useUserQuery } from '~/apis'
+import {
+  useGeneralQuery,
+  useRunMutation,
+  useSetModeMutation,
+  useUpdateAvatarMutation,
+  useUpdateNameMutation,
+  useUserQuery,
+} from '~/apis'
 import logo from '~/assets/logo.svg'
 import { MODE } from '~/constants'
 import { i18n } from '~/i18n'
 import { modeAtom, tokenAtom } from '~/store'
-import { Defer } from '~/utils'
+import { fileToBase64 } from '~/utils'
 
 import { ColorSchemeToggle } from './ColorSchemeToggle'
 import { FormActions } from './FormActions'
-
-const fileToBase64 = (file: File) => {
-  const reader = new FileReader()
-  reader.readAsDataURL(file)
-
-  const defer = new Defer<string>()
-
-  reader.onload = () => {
-    if (defer.resolve) {
-      defer.resolve(reader.result as string)
-    }
-  }
-
-  reader.onerror = (err) => {
-    if (defer.reject) {
-      defer.reject(err)
-    }
-  }
-
-  return defer.promise
-}
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -112,6 +101,10 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
+const accountSettingsSchema = z.object({
+  name: z.string().nonempty(),
+})
+
 export const Header = () => {
   const { t } = useTranslation()
   const location = useLocation()
@@ -123,6 +116,7 @@ export const Header = () => {
   const { data: userQuery } = useUserQuery()
   const { data: generalQuery } = useGeneralQuery()
   const runMutation = useRunMutation()
+  const updateNameMutation = useUpdateNameMutation()
   const updateAvatarMutation = useUpdateAvatarMutation()
   const setModeMutation = useSetModeMutation()
   const [uploadingAvatarBase64, setUploadingAvatarBase64] = useState<string | null>(null)
@@ -134,6 +128,13 @@ export const Header = () => {
   ]
 
   const mode = useStore(modeAtom)
+
+  const accountSettingsForm = useForm<z.infer<typeof accountSettingsSchema>>({
+    validate: zodResolver(accountSettingsSchema),
+    initialValues: {
+      name: '',
+    },
+  })
 
   return (
     <header className={classes.header}>
@@ -208,7 +209,7 @@ export const Header = () => {
                     />
 
                     <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
-                      {userQuery?.user.username || 'unknown'}
+                      {userQuery?.user.name || userQuery?.user.username || 'unknown'}
                     </Text>
                     <IconChevronDown size={rem(12)} stroke={1.5} />
                   </Group>
@@ -282,17 +283,19 @@ export const Header = () => {
         keepMounted={false}
       >
         <form
-          onSubmit={async (e) => {
-            e.preventDefault()
-
-            if (!uploadingAvatarBase64) {
-              return
+          onSubmit={accountSettingsForm.onSubmit(async ({ name }) => {
+            if (name !== userQuery?.user.name) {
+              updateNameMutation.mutateAsync(name)
             }
 
-            await updateAvatarMutation.mutateAsync(uploadingAvatarBase64)
-          }}
+            if (uploadingAvatarBase64 && uploadingAvatarBase64 !== userQuery?.user.avatar) {
+              await updateAvatarMutation.mutateAsync(uploadingAvatarBase64)
+            }
+          })}
         >
           <Stack>
+            <TextInput label={t('display name')} withAsterisk {...accountSettingsForm.getInputProps('name')} />
+
             <FileButton
               resetRef={resetUploadingAvatarRef}
               accept="image/png,image/jpeg"

@@ -10,3 +10,24 @@ export class Defer<T> {
     })
   }
 }
+
+export const fileToBase64 = (file: File) => {
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+
+  const defer = new Defer<string>()
+
+  reader.onload = () => {
+    if (defer.resolve) {
+      defer.resolve(reader.result as string)
+    }
+  }
+
+  reader.onerror = (err) => {
+    if (defer.reject) {
+      defer.reject(err)
+    }
+  }
+
+  return defer.promise
+}
