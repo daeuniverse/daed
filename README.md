@@ -17,27 +17,63 @@ A Web Dashboard For [dae](https://github.com/v2raya/dae)
 
 ![preview](public/preview.png)
 
-Project Goals:
+## Our Goals:
 
-- Easy to use, with keyboard shortcuts builtin
+- Easy to use, with keyboard navigation / shortcuts builtin
 - Beautiful and intuitive UI
-- Dark mode
+- Light / Dark mode
 - Mobile friendly
-
-## Status
-
-This project is currently under heavy development
-
-Feel free to open issues or submit your PR, any feedback or help will be welcome and greatly appreciated
 
 ## Contribute to daed
 
+Feel free to open issues or submit your PR, any feedback or help will be welcome and greatly appreciated
+
 ### How to run and build this project
 
-Install dependencies
+#### First, we need to get [dae-wing](https://github.com/daeuniverse/dae-wing) up and running, which you can think it as a API center companion of dae
+
+Clone `dae-wing` to a remote or local linux environment
 
 ```sh
-pnpm i
+git clone https://github.com/daeuniverse/dae-wing.git
+
+cd dae-wing
+```
+
+Run the make script which will clone the dae repo to a specific folder relative to the working directory
+
+```sh
+make deps
+```
+
+Build the `dae-wing` binary using go build
+
+```sh
+go build .
+```
+
+Run the `dae-wing` binary we just built w/o `api-only` mode enabled
+
+```sh
+# ./dae-wing -c ./ --api-only
+
+./dae-wing -c ./
+```
+
+#### Then, run daed on your local machine
+
+Clone this project to your development directory
+
+```sh
+git clone https://github.com/daeuniverse/daed.git
+
+cd daed
+```
+
+Install package dependencies using `pnpm`
+
+```sh
+pnpm install
 ```
 
 We need to generate graphql type definitions and api bindings
@@ -52,7 +88,7 @@ Optionally, append `-w` or `--watch` at the end of the command to watch upcoming
 # SCHEMA_PATH=http(s)://example.com/graphql pnpm codegen
 # SCHEMA_PATH=http(s)://example.com/graphql.schema pnpm codegen
 
-SCHEMA_PATH=/path/to/SCHEMA_PATH pnpm codegen -w
+SCHEMA_PATH=/path/to/SCHEMA_PATH pnpm codegen --watch
 ```
 
 Start dev server
