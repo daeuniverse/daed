@@ -18,12 +18,12 @@ type Props = {
   oldName?: string
 }
 
-export type RenameModalRef = {
+export type RenameFormModalRef = {
   props: Props
   setProps: (props: Props) => void
 }
 
-export const RenameModal = forwardRef(
+export const RenameFormModal = forwardRef(
   (
     {
       opened,

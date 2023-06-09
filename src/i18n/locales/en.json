@@ -2,6 +2,7 @@
   "account settings": "Account Settings",
   "actions": {
     "add": "Add",
+    "already have an account, login instead": "Already have an account, login instead",
     "cancel": "Cancel",
     "change endpoint": "Change Endpoint",
     "confirm": "Confirm",
@@ -9,6 +10,7 @@
     "create": "New",
     "create account": "Create Account",
     "edit": "Edit",
+    "hide": "Hide",
     "import": "Import",
     "login": "Login",
     "logout": "Logout",
@@ -17,6 +19,7 @@
     "rename": "Rename",
     "reset": "Reset",
     "save dae": "Save dae",
+    "show content": "Show content",
     "skip": "Skip",
     "start your journey": "Start your journey",
     "submit": "Submit",
@@ -100,5 +103,6 @@
   "value": "value",
   "wanInterface": "Wan Interface",
   "warn": "warn",
-  "welcome back": "Welcome Back!"
+  "welcome back": "Welcome Back!",
+  "welcome to": "Welcome to {{ name }}"
 }

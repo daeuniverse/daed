@@ -12,6 +12,7 @@ import {
   Group,
   SimpleGrid,
   Space,
+  Spoiler,
   Stack,
   Text,
   Title,
@@ -24,6 +25,7 @@ import {
   IconCloud,
   IconCloudComputing,
   IconDatabaseOff,
+  IconEdit,
   IconForms,
   IconMap,
   IconRefresh,
@@ -32,7 +34,7 @@ import {
   IconTable,
 } from '@tabler/icons-react'
 import dayjs from 'dayjs'
-import { useMemo, useRef, useState } from 'react'
+import { Fragment, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -62,19 +64,21 @@ import {
   useSelectDNSMutation,
   useSelectRoutingMutation,
   useSubscriptionsQuery,
+  useUpdateDNSMutation,
+  useUpdateRoutingMutation,
   useUpdateSubscriptionsMutation,
 } from '~/apis'
-import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
+import { ConfigFormModal, ConfigFormModalRef } from '~/components/ConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
-import { PlainTextFormModal } from '~/components/PlainTextFormModal'
-import { RenameModal, RenameModalRef } from '~/components/RenameFormModal'
+import { PlainTextFormModal, PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
+import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
-import { ResourceType, RuleType } from '~/constants'
+import { GET_LOG_LEVEL_STEPS, ResourceType, RuleType } from '~/constants'
 import { defaultResourcesAtom } from '~/store'
 
 export const OrchestratePage = () => {
@@ -133,15 +137,27 @@ export const OrchestratePage = () => {
     }
   }, [draggingResource, nodesQuery, subscriptionsQuery])
 
-  const [openedRenameModal, { open: openRenameModal, close: closeRenameModal }] = useDisclosure(false)
-  const [openedCreateConfigModal, { open: openCreateConfigModal, close: closeCreateConfigModal }] = useDisclosure(false)
-  const [openedCreateDnsModal, { open: openCreateDnsModal, close: closeCreateDnsModal }] = useDisclosure(false)
-  const [openedCreateRoutingModal, { open: openCreateRoutingModal, close: closeCreateRoutingModal }] =
+  const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
+  const [openedCreateConfigFormModal, { open: openCreateConfigFormModal, close: closeCreateConfigFormModal }] =
     useDisclosure(false)
-  const [openedCreateGroupModal, { open: openCreateGroupModal, close: closeCreateGroupModal }] = useDisclosure(false)
-  const [openedImportNodeModal, { open: openImportNodeModal, close: closeImportNodeModal }] = useDisclosure(false)
-  const [openedImportSubscriptionModal, { open: openImportSubscriptionModal, close: closeImportSubscriptionModal }] =
+  const [openedUpdateConfigFormModal, { open: openUpdateConfigFormModal, close: closeUpdateConfigFormModal }] =
     useDisclosure(false)
+  const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }] =
+    useDisclosure(false)
+  const [openedUpdateDNSFormModal, { open: openUpdateDNSFormModal, close: closeUpdateDNSFormModal }] =
+    useDisclosure(false)
+  const [openedCreateRoutingFormModal, { open: openCreateRoutingFormModal, close: closeCreateRoutingFormModal }] =
+    useDisclosure(false)
+  const [openedUpdateRoutingFormModal, { open: openUpdateRoutingFormModal, close: closeUpdateRoutingFormModal }] =
+    useDisclosure(false)
+  const [openedCreateGroupFormModal, { open: openCreateGroupFormModal, close: closeCreateGroupFormModal }] =
+    useDisclosure(false)
+  const [openedImportNodeFormModal, { open: openImportNodeFormModal, close: closeImportNodeFormModal }] =
+    useDisclosure(false)
+  const [
+    openedImportSubscriptionFormModal,
+    { open: openImportSubscriptionFormModal, close: closeImportSubscriptionFormModal },
+  ] = useDisclosure(false)
 
   const createDNSMutation = useCreateDNSMutation()
   const createRoutingMutation = useCreateRoutingMutation()
@@ -149,12 +165,19 @@ export const OrchestratePage = () => {
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
 
-  const renameModalRef = useRef<RenameModalRef>(null)
+  const renameFormModalRef = useRef<RenameFormModalRef>(null)
   const renameConfigMutation = useRenameConfigMutation()
   const renameDNSMutation = useRenameDNSMutation()
   const renameRoutingMutation = useRenameRoutingMutation()
 
   const { defaultConfigID, defaultDNSID, defaultGroupID, defaultRoutingID } = useStore(defaultResourcesAtom)
+
+  const updateConfigFormModalRef = useRef<ConfigFormModalRef>(null)
+  const updateDNSFormModalRef = useRef<PlainTextgFormModalRef>(null)
+  const updateRoutingFormModalRef = useRef<PlainTextgFormModalRef>(null)
+
+  const updateDNSMutation = useUpdateDNSMutation()
+  const updateRoutingMutation = useUpdateRoutingMutation()
 
   return (
     <Stack>
@@ -169,28 +192,58 @@ export const OrchestratePage = () => {
       />
 
       <SimpleGrid cols={3}>
-        <Section title={t('config')} icon={<IconSettings />} onCreate={openCreateConfigModal}>
+        <Section title={t('config')} icon={<IconSettings />} onCreate={openCreateConfigFormModal}>
           <Stack>
             {configsQuery?.configs.map((config) => (
               <SimpleCard
                 key={config.id}
                 name={config.name}
                 actions={
-                  <ActionIcon
-                    size="xs"
-                    onClick={() => {
-                      if (renameModalRef.current) {
-                        renameModalRef.current.setProps({
-                          id: config.id,
-                          type: RuleType.config,
-                          oldName: config.name,
+                  <Fragment>
+                    <ActionIcon
+                      size="xs"
+                      onClick={() => {
+                        if (renameFormModalRef.current) {
+                          renameFormModalRef.current.setProps({
+                            id: config.id,
+                            type: RuleType.config,
+                            oldName: config.name,
+                          })
+                        }
+                        openRenameFormModal()
+                      }}
+                    >
+                      <IconForms />
+                    </ActionIcon>
+
+                    <ActionIcon
+                      size="xs"
+                      onClick={() => {
+                        updateConfigFormModalRef.current?.setEditingID(config.id)
+
+                        const { checkInterval, checkTolerance, sniffingTimeout, logLevel, ...global } = config.global
+
+                        const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
+                        const logLevelNumber = logLevelSteps.findIndex(([, l]) => l === logLevel)
+
+                        updateConfigFormModalRef.current?.initOrigins({
+                          name: config.name,
+                          logLevelNumber,
+                          checkIntervalSeconds: Number.parseInt(checkInterval.split('s')[0]),
+                          checkToleranceMS: Number.parseInt(checkTolerance.split('ms')[0]) * 1000,
+                          sniffingTimeoutMS: Number.parseInt(sniffingTimeout.split('ms')[0]),
+                          ...global,
+                          // FIXME: these values are not presented in query as of now
+                          tlsImplementation: '',
+                          utlsImitate: '',
                         })
-                      }
-                      openRenameModal()
-                    }}
-                  >
-                    <IconForms />
-                  </ActionIcon>
+
+                        openUpdateConfigFormModal()
+                      }}
+                    >
+                      <IconEdit />
+                    </ActionIcon>
+                  </Fragment>
                 }
                 selected={config.selected}
                 onSelect={() => selectConfigMutation.mutate({ id: config.id })}
@@ -202,28 +255,46 @@ export const OrchestratePage = () => {
           </Stack>
         </Section>
 
-        <Section title={t('dns')} icon={<IconRoute />} onCreate={openCreateDnsModal}>
+        <Section title={t('dns')} icon={<IconRoute />} onCreate={openCreateDNSFormModal}>
           <Stack>
             {dnssQuery?.dnss.map((dns) => (
               <SimpleCard
                 key={dns.id}
                 name={dns.name}
                 actions={
-                  <ActionIcon
-                    size="xs"
-                    onClick={() => {
-                      if (renameModalRef.current) {
-                        renameModalRef.current.setProps({
-                          id: dns.id,
-                          type: RuleType.dns,
-                          oldName: dns.name,
+                  <Fragment>
+                    <ActionIcon
+                      size="xs"
+                      onClick={() => {
+                        if (renameFormModalRef.current) {
+                          renameFormModalRef.current.setProps({
+                            id: dns.id,
+                            type: RuleType.dns,
+                            oldName: dns.name,
+                          })
+                        }
+                        openRenameFormModal()
+                      }}
+                    >
+                      <IconForms />
+                    </ActionIcon>
+
+                    <ActionIcon
+                      size="xs"
+                      onClick={() => {
+                        updateDNSFormModalRef.current?.setEditingID(dns.id)
+
+                        updateDNSFormModalRef.current?.initOrigins({
+                          name: dns.name,
+                          text: dns.dns.string,
                         })
-                      }
-                      openRenameModal()
-                    }}
-                  >
-                    <IconForms />
-                  </ActionIcon>
+
+                        openUpdateDNSFormModal()
+                      }}
+                    >
+                      <IconEdit />
+                    </ActionIcon>
+                  </Fragment>
                 }
                 selected={dns.selected}
                 onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
@@ -243,28 +314,46 @@ export const OrchestratePage = () => {
           </Stack>
         </Section>
 
-        <Section title={t('routing')} icon={<IconMap />} onCreate={openCreateRoutingModal}>
+        <Section title={t('routing')} icon={<IconMap />} onCreate={openCreateRoutingFormModal}>
           <Stack>
             {routingsQuery?.routings.map((routing) => (
               <SimpleCard
                 key={routing.id}
                 name={routing.name}
                 actions={
-                  <ActionIcon
-                    size="xs"
-                    onClick={() => {
-                      if (renameModalRef.current) {
-                        renameModalRef.current.setProps({
-                          id: routing.id,
-                          type: RuleType.routing,
-                          oldName: routing.name,
+                  <Fragment>
+                    <ActionIcon
+                      size="xs"
+                      onClick={() => {
+                        if (renameFormModalRef.current) {
+                          renameFormModalRef.current.setProps({
+                            id: routing.id,
+                            type: RuleType.routing,
+                            oldName: routing.name,
+                          })
+                        }
+                        openRenameFormModal()
+                      }}
+                    >
+                      <IconForms />
+                    </ActionIcon>
+
+                    <ActionIcon
+                      size="xs"
+                      onClick={() => {
+                        updateRoutingFormModalRef.current?.setEditingID(routing.id)
+
+                        updateRoutingFormModalRef.current?.initOrigins({
+                          name: routing.name,
+                          text: routing.routing.string,
                         })
-                      }
-                      openRenameModal()
-                    }}
-                  >
-                    <IconForms />
-                  </ActionIcon>
+
+                        openUpdateRoutingFormModal()
+                      }}
+                    >
+                      <IconEdit />
+                    </ActionIcon>
+                  </Fragment>
                 }
                 selected={routing.selected}
                 onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
@@ -327,7 +416,7 @@ export const OrchestratePage = () => {
           <Section
             title={t('group')}
             icon={<IconTable />}
-            onCreate={openCreateGroupModal}
+            onCreate={openCreateGroupFormModal}
             highlight={!!draggingResource}
             bordered
           >
@@ -422,7 +511,7 @@ export const OrchestratePage = () => {
             </Stack>
           </Section>
 
-          <Section title={t('node')} icon={<IconCloud />} onCreate={openImportNodeModal} bordered>
+          <Section title={t('node')} icon={<IconCloud />} onCreate={openImportNodeFormModal} bordered>
             <Stack>
               {nodesQuery?.nodes.edges.map(({ id, name, tag, protocol, link }) => (
                 <DraggableResourceCard
@@ -437,14 +526,20 @@ export const OrchestratePage = () => {
                   </Text>
                   <Text fw={600}>{protocol}</Text>
 
-                  <Text
-                    fz="sm"
-                    style={{
-                      wordBreak: 'break-all',
-                    }}
+                  <Spoiler
+                    maxHeight={0}
+                    showLabel={<Text fz="xs">{t('actions.show content')}</Text>}
+                    hideLabel={<Text fz="xs">{t('actions.hide')}</Text>}
                   >
-                    {link}
-                  </Text>
+                    <Text
+                      fz="sm"
+                      style={{
+                        wordBreak: 'break-all',
+                      }}
+                    >
+                      {link}
+                    </Text>
+                  </Spoiler>
                 </DraggableResourceCard>
               ))}
             </Stack>
@@ -453,7 +548,7 @@ export const OrchestratePage = () => {
           <Section
             title={t('subscription')}
             icon={<IconCloudComputing />}
-            onCreate={openImportSubscriptionModal}
+            onCreate={openImportSubscriptionFormModal}
             bordered
           >
             <Stack>
@@ -472,14 +567,20 @@ export const OrchestratePage = () => {
                 >
                   <Text fw={600}>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</Text>
 
-                  <Text
-                    fz="sm"
-                    style={{
-                      wordBreak: 'break-all',
-                    }}
+                  <Spoiler
+                    maxHeight={0}
+                    showLabel={<Text fz="xs">{t('actions.show content')}</Text>}
+                    hideLabel={<Text fz="xs">{t('actions.hide')}</Text>}
                   >
-                    {link}
-                  </Text>
+                    <Text
+                      fz="sm"
+                      style={{
+                        wordBreak: 'break-all',
+                      }}
+                    >
+                      {link}
+                    </Text>
+                  </Spoiler>
 
                   <Space h={10} />
 
@@ -499,12 +600,17 @@ export const OrchestratePage = () => {
         </DndContext>
       </SimpleGrid>
 
-      <CreateConfigFormModal opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
+      <ConfigFormModal opened={openedCreateConfigFormModal} onClose={closeCreateConfigFormModal} />
+      <ConfigFormModal
+        ref={updateConfigFormModalRef}
+        opened={openedUpdateConfigFormModal}
+        onClose={closeUpdateConfigFormModal}
+      />
 
       <PlainTextFormModal
         title={t('dns')}
-        opened={openedCreateDnsModal}
-        onClose={closeCreateDnsModal}
+        opened={openedCreateDNSFormModal}
+        onClose={closeCreateDNSFormModal}
         handleSubmit={async (values) => {
           await createDNSMutation.mutateAsync({
             name: values.name,
@@ -514,9 +620,24 @@ export const OrchestratePage = () => {
       />
 
       <PlainTextFormModal
+        ref={updateDNSFormModalRef}
+        title={t('dns')}
+        opened={openedUpdateDNSFormModal}
+        onClose={closeUpdateDNSFormModal}
+        handleSubmit={async (values) => {
+          if (updateDNSFormModalRef.current) {
+            await updateDNSMutation.mutateAsync({
+              id: updateDNSFormModalRef.current.editingID,
+              dns: values.text,
+            })
+          }
+        }}
+      />
+
+      <PlainTextFormModal
         title={t('routing')}
-        opened={openedCreateRoutingModal}
-        onClose={closeCreateRoutingModal}
+        opened={openedCreateRoutingFormModal}
+        onClose={closeCreateRoutingFormModal}
         handleSubmit={async (values) => {
           await createRoutingMutation.mutateAsync({
             name: values.name,
@@ -525,12 +646,27 @@ export const OrchestratePage = () => {
         }}
       />
 
-      <CreateGroupFormModal opened={openedCreateGroupModal} onClose={closeCreateGroupModal} />
+      <PlainTextFormModal
+        ref={updateRoutingFormModalRef}
+        title={t('routing')}
+        opened={openedUpdateRoutingFormModal}
+        onClose={closeUpdateRoutingFormModal}
+        handleSubmit={async (values) => {
+          if (updateRoutingFormModalRef.current) {
+            await updateRoutingMutation.mutateAsync({
+              id: updateRoutingFormModalRef.current.editingID,
+              routing: values.text,
+            })
+          }
+        }}
+      />
+
+      <CreateGroupFormModal opened={openedCreateGroupFormModal} onClose={closeCreateGroupFormModal} />
 
       <ImportResourceFormModal
         title={t('node')}
-        opened={openedImportNodeModal}
-        onClose={closeImportNodeModal}
+        opened={openedImportNodeFormModal}
+        onClose={closeImportNodeFormModal}
         handleSubmit={async (values) => {
           await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
         }}
@@ -538,17 +674,17 @@ export const OrchestratePage = () => {
 
       <ImportResourceFormModal
         title={t('subscription')}
-        opened={openedImportSubscriptionModal}
-        onClose={closeImportSubscriptionModal}
+        opened={openedImportSubscriptionFormModal}
+        onClose={closeImportSubscriptionFormModal}
         handleSubmit={async (values) => {
           await importSubscriptionsMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
         }}
       />
 
-      <RenameModal
-        ref={renameModalRef}
-        opened={openedRenameModal}
-        onClose={closeRenameModal}
+      <RenameFormModal
+        ref={renameFormModalRef}
+        opened={openedRenameFormModal}
+        onClose={closeRenameFormModal}
         handleSubmit={(type, id) => async (values) => {
           const { name } = values
 

@@ -16,11 +16,11 @@ import {
 } from '@mantine/core'
 import { UseFormReturnType, useForm, zodResolver } from '@mantine/form'
 import { IconMinus, IconPlus } from '@tabler/icons-react'
-import { useMemo } from 'react'
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { useCreateConfigMutation, useGeneralQuery } from '~/apis'
+import { useCreateConfigMutation, useGeneralQuery, useUpdateConfigMutation } from '~/apis'
 import {
   DEFAULT_ALLOW_INSECURE,
   DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
@@ -48,10 +48,10 @@ const schema = z.object({
   checkIntervalSeconds: z.number(),
   checkToleranceMS: z.number(),
   sniffingTimeoutMS: z.number(),
-  lanInterface: z.array(z.string()).nonempty(),
-  wanInterface: z.array(z.string()).nonempty(),
-  udpCheckDns: z.array(z.string()).nonempty(),
-  tcpCheckUrl: z.array(z.string()).nonempty(),
+  lanInterface: z.array(z.string()).min(1),
+  wanInterface: z.array(z.string()).min(1),
+  udpCheckDns: z.array(z.string()).min(1),
+  tcpCheckUrl: z.array(z.string()).min(1),
   dialMode: z.string(),
   tcpCheckHttpMethod: z.string(),
   disableWaitingNetwork: z.boolean(),
@@ -108,8 +108,16 @@ const InputList = <T extends z.infer<typeof schema>>({
   )
 }
 
-export const CreateConfigFormModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
+export type ConfigFormModalRef = {
+  form: UseFormReturnType<z.infer<typeof schema>>
+  setEditingID: (id: string) => void
+  initOrigins: (origins: z.infer<typeof schema>) => void
+}
+
+export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolean; onClose: () => void }, ref) => {
   const { t } = useTranslation()
+  const [editingID, setEditingID] = useState()
+  const [origins, setOrigins] = useState<z.infer<typeof schema>>()
 
   const form = useForm<z.infer<typeof schema>>({
     validate: zodResolver(schema),
@@ -121,10 +129,10 @@ export const CreateConfigFormModal = ({ opened, onClose }: { opened: boolean; on
       checkIntervalSeconds: 10,
       checkToleranceMS: 1000,
       sniffingTimeoutMS: 100,
-      lanInterface: [''],
-      wanInterface: [''],
-      udpCheckDns: DEFAULT_UDP_CHECK_DNS as [string, ...string[]],
-      tcpCheckUrl: DEFAULT_TCP_CHECK_URL as [string, ...string[]],
+      lanInterface: [],
+      wanInterface: [],
+      udpCheckDns: DEFAULT_UDP_CHECK_DNS,
+      tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
       dialMode: DEFAULT_DIAL_MODE,
       tcpCheckHttpMethod: DEFAULT_TCP_CHECK_HTTP_METHOD,
       disableWaitingNetwork: DEFAULT_DISABLE_WAITING_NETWORK,
@@ -133,6 +141,17 @@ export const CreateConfigFormModal = ({ opened, onClose }: { opened: boolean; on
       utlsImitate: '',
     },
   })
+
+  const initOrigins = (origins: z.infer<typeof schema>) => {
+    form.setValues(origins)
+    setOrigins(origins)
+  }
+
+  useImperativeHandle(ref, () => ({
+    form,
+    setEditingID,
+    initOrigins,
+  }))
 
   const { data: generalQuery } = useGeneralQuery()
 
@@ -161,35 +180,45 @@ export const CreateConfigFormModal = ({ opened, onClose }: { opened: boolean; on
   )
 
   const createConfigMutation = useCreateConfigMutation()
+  const updateConfigMutation = useUpdateConfigMutation()
 
   return (
     <Modal title={t('config')} opened={opened} onClose={onClose}>
       <form
         onSubmit={form.onSubmit(async (values) => {
           const logLevel = logLevelSteps[values.logLevelNumber][1]
+          const global = {
+            logLevel,
+            tproxyPort: values.tproxyPort,
+            tcpCheckUrl: values.tcpCheckUrl,
+            udpCheckDns: values.udpCheckDns,
+            allowInsecure: values.allowInsecure,
+            checkInterval: `${values.checkIntervalSeconds}s`,
+            checkTolerance: `${values.checkToleranceMS}ms`,
+            sniffingTimeout: `${values.sniffingTimeoutMS}ms`,
+            lanInterface: values.lanInterface,
+            wanInterface: values.wanInterface,
+            dialMode: values.dialMode,
+          }
 
-          await createConfigMutation.mutateAsync({
-            name: values.name,
-            global: {
-              logLevel,
-              tproxyPort: values.tproxyPort,
-              tcpCheckUrl: values.tcpCheckUrl,
-              udpCheckDns: values.udpCheckDns,
-              allowInsecure: values.allowInsecure,
-              checkInterval: `${values.checkIntervalSeconds}s`,
-              checkTolerance: `${values.checkToleranceMS}ms`,
-              sniffingTimeout: `${values.sniffingTimeoutMS}ms`,
-              lanInterface: values.lanInterface,
-              wanInterface: values.wanInterface,
-              dialMode: values.dialMode,
-            },
-          })
+          if (editingID) {
+            await updateConfigMutation.mutateAsync({
+              id: editingID,
+              global,
+            })
+          } else {
+            await createConfigMutation.mutateAsync({
+              name: values.name,
+              global,
+            })
+          }
+
           onClose()
           form.reset()
         })}
       >
         <Stack>
-          <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} />
+          <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} disabled={!!editingID} />
 
           <Stack>
             <Input.Label>{t('logLevel')}</Input.Label>
@@ -311,9 +340,17 @@ export const CreateConfigFormModal = ({ opened, onClose }: { opened: boolean; on
             />
           </SimpleGrid>
 
-          <FormActions reset={form.reset} />
+          <FormActions
+            reset={() => {
+              if (editingID && origins) {
+                form.setValues(origins)
+              } else {
+                form.reset()
+              }
+            }}
+          />
         </Stack>
       </form>
     </Modal>
   )
-}
+})

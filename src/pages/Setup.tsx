@@ -137,7 +137,7 @@ export const SetupPage = () => {
   return (
     <Container h="100%">
       <Stack pt="20vh">
-        <Title ta="center">daed</Title>
+        <Title ta="center">{t('welcome to', { name: 'daed' })} </Title>
 
         <Space h={20} />
 
@@ -184,7 +184,7 @@ export const SetupPage = () => {
                 <Button type="submit">{t('actions.create account')}</Button>
 
                 <Button variant="default" onClick={nextStep}>
-                  {t('actions.login')}
+                  {t('actions.already have an account, login instead')}
                 </Button>
               </Stack>
             </form>

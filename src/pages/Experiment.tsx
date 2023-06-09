@@ -35,14 +35,14 @@ import {
   useRenameDNSMutation,
   useRenameRoutingMutation,
 } from '~/apis'
-import { CreateConfigFormModal } from '~/components/CreateConfigFormModal'
+import { ConfigFormModal } from '~/components/ConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
 import { CreateNodeFormModal } from '~/components/CreateNodeFormModal'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
-import { RenameModal, RenameModalRef } from '~/components/RenameFormModal'
+import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
@@ -226,7 +226,7 @@ export const ExperimentPage = () => {
   const importNodesMutation = useImportNodesMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
 
-  const renameModalRef = useRef<RenameModalRef>(null)
+  const renameModalRef = useRef<RenameFormModalRef>(null)
   const renameConfigMutation = useRenameConfigMutation()
   const renameDNSMutation = useRenameDNSMutation()
   const renameRoutingMutation = useRenameRoutingMutation()
@@ -581,7 +581,7 @@ export const ExperimentPage = () => {
         </DndContext>
       </SimpleGrid>
 
-      <CreateConfigFormModal opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
+      <ConfigFormModal opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
 
       <PlainTextFormModal
         title={t('dns')}
@@ -636,7 +636,7 @@ export const ExperimentPage = () => {
         }}
       />
 
-      <RenameModal
+      <RenameFormModal
         ref={renameModalRef}
         opened={openedRenameModal}
         onClose={closeRenameModal}

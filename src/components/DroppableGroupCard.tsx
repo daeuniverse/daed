@@ -2,6 +2,7 @@ import { useDroppable } from '@dnd-kit/core'
 import { ActionIcon, Card, Group, Title } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { IconTrash } from '@tabler/icons-react'
+import { useTranslation } from 'react-i18next'
 
 export const DroppableGroupCard = ({
   id,
@@ -14,6 +15,7 @@ export const DroppableGroupCard = ({
   onRemove?: () => void
   children?: React.ReactNode
 }) => {
+  const { t } = useTranslation()
   const { isOver, setNodeRef } = useDroppable({ id })
 
   return (
@@ -36,12 +38,12 @@ export const DroppableGroupCard = ({
               size="xs"
               onClick={() => {
                 modals.openConfirmModal({
-                  title: 'Remove',
+                  title: t('actions.remove'),
                   labels: {
-                    cancel: 'No',
-                    confirm: "Yes, I'm sure",
+                    cancel: t('confirmModal.cancel'),
+                    confirm: t('confirmModal.confirm'),
                   },
-                  children: 'Are you sure you want to remove this?',
+                  children: t('confirmModal.removeConfirmDescription'),
                   onConfirm: onRemove,
                 })
               }}
