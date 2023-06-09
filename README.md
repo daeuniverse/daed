@@ -103,6 +103,7 @@ Happy Hacking!
 
 ### What you need to know
 
-- [Chakra](https://mui.com)
-- [React](https://reactjs.org)
 - [Graphql](https://graphql.org)
+- [React](https://reactjs.org)
+- [Mantine](https://mantine.dev)
+- [dnd kit](https://dndkit.com)
