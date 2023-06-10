@@ -285,12 +285,14 @@ export const Header = () => {
         <form
           onSubmit={accountSettingsForm.onSubmit(async ({ name }) => {
             if (name !== userQuery?.user.name) {
-              updateNameMutation.mutateAsync(name)
+              await updateNameMutation.mutateAsync(name)
             }
 
             if (uploadingAvatarBase64 && uploadingAvatarBase64 !== userQuery?.user.avatar) {
               await updateAvatarMutation.mutateAsync(uploadingAvatarBase64)
             }
+
+            closeAccountSettingsFormModal()
           })}
         >
           <Stack>
