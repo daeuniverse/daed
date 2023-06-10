@@ -1,7 +1,7 @@
 import { createGraphiQLFetcher } from '@graphiql/toolkit'
 import { useStore } from '@nanostores/react'
 import { GraphiQL } from 'graphiql'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom'
 
 import {
   ConfigPage,
@@ -20,9 +20,11 @@ import { endpointURLAtom } from '~/store'
 
 export const Router = () => {
   const endpointURL = useStore(endpointURLAtom)
+  // gh-pages support
+  const RouterType = location.hostname === 'daeuniverse.github.io' ? HashRouter : BrowserRouter
 
   return (
-    <BrowserRouter>
+    <RouterType>
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
@@ -51,6 +53,6 @@ export const Router = () => {
           />
         )}
       </Routes>
-    </BrowserRouter>
+    </RouterType>
   )
 }
