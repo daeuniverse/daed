@@ -98,6 +98,7 @@
   "tcpCheckUrl": "TCP Check URL",
   "tlsImplementation": "TLS Implementation",
   "tproxyPort": "Transparent Proxy Port",
+  "tproxyPortProtect": "Tproxy Port Protect",
   "trace": "trace",
   "udpCheckDns": "UDP Check DNS",
   "updatedAt": "updatedAt",
