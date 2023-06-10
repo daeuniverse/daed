@@ -109,6 +109,7 @@ const SimpleMode = () => {
 
                     queryClient.invalidateQueries({ queryKey: ['defaultGroup'] })
                   }}
+                  dragDisabled
                 />
               ))}
             </Flex>
@@ -135,6 +136,7 @@ const SimpleMode = () => {
 
                     queryClient.invalidateQueries({ queryKey: ['defaultGroup'] })
                   }}
+                  dragDisabled
                 />
               ))}
             </Flex>

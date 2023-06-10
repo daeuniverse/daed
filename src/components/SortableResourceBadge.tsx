@@ -3,8 +3,21 @@ import { CSS } from '@dnd-kit/utilities'
 import { ActionIcon, Badge, Text } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
 
-export const SortableResourceBadge = ({ id, name, onRemove }: { id: string; name: string; onRemove: () => void }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+export const SortableResourceBadge = ({
+  id,
+  name,
+  onRemove,
+  dragDisabled,
+}: {
+  id: string
+  name: string
+  onRemove: () => void
+  dragDisabled?: boolean
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+    disabled: dragDisabled,
+  })
 
   return (
     <Badge
