@@ -219,6 +219,9 @@ export const useConfigsQuery = () => {
                 disableWaitingNetwork
                 autoConfigKernelParameter
                 sniffingTimeout
+                tlsImplementation
+                utlsImitate
+                tproxyPortProtect
               }
             }
           }

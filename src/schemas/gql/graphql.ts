@@ -948,6 +948,9 @@ export type ConfigsQuery = {
       disableWaitingNetwork: boolean
       autoConfigKernelParameter: boolean
       sniffingTimeout: any
+      tlsImplementation: string
+      utlsImitate: string
+      tproxyPortProtect: boolean
     }
   }>
 }
@@ -2781,6 +2784,9 @@ export const ConfigsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'disableWaitingNetwork' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'autoConfigKernelParameter' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'sniffingTimeout' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tlsImplementation' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'utlsImitate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tproxyPortProtect' } },
                     ],
                   },
                 },
