@@ -4,6 +4,7 @@
   "license": "MIT",
   "homepage": "https://github.com/daeuniverse/daed",
   "description": "A Web Dashboard For dae",
+  "author": "daeuniverse",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
