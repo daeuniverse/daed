@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 import { GlobalInput } from '~/schemas/gql/graphql'
 
-export const DEFAULT_ENDPOINT_URL = `http://${location.hostname}:2023/graphql`
+export const DEFAULT_ENDPOINT_URL = `${location.protocol}//${location.hostname}:2023/graphql`
 
 export enum MODE {
   simple = 'simple',
