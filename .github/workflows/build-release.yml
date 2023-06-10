@@ -107,7 +107,7 @@ jobs:
       - name: upload artifact - bundled
         uses: actions/upload-artifact@v3
         with:
-          name: bundled
+          name: daed-${{ steps.get_filename.outputs.ASSET_NAME }}
           path: dae-wing/daed-${{ steps.get_filename.outputs.ASSET_NAME }}
 
   release:
