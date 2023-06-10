@@ -76,17 +76,16 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          build-and-push:
 
-      - name: docker - login
-        uses: docker/login-action@v2
+      - name: docker image - quay.io
+        uses: aevea/action-kaniko@master
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: docker - publish image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: daeuniverse/daed:latest
+          registry: quay.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.QUAY_PASS }}
+          image: ${{ github.repository }}
+          build_file: Dockerfile
+          tag_with_latest: true
+          cache: true
+          cache_registry: quay.io/${{ github.repository_owner }}/cache

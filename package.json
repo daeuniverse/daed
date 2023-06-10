@@ -1,8 +1,10 @@
 {
   "name": "daed",
   "private": true,
+  "version": "v0.0.1",
   "license": "MIT",
-  "homepage": "https://github.com/daeuniverse/daed",
+  "homepage": "https://daeuniverse.github.io/daed",
+  "repository": "https://github.com/daeuniverse/daed",
   "description": "A Web Dashboard For dae",
   "author": "daeuniverse",
   "scripts": {
