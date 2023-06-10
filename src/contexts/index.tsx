@@ -1,8 +1,7 @@
 import { notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
-import { IconX } from '@tabler/icons-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { GraphQLClient } from 'graphql-request'
+import { ClientError, GraphQLClient } from 'graphql-request'
 import { createContext, useContext, useMemo } from 'react'
 
 import { endpointURLAtom, tokenAtom } from '~/store'
@@ -19,29 +18,29 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
   const endpointURL = useStore(endpointURLAtom)
   const token = useStore(tokenAtom)
 
-  const queryClient = useMemo(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          mutations: {
-            onError(err) {
-              notifications.show({
-                color: 'red',
-                icon: <IconX />,
-                message: (err as Error).message,
-              })
-            },
-          },
-        },
-      }),
-    []
-  )
+  const queryClient = useMemo(() => new QueryClient(), [])
 
   const gqlClient = useMemo(
     () =>
       new GraphQLClient(endpointURL, {
         headers: {
           authorization: `Bearer ${token}`,
+        },
+        responseMiddleware: (response) => {
+          const error = (response as ClientError).response?.errors?.[0]
+
+          if (error) {
+            notifications.show({
+              variant: 'error',
+              message: error.message,
+            })
+
+            if (error.message === 'access denied') {
+              tokenAtom.set('')
+            }
+          }
+
+          return response
         },
       }),
     [endpointURL, token]
