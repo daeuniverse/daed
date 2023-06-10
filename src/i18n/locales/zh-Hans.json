@@ -108,5 +108,6 @@
   "wanInterface": "WAN 接口",
   "warn": "警告",
   "welcome back": "欢迎回来！",
-  "welcome to": "欢迎来到 {{ name }}"
+  "welcome to": "欢迎来到 {{ name }}",
+  "what for": "现代化控制面板"
 }

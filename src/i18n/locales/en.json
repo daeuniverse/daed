@@ -108,5 +108,6 @@
   "wanInterface": "Wan Interface",
   "warn": "warn",
   "welcome back": "Welcome Back!",
-  "welcome to": "Welcome to {{ name }}"
+  "welcome to": "Welcome to {{ name }}",
+  "what for": "A Modern Dashboard For"
 }

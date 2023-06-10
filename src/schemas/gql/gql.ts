@@ -100,6 +100,7 @@ const documents = {
     types.UserDocument,
   '\n          query Group($name: String!) {\n            group(name: $name) {\n              id\n              name\n              nodes {\n                id\n                name\n                tag\n                link\n              }\n              subscriptions {\n                id\n                tag\n                link\n              }\n            }\n          }\n        ':
     types.GroupDocument,
+  '\n      query NumberUsers {\n        numberUsers\n      }\n    ': types.NumberUsersDocument,
   '\n          mutation CreateUser($username: String!, $password: String!) {\n            createUser(username: $username, password: $password)\n          }\n        ':
     types.CreateUserDocument,
   '\n          query Token($username: String!, $password: String!) {\n            token(username: $username, password: $password)\n          }\n        ':
@@ -384,6 +385,12 @@ export function graphql(
 export function graphql(
   source: '\n          query Group($name: String!) {\n            group(name: $name) {\n              id\n              name\n              nodes {\n                id\n                name\n                tag\n                link\n              }\n              subscriptions {\n                id\n                tag\n                link\n              }\n            }\n          }\n        '
 ): (typeof documents)['\n          query Group($name: String!) {\n            group(name: $name) {\n              id\n              name\n              nodes {\n                id\n                name\n                tag\n                link\n              }\n              subscriptions {\n                id\n                tag\n                link\n              }\n            }\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n      query NumberUsers {\n        numberUsers\n      }\n    '
+): (typeof documents)['\n      query NumberUsers {\n        numberUsers\n      }\n    ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
