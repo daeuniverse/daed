@@ -39,6 +39,7 @@ jobs:
         run: |
           cd dae-wing
           make WEB_DIST=../dist/ bundle
+          mv dae-wing daed
 
       - name: upload artifact - web
         uses: actions/upload-artifact@v3
@@ -50,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bundled
-          path: dae-wing/dae-wing
+          path: dae-wing/daed
 
   release:
     runs-on: ubuntu-latest
@@ -69,14 +70,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bundled
-          path: dae-wing/
+          path: daed/
 
       - name: publish github pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          build-and-push:
 
       - name: docker image - quay.io
         uses: aevea/action-kaniko@master
