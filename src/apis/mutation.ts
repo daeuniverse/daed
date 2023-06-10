@@ -629,7 +629,7 @@ export const useImportSubscriptionsMutation = () => {
 
   return useMutation({
     mutationFn: (data: ImportArgument[]) =>
-      Promise.all(
+      Promise.allSettled(
         data.map((subscription) =>
           gqlClient.request(
             graphql(`
