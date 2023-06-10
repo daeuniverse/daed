@@ -162,10 +162,12 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
-      return interfaces.map(({ name }) => ({
-        label: name,
-        value: name,
-      }))
+      return interfaces
+        .filter(({ flag }) => !!flag.default)
+        .map(({ name }) => ({
+          label: name,
+          value: name,
+        }))
     }
 
     return []
@@ -254,14 +256,14 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
           <SimpleGrid cols={3}>
             <NumberInput label={t('tproxyPort')} withAsterisk {...form.getInputProps('tproxyPort')} />
 
-            <MultiSelect label={t('lanInterface')} data={interfacesData} {...form.getInputProps('lanInterface')} />
-
             <MultiSelect
               label={t('wanInterface')}
               withAsterisk
               data={interfacesData}
               {...form.getInputProps('wanInterface')}
             />
+
+            <MultiSelect label={t('lanInterface')} data={interfacesData} {...form.getInputProps('lanInterface')} />
           </SimpleGrid>
 
           <SimpleGrid cols={3}>
