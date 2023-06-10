@@ -1,3 +1,5 @@
+name: build & release
+
 on:
   push:
   workflow_dispatch:
@@ -38,13 +40,13 @@ jobs:
           cd dae-wing
           make WEB_DIST=../dist/ bundle
 
-      - name: upload web
+      - name: upload artifact - web
         uses: actions/upload-artifact@v3
         with:
           name: web
           path: dist
 
-      - name: upload bundled
+      - name: upload artifact - bundled
         uses: actions/upload-artifact@v3
         with:
           name: bundled
@@ -55,20 +57,36 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: download web
+      - uses: actions/checkout@v3
+
+      - name: download artifact - web
         uses: actions/download-artifact@v3
         with:
           name: web
           path: dist/
 
-      - name: download bundled
+      - name: download artifact - bundled
         uses: actions/download-artifact@v3
         with:
           name: bundled
           path: dae-wing/
 
-      - name: pages
+      - name: publish github pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+
+      - name: docker - login
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: docker - publish image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: daeuniverse/daed:latest
