@@ -116,10 +116,14 @@ export type Global = {
   lanInterface: Array<Scalars['String']['output']>
   logLevel: Scalars['String']['output']
   sniffingTimeout: Scalars['Duration']['output']
+  soMarkFromDae: Scalars['Int']['output']
   tcpCheckHttpMethod: Scalars['String']['output']
   tcpCheckUrl: Array<Scalars['String']['output']>
+  tlsImplementation: Scalars['String']['output']
   tproxyPort: Scalars['Int']['output']
+  tproxyPortProtect: Scalars['Boolean']['output']
   udpCheckDns: Array<Scalars['String']['output']>
+  utlsImitate: Scalars['String']['output']
   wanInterface: Array<Scalars['String']['output']>
 }
 
@@ -605,10 +609,14 @@ export type GlobalInput = {
   lanInterface?: InputMaybe<Array<Scalars['String']['input']>>
   logLevel?: InputMaybe<Scalars['String']['input']>
   sniffingTimeout?: InputMaybe<Scalars['Duration']['input']>
+  soMarkFromDae?: InputMaybe<Scalars['Int']['input']>
   tcpCheckHttpMethod?: InputMaybe<Scalars['String']['input']>
   tcpCheckUrl?: InputMaybe<Array<Scalars['String']['input']>>
+  tlsImplementation?: InputMaybe<Scalars['String']['input']>
   tproxyPort?: InputMaybe<Scalars['Int']['input']>
+  tproxyPortProtect?: InputMaybe<Scalars['Boolean']['input']>
   udpCheckDns?: InputMaybe<Array<Scalars['String']['input']>>
+  utlsImitate?: InputMaybe<Scalars['String']['input']>
   wanInterface?: InputMaybe<Array<Scalars['String']['input']>>
 }
 
