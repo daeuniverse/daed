@@ -112,14 +112,14 @@ export const DEFAULT_DISABLE_WAITING_NETWORK = false
 export const DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER = false
 export const DEFAULT_TLS_IMPLEMENTATION = TLSImplementation.tls
 
-export const DEFAULT_CONFIG_WITH_INTERFACE = (interfaceName?: string): GlobalInput => ({
+export const DEFAULT_CONFIG_WITH_INTERFACE = (interfaces?: string[]): GlobalInput => ({
   logLevel: DEFAULT_LOG_LEVEL,
   tproxyPort: DEFAULT_TPROXY_PORT,
   allowInsecure: DEFAULT_ALLOW_INSECURE,
   checkInterval: DEFAULT_CHECK_INTERVAL,
   checkTolerance: DEFAULT_CHECK_TOLERANCE,
-  lanInterface: interfaceName ? [interfaceName] : [],
-  wanInterface: interfaceName ? [interfaceName] : [],
+  lanInterface: interfaces ? interfaces : [],
+  wanInterface: interfaces ? interfaces : [],
   udpCheckDns: DEFAULT_UDP_CHECK_DNS,
   tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
   dialMode: DEFAULT_DIAL_MODE,
