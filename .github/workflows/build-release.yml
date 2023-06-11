@@ -18,9 +18,9 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: make wing
+      - name: download wing vendor
         run: |
-          make wing-deps
+          cd wing && go mod vendor
 
       - name: Create full source ZIP archive and Signature
         run: |

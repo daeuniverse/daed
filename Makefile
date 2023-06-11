@@ -42,8 +42,6 @@ $(DAE_WING_READY): wing
 	cd wing && \
 	make deps
 
-wing-deps: $(DAE_WING_READY)
-
 daed: submodule $(DAE_WING_READY) dist
 	cd wing && \
 	make OUTPUT=../$(OUTPUT) WEB_DIST=../dist bundle
