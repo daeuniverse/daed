@@ -1,0 +1,24 @@
+name: Publish Docker Image
+
+on:
+  release:
+    types: [prereleased]
+
+jobs:
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: docker image - quay.io
+        uses: aevea/action-kaniko@master
+        with:
+          registry: quay.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.QUAY_PASS }}
+          image: ${{ github.repository }}
+          build_file: Dockerfile
+          tag_with_latest: true
+          cache: true
+          cache_registry: quay.io/${{ github.repository_owner }}/cache
