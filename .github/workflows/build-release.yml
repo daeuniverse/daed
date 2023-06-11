@@ -20,7 +20,7 @@ jobs:
 
       - name: make wing
         run: |
-          make wing
+          make wing-deps
 
       - name: Create full source ZIP archive and Signature
         run: |

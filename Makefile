@@ -42,7 +42,7 @@ $(DAE_WING_READY): wing
 	cd wing && \
 	make deps
 
-wing: $(DAE_WING_READY)
+wing-deps: $(DAE_WING_READY)
 
 daed: submodule $(DAE_WING_READY) dist
 	cd wing && \
