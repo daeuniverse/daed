@@ -1,8 +1,46 @@
 name: build & release
 
 on:
-  push:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.ts"
+      - "**/*.js"
+      - "**/*.html"
+      - "**/*.css"
+      - "**/*.tsx"
+      - "*.tsx"
+      - "*.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".npmrc"
+      - ".pnpm-lock.yaml"
+      - "tsconfig.json"
+      - "vite.config.ts"
+      - ".github/workflows/build.yml"
+      - "Makefile"
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    paths:
+      - "**/*.ts"
+      - "**/*.js"
+      - "**/*.html"
+      - "**/*.css"
+      - "**/*.tsx"
+      - "*.tsx"
+      - "*.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".npmrc"
+      - ".pnpm-lock.yaml"
+      - "tsconfig.json"
+      - "vite.config.ts"
+      - ".github/workflows/build.yml"
+      - "Makefile"
+  release:
+    types: [ prereleased ]
 
 jobs:
   build-web:
