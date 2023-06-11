@@ -1,6 +1,6 @@
-OUTPUT=daed
+OUTPUT = daed
 
-.PHONY: submodules submodule web
+.PHONY: submodules submodule
 
 all: daed
 
