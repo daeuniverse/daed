@@ -107,7 +107,7 @@ export const DEFAULT_TCP_CHECK_URL = [
   'http://keep-alv.google.com/generate_204',
 ]
 export const DEFAULT_DIAL_MODE = DialMode.domain
-export const DEFAULT_TCP_CHECK_HTTP_METHOD = TcpCheckHttpMethod.CONNECT
+export const DEFAULT_TCP_CHECK_HTTP_METHOD = TcpCheckHttpMethod.HEAD
 export const DEFAULT_DISABLE_WAITING_NETWORK = false
 export const DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER = false
 export const DEFAULT_TLS_IMPLEMENTATION = TLSImplementation.tls
