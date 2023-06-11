@@ -165,6 +165,12 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
 
+      - name: download artifact - web
+        uses: actions/download-artifact@v3
+        with:
+          name: web
+          path: dist/
+
       - name: make
         run: |
           mkdir -p ./build/
