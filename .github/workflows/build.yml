@@ -1,4 +1,4 @@
-name: build & release
+name: Build
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
     types: [prereleased]
   pull_request:
     types: [opened, synchronize, reopened]
-  workflow_dispatch:
 
 jobs:
   full-src:
@@ -18,7 +17,7 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: download wing vendor
+      - name: Download wing vendor
         run: |
           cd wing && go mod vendor
 
@@ -32,7 +31,7 @@ jobs:
           shasum -a 256 $FILE >>$DGST
           shasum -a 512 $FILE >>$DGST
 
-      - name: upload artifact - full source
+      - name: Upload artifact - full source
         uses: actions/upload-artifact@v3
         with:
           name: daed-full-src.zip
@@ -62,12 +61,12 @@ jobs:
           cache: pnpm
           node-version: latest
 
-      - name: build
+      - name: Build
         run: |
           pnpm install
           pnpm build
 
-      - name: upload artifact - web
+      - name: Upload artifact - web
         uses: actions/upload-artifact@v3
         with:
           name: web
@@ -87,30 +86,26 @@ jobs:
           - goos: linux
             goarch: arm
             goarm: 7
-            cgo_enabled: 0
           - goos: linux
             goarch: arm
             goarm: 6
-            cgo_enabled: 0
           - goos: linux
             goarch: arm
             goarm: 5
-            cgo_enabled: 0
           # END Linux ARM 5 6 7
+
           # BEGIN Linux AMD64 v1 v2 v3
           - goos: linux
             goarch: amd64
             goamd64: v1
-            cgo_enabled: 0
           - goos: linux
             goarch: amd64
             goamd64: v2
-            cgo_enabled: 0
           - goos: linux
             goarch: amd64
             goamd64: v3
-            cgo_enabled: 0
           # END Linux AMD64 v1 v2 v3
+
           # BEGIN Linux mips
           - goos: linux
             goarch: mips64
@@ -129,9 +124,6 @@ jobs:
             cgo_enabled: 1
             cc: mips-linux-gnu-gcc
           # END Linux mips
-          - goos: linux
-            goarch: riscv64
-            cgo_enabled: 0
       fail-fast: false
 
     env:
@@ -162,20 +154,20 @@ jobs:
           echo "VERSION=$version" >> $GITHUB_OUTPUT
           echo "VERSION=$version" >> $GITHUB_ENV
 
-      - name: get filename
+      - name: Get the filename
         id: get_filename
         run: |
           export _NAME=$(jq ".[\"$GOOS-$GOARCH$GOARM$GOAMD64\"].friendlyName" -r < install/friendly-filenames.json)
           echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
-          echo "ASSET_NAME=$_NAME" >> $GITHUB_OUTPUT
+          echo "ASSET_NAME=daed-$_NAME" >> $GITHUB_OUTPUT
 
-      - name: install build dependencies
+      - name: Install mips build dependencies
         if: ${{ startsWith(matrix.goarch, 'mips') }}
         run: |
-          sudo apt-get update -y
+          sudo apt-get update
           sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
 
-      - name: download artifact - web
+      - name: Download artifact - web
         uses: actions/download-artifact@v3
         with:
           name: web
@@ -208,7 +200,7 @@ jobs:
           shasum -a 256 $FILE >>$DGST
           shasum -a 512 $FILE >>$DGST
 
-      - name: upload artifact - bundled
+      - name: Upload artifact - bundled
         uses: actions/upload-artifact@v3
         with:
           name: daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip
@@ -223,28 +215,3 @@ jobs:
           file: daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip*
           overwrite: true
           tag: ${{ github.ref }}
-
-  release:
-    runs-on: ubuntu-latest
-    needs: [build-bundle, full-src]
-    if: github.event_name == 'release'
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: download artifact - web
-        uses: actions/download-artifact@v3
-        with:
-          name: web
-          path: dist/
-
-      - name: docker image - quay.io
-        uses: aevea/action-kaniko@master
-        with:
-          registry: quay.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.QUAY_PASS }}
-          image: ${{ github.repository }}
-          build_file: Dockerfile
-          tag_with_latest: true
-          cache: true
-          cache_registry: quay.io/${{ github.repository_owner }}/cache
