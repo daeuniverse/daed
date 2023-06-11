@@ -1,0 +1,3 @@
+[submodule "dae-wing"]
+	path = dae-wing
+	url = https://github.com/daeuniverse/dae-wing
