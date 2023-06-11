@@ -18,6 +18,10 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: make wing
+        run: |
+          make wing
+
       - name: Create full source ZIP archive and Signature
         run: |
           zip -9vr daed-full-src.zip . -x .git/\*
@@ -28,7 +32,7 @@ jobs:
           shasum -a 256 $FILE >>$DGST
           shasum -a 512 $FILE >>$DGST
 
-      - name: upload artifact - bundled
+      - name: upload artifact - full source
         uses: actions/upload-artifact@v3
         with:
           name: daed-full-src.zip
