@@ -2,7 +2,12 @@ OUTPUT = daed
 
 .PHONY: submodules submodule
 
-all: daed
+daed:
+
+all: clean daed
+
+clean:
+	rm -rf dist && rm -f dae
 
 ## Begin Git Submodules
 .gitmodules.d.mk: .gitmodules
@@ -25,10 +30,8 @@ submodule submodules: $(submodule_paths)
 ## End Git Submodules
 
 ## Begin Web
-node_modules: package.json pnpm-lock.yaml
+dist: package.json pnpm-lock.yaml
 	pnpm i
-
-web: node_modules
 	pnpm build
 ## End Web
 
@@ -39,7 +42,7 @@ $(DAE_WING_READY): wing
 	cd wing && \
 	make deps
 
-daed: submodule $(DAE_WING_READY) web
+daed: submodule $(DAE_WING_READY) dist
 	cd wing && \
 	make OUTPUT=../$(OUTPUT) WEB_DIST=../dist bundle
 ## End Bundle
