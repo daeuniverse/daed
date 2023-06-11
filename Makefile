@@ -33,13 +33,13 @@ web: node_modules
 ## End Web
 
 ## Begin Bundle
-DAE_WING_READY=dae-wing/vendor/github.com/daeuniverse/dae/control/headers dae-wing/graphql/service/config/global/generated_resolver.go
+DAE_WING_READY=wing/vendor/github.com/daeuniverse/dae/control/headers wing/graphql/service/config/global/generated_resolver.go
 
-$(DAE_WING_READY): dae-wing
-	cd dae-wing && \
+$(DAE_WING_READY): wing
+	cd wing && \
 	make deps
 
 daed: submodule $(DAE_WING_READY) web
-	cd dae-wing && \
+	cd wing && \
 	make OUTPUT=../$(OUTPUT) WEB_DIST=../dist bundle
 ## End Bundle
