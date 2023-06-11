@@ -44,24 +44,47 @@ jobs:
           - goos: linux
             goarch: arm
             goarm: 7
+            cgo_enabled: 0
           - goos: linux
             goarch: arm
             goarm: 6
+            cgo_enabled: 0
           - goos: linux
             goarch: arm
             goarm: 5
+            cgo_enabled: 0
           # END Linux ARM 5 6 7
           # BEGIN Linux AMD64 v1 v2 v3
           - goos: linux
             goarch: amd64
             goamd64: v1
+            cgo_enabled: 0
           - goos: linux
             goarch: amd64
             goamd64: v2
+            cgo_enabled: 0
           - goos: linux
             goarch: amd64
             goamd64: v3
+            cgo_enabled: 0
           # END Linux AMD64 v1 v2 v3
+          # BEGIN Linux mips
+          - goos: linux
+            goarch: mips64
+            cgo_enabled: 1
+          - goos: linux
+            goarch: mips64le
+            cgo_enabled: 1
+          - goos: linux
+            goarch: mipsle
+            cgo_enabled: 1
+          - goos: linux
+            goarch: mips
+            cgo_enabled: 1
+          # END Linux mips
+          - goos: linux
+            goarch: riscv64
+            cgo_enabled: 0
       fail-fast: false
 
     env:
@@ -69,7 +92,7 @@ jobs:
       GOARCH: ${{ matrix.goarch }}
       GOARM: ${{ matrix.goarm }}
       GOAMD64: ${{ matrix.goamd64 }}
-      CGO_ENABLED: 0
+      CGO_ENABLED: ${{ matrix.cgo_enabled }}
 
     steps:
       - uses: actions/checkout@v3
@@ -78,6 +101,7 @@ jobs:
         with:
           repository: daeuniverse/dae-wing
           path: dae-wing
+          ref: '2b3079281b76a0748bb0e33c63203340e56265b8'
 
       - name: get filename
         id: get_filename
