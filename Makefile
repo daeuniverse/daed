@@ -1,4 +1,4 @@
-OUTPUT = daed
+OUTPUT ?= daed
 
 .PHONY: submodules submodule
 

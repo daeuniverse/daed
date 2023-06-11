@@ -13,7 +13,6 @@ on:
 jobs:
   full-src:
     runs-on: ubuntu-latest
-    if: github.event_name == 'release'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,8 +28,15 @@ jobs:
           shasum -a 256 $FILE >>$DGST
           shasum -a 512 $FILE >>$DGST
 
+      - name: upload artifact - bundled
+        uses: actions/upload-artifact@v3
+        with:
+          name: daed-full-src.zip
+          path: daed-full-src.zip
+
       - name: Upload full source to GitHub release
         uses: svenstaro/upload-release-action@v2
+        if: github.event_name == 'release'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file_glob: true
