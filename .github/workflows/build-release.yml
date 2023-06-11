@@ -72,15 +72,19 @@ jobs:
           - goos: linux
             goarch: mips64
             cgo_enabled: 1
+            cc: mips64-linux-gnuabi64-gcc
           - goos: linux
             goarch: mips64le
             cgo_enabled: 1
+            cc: mips64el-linux-gnuabi64-gcc
           - goos: linux
             goarch: mipsle
             cgo_enabled: 1
+            cc: mipsel-linux-gnu-gcc
           - goos: linux
             goarch: mips
             cgo_enabled: 1
+            cc: mips-linux-gnu-gcc
           # END Linux mips
           - goos: linux
             goarch: riscv64
@@ -93,6 +97,7 @@ jobs:
       GOARM: ${{ matrix.goarm }}
       GOAMD64: ${{ matrix.goamd64 }}
       CGO_ENABLED: ${{ matrix.cgo_enabled }}
+      CC: ${{ matrix.cc }}
 
     steps:
       - uses: actions/checkout@v3
@@ -101,7 +106,7 @@ jobs:
         with:
           repository: daeuniverse/dae-wing
           path: dae-wing
-          ref: '2b3079281b76a0748bb0e33c63203340e56265b8'
+          ref: 'd986b18e10a7bfb90da1c15094b97e9386c459ef'
 
       - name: get filename
         id: get_filename
@@ -109,6 +114,12 @@ jobs:
           export _NAME=$(jq ".[\"$GOOS-$GOARCH$GOARM$GOAMD64\"].friendlyName" -r < install/friendly-filenames.json)
           echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_OUTPUT
+
+      - name: install build dependencies
+        if: ${{ startsWith(matrix.goarch, 'mips') }}
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
 
       - name: build
         run: |
