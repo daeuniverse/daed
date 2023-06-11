@@ -49,6 +49,7 @@ export type Dae = {
   /** modified indicates whether the running config has been modified. */
   modified: Scalars['Boolean']['output']
   running: Scalars['Boolean']['output']
+  version: Scalars['String']['output']
 }
 
 export type DaeDns = {
@@ -99,6 +100,7 @@ export type General = {
   __typename?: 'General'
   dae: Dae
   interfaces: Array<Interface>
+  schema: Scalars['String']['output']
 }
 
 export type GeneralInterfacesArgs = {
