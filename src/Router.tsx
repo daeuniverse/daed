@@ -20,8 +20,7 @@ import { endpointURLAtom } from '~/store'
 
 export const Router = () => {
   const endpointURL = useStore(endpointURLAtom)
-  // gh-pages support
-  const RouterType = location.hostname === 'daeuniverse.github.io' ? HashRouter : BrowserRouter
+  const RouterType = import.meta.env.DEV ? BrowserRouter : HashRouter
 
   return (
     <RouterType>
