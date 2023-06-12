@@ -7,7 +7,7 @@ daed:
 all: clean daed
 
 clean:
-	rm -rf dist && rm -f dae
+	rm -rf dist && rm -f daed
 
 ## Begin Git Submodules
 .gitmodules.d.mk: .gitmodules
