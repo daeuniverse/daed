@@ -158,7 +158,7 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
 
   const { data: generalQuery } = useGeneralQuery()
 
-  const interfacesData: { value: string; label: string }[] = useMemo(() => {
+  const wanInterfacesData: { value: string; label: string }[] = useMemo(() => {
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
@@ -168,6 +168,19 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
           label: name,
           value: name,
         }))
+    }
+
+    return []
+  }, [generalQuery?.general.interfaces])
+
+  const lanInterfacesData: { value: string; label: string }[] = useMemo(() => {
+    const interfaces = generalQuery?.general.interfaces
+
+    if (interfaces) {
+      return interfaces.map(({ name }) => ({
+        label: name,
+        value: name,
+      }))
     }
 
     return []
@@ -259,11 +272,11 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
             <MultiSelect
               label={t('wanInterface')}
               withAsterisk
-              data={interfacesData}
+              data={wanInterfacesData}
               {...form.getInputProps('wanInterface')}
             />
 
-            <MultiSelect label={t('lanInterface')} data={interfacesData} {...form.getInputProps('lanInterface')} />
+            <MultiSelect label={t('lanInterface')} data={lanInterfacesData} {...form.getInputProps('lanInterface')} />
           </SimpleGrid>
 
           <SimpleGrid cols={3}>
