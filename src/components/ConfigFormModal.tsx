@@ -1,10 +1,10 @@
 import {
   ActionIcon,
   Checkbox,
+  Drawer,
   Flex,
   Group,
   Input,
-  Modal,
   MultiSelect,
   NumberInput,
   Radio,
@@ -105,13 +105,13 @@ const InputList = <T extends z.infer<typeof schema>>({
   )
 }
 
-export type ConfigFormModalRef = {
+export type ConfigFormDrawerRef = {
   form: UseFormReturnType<z.infer<typeof schema>>
   setEditingID: (id: string) => void
   initOrigins: (origins: z.infer<typeof schema>) => void
 }
 
-export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolean; onClose: () => void }, ref) => {
+export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boolean; onClose: () => void }, ref) => {
   const { t } = useTranslation()
   const [editingID, setEditingID] = useState()
   const [origins, setOrigins] = useState<z.infer<typeof schema>>()
@@ -180,7 +180,7 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
   const updateConfigMutation = useUpdateConfigMutation()
 
   return (
-    <Modal title={t('config')} opened={opened} onClose={onClose}>
+    <Drawer title={t('config')} opened={opened} onClose={onClose}>
       <form
         onSubmit={form.onSubmit(async (values) => {
           const logLevel = logLevelSteps[values.logLevelNumber][1]
@@ -348,6 +348,6 @@ export const ConfigFormModal = forwardRef(({ opened, onClose }: { opened: boolea
           />
         </Stack>
       </form>
-    </Modal>
+    </Drawer>
   )
 })
