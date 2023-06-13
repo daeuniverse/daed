@@ -1,14 +1,13 @@
 name: Publish Docker Image
 
 on:
-  push:
-  # release:
-  #   types: [prereleased]
+  release:
+    types: [prereleased]
 
 jobs:
   publish-docker-image:
     runs-on: ubuntu-latest
-    # if: github.event_name == 'release'
+    if: github.event_name == 'release'
 
     steps:
       - uses: actions/checkout@v3
@@ -34,7 +33,7 @@ jobs:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
           file: Dockerfile
-          platforms: linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64
+          platforms: linux/amd64
           push: true
           tags: |
             quay.io/${{ github.repository }}:latest
