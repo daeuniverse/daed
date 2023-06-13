@@ -1,0 +1,217 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [prereleased]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  full-src:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Download wing vendor
+        run: |
+          cd wing && go mod vendor
+
+      - name: Create full source ZIP archive and Signature
+        run: |
+          zip -9vr daed-full-src.zip . -x .git/\*
+          FILE=./daed-full-src.zip
+          DGST=$FILE.dgst
+          md5sum        $FILE >>$DGST
+          shasum -a 1   $FILE >>$DGST
+          shasum -a 256 $FILE >>$DGST
+          shasum -a 512 $FILE >>$DGST
+
+      - name: Upload artifact - full source
+        uses: actions/upload-artifact@v3
+        with:
+          name: daed-full-src.zip
+          path: daed-full-src.zip
+
+      - name: Upload full source to GitHub release
+        uses: svenstaro/upload-release-action@v2
+        if: github.event_name == 'release'
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file_glob: true
+          file: daed-full-src.zip*
+          overwrite: true
+          tag: ${{ github.ref }}
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: latest
+
+      - name: Build
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: Upload artifact - web
+        uses: actions/upload-artifact@v3
+        with:
+          name: web
+          path: dist
+
+  build-bundle:
+    needs: build-web
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux]
+        goarch: [arm64, 386, riscv64, mips64, mips64le, mipsle, mips]
+
+        include:
+          # BEGIN Linux ARM 5 6 7
+          - goos: linux
+            goarch: arm
+            goarm: 7
+          - goos: linux
+            goarch: arm
+            goarm: 6
+          - goos: linux
+            goarch: arm
+            goarm: 5
+          # END Linux ARM 5 6 7
+
+          # BEGIN Linux AMD64 v1 v2 v3
+          - goos: linux
+            goarch: amd64
+            goamd64: v1
+          - goos: linux
+            goarch: amd64
+            goamd64: v2
+          - goos: linux
+            goarch: amd64
+            goamd64: v3
+          # END Linux AMD64 v1 v2 v3
+
+          # BEGIN Linux mips
+          - goos: linux
+            goarch: mips64
+            cgo_enabled: 1
+            cc: mips64-linux-gnuabi64-gcc
+          - goos: linux
+            goarch: mips64le
+            cgo_enabled: 1
+            cc: mips64el-linux-gnuabi64-gcc
+          - goos: linux
+            goarch: mipsle
+            cgo_enabled: 1
+            cc: mipsel-linux-gnu-gcc
+          - goos: linux
+            goarch: mips
+            cgo_enabled: 1
+            cc: mips-linux-gnu-gcc
+          # END Linux mips
+      fail-fast: false
+
+    env:
+      GOOS: ${{ matrix.goos }}
+      GOARCH: ${{ matrix.goarch }}
+      GOARM: ${{ matrix.goarm }}
+      GOAMD64: ${{ matrix.goamd64 }}
+      CGO_ENABLED: ${{ matrix.cgo_enabled }}
+      CC: ${{ matrix.cc }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get the version
+        id: get_version
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [[ "$REF" == "refs/tags/v"* ]]; then
+            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+            version=${tag}
+          else
+            date=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+            count=$(git rev-list --count HEAD)
+            commit=$(git rev-parse --short HEAD)
+            version="unstable-$date.r${count}.$commit"
+          fi
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+          echo "VERSION=$version" >> $GITHUB_ENV
+
+      - name: Get the filename
+        id: get_filename
+        run: |
+          export _NAME=$(jq ".[\"$GOOS-$GOARCH$GOARM$GOAMD64\"].friendlyName" -r < install/friendly-filenames.json)
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
+          echo "ASSET_NAME=daed-$_NAME" >> $GITHUB_OUTPUT
+
+      - name: Install mips build dependencies
+        if: ${{ startsWith(matrix.goarch, 'mips') }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
+
+      - name: Download artifact - web
+        uses: actions/download-artifact@v3
+        with:
+          name: web
+          path: dist/
+
+      - name: make
+        run: |
+          mkdir -p ./build/
+          export VERSION=${{ steps.get_version.outputs.VERSION }}
+          export GOFLAGS="-trimpath -modcacherw"
+          export OUTPUT=build/daed-${{ steps.get_filename.outputs.ASSET_NAME }}
+          make
+          cp ./install/daed.service ./build/
+          curl -L -o ./build/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
+          curl -L -o ./build/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
+
+      - name: Smoking test
+        if: matrix.goarch == 'amd64' && matrix.goamd64 == 'v1'
+        run: ./build/daed-${{ steps.get_filename.outputs.ASSET_NAME }} --version
+
+      - name: Create binary ZIP archive and Signature
+        run: |
+          pushd build || exit 1
+          zip -9vr ../daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip .
+          popd || exit 1
+          FILE=./daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip
+          DGST=$FILE.dgst
+          md5sum        $FILE >>$DGST
+          shasum -a 1   $FILE >>$DGST
+          shasum -a 256 $FILE >>$DGST
+          shasum -a 512 $FILE >>$DGST
+
+      - name: Upload artifact - bundled
+        uses: actions/upload-artifact@v3
+        with:
+          name: daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip
+          path: build/*
+
+      - name: Upload files to GitHub release
+        uses: svenstaro/upload-release-action@v2
+        if: github.event_name == 'release'
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file_glob: true
+          file: daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip*
+          overwrite: true
+          tag: ${{ github.ref }}
