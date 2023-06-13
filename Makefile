@@ -30,8 +30,16 @@ submodule submodules: $(submodule_paths)
 ## End Git Submodules
 
 ## Begin Web
-dist: package.json pnpm-lock.yaml
-	pnpm i
+prepare-pnpm:
+	@if which corepack > /dev/null; then \
+		corepack enable; \
+		corepack prepare pnpm@latest --activate; \
+	else \
+		curl -fsSL https://get.pnpm.io/install.sh | sh -; \
+	fi
+
+dist: prepare-pnpm package.json pnpm-lock.yaml
+	pnpm install
 	pnpm build
 ## End Web
 
