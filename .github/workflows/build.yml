@@ -131,7 +131,7 @@ jobs:
       GOARCH: ${{ matrix.goarch }}
       GOARM: ${{ matrix.goarm }}
       GOAMD64: ${{ matrix.goamd64 }}
-      CGO_ENABLED: ${{ matrix.cgo_enabled }}
+      CGO_ENABLED: ${{ matrix.cgo_enabled || 0 }}
       CC: ${{ matrix.cc }}
 
     steps:
