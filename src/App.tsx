@@ -59,6 +59,12 @@ export const App = () => {
             scrollAreaComponent: ScrollArea.Autosize,
           },
         },
+        Drawer: {
+          defaultProps: {
+            size: 'lg',
+            scrollAreaComponent: ScrollArea.Autosize,
+          },
+        },
         Menu: {
           styles: {
             label: {

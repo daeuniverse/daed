@@ -7,7 +7,6 @@ import {
   Anchor,
   Badge,
   Center,
-  Code,
   Divider,
   Group,
   SimpleGrid,
@@ -68,7 +67,7 @@ import {
   useUpdateRoutingMutation,
   useUpdateSubscriptionsMutation,
 } from '~/apis'
-import { ConfigFormModal, ConfigFormModalRef } from '~/components/ConfigFormModal'
+import { ConfigFormDrawer, ConfigFormDrawerRef } from '~/components/ConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
@@ -138,9 +137,9 @@ export const OrchestratePage = () => {
   }, [draggingResource, nodesQuery, subscriptionsQuery])
 
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
-  const [openedCreateConfigFormModal, { open: openCreateConfigFormModal, close: closeCreateConfigFormModal }] =
+  const [openedCreateConfigFormDrawer, { open: openCreateConfigFormDrawer, close: closeCreateConfigFormDrawer }] =
     useDisclosure(false)
-  const [openedUpdateConfigFormModal, { open: openUpdateConfigFormModal, close: closeUpdateConfigFormModal }] =
+  const [openedUpdateConfigFormDrawer, { open: openUpdateConfigFormDrawer, close: closeUpdateConfigFormDrawer }] =
     useDisclosure(false)
   const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }] =
     useDisclosure(false)
@@ -172,7 +171,7 @@ export const OrchestratePage = () => {
 
   const { defaultConfigID, defaultDNSID, defaultGroupID, defaultRoutingID } = useStore(defaultResourcesAtom)
 
-  const updateConfigFormModalRef = useRef<ConfigFormModalRef>(null)
+  const updateConfigFormDrawerRef = useRef<ConfigFormDrawerRef>(null)
   const updateDNSFormModalRef = useRef<PlainTextgFormModalRef>(null)
   const updateRoutingFormModalRef = useRef<PlainTextgFormModalRef>(null)
 
@@ -192,7 +191,7 @@ export const OrchestratePage = () => {
       />
 
       <SimpleGrid cols={3}>
-        <Section title={t('config')} icon={<IconSettings />} onCreate={openCreateConfigFormModal}>
+        <Section title={t('config')} icon={<IconSettings />} onCreate={openCreateConfigFormDrawer}>
           <Stack>
             {configsQuery?.configs.map((config) => (
               <SimpleCard
@@ -219,14 +218,14 @@ export const OrchestratePage = () => {
                     <ActionIcon
                       size="xs"
                       onClick={() => {
-                        updateConfigFormModalRef.current?.setEditingID(config.id)
+                        updateConfigFormDrawerRef.current?.setEditingID(config.id)
 
                         const { checkInterval, checkTolerance, sniffingTimeout, logLevel, ...global } = config.global
 
                         const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
                         const logLevelNumber = logLevelSteps.findIndex(([, l]) => l === logLevel)
 
-                        updateConfigFormModalRef.current?.initOrigins({
+                        updateConfigFormDrawerRef.current?.initOrigins({
                           name: config.name,
                           logLevelNumber,
                           checkIntervalSeconds: Number.parseInt(checkInterval.split('s')[0]),
@@ -235,7 +234,7 @@ export const OrchestratePage = () => {
                           ...global,
                         })
 
-                        openUpdateConfigFormModal()
+                        openUpdateConfigFormDrawer()
                       }}
                     >
                       <IconEdit />
@@ -297,15 +296,7 @@ export const OrchestratePage = () => {
                 onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
                 onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}
               >
-                <Code block>
-                  <pre
-                    style={{
-                      display: 'contents',
-                    }}
-                  >
-                    {dns.dns.string}
-                  </pre>
-                </Code>
+                <Prism language="bash">{dns.dns.string}</Prism>
               </SimpleCard>
             ))}
           </Stack>
@@ -356,15 +347,7 @@ export const OrchestratePage = () => {
                 onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
                 onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}
               >
-                <Code block>
-                  <pre
-                    style={{
-                      display: 'contents',
-                    }}
-                  >
-                    {routing.routing.string}
-                  </pre>
-                </Code>
+                <Prism language="bash">{routing.routing.string}</Prism>
               </SimpleCard>
             ))}
           </Stack>
@@ -599,11 +582,11 @@ export const OrchestratePage = () => {
         </DndContext>
       </SimpleGrid>
 
-      <ConfigFormModal opened={openedCreateConfigFormModal} onClose={closeCreateConfigFormModal} />
-      <ConfigFormModal
-        ref={updateConfigFormModalRef}
-        opened={openedUpdateConfigFormModal}
-        onClose={closeUpdateConfigFormModal}
+      <ConfigFormDrawer opened={openedCreateConfigFormDrawer} onClose={closeCreateConfigFormDrawer} />
+      <ConfigFormDrawer
+        ref={updateConfigFormDrawerRef}
+        opened={openedUpdateConfigFormDrawer}
+        onClose={closeUpdateConfigFormDrawer}
       />
 
       <PlainTextFormModal

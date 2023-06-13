@@ -35,7 +35,7 @@ import {
   useRenameDNSMutation,
   useRenameRoutingMutation,
 } from '~/apis'
-import { ConfigFormModal } from '~/components/ConfigFormModal'
+import { ConfigFormDrawer } from '~/components/ConfigFormModal'
 import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
 import { CreateNodeFormModal } from '~/components/CreateNodeFormModal'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
@@ -581,7 +581,7 @@ export const ExperimentPage = () => {
         </DndContext>
       </SimpleGrid>
 
-      <ConfigFormModal opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
+      <ConfigFormDrawer opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
 
       <PlainTextFormModal
         title={t('dns')}
