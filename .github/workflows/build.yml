@@ -178,7 +178,7 @@ jobs:
           mkdir -p ./build/
           export VERSION=${{ steps.get_version.outputs.VERSION }}
           export GOFLAGS="-trimpath -modcacherw"
-          export OUTPUT=build/daed-${{ steps.get_filename.outputs.ASSET_NAME }}
+          export OUTPUT=build/${{ steps.get_filename.outputs.ASSET_NAME }}
           make
           cp ./install/daed.service ./build/
           curl -L -o ./build/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
@@ -186,14 +186,14 @@ jobs:
 
       - name: Smoking test
         if: matrix.goarch == 'amd64' && matrix.goamd64 == 'v1'
-        run: ./build/daed-${{ steps.get_filename.outputs.ASSET_NAME }} --version
+        run: ./build/${{ steps.get_filename.outputs.ASSET_NAME }} --version
 
       - name: Create binary ZIP archive and Signature
         run: |
           pushd build || exit 1
-          zip -9vr ../daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip .
+          zip -9vr ../${{ steps.get_filename.outputs.ASSET_NAME }}.zip .
           popd || exit 1
-          FILE=./daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip
+          FILE=./${{ steps.get_filename.outputs.ASSET_NAME }}.zip
           DGST=$FILE.dgst
           md5sum        $FILE >>$DGST
           shasum -a 1   $FILE >>$DGST
@@ -203,7 +203,7 @@ jobs:
       - name: Upload artifact - bundled
         uses: actions/upload-artifact@v3
         with:
-          name: daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip
+          name: ${{ steps.get_filename.outputs.ASSET_NAME }}.zip
           path: build/*
 
       - name: Upload files to GitHub release
@@ -212,6 +212,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file_glob: true
-          file: daed-${{ steps.get_filename.outputs.ASSET_NAME }}.zip*
+          file: ${{ steps.get_filename.outputs.ASSET_NAME }}.zip*
           overwrite: true
           tag: ${{ github.ref }}

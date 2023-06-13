@@ -31,7 +31,7 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
 
           if (error) {
             notifications.show({
-              variant: 'error',
+              color: 'red',
               message: error.message,
             })
 
