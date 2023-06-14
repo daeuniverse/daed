@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug encountered while operating Daed
+about: Report a bug encountered while operating daed
 labels: kind/bug
 ---
 
