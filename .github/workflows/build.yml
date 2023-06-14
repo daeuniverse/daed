@@ -145,14 +145,18 @@ jobs:
           if [[ "$REF" == "refs/tags/v"* ]]; then
             tag=$(git describe --tags $(git rev-list --tags --max-count=1))
             version=${tag}
+            package_version="$(echo $tag | sed 's|v||g')"
           else
             date=$(git log -1 --format="%cd" --date=short | sed s/-//g)
             count=$(git rev-list --count HEAD)
             commit=$(git rev-parse --short HEAD)
             version="unstable-$date.r${count}.$commit"
+            package_version="$date.r${count}.$commit"
           fi
           echo "VERSION=$version" >> $GITHUB_OUTPUT
           echo "VERSION=$version" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$package_version" >> $GITHUB_OUTPUT
+          echo "PACKAGE_VERSION=$package_version" >> $GITHUB_ENV
 
       - name: Get the filename
         id: get_filename
@@ -215,3 +219,59 @@ jobs:
           file: ${{ steps.get_filename.outputs.ASSET_NAME }}.zip*
           overwrite: true
           tag: ${{ github.ref }}
+
+      - name: Build Linux packages
+        if: ${{ env.GOARM != '5' && env.GOARM != '6' }}
+        run: |
+          if [ "$GOARM" != '5' ] && [ "$GOARM" != '6' ];then
+            sudo apt install -y libarchive-tools rpm
+            sudo gem install fpm -v 1.15.1
+            pushd build || exit 1
+            for package_manager in deb rpm pacman; do
+              fpm -s dir -t "$package_manager" -a $GOARCH --version "$PACKAGE_VERSION" \
+                --url 'https://github.com/daeuniverse/daed' --description "daed, A Modern Dashboard For dae." \
+                --maintainer "daed@dae.v2raya.org" --name daed --license 'MIT AGPL' \
+                --package daed-linux-$GOARCH$GOAMD64$GOARM.$package_manager \
+                ./geoip.dat=/usr/share/daed/geoip.dat ./geosite.dat=/usr/share/daed/geosite.dat \
+                ./daed.service=/usr/lib/systemd/system/daed.service \
+                ./${{ steps.get_filename.outputs.ASSET_NAME }}=/usr/bin/daed
+            done
+            popd || exit 1
+            cp build/daed-linux-$GOARCH$GOAMD64$GOARM.deb installer-${{ steps.get_filename.outputs.ASSET_NAME }}.deb
+            cp build/daed-linux-$GOARCH$GOAMD64$GOARM.rpm installer-${{ steps.get_filename.outputs.ASSET_NAME }}.rpm
+            cp build/daed-linux-$GOARCH$GOAMD64$GOARM.pacman installer-${{ steps.get_filename.outputs.ASSET_NAME }}.pkg.tar.zst
+            ls | grep -E ".deb|.pkg.tar.zst|.rpm"
+            for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm");do
+                md5sum        $package >> $package.dgst
+                shasum -a 1   $package >> $package.dgst
+                shasum -a 256 $package >> $package.dgst
+                shasum -a 512 $package >> $package.dgst
+                cat $package.dgst
+            done
+          fi
+
+      - name: Upload artifact - packages
+        if: ${{ github.event_name != 'release' && env.GOARM != '5' && env.GOARM != '6' }}
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
+        with:
+          path: |
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.deb
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.rpm
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.pkg.tar.zst
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.deb.dgst
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.rpm.dgst
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.pkg.tar.zst.dgst
+
+      - name: Upload Linux packages to GitHub release
+        if: ${{ github.event_name == 'release' && env.GOARM != '5' && env.GOARM != '6' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.deb
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.rpm
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.pkg.tar.zst
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.deb.dgst
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.rpm.dgst
+            installer-${{ steps.get_filename.outputs.ASSET_NAME }}.pkg.tar.zst.dgst
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
