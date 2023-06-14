@@ -1,6 +1,6 @@
 ---
 name: Enhancement Request
-about: Suggest an enhancement to the Daed project
+about: Suggest an enhancement to the daed project
 labels: kind/enhancement
 ---
 
