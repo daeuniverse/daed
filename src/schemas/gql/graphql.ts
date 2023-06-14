@@ -864,7 +864,18 @@ export type InterfacesQueryVariables = Exact<{
 
 export type InterfacesQuery = {
   __typename?: 'Query'
-  general: { __typename?: 'General'; interfaces: Array<{ __typename?: 'Interface'; name: string; ifindex: number }> }
+  general: {
+    __typename?: 'General'
+    interfaces: Array<{
+      __typename?: 'Interface'
+      name: string
+      ifindex: number
+      flag: {
+        __typename?: 'InterfaceFlag'
+        default?: Array<{ __typename?: 'DefaultRoute'; gateway?: string | null }> | null
+      }
+    }>
+  }
 }
 
 export type JsonStorageQueryVariables = Exact<{
@@ -882,7 +893,15 @@ export type GeneralQuery = {
   general: {
     __typename?: 'General'
     dae: { __typename?: 'Dae'; running: boolean; modified: boolean }
-    interfaces: Array<{ __typename?: 'Interface'; name: string; ifindex: number }>
+    interfaces: Array<{
+      __typename?: 'Interface'
+      name: string
+      ifindex: number
+      flag: {
+        __typename?: 'InterfaceFlag'
+        default?: Array<{ __typename?: 'DefaultRoute'; gateway?: string | null }> | null
+      }
+    }>
   }
 }
 
@@ -948,6 +967,9 @@ export type ConfigsQuery = {
       disableWaitingNetwork: boolean
       autoConfigKernelParameter: boolean
       sniffingTimeout: any
+      tlsImplementation: string
+      utlsImitate: string
+      tproxyPortProtect: boolean
     }
   }>
 }
@@ -2544,6 +2566,23 @@ export const InterfacesDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'ifindex' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'flag' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'default' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'gateway' } }],
+                              },
+                            },
+                          ],
+                        },
+                      },
                     ],
                   },
                 },
@@ -2640,6 +2679,23 @@ export const GeneralDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'ifindex' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'flag' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'default' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'gateway' } }],
+                              },
+                            },
+                          ],
+                        },
+                      },
                     ],
                   },
                 },
@@ -2781,6 +2837,9 @@ export const ConfigsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'disableWaitingNetwork' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'autoConfigKernelParameter' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'sniffingTimeout' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tlsImplementation' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'utlsImitate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tproxyPortProtect' } },
                     ],
                   },
                 },

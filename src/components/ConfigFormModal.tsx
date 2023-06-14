@@ -28,12 +28,16 @@ import {
   DEFAULT_DISABLE_WAITING_NETWORK,
   DEFAULT_TCP_CHECK_HTTP_METHOD,
   DEFAULT_TCP_CHECK_URL,
+  DEFAULT_TLS_IMPLEMENTATION,
   DEFAULT_TPROXY_PORT,
   DEFAULT_UDP_CHECK_DNS,
   DialMode,
   GET_LOG_LEVEL_STEPS,
+  TLSImplementation,
   TcpCheckHttpMethod,
+  UTLSImitate,
 } from '~/constants'
+import { GlobalInput } from '~/schemas/gql/graphql'
 
 import { FormActions } from './FormActions'
 
@@ -45,16 +49,17 @@ const schema = z.object({
   checkIntervalSeconds: z.number(),
   checkToleranceMS: z.number(),
   sniffingTimeoutMS: z.number(),
-  lanInterface: z.array(z.string()).min(1),
-  wanInterface: z.array(z.string()).min(1),
+  lanInterface: z.array(z.string().nonempty()),
+  wanInterface: z.array(z.string().nonempty()).min(1),
   udpCheckDns: z.array(z.string()).min(1),
   tcpCheckUrl: z.array(z.string()).min(1),
   dialMode: z.string(),
   tcpCheckHttpMethod: z.string(),
   disableWaitingNetwork: z.boolean(),
   autoConfigKernelParameter: z.boolean(),
-  // tlsImplementation: z.string(),
-  // utlsImitate: z.string(),
+  tlsImplementation: z.string(),
+  utlsImitate: z.string(),
+  tproxyPortProtect: z.boolean(),
 })
 
 const InputList = <T extends z.infer<typeof schema>>({
@@ -134,8 +139,9 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
       tcpCheckHttpMethod: DEFAULT_TCP_CHECK_HTTP_METHOD,
       disableWaitingNetwork: DEFAULT_DISABLE_WAITING_NETWORK,
       autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
-      // tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
-      // utlsImitate: '',
+      tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
+      utlsImitate: '',
+      tproxyPortProtect: true,
     },
   })
 
@@ -152,7 +158,22 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
   const { data: generalQuery } = useGeneralQuery()
 
-  const interfacesData: { value: string; label: string }[] = useMemo(() => {
+  const wanInterfacesData: { value: string; label: string }[] = useMemo(() => {
+    const interfaces = generalQuery?.general.interfaces
+
+    if (interfaces) {
+      return interfaces
+        .filter(({ flag }) => !!flag.default)
+        .map(({ name }) => ({
+          label: name,
+          value: name,
+        }))
+    }
+
+    return []
+  }, [generalQuery?.general.interfaces])
+
+  const lanInterfacesData: { value: string; label: string }[] = useMemo(() => {
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
@@ -184,7 +205,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
       <form
         onSubmit={form.onSubmit(async (values) => {
           const logLevel = logLevelSteps[values.logLevelNumber][1]
-          const global = {
+          const global: GlobalInput = {
             logLevel,
             tproxyPort: values.tproxyPort,
             tcpCheckUrl: values.tcpCheckUrl,
@@ -196,6 +217,11 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
             lanInterface: values.lanInterface,
             wanInterface: values.wanInterface,
             dialMode: values.dialMode,
+            tlsImplementation: values.tlsImplementation,
+            utlsImitate: values.utlsImitate,
+            tcpCheckHttpMethod: values.tcpCheckHttpMethod,
+            disableWaitingNetwork: values.disableWaitingNetwork,
+            autoConfigKernelParameter: values.autoConfigKernelParameter,
           }
 
           if (editingID) {
@@ -244,18 +270,13 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
             <NumberInput label={t('tproxyPort')} withAsterisk {...form.getInputProps('tproxyPort')} />
 
             <MultiSelect
-              label={t('lanInterface')}
-              withAsterisk
-              data={interfacesData}
-              {...form.getInputProps('lanInterface')}
-            />
-
-            <MultiSelect
               label={t('wanInterface')}
               withAsterisk
-              data={interfacesData}
+              data={wanInterfacesData}
               {...form.getInputProps('wanInterface')}
             />
+
+            <MultiSelect label={t('lanInterface')} data={lanInterfacesData} {...form.getInputProps('lanInterface')} />
           </SimpleGrid>
 
           <SimpleGrid cols={3}>
@@ -294,7 +315,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
             <InputList form={form} label={t('tcpCheckUrl')} fieldName="tcpCheckUrl" values={form.values.tcpCheckUrl} />
           </SimpleGrid>
 
-          {/* <SimpleGrid cols={2}>
+          <SimpleGrid cols={2}>
             <Select
               label={t('tlsImplementation')}
               data={Object.values(TLSImplementation).map((tlsImplementation) => ({
@@ -312,9 +333,16 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
               }))}
               {...form.getInputProps('utlsImitate')}
             />
-          </SimpleGrid> */}
+          </SimpleGrid>
 
           <SimpleGrid cols={2}>
+            <Checkbox
+              label={t('tproxyPortProtect')}
+              {...form.getInputProps('tproxyPortProtect', {
+                type: 'checkbox',
+              })}
+            />
+
             <Checkbox
               label={t('allowInsecure')}
               {...form.getInputProps('allowInsecure', {

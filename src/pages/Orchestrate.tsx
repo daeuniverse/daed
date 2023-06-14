@@ -232,9 +232,6 @@ export const OrchestratePage = () => {
                           checkToleranceMS: Number.parseInt(checkTolerance.split('ms')[0]) * 1000,
                           sniffingTimeoutMS: Number.parseInt(sniffingTimeout.split('ms')[0]),
                           ...global,
-                          // FIXME: these values are not presented in query as of now
-                          // tlsImplementation: '',
-                          // utlsImitate: '',
                         })
 
                         openUpdateConfigFormDrawer()

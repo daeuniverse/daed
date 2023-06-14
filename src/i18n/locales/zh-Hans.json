@@ -98,6 +98,7 @@
   "tcpCheckUrl": "TCP 检测链接",
   "tlsImplementation": "TLS 实现",
   "tproxyPort": "透明代理端口",
+  "tproxyPortProtect": "透明代理端口保护",
   "trace": "跟踪",
   "udpCheckDns": "UDP 检测 DNS",
   "updatedAt": "更新时间",

@@ -37,7 +37,9 @@ const useInit = () => {
   const getDefaults = getDefaultsRequest(gqlClient)
 
   return useCallback(async () => {
-    const interfaceName = (await getInterfaces()).general.interfaces.find(({ name }) => name !== 'lo')?.name || 'lan'
+    const interfaces = (await getInterfaces()).general.interfaces
+      .filter(({ flag }) => !!flag.default)
+      .map(({ name }) => name)
 
     const { defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID } = await getDefaults()
 
@@ -46,7 +48,7 @@ const useInit = () => {
         createConfig: { id },
       } = await createConfigMutation.mutateAsync({
         name: 'default',
-        global: DEFAULT_CONFIG_WITH_INTERFACE(interfaceName),
+        global: DEFAULT_CONFIG_WITH_INTERFACE(interfaces),
       })
 
       await selectConfigMutation.mutateAsync({

@@ -65,6 +65,11 @@ export const getInterfacesRequest = (gqlClient: GraphQLClient) => {
             interfaces(up: $up) {
               name
               ifindex
+              flag {
+                default {
+                  gateway
+                }
+              }
             }
           }
         }
@@ -124,6 +129,11 @@ export const useGeneralQuery = () => {
               interfaces(up: $up) {
                 name
                 ifindex
+                flag {
+                  default {
+                    gateway
+                  }
+                }
               }
             }
           }
@@ -219,6 +229,9 @@ export const useConfigsQuery = () => {
                 disableWaitingNetwork
                 autoConfigKernelParameter
                 sniffingTimeout
+                tlsImplementation
+                utlsImitate
+                tproxyPortProtect
               }
             }
           }

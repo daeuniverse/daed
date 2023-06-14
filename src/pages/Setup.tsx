@@ -77,7 +77,7 @@ export const SetupPage = () => {
       nextStep()
     } catch (err) {
       notifications.show({
-        variant: 'error',
+        color: 'red',
         message: (err as Error).message,
       })
     }
@@ -122,7 +122,7 @@ export const SetupPage = () => {
       setNumberUsers(numberUsers)
     } catch (err) {
       notifications.show({
-        variant: 'error',
+        color: 'red',
         message: (err as Error).message,
       })
     }
@@ -147,7 +147,6 @@ export const SetupPage = () => {
       )
 
       notifications.show({
-        variant: 'success',
         message: t('notifications.login succeeded'),
       })
 
@@ -156,7 +155,7 @@ export const SetupPage = () => {
       nextStep()
     } catch (err) {
       notifications.show({
-        variant: 'error',
+        color: 'red',
         message: (err as Error).message,
       })
     }
