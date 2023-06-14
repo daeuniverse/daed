@@ -1,6 +1,6 @@
 ---
 name: Support Request
-about: Support request related to Dae
+about: Support request related to Daed
 labels: kind/support
 ---
 
@@ -9,7 +9,7 @@ STOP -- PLEASE READ!
 
 GitHub issue is not the right place for support requests.
 
-If you're looking for help, check the Discussions (https://github.com/daeuniverse/dae/discussions).
+If you're looking for help, check the Discussions (https://github.com/daeuniverse/daed/discussions).
 
 You can also post your question on the Discussions or the Dae Telegram channel (https://t.me/daeuniverse).
 -->

@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: feature request related to Dae
+about: feature request related to Daed
 labels: kind/feature
 ---
 
@@ -14,6 +14,6 @@ You may also post your idea on the Discussions or the Dae Telegram channel (http
 
 <!-- Please only use this template for submitting enhancement requests -->
 
-## What feature you would like us to integrate into the dae project
+## What feature you would like us to integrate into the daed project
 
 ## Why is this needed
