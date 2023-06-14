@@ -18,7 +18,7 @@ Please use this template while reporting a bug and provide as much info as possi
 
 ## Environment
 
-- Daed version (use `dae --version`):
+- daed version (use `daed --version`):
 - OS (e.g `cat /etc/os-release`):
 - Kernel (e.g. `uname -a`):
 - Others:
