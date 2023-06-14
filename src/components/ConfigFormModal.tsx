@@ -272,7 +272,13 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
           </Radio.Group>
 
           <SimpleGrid cols={3}>
-            <NumberInput label={t('tproxyPort')} withAsterisk {...form.getInputProps('tproxyPort')} />
+            <NumberInput
+              label={t('tproxyPort')}
+              withAsterisk
+              min={0}
+              max={65535}
+              {...form.getInputProps('tproxyPort')}
+            />
 
             <MultiSelect
               label={t('wanInterface')}
