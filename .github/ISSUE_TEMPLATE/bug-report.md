@@ -10,7 +10,7 @@ Please use this template while reporting a bug and provide as much info as possi
 
 ## What happened
 
-## What you expected to happen
+## What you expect to happen
 
 ## How to reproduce it (as minimally and precisely as possible):
 
