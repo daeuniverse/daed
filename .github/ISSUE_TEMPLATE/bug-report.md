@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug encountered while operating Dae
+about: Report a bug encountered while operating Daed
 labels: kind/bug
 ---
 
@@ -18,7 +18,7 @@ Please use this template while reporting a bug and provide as much info as possi
 
 ## Environment
 
-- Dae version (use `dae --version`):
+- Daed version (use `dae --version`):
 - OS (e.g `cat /etc/os-release`):
 - Kernel (e.g. `uname -a`):
 - Others:
