@@ -109,7 +109,7 @@ export const DEFAULT_TCP_CHECK_URL = [
 export const DEFAULT_DIAL_MODE = DialMode.domain
 export const DEFAULT_TCP_CHECK_HTTP_METHOD = TcpCheckHttpMethod.HEAD
 export const DEFAULT_DISABLE_WAITING_NETWORK = false
-export const DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER = false
+export const DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER = true
 export const DEFAULT_TLS_IMPLEMENTATION = TLSImplementation.tls
 
 export const DEFAULT_CONFIG_WITH_INTERFACE = (interfaces?: string[]): GlobalInput => ({
@@ -123,6 +123,7 @@ export const DEFAULT_CONFIG_WITH_INTERFACE = (interfaces?: string[]): GlobalInpu
   udpCheckDns: DEFAULT_UDP_CHECK_DNS,
   tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
   dialMode: DEFAULT_DIAL_MODE,
+  autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
 })
 
 export const GET_LOG_LEVEL_STEPS = (t: TFunction) => [
