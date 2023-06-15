@@ -1,14 +1,11 @@
 name: Build
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
-      - develop
+    branches: [ main ]
   release:
-    types: [prereleased]
-  pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ prereleased ]
 
 jobs:
   full-src:
