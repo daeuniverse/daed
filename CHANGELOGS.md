@@ -19,10 +19,6 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/06/15
 
-#### 功能变更
-
-TBD.
-
 #### Changes
 
 ## What's Changed
