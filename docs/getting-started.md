@@ -2,7 +2,7 @@
 
 > **Note**: `daed` (UI component) is bundled with [dae-wing](https://github.com/daeuniverse/dae-wing) (backend API server) and [dae](https://github.com/daeuniverse/dae) (core).
 
-## Run
+## How to run
 
 ### Download pre-compiled binaries
 
