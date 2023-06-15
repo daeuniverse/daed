@@ -32,15 +32,17 @@ make
 SCHEMA_PATH=/path/to/SCHEMA_PATH pnpm codegen --watch
 ```
 
-### Run
-
-Start `dev` server
+### Spin up server locally
 
 ```bash
 sudo chmod +x ./daed
-sudo ./daed run
+sudo install -Dm755 daed /usr/bin/
+sudo daed run
+
+# helper
+sudo daed [-h,--help]
 ```
 
-If everything goes well, open your browser and navigate to `http://localhost:5173`
+If everything goes well, open your browser and navigate to `http://localhost:2023`
 
 Happy Hacking!
