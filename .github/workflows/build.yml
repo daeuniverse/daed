@@ -265,11 +265,17 @@ jobs:
 
   upload-release:
     if: github.event_name == 'release'
-    needs: [build-bundle]
+    needs: [full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
         with:
+          name: daed-full-src
+          path: release/
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: bundled-all
           path: release/
 
       - name: Display structure of downloaded files
@@ -286,7 +292,7 @@ jobs:
 
   upload-prerelease:
     if: ${{ github.ref_type == 'branch' }}
-    needs: [build-bundle]
+    needs: [full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
@@ -306,7 +312,7 @@ jobs:
       - name: Upload Prerelease
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: prerelease
+          tag_name: Prerelease
           files: |
             release/*
           prerelease: true
