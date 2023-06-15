@@ -4,7 +4,11 @@
 
 ## Run
 
-Spin up server locally
+### Download pre-compiled binaries
+
+Available in <https://github.com/daeuniverse/daed/releases>
+
+### Spin up server locally
 
 ```bash
 sudo chmod +x ./daed
