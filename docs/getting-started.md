@@ -12,7 +12,11 @@ Available in <https://github.com/daeuniverse/daed/releases>
 
 ```bash
 sudo chmod +x ./daed
-sudo ./daed run
+sudo install -Dm755 daed /usr/bin/
+sudo daed run
+
+# helper
+sudo daed [-h,--help]
 ```
 
 If everything goes well, open your browser and navigate to `http://localhost:2023`
