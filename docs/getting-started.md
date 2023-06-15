@@ -1,10 +1,8 @@
 # Quick Start Guide
 
-## How to run and build this project
-
 > **Note**: `daed` (UI component) is bundled with [dae-wing](https://github.com/daeuniverse/dae-wing) (backend API server) and [dae](https://github.com/daeuniverse/dae) (core).
 
-### Run
+## Run
 
 Spin up server locally
 
