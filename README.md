@@ -1,8 +1,8 @@
 <h1 align="center">daed</h1>
-<p align="center" width="100%">
+<p align="center">
   <img width="100" src="public/logo.svg" />
 </p>
-<p align="center" width="100%">
+<p align="center">
   <em>A modern web dashboard for dae</em>
 </p>
 
@@ -13,6 +13,7 @@
   <img src="https://custom-icon-badges.herokuapp.com/github/last-commit/daeuniverse/daed?logo=history&logoColor=white" alt="lastcommit" />
 </p>
 
+## Preview
 
 ![preview](public/preview.png)
 
