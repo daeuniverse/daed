@@ -14,8 +14,10 @@ make
 
 ### Advanced use case (Dev ONLY)
 
-> **Note**: By default, `graphql` type definitions and api bindings are generated automatically on the fly.
-> However, if you would like to configure new `schema` for graphql, use environment variable `SCHEMA_PATH` to specify your schema endpoint
+> **Warning**: If you do NOT plan to use custom `Graphql` schema, please ignore this part.
+
+> **Note**: By default, Graphql type definitions and api bindings are generated automatically on the fly.
+> However, if you would like to configure new `schema` for Graphql, use environment variable `SCHEMA_PATH` to specify your schema endpoint
 > It can be a `url` starts with http(s) pointing to graphql endpoint or a static graphql schema file
 > Optionally, append `-w` or `--watch` at the end of the command to watch upcoming changes
 
