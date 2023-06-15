@@ -1,4 +1,6 @@
 OUTPUT ?= daed
+APPNAME ?= daed
+VERSION ?= 0.0.0.unknown
 
 .PHONY: submodules submodule
 
@@ -44,5 +46,5 @@ $(DAE_WING_READY): wing
 
 daed: submodule $(DAE_WING_READY) dist
 	cd wing && \
-	make OUTPUT=../$(OUTPUT) WEB_DIST=../dist bundle
+	make OUTPUT=../$(OUTPUT) APPNAME=$(APPNAME) WEB_DIST=../dist VERSION=$(VERSION) bundle
 ## End Bundle
