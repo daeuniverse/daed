@@ -15,6 +15,6 @@ sudo chmod +x ./daed
 sudo ./daed run
 ```
 
-If everything goes well, open your browser and navigate to `http://localhost:5173`
+If everything goes well, open your browser and navigate to `http://localhost:2023`
 
 Happy Hacking!
