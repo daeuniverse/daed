@@ -136,12 +136,6 @@ jobs:
           echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "BUNDLE_NAME=daed-$_NAME" >> $GITHUB_OUTPUT
 
-      - name: Install mips build dependencies
-        if: ${{ startsWith(matrix.goarch, 'mips') }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
-
       - name: Download artifact - web
         uses: actions/download-artifact@v3
         with:
@@ -180,62 +174,6 @@ jobs:
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
-
-      - name: Build Linux packages
-        if: ${{ env.GOARM != '5' && env.GOARM != '6' }}
-        run: |
-          if [ "$GOARM" != '5' ] && [ "$GOARM" != '6' ];then
-            sudo apt install -y libarchive-tools rpm
-            sudo gem install fpm -v 1.15.1
-            pushd bundled || exit 1
-            for package_manager in deb rpm pacman; do
-              fpm -s dir -t "$package_manager" -a $GOARCH --version "$PACKAGE_VERSION" \
-                --url 'https://github.com/daeuniverse/daed' --description "daed, A Modern Dashboard For dae." \
-                --maintainer "daed@dae.v2raya.org" --name daed --license 'MIT AGPL' \
-                --package daed-linux-$GOARCH$GOAMD64$GOARM.$package_manager \
-                ./geoip.dat=/usr/share/daed/geoip.dat ./geosite.dat=/usr/share/daed/geosite.dat \
-                ./daed.service=/usr/lib/systemd/system/daed.service \
-                ./${{ steps.get_filename.outputs.BUNDLE_NAME }}=/usr/bin/daed
-            done
-            popd || exit 1
-            cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.deb installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
-            cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.rpm installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
-            cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.pacman installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
-            ls | grep -E ".deb|.pkg.tar.zst|.rpm"
-            for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm");do
-                md5sum        $package >> $package.dgst
-                shasum -a 1   $package >> $package.dgst
-                shasum -a 256 $package >> $package.dgst
-                shasum -a 512 $package >> $package.dgst
-                cat $package.dgst
-            done
-          fi
-
-      - name: Upload artifact - packages
-        if: ${{ github.event_name != 'release' && env.GOARM != '5' && env.GOARM != '6' }}
-        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
-        with:
-          path: |
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb.dgst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm.dgst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst.dgst
-
-      - name: Upload Linux packages to GitHub release
-        if: ${{ github.event_name == 'release' && env.GOARM != '5' && env.GOARM != '6' }}
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb.dgst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm.dgst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst.dgst
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifact - bundle-all
         uses: actions/upload-artifact@v3
