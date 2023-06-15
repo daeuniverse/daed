@@ -291,7 +291,7 @@ jobs:
           generate_release_notes: true
 
   upload-prerelease:
-    if: ${{ github.ref_type == 'branch' }}
+    if: github.ref == 'refs/heads/develop'
     needs: [full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
