@@ -1,7 +1,9 @@
 <h1 align="center">daed</h1>
 <p align="center" width="100%">
   <img width="100" src="public/logo.svg" />
-    <em>A modern web dashboard for [dae](https://github.com/v2raya/dae)</em>
+</p>
+<p align="center" width="100%">
+  <em>A modern web dashboard for dae</em>
 </p>
 
 <p align="center">
