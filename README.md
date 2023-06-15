@@ -26,7 +26,7 @@
 
 ## Getting Started
 
-Please refer to [Quick Start Guide](./docs/getting-started) to start using `daed` and `dae-wing` right away!
+Please refer to [Quick Start Guide](./docs/getting-started.md) to start using `daed` and `dae-wing` right away!
 
 ## Contribute to daed
 
