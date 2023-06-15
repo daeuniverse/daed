@@ -33,7 +33,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 * doc: update readme by @yqlbu in https://github.com/daeuniverse/daed/pull/17
 * chore: makefile and release actions by @mzz2017 in https://github.com/daeuniverse/daed/pull/20
 * ci: build and publish daed docker image with geosite/geoip by @kunish in https://github.com/daeuniverse/daed/pull/19
-* fix: /lib64/libc.so.6: version `GLIBC_2.32' not found by @kunish in https://github.com/daeuniverse/daed/pull/22
+* fix: /lib64/libc.so.6: version `GLIBC_2.32` not found by @kunish in https://github.com/daeuniverse/daed/pull/22
 * chore: add issue,pull_request templates by @yqlbu in https://github.com/daeuniverse/daed/pull/26
 * chore: add .editorconfig by @yqlbu in https://github.com/daeuniverse/daed/pull/29
 * fix(config): add missing form modal fields and data inconsistency by @kunish in https://github.com/daeuniverse/daed/pull/13
