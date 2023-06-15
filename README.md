@@ -1,9 +1,7 @@
-# daed
-
 <h1 align="center">daed</h1>
 <p align="center" width="100%">
   <img width="100" src="public/logo.svg" />
-    <em>A collection of AWESOME Linux Applications and Tools for any of our community members</em>
+    <em>A modern web dashboard for [dae](https://github.com/v2raya/dae)</em>
 </p>
 
 <p align="center">
@@ -13,7 +11,6 @@
   <img src="https://custom-icon-badges.herokuapp.com/github/last-commit/daeuniverse/daed?logo=history&logoColor=white" alt="lastcommit" />
 </p>
 
-A modern web dashboard for [dae](https://github.com/v2raya/dae)
 
 ![preview](public/preview.png)
 
