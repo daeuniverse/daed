@@ -13,15 +13,13 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 ## Releases
 
-- [0.1.0rc1 (Pre-release)](#010-pre-release)
+- [0.1.0rc1 (Pre-release)](#010rc1-pre-release)
 
 ### 0.1.0rc1 (Pre-release)
 
 > Release date: 2023/06/15
 
 #### Changes
-
-## What's Changed
 
 * feat: add switch language button by @kecrily in https://github.com/daeuniverse/daed/pull/1
 * chore: add i18n Ally extension by @kecrily in https://github.com/daeuniverse/daed/pull/2
@@ -41,7 +39,9 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 * feat: change the presentation form of certain details to `Drawer`s by @kunish in https://github.com/daeuniverse/daed/pull/24
 * build.yml: add linux package builds by @MarksonHon in https://github.com/daeuniverse/daed/pull/30
 
-## New Contributors
+#### New Contributors
+
+> [dae](https://github.com/daeuniverse/dae) is mature enough to fly! Thanks to the following contributors.
 
 * @kecrily made their first contribution in https://github.com/daeuniverse/daed/pull/1
 * @kunish made their first contribution in https://github.com/daeuniverse/daed/pull/3
