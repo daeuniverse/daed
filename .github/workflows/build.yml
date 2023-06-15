@@ -309,6 +309,13 @@ jobs:
         run: ls -R
         working-directory: release
 
+      - name: Delete current release assets
+        uses: 8Mi-Tech/delete-release-assets-action@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: Prerelease
+          deleteOnlyFromDrafts: false
+
       - name: Upload Prerelease
         uses: softprops/action-gh-release@v1
         with:
