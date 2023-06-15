@@ -6,17 +6,18 @@
 
 ### Bootstrap
 
-> **Note**: The following command will deploy the stack (`daed`, `dae-wing`, and `dae`) altogether.
+The following command will deploy the stack (`daed`, `dae-wing`, and `dae`) altogether.
 
 ```bash
 make
 ```
 
-> **Note**: We need to generate graphql type definitions and api bindings
-> Use environment variable `SCHEMA_PATH` to specify your schema endpoint
-> It can be a url starts with http(s) points to graphql endpoint or a static graphql schema file
+### Advanced use case (Dev ONLY)
 
-> **Important**: (Dev ONLY) Optionally, append `-w` or `--watch` at the end of the command to watch upcoming changes
+> **Note**: By default, `graphql` type definitions and api bindings are generated automatically on the fly.
+> However, if you would like to configure new `schema` for graphql, use environment variable `SCHEMA_PATH` to specify your schema endpoint
+> It can be a `url` starts with http(s) pointing to graphql endpoint or a static graphql schema file
+> Optionally, append `-w` or `--watch` at the end of the command to watch upcoming changes
 
 ```bash
 # e.g.
