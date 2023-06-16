@@ -22,11 +22,11 @@ import {
   DEFAULT_CONFIG_WITH_INTERFACE,
   DEFAULT_DNS,
   DEFAULT_GROUP_NAME,
+  DEFAULT_GROUP_POLICY,
   DEFAULT_ROUTING,
   MODE,
 } from '~/constants'
 import { useGQLQueryClient } from '~/contexts'
-import { Policy } from '~/schemas/gql/graphql'
 import { defaultResourcesAtom, endpointURLAtom, modeAtom, tokenAtom } from '~/store'
 
 const useInit = () => {
@@ -106,7 +106,7 @@ const useInit = () => {
         createGroup: { id },
       } = await createGroupMutation.mutateAsync({
         name: DEFAULT_GROUP_NAME,
-        policy: Policy.Min,
+        policy: DEFAULT_GROUP_POLICY,
         policyParams: [],
       })
 
