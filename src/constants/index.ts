@@ -112,6 +112,9 @@ export const DEFAULT_DISABLE_WAITING_NETWORK = false
 export const DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER = true
 export const DEFAULT_TLS_IMPLEMENTATION = TLSImplementation.tls
 
+export const DEFAULT_CONFIG_NAME = 'global'
+export const DEFAULT_GROUP_NAME = 'proxy'
+
 export const DEFAULT_CONFIG_WITH_INTERFACE = (interfaces?: string[]): GlobalInput => ({
   logLevel: DEFAULT_LOG_LEVEL,
   tproxyPort: DEFAULT_TPROXY_PORT,

@@ -17,7 +17,14 @@ import {
   useSetJsonStorageMutation,
 } from '~/apis'
 import { Header } from '~/components/Header'
-import { DEFAULT_CONFIG_WITH_INTERFACE, DEFAULT_DNS, DEFAULT_ROUTING, MODE } from '~/constants'
+import {
+  DEFAULT_CONFIG_NAME,
+  DEFAULT_CONFIG_WITH_INTERFACE,
+  DEFAULT_DNS,
+  DEFAULT_GROUP_NAME,
+  DEFAULT_ROUTING,
+  MODE,
+} from '~/constants'
 import { useGQLQueryClient } from '~/contexts'
 import { Policy } from '~/schemas/gql/graphql'
 import { defaultResourcesAtom, endpointURLAtom, modeAtom, tokenAtom } from '~/store'
@@ -47,7 +54,7 @@ const useInit = () => {
       const {
         createConfig: { id },
       } = await createConfigMutation.mutateAsync({
-        name: 'default',
+        name: DEFAULT_CONFIG_NAME,
         global: DEFAULT_CONFIG_WITH_INTERFACE(interfaces),
       })
 
@@ -98,7 +105,7 @@ const useInit = () => {
       const {
         createGroup: { id },
       } = await createGroupMutation.mutateAsync({
-        name: 'default',
+        name: DEFAULT_GROUP_NAME,
         policy: Policy.Min,
         policyParams: [],
       })
