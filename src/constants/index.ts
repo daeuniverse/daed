@@ -99,13 +99,8 @@ export const DEFAULT_TPROXY_PORT = 7890
 export const DEFAULT_ALLOW_INSECURE = true
 export const DEFAULT_CHECK_INTERVAL = '10s'
 export const DEFAULT_CHECK_TOLERANCE = '1000ms'
-export const DEFAULT_UDP_CHECK_DNS = ['dns.google.com:53', '8.8.8.8', '2001:4860:4860:8888', '1.1.1.1']
-export const DEFAULT_TCP_CHECK_URL = [
-  'http://cp.cloudflare.com',
-  '1.1.1.1',
-  '2606:4700:4700::1111',
-  'http://keep-alv.google.com/generate_204',
-]
+export const DEFAULT_UDP_CHECK_DNS = ['dns.google.com:53', '8.8.8.8', '2001:4860:4860:8888']
+export const DEFAULT_TCP_CHECK_URL = ['http://cp.cloudflare.com', '1.1.1.1', '2606:4700:4700::1111']
 export const DEFAULT_DIAL_MODE = DialMode.domain
 export const DEFAULT_TCP_CHECK_HTTP_METHOD = TcpCheckHttpMethod.HEAD
 export const DEFAULT_DISABLE_WAITING_NETWORK = false
