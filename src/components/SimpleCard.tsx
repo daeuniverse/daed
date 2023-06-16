@@ -41,7 +41,7 @@ export const SimpleCard = ({
                   <IconDetails />
                 </ActionIcon>
 
-                {onRemove && (
+                {!selected && onRemove && (
                   <ActionIcon
                     color="red"
                     size="xs"
