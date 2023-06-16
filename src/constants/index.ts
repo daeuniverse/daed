@@ -95,7 +95,7 @@ export enum UTLSImitate {
 }
 
 export const DEFAULT_LOG_LEVEL = LogLevel.info
-export const DEFAULT_TPROXY_PORT = 7890
+export const DEFAULT_TPROXY_PORT = 12345
 export const DEFAULT_ALLOW_INSECURE = true
 export const DEFAULT_CHECK_INTERVAL = '10s'
 export const DEFAULT_CHECK_TOLERANCE = '1000ms'
