@@ -27,14 +27,14 @@ export const SimpleCard = ({
   return (
     <Fragment>
       <Indicator position="bottom-center" size={18} disabled={!selected}>
-        <Card withBorder shadow="sm" p="sm">
-          <Card.Section withBorder inheritPadding py="sm">
-            <Group position="apart">
-              <UnstyledButton onClick={onSelect}>
+        <Card withBorder shadow="sm">
+          <Card.Section withBorder>
+            <Group position="apart" spacing={0}>
+              <UnstyledButton p="sm" sx={{ flex: 1 }} onClick={onSelect}>
                 <Title order={4}>{name}</Title>
               </UnstyledButton>
 
-              <Group>
+              <Group spacing="sm" p="sm">
                 {actions}
 
                 <ActionIcon size="xs" onClick={openDetailsModal}>
