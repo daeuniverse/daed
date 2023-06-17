@@ -6,11 +6,11 @@ on:
     branches:
       - develop
       - develop-pr-*
+    paths-ignore:
+      - '**/*.md'
+      - README.md
   pull_request:
     types: [opened, synchronize, reopened]
-  paths-ignore:
-    - '**/*.md'
-    - README.md
 
 jobs:
   checkout-full-src:
