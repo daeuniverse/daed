@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - develop
-      - develop-pr-*
+      - hotfix-*
+      - test-pr-*
     paths-ignore:
       - '**/*.md'
       - README.md
