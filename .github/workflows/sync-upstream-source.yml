@@ -22,7 +22,7 @@ jobs:
           submodules: 'recursive'
           fetch-depth: 0
 
-      - name: Sync - wing
+      - name: Sync dae-wing upstream
         run: |
           git checkout ${{ inputs.wing-head }}
         working-directory: wing
