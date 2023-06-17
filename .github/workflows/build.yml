@@ -123,7 +123,7 @@ jobs:
       CC: ${{ matrix.cc }}
 
     steps:
-      - name: Download artifact - web
+      - name: Download artifact - full src
         uses: actions/download-artifact@v3
         with:
           name: daed-full-src
@@ -135,7 +135,7 @@ jobs:
           REF: ${{ github.ref }}
         run: |
           if [[ "$REF" == "refs/tags/v"* ]]; then
-            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+            tag=${REF##*/}
             version=${tag}
             package_version="$(echo $tag | sed 's|v||g')"
           else
