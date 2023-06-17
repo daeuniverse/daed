@@ -127,7 +127,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: daed-full-src
-          path: .
+          path: .daed
+
+      - name: Move files out of .daed
+        run: |
+          mv .daed/* .
 
       - name: Get the version
         id: get_version
@@ -137,7 +141,7 @@ jobs:
           if [[ "$REF" == "refs/tags/v"* ]]; then
             tag=${REF##*/}
             version=${tag}
-            package_version="$(echo $tag | sed 's|v||g')"
+            package_version="${tag:1}"
           else
             date=$(git log -1 --format="%cd" --date=short | sed s/-//g)
             count=$(git rev-list --count HEAD)
