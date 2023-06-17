@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: 'recursive'
+          submodules: recursive
           fetch-depth: 0
           ref: ${{ inputs.pr-base-branch }}
 
@@ -51,8 +51,7 @@ jobs:
           delete-branch: true
           title: ${{ inputs.wing-sync-message }}
           body: |
-            "Auto sync upstream process finished! Automation by @daebot"
-          # commit-message: ${{ inputs.wing-sync-message }}
+            Auto sync upstream process finished! Automation by @daebot
           labels: |
             automated-pr
           assignees: daebot
