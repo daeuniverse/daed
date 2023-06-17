@@ -131,7 +131,7 @@ jobs:
 
       - name: Extract daed-full-src.zip
         run: |
-          unzip -fo daed-full-src.zip
+          unzip -o daed-full-src.zip
 
       - name: Get the version
         id: get_version
