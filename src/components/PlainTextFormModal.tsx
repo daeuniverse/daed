@@ -69,7 +69,15 @@ export const PlainTextFormModal = forwardRef(
           <Stack>
             <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} disabled={!!editingID} />
 
-            <Textarea minRows={10} autosize {...form.getInputProps('text')} />
+            <Textarea
+              minRows={20}
+              styles={{
+                input: {
+                  fontFamily: 'Source Code Pro',
+                },
+              }}
+              {...form.getInputProps('text')}
+            />
 
             <FormActions
               reset={() => {
