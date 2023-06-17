@@ -61,7 +61,7 @@ jobs:
           path: dist
 
   build-bundle:
-    needs: [build-web, full-src]
+    needs: [build-web]
     runs-on: ubuntu-latest
 
     strategy:
@@ -123,15 +123,7 @@ jobs:
       CC: ${{ matrix.cc }}
 
     steps:
-      - name: Download artifact - full src
-        uses: actions/download-artifact@v3
-        with:
-          name: daed-full-src.zip
-          path: .
-
-      - name: Extract daed-full-src.zip
-        run: |
-          unzip -o daed-full-src.zip
+      - uses: actions/checkout@v3
 
       - name: Get the version
         id: get_version
