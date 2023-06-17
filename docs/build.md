@@ -2,6 +2,7 @@
 
 ### Prerequisites
 
+- nodejs
 - golang
 - clang
 - make
