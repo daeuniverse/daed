@@ -30,7 +30,7 @@ jobs:
         run: |
           # git checkout ${{ inputs.wing-head }}
           cd wing && git pull && cd -
-        working-directory: wing
+        # working-directory: wing
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
