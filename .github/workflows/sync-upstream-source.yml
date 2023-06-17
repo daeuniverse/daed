@@ -15,7 +15,7 @@ on:
 jobs:
   sync-wing:
     runs-on: ubuntu-latest
-    if: ${{ input.wing-head }}
+    if: ${{ inputs.wing-head }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -23,11 +23,11 @@ jobs:
 
       - name: sync wing
         run: |
-          git checkout ${{ input.wing-head }}
+          git checkout ${{ inputs.wing-head }}
         working-directory: wing
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: ${{ input.wing-sync-message }}
+          commit_message: ${{ inputs.wing-sync-message }}
           create_branch: true
           branch: sync-wing
