@@ -16,7 +16,11 @@ jobs:
           submodules: 'recursive'
 
       - name: Download wing vendor
-        run: go mod vendor
+        run: |
+          git submodule update --init --recursive
+          GOMODCACHE="${PWD}"/go-mod go mod download -modcacherw
+          find ./go-mod/ -maxdepth 1 ! -name "cache" ! -name "go-mod" -exec rm -rf {} \;
+          sed -i 's/#export GOMODCACHE=$(PWD)\/go-mod/export GOMODCACHE=$(PWD)\/go-mod/' Makefile
         working-directory: wing
 
       - name: Create full source ZIP archive and Signature
