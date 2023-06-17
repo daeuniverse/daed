@@ -28,6 +28,6 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: ${{ input.wing-head }}
+          commit_message: ${{ input.wing-sync-message }}
           create_branch: true
           branch: sync-wing
