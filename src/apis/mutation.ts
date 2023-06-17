@@ -474,6 +474,55 @@ export const useRemoveGroupMutation = () => {
   })
 }
 
+export const useGroupSetPolicyMutation = () => {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, policy, policyParams }: { id: string; policy: Policy; policyParams: PolicyParam[] }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation GroupSetPolicy($id: ID!, $policy: Policy!, $policyParams: [PolicyParam!]) {
+            groupSetPolicy(id: $id, policy: $policy, policyParams: $policyParams)
+          }
+        `),
+        {
+          id,
+          policy,
+          policyParams,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
+export const useRenameGroupMutation = () => {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation RenameGroup($id: ID!, $name: String!) {
+            renameGroup(id: $id, name: $name)
+          }
+        `),
+        {
+          id,
+          name,
+        }
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
 export const useGroupAddNodesMutation = () => {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()

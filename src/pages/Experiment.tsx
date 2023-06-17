@@ -36,17 +36,17 @@ import {
   useRenameRoutingMutation,
 } from '~/apis'
 import { ConfigFormDrawer } from '~/components/ConfigFormModal'
-import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
 import { CreateNodeFormModal } from '~/components/CreateNodeFormModal'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
+import { GroupFormModal } from '~/components/GroupFormModal'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
-import { DialMode, LogLevel, ResourceType, RuleType } from '~/constants'
+import { DialMode, DraggableResourceType, LogLevel, RuleType } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
 export const ExperimentPage = () => {
@@ -208,7 +208,7 @@ export const ExperimentPage = () => {
 
   const [draggingResource, setDraggingResource] = useState<{
     id: UniqueIdentifier
-    type: ResourceType
+    type: DraggableResourceType
   } | null>(null)
 
   const [openedRenameModal, { open: openRenameModal, close: closeRenameModal }] = useDisclosure(false)
@@ -345,7 +345,7 @@ export const ExperimentPage = () => {
               id: e.active.id,
               type: (
                 e.active.data.current as {
-                  type: ResourceType
+                  type: DraggableResourceType
                 }
               ).type,
             })
@@ -353,7 +353,7 @@ export const ExperimentPage = () => {
           onDragEnd={(e) => {
             const { active, over } = e
 
-            if (draggingResource?.type === ResourceType.node) {
+            if (draggingResource?.type === DraggableResourceType.node) {
               const activeNode = fakeNodes.find((node) => node.id === active.id)
 
               if (activeNode) {
@@ -369,7 +369,7 @@ export const ExperimentPage = () => {
               }
             }
 
-            if (draggingResource?.type === ResourceType.subscription) {
+            if (draggingResource?.type === DraggableResourceType.subscription) {
               const activeSubscription = fakeSubscriptions.find((subscription) => subscription.id === active.id)
 
               if (activeSubscription) {
@@ -507,7 +507,7 @@ export const ExperimentPage = () => {
                 <DraggableResourceCard
                   key={id}
                   id={id}
-                  type={ResourceType.node}
+                  type={DraggableResourceType.node}
                   name={name}
                   onRemove={() => {
                     setFakeNodes((nodes) => nodes.filter((node) => node.id !== id))
@@ -536,7 +536,7 @@ export const ExperimentPage = () => {
                 <DraggableResourceCard
                   key={id}
                   id={id}
-                  type={ResourceType.subscription}
+                  type={DraggableResourceType.subscription}
                   name={name}
                   onRemove={() => {
                     setFakeSubscriptions((subscriptions) =>
@@ -572,7 +572,7 @@ export const ExperimentPage = () => {
           <DragOverlay dropAnimation={null}>
             {draggingResource ? (
               <Badge>
-                {draggingResource?.type === ResourceType.node
+                {draggingResource?.type === DraggableResourceType.node
                   ? fakeNodes.find((node) => node.id === draggingResource.id)?.name
                   : fakeSubscriptions.find((subscription) => subscription.id === draggingResource.id)?.name}
               </Badge>
@@ -607,7 +607,7 @@ export const ExperimentPage = () => {
         }}
       />
 
-      <CreateGroupFormModal opened={openedCreateGroupModal} onClose={closeCreateGroupModal} />
+      <GroupFormModal opened={openedCreateGroupModal} onClose={closeCreateGroupModal} />
 
       <ImportResourceFormModal
         title={t('node')}

@@ -2,10 +2,10 @@ import {
   Accordion,
   ActionIcon,
   Checkbox,
-  Drawer,
   Flex,
   Group,
   Input,
+  Modal,
   MultiSelect,
   NumberInput,
   Radio,
@@ -13,6 +13,7 @@ import {
   Slider,
   Stack,
   TextInput,
+  Title,
 } from '@mantine/core'
 import { UseFormReturnType, useForm, zodResolver } from '@mantine/form'
 import { IconMinus, IconPlus } from '@tabler/icons-react'
@@ -210,7 +211,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
   const updateConfigMutation = useUpdateConfigMutation()
 
   return (
-    <Drawer title={t('config')} opened={opened} onClose={onClose}>
+    <Modal title={t('config')} opened={opened} onClose={onClose}>
       <form
         onSubmit={form.onSubmit(async (values) => {
           const logLevel = logLevelSteps[values.logLevelNumber][1]
@@ -263,7 +264,9 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
             ]}
           >
             <Accordion.Item value="software-options">
-              <Accordion.Control>{t('software options')}</Accordion.Control>
+              <Accordion.Control>
+                <Title order={4}>{t('software options')}</Title>
+              </Accordion.Control>
 
               <Accordion.Panel>
                 <Stack>
@@ -311,7 +314,9 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
             </Accordion.Item>
 
             <Accordion.Item value="interface-and-kernel-options">
-              <Accordion.Control>{t('interface and kernel options')}</Accordion.Control>
+              <Accordion.Control>
+                <Title order={4}>{t('interface and kernel options')}</Title>
+              </Accordion.Control>
 
               <Accordion.Panel>
                 <Stack>
@@ -342,7 +347,9 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
             </Accordion.Item>
 
             <Accordion.Item value="node-connectivity-check">
-              <Accordion.Control>{t('node connectivity check')}</Accordion.Control>
+              <Accordion.Control>
+                <Title order={4}>{t('node connectivity check')}</Title>
+              </Accordion.Control>
 
               <Accordion.Panel>
                 <Stack>
@@ -390,7 +397,9 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
             </Accordion.Item>
 
             <Accordion.Item value="connecting-options">
-              <Accordion.Control>{t('connecting options')}</Accordion.Control>
+              <Accordion.Control>
+                <Title order={4}>{t('connecting options')}</Title>
+              </Accordion.Control>
 
               <Accordion.Panel>
                 <Stack>
@@ -467,6 +476,6 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
           />
         </Stack>
       </form>
-    </Drawer>
+    </Modal>
   )
 })

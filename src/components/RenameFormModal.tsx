@@ -71,7 +71,17 @@ export const RenameFormModal = forwardRef(
 
     return (
       <Modal title={t('actions.rename')} opened={opened} onClose={onClose}>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(props.type, props.id)(values).then(onClose))}>
+        <form
+          onSubmit={form.onSubmit((values) =>
+            handleSubmit(
+              props.type,
+              props.id
+            )(values).then(() => {
+              onClose()
+              form.reset()
+            })
+          )}
+        >
           <Stack>
             <Title order={4}>{ruleName}</Title>
 

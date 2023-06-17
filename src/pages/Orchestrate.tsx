@@ -57,6 +57,7 @@ import {
   useRemoveSubscriptionsMutation,
   useRenameConfigMutation,
   useRenameDNSMutation,
+  useRenameGroupMutation,
   useRenameRoutingMutation,
   useRoutingsQuery,
   useSelectConfigMutation,
@@ -68,17 +69,24 @@ import {
   useUpdateSubscriptionsMutation,
 } from '~/apis'
 import { ConfigFormDrawer, ConfigFormDrawerRef } from '~/components/ConfigFormModal'
-import { CreateGroupFormModal } from '~/components/CreateGroupFormModal'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
+import { DraggableSubscriptionNodeBadge } from '~/components/DraggableSubscriptionNodeBadge'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
+import { GroupFormDrawerRef, GroupFormModal } from '~/components/GroupFormModal'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { PlainTextFormModal, PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
-import { GET_LOG_LEVEL_STEPS, ResourceType, RuleType } from '~/constants'
+import { DraggableResourceType, GET_LOG_LEVEL_STEPS, RuleType } from '~/constants'
 import { defaultResourcesAtom } from '~/store'
+
+type DraggingResource = {
+  id: string
+  type: DraggableResourceType
+  subscriptionID?: string
+}
 
 export const OrchestratePage = () => {
   const { t } = useTranslation()
@@ -111,27 +119,32 @@ export const OrchestratePage = () => {
 
   const [droppableGroupCardAccordionValues, setDroppableGroupCardAccordionValues] = useState<string[]>([])
 
-  const [draggingResource, setDraggingResource] = useState<{
-    id: string
-    type: ResourceType
-  } | null>(null)
+  const [draggingResource, setDraggingResource] = useState<DraggingResource | null>(null)
 
   const draggingResourceDisplayName = useMemo(() => {
     if (draggingResource) {
-      const { type, id } = draggingResource
+      const { type, id, subscriptionID } = draggingResource
 
-      if (type === ResourceType.node) {
+      if (type === DraggableResourceType.node) {
         const node = nodesQuery?.nodes.edges.find((node) => node.id === id)
 
-        return node?.name
+        return node?.tag
       }
 
-      if (type === ResourceType.subscription) {
-        const subscription = subscriptionsQuery?.subscriptions.find(
-          (subscription) => subscription.id === draggingResource.id
-        )
+      if (type === DraggableResourceType.subscription) {
+        const subscription = subscriptionsQuery?.subscriptions.find((subscription) => subscription.id === id)
 
         return subscription?.tag || subscription?.link
+      }
+
+      if (type === DraggableResourceType.subscription_node) {
+        console.log(subscriptionID)
+        const subscription = subscriptionsQuery?.subscriptions.find(
+          (subscription) => subscription.id === subscriptionID
+        )
+        const node = subscription?.nodes.edges.find((node) => node.id === id)
+
+        return node?.name
       }
     }
   }, [draggingResource, nodesQuery, subscriptionsQuery])
@@ -151,6 +164,8 @@ export const OrchestratePage = () => {
     useDisclosure(false)
   const [openedCreateGroupFormModal, { open: openCreateGroupFormModal, close: closeCreateGroupFormModal }] =
     useDisclosure(false)
+  const [openedUpdateGroupFormModal, { open: openUpdateGroupFormModal, close: closeUpdateGroupFormModal }] =
+    useDisclosure(false)
   const [openedImportNodeFormModal, { open: openImportNodeFormModal, close: closeImportNodeFormModal }] =
     useDisclosure(false)
   const [
@@ -168,12 +183,14 @@ export const OrchestratePage = () => {
   const renameConfigMutation = useRenameConfigMutation()
   const renameDNSMutation = useRenameDNSMutation()
   const renameRoutingMutation = useRenameRoutingMutation()
+  const renameGroupMutation = useRenameGroupMutation()
 
   const { defaultConfigID, defaultDNSID, defaultGroupID, defaultRoutingID } = useStore(defaultResourcesAtom)
 
   const updateConfigFormDrawerRef = useRef<ConfigFormDrawerRef>(null)
   const updateDNSFormModalRef = useRef<PlainTextgFormModalRef>(null)
   const updateRoutingFormModalRef = useRef<PlainTextgFormModalRef>(null)
+  const updateGroupFormModalRef = useRef<GroupFormDrawerRef>(null)
 
   const updateDNSMutation = useUpdateDNSMutation()
   const updateRoutingMutation = useUpdateRoutingMutation()
@@ -370,23 +387,23 @@ export const OrchestratePage = () => {
           onDragStart={(e) => {
             setDraggingResource({
               id: e.active.id as string,
-              type: (
-                e.active.data.current as {
-                  type: ResourceType
-                }
-              ).type,
+              ...(e.active.data.current as Omit<DraggingResource, 'id'>),
             })
           }}
           onDragEnd={(e) => {
             const { over } = e
 
             if (over?.id && draggingResource?.id) {
-              if (draggingResource.type === ResourceType.node) {
+              if (draggingResource.type === DraggableResourceType.node) {
                 groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.id] })
               }
 
-              if (draggingResource.type === ResourceType.subscription) {
+              if (draggingResource.type === DraggableResourceType.subscription) {
                 groupAddSubscriptionsMutation.mutate({ id: over.id as string, subscriptionIDs: [draggingResource.id] })
+              }
+
+              if (draggingResource.type === DraggableResourceType.subscription_node) {
+                groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.id] })
               }
             }
 
@@ -407,8 +424,45 @@ export const OrchestratePage = () => {
                   id={groupId}
                   name={name}
                   onRemove={defaultGroupID !== groupId ? () => removeGroupMutation.mutate(groupId) : undefined}
+                  actions={
+                    <Fragment>
+                      <ActionIcon
+                        size="xs"
+                        onClick={() => {
+                          if (renameFormModalRef.current) {
+                            renameFormModalRef.current.setProps({
+                              id: groupId,
+                              type: RuleType.group,
+                              oldName: name,
+                            })
+                          }
+                          openRenameFormModal()
+                        }}
+                      >
+                        <IconForms />
+                      </ActionIcon>
+
+                      <ActionIcon
+                        size="xs"
+                        onClick={() => {
+                          updateGroupFormModalRef.current?.setEditingID(groupId)
+
+                          updateGroupFormModalRef.current?.initOrigins({
+                            name,
+                            policy,
+                          })
+
+                          openUpdateGroupFormModal()
+                        }}
+                      >
+                        <IconEdit />
+                      </ActionIcon>
+                    </Fragment>
+                  }
                 >
-                  <Text fw={600}>{policy}</Text>
+                  <Text fz="sm" fw={600}>
+                    {policy}
+                  </Text>
 
                   <Space h={10} />
 
@@ -432,11 +486,11 @@ export const OrchestratePage = () => {
                           <SimpleGrid cols={2}>
                             <DndContext modifiers={[restrictToParentElement]}>
                               <SortableContext items={nodes} strategy={rectSwappingStrategy}>
-                                {nodes.map(({ id: nodeId, name }) => (
+                                {nodes.map(({ id: nodeId, tag, name }) => (
                                   <SortableResourceBadge
                                     key={nodeId}
                                     id={nodeId}
-                                    name={name}
+                                    name={tag || name}
                                     onRemove={() =>
                                       groupDelNodesMutation.mutate({
                                         id: groupId,
@@ -497,12 +551,12 @@ export const OrchestratePage = () => {
                 <DraggableResourceCard
                   key={id}
                   id={id}
-                  type={ResourceType.node}
-                  name={name}
+                  type={DraggableResourceType.node}
+                  name={tag!}
                   onRemove={() => removeNodesMutation.mutate([id])}
                 >
                   <Text fw={600} color={theme.primaryColor}>
-                    {tag}
+                    {name}
                   </Text>
                   <Text fw={600}>{protocol}</Text>
 
@@ -532,18 +586,18 @@ export const OrchestratePage = () => {
             bordered
           >
             <Stack>
-              {subscriptionsQuery?.subscriptions.map(({ id, tag, link, updatedAt, nodes }) => (
+              {subscriptionsQuery?.subscriptions.map(({ id: subscriptionID, tag, link, updatedAt, nodes }) => (
                 <DraggableResourceCard
-                  key={id}
-                  id={id}
-                  type={ResourceType.subscription}
+                  key={subscriptionID}
+                  id={subscriptionID}
+                  type={DraggableResourceType.subscription}
                   name={tag || link}
                   actions={
-                    <ActionIcon size="sm" onClick={() => updateSubscriptionsMutation.mutate([id])}>
+                    <ActionIcon size="sm" onClick={() => updateSubscriptionsMutation.mutate([subscriptionID])}>
                       <IconRefresh />
                     </ActionIcon>
                   }
-                  onRemove={() => removeSubscriptionsMutation.mutate([id])}
+                  onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
                 >
                   <Text fw={600}>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</Text>
 
@@ -568,7 +622,7 @@ export const OrchestratePage = () => {
 
                   <Group spacing="sm">
                     {nodes.edges.map(({ id, name }) => (
-                      <Badge key={id}>{name}</Badge>
+                      <DraggableSubscriptionNodeBadge key={id} subscriptionID={subscriptionID} name={name} id={id} />
                     ))}
                   </Group>
                 </DraggableResourceCard>
@@ -643,7 +697,12 @@ export const OrchestratePage = () => {
         }}
       />
 
-      <CreateGroupFormModal opened={openedCreateGroupFormModal} onClose={closeCreateGroupFormModal} />
+      <GroupFormModal opened={openedCreateGroupFormModal} onClose={closeCreateGroupFormModal} />
+      <GroupFormModal
+        ref={updateGroupFormModalRef}
+        opened={openedUpdateGroupFormModal}
+        onClose={closeUpdateGroupFormModal}
+      />
 
       <ImportResourceFormModal
         title={t('node')}
@@ -684,6 +743,10 @@ export const OrchestratePage = () => {
 
           if (type === RuleType.routing) {
             renameRoutingMutation.mutate({ id, name })
+          }
+
+          if (type === RuleType.group) {
+            renameGroupMutation.mutate({ id, name })
           }
         }}
       />
