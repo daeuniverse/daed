@@ -474,7 +474,7 @@ export const OrchestratePage = () => {
                   >
                     <Accordion.Item value="node">
                       <Accordion.Control fz="xs" px="xs">
-                        {t('node')} ({nodes.length})
+                        {t('node')} {nodes.length > 0 && `(${nodes.length})`}
                       </Accordion.Control>
 
                       <Accordion.Panel>
@@ -508,7 +508,7 @@ export const OrchestratePage = () => {
 
                     <Accordion.Item value="subscription">
                       <Accordion.Control fz="xs" px="xs">
-                        {t('subscription')} ({subscriptions.length})
+                        {t('subscription')} {subscriptions.length > 0 && `(${subscriptions.length})`}
                       </Accordion.Control>
 
                       <Accordion.Panel>
