@@ -1,4 +1,4 @@
-name: Synchronize with upstream
+name: Synchronize upstream
 
 on:
   workflow_dispatch:
