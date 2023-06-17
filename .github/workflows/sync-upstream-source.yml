@@ -6,11 +6,15 @@ on:
       wing-head:
         type: string
         required: true
-        default: HEAD
+        default: main
       wing-sync-message:
         type: string
         required: true
-        default: 'chore: upgrade dae-wing'
+        default: 'chore(sync): upgrade dae-wing'
+      pr-base-branch:
+        type: string
+        required: false
+        default: main
 
 jobs:
   sync-wing:
@@ -19,16 +23,39 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: 'recursive'
+          submodules: recursive
           fetch-depth: 0
+          # ref: ${{ inputs.pr-base-branch }}
+          # let's leave ref here for future testing
 
-      - name: sync wing
+      - name: Sync dae-wing upstream
         run: |
-          git checkout ${{ inputs.wing-head }}
+          git checkout origin/${{ inputs.wing-head }}
         working-directory: wing
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Commit changes
+        run: |
+          git config user.name 'daebot'
+          git config user.email 'daebot@v2raya.org'
+          git add .
+          git commit -m "${{ inputs.wing-sync-message }}"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
-          commit_message: ${{ inputs.wing-sync-message }}
-          create_branch: true
-          branch: sync-wing
+          author: daebot <dae@v2raya.org>
+          committer: daebot <dae@v2raya.org>
+          token: ${{ secrets.GH_TOKEN }}
+          signoff: false
+          branch: sync-upstream
+          base: ${{ inputs.pr-base-branch }}
+          delete-branch: true
+          title: ${{ inputs.wing-sync-message }}
+          body: |
+            Auto sync upstream process finished! Automated by @daebot
+          labels: |
+            automated-pr
+          assignees: daebot
+          team-reviewers: |
+            daed
+          draft: false

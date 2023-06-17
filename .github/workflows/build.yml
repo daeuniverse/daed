@@ -1,14 +1,11 @@
 name: Build
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main, release-v*]
   release:
     types: [prereleased]
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   full-src:
@@ -267,7 +264,7 @@ jobs:
           generate_release_notes: true
 
   upload-prerelease:
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/main'
     needs: [full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
