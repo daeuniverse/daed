@@ -6,7 +6,7 @@ on:
       wing-head:
         type: string
         required: true
-        default: HEAD
+        default: main
       wing-sync-message:
         type: string
         required: true
@@ -14,7 +14,7 @@ on:
       pr-base-branch:
         type: string
         required: false
-        default: HEAD
+        default: main
 
 jobs:
   sync-wing:
