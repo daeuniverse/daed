@@ -126,7 +126,7 @@ jobs:
       - name: Download artifact - full src
         uses: actions/download-artifact@v3
         with:
-          name: daed-full-src
+          name: daed-full-src.zip
           path: .
 
       - name: Extract daed-full-src.zip
