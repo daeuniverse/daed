@@ -144,25 +144,25 @@ export const GET_LOG_LEVEL_STEPS = (t: TFunction) => [
 export const DEFAULT_GROUP_POLICY = Policy.MinMovingAvg
 
 export const DEFAULT_ROUTING = `
-  pname(NetworkManager, systemd-resolved) -> direct
-  dip(geoip:private) -> direct
-  dip(geoip:cn) -> direct
-  domain(geosite:cn) -> direct
-  fallback: ${DEFAULT_GROUP_NAME}
-`
+pname(NetworkManager, systemd-resolved) -> direct
+dip(geoip:private) -> direct
+dip(geoip:cn) -> direct
+domain(geosite:cn) -> direct
+fallback: ${DEFAULT_GROUP_NAME}
+`.trim()
 
 export const DEFAULT_DNS = `
-  upstream {
-    alidns: 'udp://223.5.5.5:53'
-    googledns: 'udp://8.8.8.8:53'
+upstream {
+  alidns: 'udp://223.5.5.5:53'
+  googledns: 'udp://8.8.8.8:53'
+}
+routing {
+  request {
+    qname(geosite:cn) -> alidns
+    fallback: googledns
   }
-  routing {
-    request {
-      qname(geosite:cn) -> alidns
-      fallback: googledns
-    }
-  }
-`
+}
+`.trim()
 
 export enum DraggableResourceType {
   node = 'node',
