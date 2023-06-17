@@ -33,7 +33,7 @@ jobs:
           git config user.name 'daebot'
           git config user.email 'daebot@v2raya.org'
           git add .
-          git commit -m ${{ inputs.wing-sync-message }}
+          git commit -m "${{ inputs.wing-sync-message }}"
         # working-directory: wing
 
       - name: Create Pull Request
