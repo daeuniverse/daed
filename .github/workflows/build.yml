@@ -8,7 +8,7 @@ on:
     types: [prereleased]
 
 jobs:
-  full-src:
+  checkout-full-src:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -184,15 +184,14 @@ jobs:
           curl -L -o ./bundled/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
           curl -L -o ./bundled/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
 
-      - name: Smoking test
-        if: matrix.goarch == 'amd64' && matrix.goamd64 == 'v1'
-        run: ./bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }} --version
-
       - name: Upload artifact - bundle
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
+
+      - name: Smoking test
+        if: matrix.goarch == 'amd64' && matrix.goamd64 == 'v1'
 
       - name: Build Linux packages
         if: ${{ env.GOARM != '5' && env.GOARM != '6' }}

@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - develop
-      - develop-pr-*
+      - hotfix-*
+      - test-pr-*
     paths-ignore:
       - '**/*.md'
       - README.md
@@ -21,7 +21,13 @@ jobs:
           submodules: 'recursive'
 
       - name: Download wing vendor
-        run: go mod vendor
+        run: |
+          git submodule update --init --recursive
+          export GOMODCACHE="${PWD}"/go-mod
+          go mod download -modcacherw
+          cd dae-core && go mod download -modcacherw && cd ..
+          find "$GOMODCACHE" -maxdepth 1 ! -name "cache" ! -name "go-mod" -exec rm -rf {} \;
+          sed -i 's/#export GOMODCACHE=$(PWD)\/go-mod/export GOMODCACHE=$(PWD)\/go-mod/' Makefile
         working-directory: wing
 
       - name: Create full source ZIP archive and Signature
@@ -37,7 +43,7 @@ jobs:
       - name: Upload artifact - full source
         uses: actions/upload-artifact@v3
         with:
-          name: daed-full-src
+          name: daed-full-src.zip
           path: daed-full-src.zip
 
   build-web:
@@ -109,7 +115,15 @@ jobs:
       CC: ${{ matrix.cc }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Download artifact - full src
+        uses: actions/download-artifact@v3
+        with:
+          name: daed-full-src
+          path: .
+
+      - name: Extract daed-full-src.zip
+        run: |
+          unzip -o daed-full-src.zip
 
       - name: Get the version
         id: get_version
@@ -117,9 +131,9 @@ jobs:
           REF: ${{ github.ref }}
         run: |
           if [[ "$REF" == "refs/tags/v"* ]]; then
-            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+            tag=${REF##*/}
             version=${tag}
-            package_version="$(echo $tag | sed 's|v||g')"
+            package_version="${tag:1}"
           else
             date=$(git log -1 --format="%cd" --date=short | sed s/-//g)
             count=$(git rev-list --count HEAD)
@@ -177,9 +191,3 @@ jobs:
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
-
-      - name: Upload artifact - bundle-all
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundled-all
-          path: ${{ steps.get_filename.outputs.BUNDLE_NAME }}.zip
