@@ -14,7 +14,7 @@ clean:
 ## Begin Git Submodules
 .gitmodules.d.mk: .gitmodules
 	@set -e && \
-	submodules=$$(grep '\[submodule "' .gitmodules | cut -d'"' -f2 | tr '\n' ' ') && \
+	submodules=$$(grep '\[submodule "' .gitmodules | cut -d'"' -f2 | tr '\n' ' ' | tr ' \n' '\n') && \
 	echo "submodule_paths=$${submodules}" > $@
 
 -include .gitmodules.d.mk
@@ -38,7 +38,7 @@ dist: package.json pnpm-lock.yaml
 ## End Web
 
 ## Begin Bundle
-DAE_WING_READY=wing/vendor/github.com/daeuniverse/dae/control/headers wing/graphql/service/config/global/generated_resolver.go
+DAE_WING_READY=wing/graphql/service/config/global/generated_resolver.go
 
 $(DAE_WING_READY): wing
 	cd wing && \
