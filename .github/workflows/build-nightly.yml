@@ -7,7 +7,10 @@ on:
       - develop
       - develop-pr-*
   pull_request:
-    types: [ opened, synchronize, reopened ]
+    types: [opened, synchronize, reopened]
+  paths-ignore:
+    - '**/*.md'
+    - README.md
 
 jobs:
   checkout-full-src:
