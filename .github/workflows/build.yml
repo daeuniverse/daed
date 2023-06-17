@@ -25,12 +25,6 @@ jobs:
       - name: Create full source ZIP archive and Signature
         run: |
           zip -9vr daed-full-src.zip . -x .git/\*
-          FILE=./daed-full-src.zip
-          DGST=$FILE.dgst
-          md5sum        $FILE >>$DGST
-          shasum -a 1   $FILE >>$DGST
-          shasum -a 256 $FILE >>$DGST
-          shasum -a 512 $FILE >>$DGST
 
       - name: Upload artifact - full source
         uses: actions/upload-artifact@v3
@@ -182,24 +176,25 @@ jobs:
       - name: Smoking test
         if: matrix.goarch == 'amd64' && matrix.goamd64 == 'v1'
         run: ./bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }} --version
-
-      - name: Create binary ZIP archive and Signature
-        run: |
-          pushd bundled || exit 1
-          zip -9vr ../${{ steps.get_filename.outputs.BUNDLE_NAME }}.zip .
-          popd || exit 1
-          FILE=./${{ steps.get_filename.outputs.BUNDLE_NAME }}.zip
-          DGST=$FILE.dgst
-          md5sum        $FILE >>$DGST
-          shasum -a 1   $FILE >>$DGST
-          shasum -a 256 $FILE >>$DGST
-          shasum -a 512 $FILE >>$DGST
-
+      
       - name: Upload artifact - bundle
+        if: ${{ github.event_name != 'release' }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
+
+      - name: Create binary ZIP archive
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          zip -9vr ./${{ steps.get_filename.outputs.BUNDLE_NAME }}.zip ./bundled/*
+
+      - name: Upload ZIP archive
+        if: ${{ github.event_name == 'release' }}
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
+        with:
+          path: |
+            ${{ steps.get_filename.outputs.BUNDLE_NAME }}.zip
 
       - name: Build Linux packages
         if: ${{ env.GOARM != '5' && env.GOARM != '6' }}
@@ -213,6 +208,9 @@ jobs:
                 --url 'https://github.com/daeuniverse/daed' --description "daed, A Modern Dashboard For dae." \
                 --maintainer "daed@dae.v2raya.org" --name daed --license 'MIT AGPL' \
                 --package daed-linux-$GOARCH$GOAMD64$GOARM.$package_manager \
+                --after-install ../install/package_after_install.sh \
+                --before-remove ../install/package_before_remove.sh \
+                --after-remove ../install/package_after_remove.sh \
                 ./geoip.dat=/usr/share/daed/geoip.dat ./geosite.dat=/usr/share/daed/geosite.dat \
                 ./daed.service=/usr/lib/systemd/system/daed.service \
                 ./${{ steps.get_filename.outputs.BUNDLE_NAME }}=/usr/bin/daed
@@ -221,73 +219,55 @@ jobs:
             cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.deb installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
             cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.rpm installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
             cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.pacman installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
-            ls | grep -E ".deb|.pkg.tar.zst|.rpm"
-            for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm");do
-                md5sum        $package >> $package.dgst
-                shasum -a 1   $package >> $package.dgst
-                shasum -a 256 $package >> $package.dgst
-                shasum -a 512 $package >> $package.dgst
-                cat $package.dgst
-            done
           fi
 
-      - name: Upload artifact - packages
-        if: ${{ github.event_name != 'release' && env.GOARM != '5' && env.GOARM != '6' }}
+      - name: Upload Linux packages
+        if: ${{ env.GOARM != '5' && env.GOARM != '6' }}
         uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
         with:
           path: |
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb.dgst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm.dgst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst.dgst
-
-      - name: Upload Linux packages to GitHub release
-        if: ${{ github.event_name == 'release' && env.GOARM != '5' && env.GOARM != '6' }}
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb.dgst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm.dgst
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst.dgst
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload artifact - bundle-all
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundled-all
-          path: ${{ steps.get_filename.outputs.BUNDLE_NAME }}.zip
 
   upload-release:
     if: github.event_name == 'release'
     needs: [full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
         with:
-          name: daed-full-src
           path: release/
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: bundled-all
-          path: release/
-
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: release
+      - name: Prepare files for upload
+        run: |
+          cp release/*/*.deb ./
+          cp release/*/*.rpm ./
+          cp release/*/*.pkg.tar.zst ./
+          cp release/*/*.zip ./
+          zip -9vr web.zip release/web
+          tar -zcvf web.tar.gz release/web
+          zip -9vr daed-full-src.zip release/daed-full-src/*
+          tar -zcvf daed-full-src.tar.gz release/daed-full-src
+          for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip|.tar.gz");do
+              md5sum        $package >> $package.dgst
+              shasum -a 1   $package >> $package.dgst
+              shasum -a 256 $package >> $package.dgst
+              shasum -a 512 $package >> $package.dgst
+          done
 
       - name: Upload Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref }}
           files: |
-            release/*
+            *zip
+            *tar.gz
+            *pkg.tar.zst
+            *deb
+            *rpm
+            *dgst
           generate_release_notes: true
 
   upload-prerelease:
@@ -295,19 +275,27 @@ jobs:
     needs: [full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
         with:
-          name: daed-full-src
           path: release/
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: bundled-all
-          path: release/
-
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: release
+      - name: Prepare files for upload
+        run: |
+          cp release/*/*.deb ./
+          cp release/*/*.rpm ./
+          cp release/*/*.pkg.tar.zst ./
+          cp release/*/*.zip ./
+          zip -9vr web.zip release/web
+          tar -zcvf web.tar.gz release/web
+          zip -9vr daed-full-src.zip release/daed-full-src/*
+          tar -zcvf daed-full-src.tar.gz release/daed-full-src
+          for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip|.tar.gz");do
+              md5sum        $package >> $package.dgst
+              shasum -a 1   $package >> $package.dgst
+              shasum -a 256 $package >> $package.dgst
+              shasum -a 512 $package >> $package.dgst
+          done
 
       - name: Delete current release assets
         uses: 8Mi-Tech/delete-release-assets-action@main
@@ -321,6 +309,11 @@ jobs:
         with:
           tag_name: Prerelease
           files: |
-            release/*
+            *zip
+            *tar.gz
+            *pkg.tar.zst
+            *deb
+            *rpm
+            *dgst
           prerelease: true
           generate_release_notes: true
