@@ -6,7 +6,7 @@ on:
       wing-head:
         type: string
         required: true
-        default: main
+        default: HEAD
       wing-sync-message:
         type: string
         required: true
@@ -14,7 +14,7 @@ on:
       pr-base-branch:
         type: string
         required: false
-        default: main
+        default: HEAD
 
 jobs:
   sync-wing:
@@ -29,7 +29,7 @@ jobs:
 
       - name: Sync dae-wing upstream
         run: |
-          git checkout origin ${{ inputs.wing-head }}
+          git checkout origin/${{ inputs.wing-head }}
           # cd wing && git pull && cd -
         working-directory: wing
 
