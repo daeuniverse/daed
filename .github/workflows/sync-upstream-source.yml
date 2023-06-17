@@ -29,7 +29,7 @@ jobs:
 
       - name: Sync dae-wing upstream
         run: |
-          git checkout ${{ inputs.wing-head }}
+          git checkout origin ${{ inputs.wing-head }}
           # cd wing && git pull && cd -
         working-directory: wing
 
@@ -52,7 +52,7 @@ jobs:
           delete-branch: true
           title: ${{ inputs.wing-sync-message }}
           body: |
-            "Auto sync upstream process finished! Automation by @dae-bot"
+            "Auto sync upstream process finished! Automation by @daebot"
           # commit-message: ${{ inputs.wing-sync-message }}
           labels: |
             automated-pr
