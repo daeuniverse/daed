@@ -127,11 +127,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: daed-full-src
-          path: .daed
-
-      - name: Move files out of .daed
-        run: |
-          mv .daed/* .
+          path: .
 
       - name: Get the version
         id: get_version
