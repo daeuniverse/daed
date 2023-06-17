@@ -51,7 +51,7 @@ jobs:
           delete-branch: true
           title: ${{ inputs.wing-sync-message }}
           body: |
-            Auto sync upstream process finished! Automation by @daebot
+            Auto sync upstream process finished! Automated by @daebot
           labels: |
             automated-pr
           assignees: daebot
