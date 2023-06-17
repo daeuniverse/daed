@@ -25,6 +25,7 @@ jobs:
         with:
           # submodules: 'recursive'
           fetch-depth: 0
+          ref: ${{ inputs.pr-base-branch }}
 
       - name: Sync dae-wing upstream
         run: |
