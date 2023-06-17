@@ -61,7 +61,7 @@ jobs:
           path: dist
 
   build-bundle:
-    needs: build-web
+    needs: [build-web, full-src]
     runs-on: ubuntu-latest
 
     strategy:
@@ -123,9 +123,11 @@ jobs:
       CC: ${{ matrix.cc }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Download artifact - web
+        uses: actions/download-artifact@v3
         with:
-          fetch-depth: 0
+          name: daed-full-src
+          path: .
 
       - name: Get the version
         id: get_version
@@ -288,7 +290,7 @@ jobs:
               shasum -a 512 $package >> $package.dgst
           done
           ls -lh | grep -E ".deb|.pkg.tar.zst|.rpm|.zip"
-          
+
       - name: Delete current release assets
         uses: 8Mi-Tech/delete-release-assets-action@main
         with:
