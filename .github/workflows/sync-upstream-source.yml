@@ -33,6 +33,7 @@ jobs:
           # cd wing && git pull && cd -
 
       - name: Commit changes
+        run: |
           git config user.name 'daebot'
           git config user.email 'daebot@v2raya.org'
           git add .
