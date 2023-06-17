@@ -29,7 +29,7 @@ jobs:
       - name: Upload artifact - full source
         uses: actions/upload-artifact@v3
         with:
-          name: daed-full-src
+          name: daed-full-src.zip
           path: daed-full-src.zip
 
   build-web:
@@ -176,7 +176,7 @@ jobs:
       - name: Smoking test
         if: matrix.goarch == 'amd64' && matrix.goamd64 == 'v1'
         run: ./bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }} --version
-      
+
       - name: Upload artifact - bundle
         if: ${{ github.event_name != 'release' }}
         uses: actions/upload-artifact@v3
@@ -247,10 +247,7 @@ jobs:
           cp release/*/*.pkg.tar.zst ./
           cp release/*/*.zip ./
           zip -9vr web.zip release/web
-          tar -zcvf web.tar.gz release/web
-          zip -9vr daed-full-src.zip release/daed-full-src/*
-          tar -zcvf daed-full-src.tar.gz release/daed-full-src
-          for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip|.tar.gz");do
+          for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip");do
               md5sum        $package >> $package.dgst
               shasum -a 1   $package >> $package.dgst
               shasum -a 256 $package >> $package.dgst
@@ -263,7 +260,6 @@ jobs:
           tag_name: ${{ github.ref }}
           files: |
             *zip
-            *tar.gz
             *pkg.tar.zst
             *deb
             *rpm
@@ -287,10 +283,7 @@ jobs:
           cp release/*/*.pkg.tar.zst ./
           cp release/*/*.zip ./
           zip -9vr web.zip release/web
-          tar -zcvf web.tar.gz release/web
-          zip -9vr daed-full-src.zip release/daed-full-src/*
-          tar -zcvf daed-full-src.tar.gz release/daed-full-src
-          for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip|.tar.gz");do
+          for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip");do
               md5sum        $package >> $package.dgst
               shasum -a 1   $package >> $package.dgst
               shasum -a 256 $package >> $package.dgst
@@ -310,7 +303,6 @@ jobs:
           tag_name: Prerelease
           files: |
             *zip
-            *tar.gz
             *pkg.tar.zst
             *deb
             *rpm
