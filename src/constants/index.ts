@@ -148,7 +148,7 @@ export const DEFAULT_ROUTING = `
   dip(geoip:private) -> direct
   dip(geoip:cn) -> direct
   domain(geosite:cn) -> direct
-  fallback: default
+  fallback: ${DEFAULT_GROUP_NAME}
 `
 
 export const DEFAULT_DNS = `
@@ -164,15 +164,17 @@ export const DEFAULT_DNS = `
   }
 `
 
-export enum ResourceType {
+export enum DraggableResourceType {
   node = 'node',
   subscription = 'subscription',
+  subscription_node = 'subscription_node',
 }
 
 export enum RuleType {
   config = 'config',
   dns = 'dns',
   routing = 'routing',
+  group = 'group',
 }
 
 export const v2raySchema = z.object({

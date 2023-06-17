@@ -4,10 +4,7 @@ import { modals } from '@mantine/modals'
 import { IconTrash } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
-enum ResourceType {
-  node,
-  subscription,
-}
+import { DraggableResourceType } from '~/constants'
 
 export const DraggableResourceCard = ({
   id,
@@ -18,7 +15,7 @@ export const DraggableResourceCard = ({
   children,
 }: {
   id: string
-  type: ResourceType
+  type: DraggableResourceType
   name: string
   onRemove: () => void
   actions?: React.ReactNode

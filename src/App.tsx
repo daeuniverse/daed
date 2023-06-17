@@ -55,6 +55,7 @@ export const App = () => {
         Modal: {
           defaultProps: {
             size: 'lg',
+            radius: 'md',
             centered: true,
             scrollAreaComponent: ScrollArea.Autosize,
           },

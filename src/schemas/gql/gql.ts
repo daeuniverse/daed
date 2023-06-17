@@ -51,6 +51,10 @@ const documents = {
     types.CreateGroupDocument,
   '\n          mutation RemoveGroup($id: ID!) {\n            removeGroup(id: $id)\n          }\n        ':
     types.RemoveGroupDocument,
+  '\n          mutation GroupSetPolicy($id: ID!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            groupSetPolicy(id: $id, policy: $policy, policyParams: $policyParams)\n          }\n        ':
+    types.GroupSetPolicyDocument,
+  '\n          mutation RenameGroup($id: ID!, $name: String!) {\n            renameGroup(id: $id, name: $name)\n          }\n        ':
+    types.RenameGroupDocument,
   '\n          mutation GroupAddNodes($id: ID!, $nodeIDs: [ID!]!) {\n            groupAddNodes(id: $id, nodeIDs: $nodeIDs)\n          }\n        ':
     types.GroupAddNodesDocument,
   '\n          mutation GroupDelNodes($id: ID!, $nodeIDs: [ID!]!) {\n            groupDelNodes(id: $id, nodeIDs: $nodeIDs)\n          }\n        ':
@@ -235,6 +239,18 @@ export function graphql(
 export function graphql(
   source: '\n          mutation RemoveGroup($id: ID!) {\n            removeGroup(id: $id)\n          }\n        '
 ): (typeof documents)['\n          mutation RemoveGroup($id: ID!) {\n            removeGroup(id: $id)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation GroupSetPolicy($id: ID!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            groupSetPolicy(id: $id, policy: $policy, policyParams: $policyParams)\n          }\n        '
+): (typeof documents)['\n          mutation GroupSetPolicy($id: ID!, $policy: Policy!, $policyParams: [PolicyParam!]) {\n            groupSetPolicy(id: $id, policy: $policy, policyParams: $policyParams)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation RenameGroup($id: ID!, $name: String!) {\n            renameGroup(id: $id, name: $name)\n          }\n        '
+): (typeof documents)['\n          mutation RenameGroup($id: ID!, $name: String!) {\n            renameGroup(id: $id, name: $name)\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

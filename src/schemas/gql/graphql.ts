@@ -749,6 +749,21 @@ export type RemoveGroupMutationVariables = Exact<{
 
 export type RemoveGroupMutation = { __typename?: 'Mutation'; removeGroup: number }
 
+export type GroupSetPolicyMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  policy: Policy
+  policyParams?: InputMaybe<Array<PolicyParam> | PolicyParam>
+}>
+
+export type GroupSetPolicyMutation = { __typename?: 'Mutation'; groupSetPolicy: number }
+
+export type RenameGroupMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  name: Scalars['String']['input']
+}>
+
+export type RenameGroupMutation = { __typename?: 'Mutation'; renameGroup: number }
+
 export type GroupAddNodesMutationVariables = Exact<{
   id: Scalars['ID']['input']
   nodeIDs: Array<Scalars['ID']['input']> | Scalars['ID']['input']
@@ -1905,6 +1920,105 @@ export const RemoveGroupDocument = {
     },
   ],
 } as unknown as DocumentNode<RemoveGroupMutation, RemoveGroupMutationVariables>
+export const GroupSetPolicyDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'GroupSetPolicy' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'policy' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Policy' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'policyParams' } },
+          type: {
+            kind: 'ListType',
+            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'PolicyParam' } } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'groupSetPolicy' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'policy' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'policy' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'policyParams' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'policyParams' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GroupSetPolicyMutation, GroupSetPolicyMutationVariables>
+export const RenameGroupDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'RenameGroup' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'renameGroup' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RenameGroupMutation, RenameGroupMutationVariables>
 export const GroupAddNodesDocument = {
   kind: 'Document',
   definitions: [

@@ -8,11 +8,13 @@ export const DroppableGroupCard = ({
   id,
   name,
   onRemove,
+  actions,
   children,
 }: {
   id: string
   name: string
   onRemove?: () => void
+  actions?: React.ReactNode
   children?: React.ReactNode
 }) => {
   const { t } = useTranslation()
@@ -32,25 +34,29 @@ export const DroppableGroupCard = ({
         <Group position="apart">
           <Title order={5}>{name}</Title>
 
-          {onRemove && (
-            <ActionIcon
-              color="red"
-              size="xs"
-              onClick={() => {
-                modals.openConfirmModal({
-                  title: t('actions.remove'),
-                  labels: {
-                    cancel: t('confirmModal.cancel'),
-                    confirm: t('confirmModal.confirm'),
-                  },
-                  children: t('confirmModal.removeConfirmDescription'),
-                  onConfirm: onRemove,
-                })
-              }}
-            >
-              <IconTrash />
-            </ActionIcon>
-          )}
+          <Group>
+            {actions}
+
+            {onRemove && (
+              <ActionIcon
+                color="red"
+                size="xs"
+                onClick={() => {
+                  modals.openConfirmModal({
+                    title: t('actions.remove'),
+                    labels: {
+                      cancel: t('confirmModal.cancel'),
+                      confirm: t('confirmModal.confirm'),
+                    },
+                    children: t('confirmModal.removeConfirmDescription'),
+                    onConfirm: onRemove,
+                  })
+                }}
+              >
+                <IconTrash />
+              </ActionIcon>
+            )}
+          </Group>
         </Group>
       </Card.Section>
 
