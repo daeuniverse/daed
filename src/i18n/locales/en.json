@@ -47,6 +47,28 @@
   "create account": "Create a new account",
   "dark mode": "Dark Mode",
   "debug": "debug",
+  "descriptions": {
+    "allowInsecure": "Allow insecure TLS certificates. It is not recommended to turn it on unless you have to.",
+    "autoConfigKernelParameter": "Automatically configure Linux kernel parameters like ip_forward and send_redirects.",
+    "checkTolerance": "Group will switch node only when new_latency <= old_latency - tolerance.",
+    "dialMode": {
+      "domain": "Dial proxy using the domain from sniffing. This will relieve DNS pollution problem to a great extent if have impure DNS environment. Generally, this mode brings faster proxy response time because proxy will re-resolve the domain in remote, thus get better IP result to connect. This policy does not impact routing. That is to say, domain rewrite will be after traffic split of routing and dae will not re-route it.",
+      "domain+": "Based on domain mode but do not check the reality of sniffed domain. It is useful for users whose DNS requests do not go through dae but want faster proxy response time. Notice that, if DNS requests do not go through dae, dae cannot split traffic by domain.",
+      "domain++": "Based on domain+ mode but force to re-route traffic using sniffed domain to partially recover domain based traffic split ability. It doesn't work for direct traffic and consumes more CPU resources.",
+      "ip": "Dial proxy using the IP from DNS directly. This allows your ipv4, ipv6 to choose the optimal path respectively, and makes the IP version requested by the application meet expectations. For example, if you use curl -4 ip.sb, you will request IPv4 via proxy and get a IPv4 echo. And curl -6 ip.sb will request IPv6. This may solve some wierd full-cone problem if your are be your node support that. Sniffing will be disabled in this mode."
+    },
+    "disableWaitingNetwork": "Disable waiting for network before pulling subscriptions.",
+    "lanInterface": "The LAN interface to bind. Use it if you want to proxy LAN.",
+    "sniffingTimeout": "Timeout to waiting for first data sending for sniffing. It is always 0 if dial_mode is ip. Set it higher is useful in high latency LAN network.",
+    "tcpCheckHttpMethod": "The HTTP request method to TCP Check HTTP Method. Use HEAD by default because some server implementations bypass accounting for this kind of traffic.",
+    "tcpCheckUrl": "Host of URL should have both IPv4 and IPv6 if you have double stack in local. First is URL, others are IP addresses if given. Considering traffic consumption, it is recommended to choose a site with anycast IP and less response.",
+    "tlsImplementation": "TLS implementation. tls is to use Go's crypto/tls. utls is to use uTLS, which can imitate browser's Client Hello.",
+    "tproxyPort": "Transparent Proxy Port to listen on. Valid range is 0 - 65535. It is NOT a HTTP/SOCKS port, and is just used by eBPF program. In normal case, you do not need to use it.",
+    "tproxyPortProtect": "Set it true to protect tproxy port from unsolicited traffic. Set it false to allow users to use self-managed iptables tproxy rules.",
+    "udpCheckDns": "This DNS will be used to check UDP connectivity of nodes. And if dns_upstream below contains tcp, it also be used to check TCP DNS connectivity of nodes. First is URL, others are IP addresses if given. This DNS should have both IPv4 and IPv6 if you have double stack in local.",
+    "utlsImitate": "The Client Hello ID for uTLS to imitate. This takes effect only if tls_implementation is utls.",
+    "wanInterface": "The WAN interface to bind. Use it if you want to proxy localhost."
+  },
   "dialMode": "Dial Mode",
   "disableWaitingNetwork": "Disable Waiting Network",
   "disconnected": "disconnected",

@@ -70,10 +70,12 @@ const schema = z.object({
 const InputList = <T extends z.infer<typeof schema>>({
   form,
   label,
+  description,
   fieldName,
   values,
 }: {
   label: string
+  description?: string
   fieldName: string
   values: string[]
   form: UseFormReturnType<T>
@@ -93,6 +95,8 @@ const InputList = <T extends z.infer<typeof schema>>({
           <IconPlus />
         </ActionIcon>
       </Group>
+
+      {description && <Input.Description>{description}</Input.Description>}
 
       {values.map((_, i) => (
         <Flex key={i} align="start" gap={6}>
@@ -264,55 +268,78 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
           </Stack>
 
           <Radio.Group label={t('dialMode')} {...form.getInputProps('dialMode')}>
-            <Group>
-              {Object.values(DialMode).map((dialMode) => (
-                <Radio key={dialMode} value={dialMode} label={dialMode} />
-              ))}
+            <Group mt="xs">
+              <Radio value={DialMode.ip} label={DialMode.ip} description={t('descriptions.dialMode.ip')} />
+              <Radio value={DialMode.domain} label={DialMode.domain} description={t('descriptions.dialMode.domain')} />
+              <Radio
+                value={DialMode.domainP}
+                label={DialMode.domainP}
+                description={t('descriptions.dialMode.domain+')}
+              />
+              <Radio
+                value={DialMode.domainPP}
+                label={DialMode.domainPP}
+                description={t('descriptions.dialMode.domain++')}
+              />
             </Group>
           </Radio.Group>
 
-          <SimpleGrid cols={3}>
-            <NumberInput
-              label={t('tproxyPort')}
-              withAsterisk
-              min={0}
-              max={65535}
-              {...form.getInputProps('tproxyPort')}
-            />
+          <NumberInput
+            label={t('tproxyPort')}
+            description={t('descriptions.tproxyPort')}
+            withAsterisk
+            min={0}
+            max={65535}
+            {...form.getInputProps('tproxyPort')}
+          />
 
-            <MultiSelect
-              label={t('wanInterface')}
-              withAsterisk
-              data={wanInterfacesData}
-              {...form.getInputProps('wanInterface')}
-            />
+          <Checkbox
+            label={t('tproxyPortProtect')}
+            description={t('descriptions.tproxyPortProtect')}
+            {...form.getInputProps('tproxyPortProtect', {
+              type: 'checkbox',
+            })}
+          />
 
-            <MultiSelect label={t('lanInterface')} data={lanInterfacesData} {...form.getInputProps('lanInterface')} />
-          </SimpleGrid>
+          <MultiSelect
+            label={t('wanInterface')}
+            description={t('descriptions.wanInterface')}
+            withAsterisk
+            data={wanInterfacesData}
+            {...form.getInputProps('wanInterface')}
+          />
 
-          <SimpleGrid cols={3}>
-            <NumberInput
-              label={`${t('checkInterval')} (s)`}
-              withAsterisk
-              {...form.getInputProps('checkIntervalSeconds')}
-            />
+          <MultiSelect
+            label={t('lanInterface')}
+            description={t('descriptions.lanInterface')}
+            data={lanInterfacesData}
+            {...form.getInputProps('lanInterface')}
+          />
 
-            <NumberInput
-              label={`${t('checkTolerance')} (ms)`}
-              withAsterisk
-              step={500}
-              {...form.getInputProps('checkToleranceMS')}
-            />
+          <NumberInput
+            label={`${t('checkInterval')} (s)`}
+            withAsterisk
+            {...form.getInputProps('checkIntervalSeconds')}
+          />
 
-            <NumberInput
-              label={`${t('sniffingTimeout')} (ms)`}
-              step={500}
-              {...form.getInputProps('sniffingTimeoutMS')}
-            />
-          </SimpleGrid>
+          <NumberInput
+            label={`${t('checkTolerance')} (ms)`}
+            description={t('descriptions.checkTolerance')}
+            withAsterisk
+            step={500}
+            {...form.getInputProps('checkToleranceMS')}
+          />
+
+          <NumberInput
+            label={`${t('sniffingTimeout')} (ms)`}
+            description={t('descriptions.sniffingTimeout')}
+            step={500}
+            {...form.getInputProps('sniffingTimeoutMS')}
+          />
 
           <Select
             label={t('tcpCheckHttpMethod')}
+            description={t('descriptions.tcpCheckHttpMethod')}
             data={Object.values(TcpCheckHttpMethod).map((tcpCheckHttpMethod) => ({
               label: tcpCheckHttpMethod,
               value: tcpCheckHttpMethod,
@@ -320,42 +347,46 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
             {...form.getInputProps('tcpCheckHttpMethod')}
           />
 
+          <InputList
+            form={form}
+            label={t('udpCheckDns')}
+            description={t('descriptions.udpCheckDns')}
+            fieldName="udpCheckDns"
+            values={form.values.udpCheckDns}
+          />
+
+          <InputList
+            form={form}
+            label={t('tcpCheckUrl')}
+            description={t('descriptions.tcpCheckUrl')}
+            fieldName="tcpCheckUrl"
+            values={form.values.tcpCheckUrl}
+          />
+
+          <Select
+            label={t('tlsImplementation')}
+            description={t('descriptions.tlsImplementation')}
+            data={Object.values(TLSImplementation).map((tlsImplementation) => ({
+              label: tlsImplementation,
+              value: tlsImplementation,
+            }))}
+            {...form.getInputProps('tlsImplementation')}
+          />
+
+          <Select
+            label={t('utlsImitate')}
+            description={t('descriptions.utlsImitate')}
+            data={Object.values(UTLSImitate).map((utlsImitate) => ({
+              label: utlsImitate,
+              value: utlsImitate,
+            }))}
+            {...form.getInputProps('utlsImitate')}
+          />
+
           <SimpleGrid cols={2}>
-            <InputList form={form} label={t('udpCheckDns')} fieldName="udpCheckDns" values={form.values.udpCheckDns} />
-
-            <InputList form={form} label={t('tcpCheckUrl')} fieldName="tcpCheckUrl" values={form.values.tcpCheckUrl} />
-          </SimpleGrid>
-
-          <SimpleGrid cols={2}>
-            <Select
-              label={t('tlsImplementation')}
-              data={Object.values(TLSImplementation).map((tlsImplementation) => ({
-                label: tlsImplementation,
-                value: tlsImplementation,
-              }))}
-              {...form.getInputProps('tlsImplementation')}
-            />
-
-            <Select
-              label={t('utlsImitate')}
-              data={Object.values(UTLSImitate).map((utlsImitate) => ({
-                label: utlsImitate,
-                value: utlsImitate,
-              }))}
-              {...form.getInputProps('utlsImitate')}
-            />
-          </SimpleGrid>
-
-          <SimpleGrid cols={2}>
-            <Checkbox
-              label={t('tproxyPortProtect')}
-              {...form.getInputProps('tproxyPortProtect', {
-                type: 'checkbox',
-              })}
-            />
-
             <Checkbox
               label={t('allowInsecure')}
+              description={t('descriptions.allowInsecure')}
               {...form.getInputProps('allowInsecure', {
                 type: 'checkbox',
               })}
@@ -363,6 +394,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
             <Checkbox
               label={t('autoConfigKernelParameter')}
+              description={t('descriptions.autoConfigKernelParameter')}
               {...form.getInputProps('autoConfigKernelParameter', {
                 type: 'checkbox',
               })}
@@ -370,6 +402,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
             <Checkbox
               label={t('disableWaitingNetwork')}
+              description={t('descriptions.disableWaitingNetwork')}
               {...form.getInputProps('disableWaitingNetwork', {
                 type: 'checkbox',
               })}
