@@ -1,4 +1,5 @@
 import {
+  Accordion,
   ActionIcon,
   Checkbox,
   Drawer,
@@ -9,7 +10,6 @@ import {
   NumberInput,
   Radio,
   Select,
-  SimpleGrid,
   Slider,
   Stack,
   TextInput,
@@ -252,162 +252,209 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
         <Stack>
           <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} disabled={!!editingID} />
 
-          <Stack>
-            <Input.Label>{t('logLevel')}</Input.Label>
+          <Accordion
+            variant="separated"
+            multiple
+            defaultValue={[
+              'software-options',
+              'interface-and-kernel-options',
+              'node-connectivity-check',
+              'connecting-options',
+            ]}
+          >
+            <Accordion.Item value="software-options">
+              <Accordion.Control>{t('software options')}</Accordion.Control>
 
-            <div className="px-4 pb-4">
-              <Slider
-                min={0}
-                max={4}
-                step={1}
-                label={null}
-                marks={logLevelMarks}
-                {...form.getInputProps('logLevelNumber')}
-              />
-            </div>
-          </Stack>
+              <Accordion.Panel>
+                <Stack>
+                  <NumberInput
+                    label={t('tproxyPort')}
+                    description={t('descriptions.tproxyPort')}
+                    withAsterisk
+                    min={0}
+                    max={65535}
+                    {...form.getInputProps('tproxyPort')}
+                  />
 
-          <Radio.Group label={t('dialMode')} {...form.getInputProps('dialMode')}>
-            <Group mt="xs">
-              <Radio value={DialMode.ip} label={DialMode.ip} description={t('descriptions.dialMode.ip')} />
-              <Radio value={DialMode.domain} label={DialMode.domain} description={t('descriptions.dialMode.domain')} />
-              <Radio
-                value={DialMode.domainP}
-                label={DialMode.domainP}
-                description={t('descriptions.dialMode.domain+')}
-              />
-              <Radio
-                value={DialMode.domainPP}
-                label={DialMode.domainPP}
-                description={t('descriptions.dialMode.domain++')}
-              />
-            </Group>
-          </Radio.Group>
+                  <Checkbox
+                    label={t('tproxyPortProtect')}
+                    description={t('descriptions.tproxyPortProtect')}
+                    {...form.getInputProps('tproxyPortProtect', {
+                      type: 'checkbox',
+                    })}
+                  />
 
-          <NumberInput
-            label={t('tproxyPort')}
-            description={t('descriptions.tproxyPort')}
-            withAsterisk
-            min={0}
-            max={65535}
-            {...form.getInputProps('tproxyPort')}
-          />
+                  <Stack>
+                    <Input.Label>{t('logLevel')}</Input.Label>
 
-          <Checkbox
-            label={t('tproxyPortProtect')}
-            description={t('descriptions.tproxyPortProtect')}
-            {...form.getInputProps('tproxyPortProtect', {
-              type: 'checkbox',
-            })}
-          />
+                    <div className="px-4 pb-4">
+                      <Slider
+                        min={0}
+                        max={4}
+                        step={1}
+                        label={null}
+                        marks={logLevelMarks}
+                        {...form.getInputProps('logLevelNumber')}
+                      />
+                    </div>
+                  </Stack>
 
-          <MultiSelect
-            label={t('wanInterface')}
-            description={t('descriptions.wanInterface')}
-            withAsterisk
-            data={wanInterfacesData}
-            {...form.getInputProps('wanInterface')}
-          />
+                  <Checkbox
+                    label={t('disableWaitingNetwork')}
+                    description={t('descriptions.disableWaitingNetwork')}
+                    {...form.getInputProps('disableWaitingNetwork', {
+                      type: 'checkbox',
+                    })}
+                  />
+                </Stack>
+              </Accordion.Panel>
+            </Accordion.Item>
 
-          <MultiSelect
-            label={t('lanInterface')}
-            description={t('descriptions.lanInterface')}
-            data={lanInterfacesData}
-            {...form.getInputProps('lanInterface')}
-          />
+            <Accordion.Item value="interface-and-kernel-options">
+              <Accordion.Control>{t('interface and kernel options')}</Accordion.Control>
 
-          <NumberInput
-            label={`${t('checkInterval')} (s)`}
-            withAsterisk
-            {...form.getInputProps('checkIntervalSeconds')}
-          />
+              <Accordion.Panel>
+                <Stack>
+                  <MultiSelect
+                    label={t('lanInterface')}
+                    description={t('descriptions.lanInterface')}
+                    data={lanInterfacesData}
+                    {...form.getInputProps('lanInterface')}
+                  />
 
-          <NumberInput
-            label={`${t('checkTolerance')} (ms)`}
-            description={t('descriptions.checkTolerance')}
-            withAsterisk
-            step={500}
-            {...form.getInputProps('checkToleranceMS')}
-          />
+                  <MultiSelect
+                    label={t('wanInterface')}
+                    description={t('descriptions.wanInterface')}
+                    withAsterisk
+                    data={wanInterfacesData}
+                    {...form.getInputProps('wanInterface')}
+                  />
 
-          <NumberInput
-            label={`${t('sniffingTimeout')} (ms)`}
-            description={t('descriptions.sniffingTimeout')}
-            step={500}
-            {...form.getInputProps('sniffingTimeoutMS')}
-          />
+                  <Checkbox
+                    label={t('autoConfigKernelParameter')}
+                    description={t('descriptions.autoConfigKernelParameter')}
+                    {...form.getInputProps('autoConfigKernelParameter', {
+                      type: 'checkbox',
+                    })}
+                  />
+                </Stack>
+              </Accordion.Panel>
+            </Accordion.Item>
 
-          <Select
-            label={t('tcpCheckHttpMethod')}
-            description={t('descriptions.tcpCheckHttpMethod')}
-            data={Object.values(TcpCheckHttpMethod).map((tcpCheckHttpMethod) => ({
-              label: tcpCheckHttpMethod,
-              value: tcpCheckHttpMethod,
-            }))}
-            {...form.getInputProps('tcpCheckHttpMethod')}
-          />
+            <Accordion.Item value="node-connectivity-check">
+              <Accordion.Control>{t('node connectivity check')}</Accordion.Control>
 
-          <InputList
-            form={form}
-            label={t('udpCheckDns')}
-            description={t('descriptions.udpCheckDns')}
-            fieldName="udpCheckDns"
-            values={form.values.udpCheckDns}
-          />
+              <Accordion.Panel>
+                <Stack>
+                  <InputList
+                    form={form}
+                    label={t('tcpCheckUrl')}
+                    description={t('descriptions.tcpCheckUrl')}
+                    fieldName="tcpCheckUrl"
+                    values={form.values.tcpCheckUrl}
+                  />
 
-          <InputList
-            form={form}
-            label={t('tcpCheckUrl')}
-            description={t('descriptions.tcpCheckUrl')}
-            fieldName="tcpCheckUrl"
-            values={form.values.tcpCheckUrl}
-          />
+                  <Select
+                    label={t('tcpCheckHttpMethod')}
+                    description={t('descriptions.tcpCheckHttpMethod')}
+                    data={Object.values(TcpCheckHttpMethod).map((tcpCheckHttpMethod) => ({
+                      label: tcpCheckHttpMethod,
+                      value: tcpCheckHttpMethod,
+                    }))}
+                    {...form.getInputProps('tcpCheckHttpMethod')}
+                  />
 
-          <Select
-            label={t('tlsImplementation')}
-            description={t('descriptions.tlsImplementation')}
-            data={Object.values(TLSImplementation).map((tlsImplementation) => ({
-              label: tlsImplementation,
-              value: tlsImplementation,
-            }))}
-            {...form.getInputProps('tlsImplementation')}
-          />
+                  <InputList
+                    form={form}
+                    label={t('udpCheckDns')}
+                    description={t('descriptions.udpCheckDns')}
+                    fieldName="udpCheckDns"
+                    values={form.values.udpCheckDns}
+                  />
 
-          <Select
-            label={t('utlsImitate')}
-            description={t('descriptions.utlsImitate')}
-            data={Object.values(UTLSImitate).map((utlsImitate) => ({
-              label: utlsImitate,
-              value: utlsImitate,
-            }))}
-            {...form.getInputProps('utlsImitate')}
-          />
+                  <NumberInput
+                    label={`${t('checkInterval')} (s)`}
+                    withAsterisk
+                    {...form.getInputProps('checkIntervalSeconds')}
+                  />
 
-          <SimpleGrid cols={2}>
-            <Checkbox
-              label={t('allowInsecure')}
-              description={t('descriptions.allowInsecure')}
-              {...form.getInputProps('allowInsecure', {
-                type: 'checkbox',
-              })}
-            />
+                  <NumberInput
+                    label={`${t('checkTolerance')} (ms)`}
+                    description={t('descriptions.checkTolerance')}
+                    withAsterisk
+                    step={500}
+                    {...form.getInputProps('checkToleranceMS')}
+                  />
+                </Stack>
+              </Accordion.Panel>
+            </Accordion.Item>
 
-            <Checkbox
-              label={t('autoConfigKernelParameter')}
-              description={t('descriptions.autoConfigKernelParameter')}
-              {...form.getInputProps('autoConfigKernelParameter', {
-                type: 'checkbox',
-              })}
-            />
+            <Accordion.Item value="connecting-options">
+              <Accordion.Control>{t('connecting options')}</Accordion.Control>
 
-            <Checkbox
-              label={t('disableWaitingNetwork')}
-              description={t('descriptions.disableWaitingNetwork')}
-              {...form.getInputProps('disableWaitingNetwork', {
-                type: 'checkbox',
-              })}
-            />
-          </SimpleGrid>
+              <Accordion.Panel>
+                <Stack>
+                  <Radio.Group label={t('dialMode')} {...form.getInputProps('dialMode')}>
+                    <Group mt="xs">
+                      <Radio value={DialMode.ip} label={DialMode.ip} description={t('descriptions.dialMode.ip')} />
+                      <Radio
+                        value={DialMode.domain}
+                        label={DialMode.domain}
+                        description={t('descriptions.dialMode.domain')}
+                      />
+                      <Radio
+                        value={DialMode.domainP}
+                        label={DialMode.domainP}
+                        description={t('descriptions.dialMode.domain+')}
+                      />
+                      <Radio
+                        value={DialMode.domainPP}
+                        label={DialMode.domainPP}
+                        description={t('descriptions.dialMode.domain++')}
+                      />
+                    </Group>
+                  </Radio.Group>
+
+                  <Checkbox
+                    label={t('allowInsecure')}
+                    description={t('descriptions.allowInsecure')}
+                    {...form.getInputProps('allowInsecure', {
+                      type: 'checkbox',
+                    })}
+                  />
+
+                  <NumberInput
+                    label={`${t('sniffingTimeout')} (ms)`}
+                    description={t('descriptions.sniffingTimeout')}
+                    step={500}
+                    {...form.getInputProps('sniffingTimeoutMS')}
+                  />
+
+                  <Select
+                    label={t('tlsImplementation')}
+                    description={t('descriptions.tlsImplementation')}
+                    data={Object.values(TLSImplementation).map((tlsImplementation) => ({
+                      label: tlsImplementation,
+                      value: tlsImplementation,
+                    }))}
+                    {...form.getInputProps('tlsImplementation')}
+                  />
+
+                  {form.values.tlsImplementation === TLSImplementation.utls && (
+                    <Select
+                      label={t('utlsImitate')}
+                      description={t('descriptions.utlsImitate')}
+                      data={Object.values(UTLSImitate).map((utlsImitate) => ({
+                        label: utlsImitate,
+                        value: utlsImitate,
+                      }))}
+                      {...form.getInputProps('utlsImitate')}
+                    />
+                  )}
+                </Stack>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
 
           <FormActions
             reset={() => {

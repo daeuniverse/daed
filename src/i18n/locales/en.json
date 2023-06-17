@@ -44,6 +44,7 @@
     "removeConfirmDescription": "Are you sure you want to remove this?"
   },
   "connected": "connected",
+  "connecting options": "Connecting Options",
   "create account": "Create a new account",
   "dark mode": "Dark Mode",
   "debug": "debug",
@@ -83,6 +84,7 @@
   "global": "Global",
   "group": "Group",
   "info": "info",
+  "interface and kernel options": "Interface and Kernel Options",
   "ip": "ip",
   "lanInterface": "Lan Interface",
   "lanNatDirect": "lanNatDirect",
@@ -92,6 +94,7 @@
   "milliseconds": "ms",
   "name": "Name",
   "node": "Node",
+  "node connectivity check": "Node Connectivity Check",
   "notifications": {
     "login succeeded": "Login Succeeded",
     "success": "Success"
@@ -112,6 +115,7 @@
   "settings": "Settings",
   "setup endpoint": "Setup your backend (graphql) endpoint URL",
   "sniffingTimeout": "Sniffing Timeout",
+  "software options": "Software Options",
   "step": "Step",
   "subscription": "Subscription",
   "success": "Success",
