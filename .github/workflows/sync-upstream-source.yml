@@ -31,7 +31,7 @@ jobs:
       - name: Sync dae-wing upstream
         run: |
           git checkout origin/${{ inputs.wing-head }}
-          git pull
+          git pull origin ${{ inputs.wing-head }}
         working-directory: wing
 
       - name: Commit changes
