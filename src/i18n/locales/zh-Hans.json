@@ -47,6 +47,28 @@
   "create account": "创建一个新的账户",
   "dark mode": "暗黑模式",
   "debug": "调试",
+  "descriptions": {
+    "allowInsecure": "允许使用不安全的TLS证书。除非迫不得已，否则不建议打开它。",
+    "autoConfigKernelParameter": "自动配置 Linux 内核参数，如 ip_forward（端口转发）和 send_redirects（发送重定向）。",
+    "checkTolerance": "只有当新的延迟 <= 旧的延迟 - 公差时，群组才会切换节点。",
+    "dialMode": {
+      "domain": "通过嗅探使用域名拨号代理。如果 DNS 环境不纯净，这将在很大程度上缓解 DNS 污染问题。通常，这种模式会带来更快的代理响应时间，因为代理会在远程重新解析域名，从而获得更好的 IP 连接结果。此策略不影响路由。也就是说，域重写将在流量拆分后进行路由，dae 不会对其进行重新路由。",
+      "domain+": "基于 domain 模式但不检查嗅探域名的真实性。对于那些 DNS 请求不通过 dae 但想要更快的代理响应时间的用户来说，这很有用。请注意，如果 DNS 请求不通过 dae，dae 就无法按域划分流量。",
+      "domain++": "基于 domain+ 模式，但强制使用嗅探域重新路由流量，以部分恢复基于域的流量拆分能力。它不适用于直接流量，并且会消耗更多的 CPU 资源。",
+      "ip": "直接使用来自 DNS 的 IP 拨号代理。这允许您的 ipv4、ipv6 分别选择最佳路径，并使应用程序请求的 IP 版本符合预期。例如，如果您使用 curl -4 ip.sb，您将通过代理请求 IPv4 并获得 IPv4 回显。curl -6 ip.sb 将请求 IPv6。如果你是你的节点支持的话，这可能会解决一些怪异的全锥形问题。在此模式下将禁用嗅探。"
+    },
+    "disableWaitingNetwork": "禁用在拉取订阅之前等待网络。",
+    "lanInterface": "要绑定的 LAN 接口。如果您想代理局域网，请使用它。",
+    "sniffingTimeout": "等待第一次发送数据以进行嗅探时超时。如果拨号模式为 ip，则始终为 0。将其设置得更高在高延迟局域网网络中很有用。",
+    "tcpCheckHttpMethod": "对 TCP 检测链接的 HTTP 请求方法。默认情况下使用 HEAD，因为某些服务器实现绕过了对此类流量的核算。",
+    "tcpCheckUrl": "如果您在本地有双堆栈，URL 的域名解析应该同时具有 IPv4 和 IPv6。第一个是 URL，其他是 IP 地址（如果给定的话）。考虑到流量消耗，建议选择具有 anycast IP 且响应较少的站点。",
+    "tlsImplementation": "TLS 实现。tls 是使用 Go 的 crypto/tls。utls 是使用 utls，它可以模仿浏览器的客户端 Hello。",
+    "tproxyPort": "要监听的透明代理端口。合法范围是 0 - 65535。它不是 HTTP/SOCKS 端口，仅由 eBPF 程序使用。在正常情况下，您不需要使用它。",
+    "tproxyPortProtect": "将其设置为 true 可保护透明代理端口免受未经请求的流量的影响。将其设置为 false 以允许用户使用自我管理的 iptables 透明代理规则。",
+    "udpCheckDns": "此 DNS 将用于检查节点的 UDP 连接。如果下面的 DNS 上游包含 TCP，它也可以用于检查节点的 TCP DNS 连接。第一个是 URL，其他是 IP地址（如果给定的话）。如果您在本地有双堆栈，则此 DNS 应该同时具有 IPv4 和 IPv6。",
+    "utlsImitate": "要模仿的 uTLS 的客户端 Hello ID。只有当 TLS 实现 为 utls 时，此操作才会生效。",
+    "wanInterface": "要绑定的 WAN 接口。如果您想代理本机，请使用它。"
+  },
   "dialMode": "拨号模式",
   "disableWaitingNetwork": "禁用网络等待",
   "disconnected": "未连接",
