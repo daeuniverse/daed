@@ -192,6 +192,7 @@ jobs:
 
       - name: Smoking test
         if: matrix.goarch == 'amd64' && matrix.goamd64 == 'v1'
+        run: ./bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }} --version
 
       - name: Build Linux packages
         if: ${{ env.GOARM != '5' && env.GOARM != '6' }}
