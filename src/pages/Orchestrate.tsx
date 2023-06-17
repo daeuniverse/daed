@@ -138,7 +138,6 @@ export const OrchestratePage = () => {
       }
 
       if (type === DraggableResourceType.subscription_node) {
-        console.log(subscriptionID)
         const subscription = subscriptionsQuery?.subscriptions.find(
           (subscription) => subscription.id === subscriptionID
         )
