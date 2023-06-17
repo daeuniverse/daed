@@ -30,7 +30,6 @@ jobs:
       - name: Sync dae-wing upstream
         run: |
           git checkout origin/${{ inputs.wing-head }}
-          # cd wing && git pull && cd -
         working-directory: wing
 
       - name: Commit changes
@@ -58,5 +57,5 @@ jobs:
             automated-pr
           assignees: daebot
           team-reviewers: |
-            docs
+            daed
           draft: false
