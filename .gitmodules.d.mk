@@ -1,1 +1,1 @@
-submodule_paths=wing
+submodule_ready=wing/.git
