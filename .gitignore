@@ -22,5 +22,4 @@ dist-ssr
 *.sw?
 
 # Make
-.gitmodules.d.mk
 daed

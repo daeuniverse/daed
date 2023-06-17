@@ -12,19 +12,19 @@ clean:
 	rm -rf dist && rm -f daed
 
 ## Begin Git Submodules
-.gitmodules.d.mk: .gitmodules
+.gitmodules.d.mk: .gitmodules Makefile
 	@set -e && \
-	submodules=$$(grep '\[submodule "' .gitmodules | cut -d'"' -f2 | tr '\n' ' ') && \
-	echo "submodule_paths=$${submodules}" > $@
+	submodules=$$(grep '\[submodule "' .gitmodules | cut -d'"' -f2 | tr '\n' ' ' | tr ' \n' '\n') && \
+	echo "submodule_ready=$${submodules}/.git" > $@
 
 -include .gitmodules.d.mk
 
-$(submodule_paths): .gitmodules.d.mk
-	git submodule update --init --recursive -- $@ && \
+$(submodule_ready): .gitmodules.d.mk
+	git submodule update --init --recursive -- "$$(dirname $@)" && \
 	touch $@
 
-submodule submodules: $(submodule_paths)
-	@if [ -z "$(submodule_paths)" ]; then \
+submodule submodules: $(submodule_ready)
+	@if [ -z "$(submodule_ready)" ]; then \
 		rm -f .gitmodules.d.mk; \
 		echo "Failed to generate submodules list. Please try again."; \
 		exit 1; \
@@ -38,13 +38,15 @@ dist: package.json pnpm-lock.yaml
 ## End Web
 
 ## Begin Bundle
-DAE_WING_READY=wing/vendor/github.com/daeuniverse/dae/control/headers wing/graphql/service/config/global/generated_resolver.go
+DAE_WING_READY=wing/graphql/service/config/global/generated_resolver.go
 
 $(DAE_WING_READY): wing
 	cd wing && \
-	make deps
+	$(MAKE) deps && \
+	cd .. && \
+	touch $@
 
 daed: submodule $(DAE_WING_READY) dist
 	cd wing && \
-	make OUTPUT=../$(OUTPUT) APPNAME=$(APPNAME) WEB_DIST=../dist VERSION=$(VERSION) bundle
+	$(MAKE) OUTPUT=../$(OUTPUT) APPNAME=$(APPNAME) WEB_DIST=../dist VERSION=$(VERSION) bundle
 ## End Bundle
