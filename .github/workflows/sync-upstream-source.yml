@@ -11,6 +11,10 @@ on:
         type: string
         required: true
         default: 'chore(sync): upgrade dae-wing'
+      pr-base-branch:
+        type: string
+        required: false
+        default: 'main'
 
 jobs:
   sync-wing:
@@ -31,6 +35,8 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           branch: sync-wing
+          base: ${{ inputs.pr-base-branch }}
           delete-branch: true
           title: ${{ inputs.wing-sync-message }}
           commit-message: ${{ inputs.wing-sync-message }}
+          
