@@ -34,7 +34,7 @@ jobs:
       - name: Sync dae-wing upstream
         run: |
           git checkout origin/${{ inputs.wing-head }}
-          git pull origin ${{ inputs.wing-head }}
+          # git pull origin ${{ inputs.wing-head }}
         working-directory: wing
 
       - name: Commit changes
@@ -44,7 +44,7 @@ jobs:
           git checkout -b ${{ env.pr_branch }}
           git add .
           git commit -m "${{ inputs.wing-sync-message }}"
-          git push -u origin ${{ env.pr_branch }}
+          # git push -u origin ${{ env.pr_branch }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
@@ -53,7 +53,7 @@ jobs:
           committer: daebot <dae@v2raya.org>
           token: ${{ secrets.GH_TOKEN }}
           signoff: false
-          branch: sync-upstream
+          branch: ${{ env.pr_branch }}
           base: ${{ inputs.pr-base-branch }}
           delete-branch: true
           title: ${{ inputs.wing-sync-message }}
