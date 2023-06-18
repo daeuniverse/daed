@@ -215,23 +215,13 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
       <form
         onSubmit={form.onSubmit(async (values) => {
           const logLevel = logLevelSteps[values.logLevelNumber][1]
+
           const global: GlobalInput = {
             logLevel,
-            tproxyPort: values.tproxyPort,
-            tcpCheckUrl: values.tcpCheckUrl,
-            udpCheckDns: values.udpCheckDns,
-            allowInsecure: values.allowInsecure,
             checkInterval: `${values.checkIntervalSeconds}s`,
             checkTolerance: `${values.checkToleranceMS}ms`,
             sniffingTimeout: `${values.sniffingTimeoutMS}ms`,
-            lanInterface: values.lanInterface,
-            wanInterface: values.wanInterface,
-            dialMode: values.dialMode,
-            tlsImplementation: values.tlsImplementation,
-            utlsImitate: values.utlsImitate,
-            tcpCheckHttpMethod: values.tcpCheckHttpMethod,
-            disableWaitingNetwork: values.disableWaitingNetwork,
-            autoConfigKernelParameter: values.autoConfigKernelParameter,
+            ...values,
           }
 
           if (editingID) {
