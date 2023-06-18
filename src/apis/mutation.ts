@@ -553,6 +553,7 @@ export const useGroupAddNodesMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -577,6 +578,7 @@ export const useGroupDelNodesMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -601,6 +603,7 @@ export const useGroupAddSubscriptionsMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -625,6 +628,7 @@ export const useGroupDelSubscriptionsMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
