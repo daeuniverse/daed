@@ -237,16 +237,22 @@ jobs:
           cp release/*/*.rpm ./
           cp release/*/*.pkg.tar.zst ./
           cp release/*/*.zip ./
-          zip -9vr web.zip release/web
-          for zip_file in $(ls release | grep -E "^daed-linux*");do
-              zip -9vr ./"$zip_file".zip release/"$zip_file"/*
+          pushd release
+          zip -9vr ../web.zip web/*
+          for zip_file in $(ls | grep -E "^daed-linux*");do
+              pushd $zip_file
+              zip -9r ../../"$zip_file".zip ./*
+              popd
           done
+          popd
           for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip");do
-              md5sum        $package >> $package.dgst
-              shasum -a 1   $package >> $package.dgst
-              shasum -a 256 $package >> $package.dgst
-              shasum -a 512 $package >> $package.dgst
+              echo "$(md5sum $package)""  md5" >> $package.dgst
+              echo "$(shasum -a 1 $package)""  sha1" >> $package.dgst
+              echo "$(shasum -a 256 $package)""  sha256" >> $package.dgst
+              echo "$(shasum -a 512 $package)""  sha512" >> $package.dgst
           done
+          echo "Show files are going to upload..."
+          ls -lh | grep -E ".deb|.pkg.tar.zst|.rpm|.zip"
 
       - name: Upload Release
         uses: softprops/action-gh-release@v1
@@ -276,16 +282,21 @@ jobs:
           cp release/*/*.rpm ./
           cp release/*/*.pkg.tar.zst ./
           cp release/*/*.zip ./
-          zip -9vr web.zip release/web
-          for zip_file in $(ls release | grep -E "^daed-linux*");do
-              zip -9vr ./"$zip_file".zip release/"$zip_file"/*
+          pushd release
+          zip -9vr ../web.zip web/*
+          for zip_file in $(ls | grep -E "^daed-linux*");do
+              pushd $zip_file
+              zip -9r ../../"$zip_file".zip ./*
+              popd
           done
+          popd
           for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip");do
-              md5sum        $package >> $package.dgst
-              shasum -a 1   $package >> $package.dgst
-              shasum -a 256 $package >> $package.dgst
-              shasum -a 512 $package >> $package.dgst
+              echo "$(md5sum $package)""  md5" >> $package.dgst
+              echo "$(shasum -a 1 $package)""  sha1" >> $package.dgst
+              echo "$(shasum -a 256 $package)""  sha256" >> $package.dgst
+              echo "$(shasum -a 512 $package)""  sha512" >> $package.dgst
           done
+          echo "Show files are going to upload..."
           ls -lh | grep -E ".deb|.pkg.tar.zst|.rpm|.zip"
 
       - name: Delete current release assets
