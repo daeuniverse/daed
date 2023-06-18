@@ -79,6 +79,7 @@ import { SimpleCard } from '~/components/SimpleCard'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { DraggableResourceType, GET_LOG_LEVEL_STEPS, RuleType } from '~/constants'
 import { defaultResourcesAtom } from '~/store'
+import { deriveTime } from '~/utils'
 
 type DraggingResource = {
   id: string
@@ -242,9 +243,9 @@ export const OrchestratePage = () => {
                         updateConfigFormDrawerRef.current?.initOrigins({
                           name: config.name,
                           logLevelNumber,
-                          checkIntervalSeconds: Number.parseInt(checkInterval.split('s')[0]),
-                          checkToleranceMS: Number.parseInt(checkTolerance.split('ms')[0]) * 1000,
-                          sniffingTimeoutMS: Number.parseInt(sniffingTimeout.split('ms')[0]),
+                          checkIntervalSeconds: deriveTime(checkInterval, 's'),
+                          checkToleranceMS: deriveTime(checkTolerance, 'ms'),
+                          sniffingTimeoutMS: deriveTime(sniffingTimeout, 'ms'),
                           ...global,
                         })
 
