@@ -78,7 +78,7 @@ jobs:
     strategy:
       matrix:
         goos: [linux]
-        goarch: [arm64]
+        goarch: [arm64, 386, riscv64, mips64, mips64le, mipsle, mips]
 
         include:
           # BEGIN Linux ARM 5 6 7
@@ -104,6 +104,25 @@ jobs:
             goarch: amd64
             goamd64: v3
           # END Linux AMD64 v1 v2 v3
+
+          # BEGIN Linux mips
+          - goos: linux
+            goarch: mips64
+            cgo_enabled: 1
+            cc: mips64-linux-gnuabi64-gcc
+          - goos: linux
+            goarch: mips64le
+            cgo_enabled: 1
+            cc: mips64el-linux-gnuabi64-gcc
+          - goos: linux
+            goarch: mipsle
+            cgo_enabled: 1
+            cc: mipsel-linux-gnu-gcc
+          - goos: linux
+            goarch: mips
+            cgo_enabled: 1
+            cc: mips-linux-gnu-gcc
+          # END Linux mips
       fail-fast: false
 
     env:
@@ -144,6 +163,12 @@ jobs:
           export _NAME=$(jq ".[\"$GOOS-$GOARCH$GOARM$GOAMD64\"].friendlyName" -r < install/friendly-filenames.json)
           echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "BUNDLE_NAME=daed-$_NAME" >> $GITHUB_OUTPUT
+
+      - name: Install mips build dependencies
+        if: ${{ startsWith(matrix.goarch, 'mips') }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
 
       - name: Download artifact - web
         uses: actions/download-artifact@v3
