@@ -605,22 +605,40 @@ export const OrchestratePage = () => {
                     </Text>
                   </Spoiler>
 
-                  <Text fz="xs" py="xs">
-                    {t('node')} ({nodes.edges.length})
-                  </Text>
-
-                  <Group spacing="sm">
-                    {nodes.edges.map(({ id, name }) => (
-                      <DraggableSubscriptionNodeBadge key={id} subscriptionID={subscriptionID} name={name} id={id} />
-                    ))}
-                  </Group>
+                  <Accordion variant="filled">
+                    <Accordion.Item value="node">
+                      <Accordion.Control fz="xs" px="xs">
+                        {t('node')} ({nodes.edges.length})
+                      </Accordion.Control>
+                      <Accordion.Panel>
+                        <Group spacing="sm">
+                          {nodes.edges.map(({ id, name }) => (
+                            <DraggableSubscriptionNodeBadge
+                              key={id}
+                              subscriptionID={subscriptionID}
+                              name={name}
+                              id={id}
+                            />
+                          ))}
+                        </Group>
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  </Accordion>
                 </DraggableResourceCard>
               ))}
             </Stack>
           </Section>
 
           <DragOverlay dropAnimation={null}>
-            {draggingResource ? <Badge>{draggingResourceDisplayName}</Badge> : null}
+            {draggingResource ? (
+              <Badge
+                sx={{
+                  cursor: 'grabbing',
+                }}
+              >
+                {draggingResourceDisplayName}
+              </Badge>
+            ) : null}
           </DragOverlay>
         </DndContext>
       </SimpleGrid>
