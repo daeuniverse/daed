@@ -8,7 +8,6 @@ import {
   Image,
   Menu,
   Modal,
-  SegmentedControl,
   Stack,
   Switch,
   Tabs,
@@ -21,7 +20,6 @@ import {
 } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
-import { useStore } from '@nanostores/react'
 import {
   IconChevronDown,
   IconCloudCheck,
@@ -37,18 +35,10 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
-import {
-  useGeneralQuery,
-  useRunMutation,
-  useSetModeMutation,
-  useUpdateAvatarMutation,
-  useUpdateNameMutation,
-  useUserQuery,
-} from '~/apis'
+import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUpdateNameMutation, useUserQuery } from '~/apis'
 import logo from '~/assets/logo.svg'
-import { MODE } from '~/constants'
 import { i18n } from '~/i18n'
-import { modeAtom, tokenAtom } from '~/store'
+import { tokenAtom } from '~/store'
 import { fileToBase64 } from '~/utils'
 
 import { ColorSchemeToggle } from './ColorSchemeToggle'
@@ -118,7 +108,6 @@ export const Header = () => {
   const runMutation = useRunMutation()
   const updateNameMutation = useUpdateNameMutation()
   const updateAvatarMutation = useUpdateAvatarMutation()
-  const setModeMutation = useSetModeMutation()
   const [uploadingAvatarBase64, setUploadingAvatarBase64] = useState<string | null>(null)
   const resetUploadingAvatarRef = useRef<() => void>(null)
 
@@ -126,8 +115,6 @@ export const Header = () => {
     { link: '/orchestrate', label: t('orchestrate'), icon: <IconCloudComputing /> },
     { link: '/experiment', label: t('experiment'), icon: <IconTestPipe /> },
   ]
-
-  const mode = useStore(modeAtom)
 
   const accountSettingsForm = useForm<z.infer<typeof accountSettingsSchema>>({
     validate: zodResolver(accountSettingsSchema),
@@ -151,7 +138,7 @@ export const Header = () => {
               </Group>
             </Link>
 
-            <SegmentedControl
+            {/* <SegmentedControl
               value={mode}
               onChange={async (mode) => {
                 await setModeMutation.mutateAsync(mode as MODE)
@@ -168,7 +155,7 @@ export const Header = () => {
                 { label: t('actions.simple mode'), value: MODE.simple },
                 { label: t('actions.advanced mode'), value: MODE.advanced },
               ]}
-            />
+            /> */}
           </Group>
 
           <Center
@@ -254,27 +241,25 @@ export const Header = () => {
         </Group>
       </Container>
 
-      {mode === MODE.advanced && (
-        <Center>
-          <Tabs
-            variant="outline"
-            value={location.pathname}
-            onTabChange={(to) => navigate(`${to}`)}
-            classNames={{
-              tabsList: classes.tabsList,
-              tab: classes.tab,
-            }}
-          >
-            <Tabs.List>
-              {links.map(({ link, icon, label }) => (
-                <Tabs.Tab key={link} value={link} icon={icon}>
-                  {label}
-                </Tabs.Tab>
-              ))}
-            </Tabs.List>
-          </Tabs>
-        </Center>
-      )}
+      <Center>
+        <Tabs
+          variant="outline"
+          value={location.pathname}
+          onTabChange={(to) => navigate(`${to}`)}
+          classNames={{
+            tabsList: classes.tabsList,
+            tab: classes.tab,
+          }}
+        >
+          <Tabs.List>
+            {links.map(({ link, icon, label }) => (
+              <Tabs.Tab key={link} value={link} icon={icon}>
+                {label}
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+        </Tabs>
+      </Center>
 
       <Modal
         title={t('account settings')}

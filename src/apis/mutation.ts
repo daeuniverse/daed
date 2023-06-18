@@ -678,7 +678,7 @@ export const useImportSubscriptionsMutation = () => {
 
   return useMutation({
     mutationFn: (data: ImportArgument[]) =>
-      Promise.allSettled(
+      Promise.all(
         data.map((subscription) =>
           gqlClient.request(
             graphql(`
