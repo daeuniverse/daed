@@ -42,8 +42,8 @@ jobs:
           git config user.name 'daebot'
           git config user.email 'daebot@v2raya.org'
           git checkout -b ${{ env.pr_branch }}
-          git add .
-          git commit -m "${{ inputs.wing-sync-message }}"
+          git add -A
+          git commit -am "${{ inputs.wing-sync-message }}" --no-verify
           # git push -u origin ${{ env.pr_branch }}
 
       - name: Create Pull Request
