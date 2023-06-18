@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 about: Report a bug encountered while operating daed
-labels: kind/bug
+labels: topic/bug
 ---
 
 <!--
