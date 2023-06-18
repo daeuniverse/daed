@@ -24,10 +24,8 @@ export const DraggableSubscriptionNodeBadge = ({
   })
 
   return (
-    <Badge ref={setNodeRef} style={{ zIndex: isDragging ? 10 : 0 }}>
-      <Text {...listeners} {...attributes} truncate>
-        {name}
-      </Text>
+    <Badge ref={setNodeRef} style={{ cursor: 'grab', zIndex: isDragging ? 10 : 0 }} {...listeners} {...attributes}>
+      <Text truncate>{name}</Text>
     </Badge>
   )
 }

@@ -163,7 +163,7 @@ export const ExperimentPage = () => {
         link: faker.internet.url(),
       }),
       {
-        count: 5,
+        count: 3,
       }
     )
   )
@@ -199,7 +199,7 @@ export const ExperimentPage = () => {
         ),
       }),
       {
-        count: 3,
+        count: 2,
       }
     )
   )
