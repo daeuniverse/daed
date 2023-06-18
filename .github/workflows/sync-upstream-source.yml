@@ -16,6 +16,9 @@ on:
         required: false
         default: main
 
+env:
+  pr_branch: sync-upstream
+
 jobs:
   sync-wing:
     runs-on: ubuntu-latest
@@ -37,8 +40,8 @@ jobs:
         run: |
           git config user.name 'daebot'
           git config user.email 'daebot@v2raya.org'
-          git add .
-          git commit -m "${{ inputs.wing-sync-message }}"
+          git add -A
+          git commit -am "${{ inputs.wing-sync-message }}" --no-verify
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
@@ -47,7 +50,7 @@ jobs:
           committer: daebot <dae@v2raya.org>
           token: ${{ secrets.GH_TOKEN }}
           signoff: false
-          branch: sync-upstream
+          branch: ${{ env.pr_branch }}
           base: ${{ inputs.pr-base-branch }}
           delete-branch: true
           title: ${{ inputs.wing-sync-message }}
