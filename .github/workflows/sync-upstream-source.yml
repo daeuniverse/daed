@@ -27,21 +27,24 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+          token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
           # ref: ${{ inputs.pr-base-branch }}
           # let's leave ref here for future testing
 
-      - name: Sync dae-wing upstream
+      - name: Pull & update submodules recursively
         run: |
-          git checkout origin/${{ inputs.wing-head }}
+          # git checkout origin/${{ inputs.wing-head }}
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
         working-directory: wing
 
       - name: Commit changes
         run: |
           git config user.name 'daebot'
           git config user.email 'daebot@v2raya.org'
-          git add -A
-          git commit -am "${{ inputs.wing-sync-message }}" --no-verify
+          git add .
+          git commit -m "${{ inputs.wing-sync-message }}" --no-verify
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
