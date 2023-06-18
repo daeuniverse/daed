@@ -41,6 +41,7 @@ export const App = () => {
       fontFamily: 'Fira Sans, Monaco, Consolas, sans-serif',
       fontFamilyMonospace: 'Source Code Pro, Monaco, Consolas, monospace',
       primaryColor: 'violet',
+      cursorType: 'pointer',
       components: {
         Button: {
           defaultProps: {
