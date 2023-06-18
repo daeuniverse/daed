@@ -27,6 +27,7 @@ import {
   IconCloudPause,
   IconLanguage,
   IconLogout,
+  IconReload,
   IconTestPipe,
   IconUserEdit,
 } from '@tabler/icons-react'
@@ -52,7 +53,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   mainSection: {
-    position: 'relative',
     paddingBottom: theme.spacing.sm,
   },
 
@@ -158,25 +158,6 @@ export const Header = () => {
             /> */}
           </Group>
 
-          <Center
-            sx={{
-              position: 'absolute',
-              width: 0,
-              insetInline: 0,
-              marginInline: 'auto',
-            }}
-          >
-            <Switch
-              onLabel={<IconCloudCheck size="1.5rem" stroke={2.5} />}
-              offLabel={<IconCloudPause size="1.5rem" stroke={2.5} />}
-              size="lg"
-              checked={generalQuery?.general.dae.running}
-              onChange={(e) => {
-                runMutation.mutateAsync(!e.target.checked)
-              }}
-            />
-          </Center>
-
           <Group>
             <Menu
               width={260}
@@ -237,6 +218,26 @@ export const Header = () => {
             </ActionIcon>
 
             <ColorSchemeToggle />
+
+            {generalQuery?.general.dae.modified && (
+              <ActionIcon>
+                <IconReload
+                  onClick={() => {
+                    runMutation.mutateAsync(false)
+                  }}
+                />
+              </ActionIcon>
+            )}
+
+            <Switch
+              onLabel={<IconCloudCheck size="1.5rem" stroke={2.5} />}
+              offLabel={<IconCloudPause size="1.5rem" stroke={2.5} />}
+              size="lg"
+              checked={generalQuery?.general.dae.running}
+              onChange={(e) => {
+                runMutation.mutateAsync(!e.target.checked)
+              }}
+            />
           </Group>
         </Group>
       </Container>

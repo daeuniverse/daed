@@ -106,6 +106,7 @@ export const useUpdateConfigMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -152,6 +153,7 @@ export const useSelectConfigMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_CONFIG })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -228,6 +230,7 @@ export const useUpdateRoutingMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -251,6 +254,7 @@ export const useRemoveRoutingMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -274,6 +278,7 @@ export const useSelectRoutingMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -298,6 +303,7 @@ export const useRenameRoutingMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_ROUTING })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -350,6 +356,7 @@ export const useUpdateDNSMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -396,6 +403,7 @@ export const useSelectDNSMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_DNS })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -495,6 +503,7 @@ export const useGroupSetPolicyMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
@@ -519,6 +528,7 @@ export const useRenameGroupMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
     },
   })
 }
