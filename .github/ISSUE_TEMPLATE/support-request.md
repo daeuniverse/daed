@@ -1,7 +1,7 @@
 ---
 name: Support Request
 about: Support request related to Daed
-labels: kind/support
+labels: topic/support
 ---
 
 <!--
