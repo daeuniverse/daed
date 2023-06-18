@@ -1,9 +1,10 @@
-name: Build
+name: Publish Release
+# run-name: Publish release ${{ github.ref_name }} by @${{ github.actor }}
+# ${{ github.ref }} replaced by ==> ${{ inputs.x }}; x is undetermined
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  # will come back add add input here
 
 jobs:
   checkout-full-src:
@@ -218,3 +219,48 @@ jobs:
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
+
+  upload-release:
+    if: github.event_name == 'release'
+    needs: [checkout-full-src, build-bundle]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: release/
+
+      - name: Prepare files for upload
+        run: |
+          cp release/*/*.deb ./
+          cp release/*/*.rpm ./
+          cp release/*/*.pkg.tar.zst ./
+          cp release/*/*.zip ./
+          pushd release
+          zip -9vr ../web.zip web/*
+          for zip_file in $(ls | grep -E "^daed-linux*");do
+              pushd $zip_file
+              zip -9r ../../"$zip_file".zip ./*
+              popd
+          done
+          popd
+          for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip");do
+              echo "$(md5sum $package)""  md5" >> $package.dgst
+              echo "$(shasum -a 1 $package)""  sha1" >> $package.dgst
+              echo "$(shasum -a 256 $package)""  sha256" >> $package.dgst
+              echo "$(shasum -a 512 $package)""  sha512" >> $package.dgst
+          done
+          echo "Show files are going to upload..."
+          ls -lh | grep -E ".deb|.pkg.tar.zst|.rpm|.zip"
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          files: |
+            *zip
+            *pkg.tar.zst
+            *deb
+            *rpm
+            *dgst
+          generate_release_notes: true
