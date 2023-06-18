@@ -44,7 +44,7 @@ jobs:
           git checkout -b ${{ env.pr_branch }}
           git add -A
           git commit -am "${{ inputs.wing-sync-message }}" --no-verify
-          # git push -u origin ${{ env.pr_branch }}
+          git push -u origin ${{ env.pr_branch }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
