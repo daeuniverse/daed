@@ -6,7 +6,6 @@ import {
   ActionIcon,
   Anchor,
   Badge,
-  Center,
   Divider,
   Group,
   SimpleGrid,
@@ -23,7 +22,6 @@ import { useStore } from '@nanostores/react'
 import {
   IconCloud,
   IconCloudComputing,
-  IconDatabaseOff,
   IconEdit,
   IconForms,
   IconMap,
@@ -471,17 +469,13 @@ export const OrchestratePage = () => {
                     onChange={setDroppableGroupCardAccordionValues}
                     multiple
                   >
-                    <Accordion.Item value="node">
-                      <Accordion.Control fz="xs" px="xs">
-                        {t('node')} {nodes.length > 0 && `(${nodes.length})`}
-                      </Accordion.Control>
+                    {nodes.length > 0 && (
+                      <Accordion.Item value="node">
+                        <Accordion.Control fz="xs" px="xs">
+                          {t('node')} ({nodes.length})
+                        </Accordion.Control>
 
-                      <Accordion.Panel>
-                        {nodes.length === 0 ? (
-                          <Center>
-                            <IconDatabaseOff />
-                          </Center>
-                        ) : (
+                        <Accordion.Panel>
                           <SimpleGrid cols={2}>
                             <DndContext modifiers={[restrictToParentElement]}>
                               <SortableContext items={nodes} strategy={rectSwappingStrategy}>
@@ -501,21 +495,17 @@ export const OrchestratePage = () => {
                               </SortableContext>
                             </DndContext>
                           </SimpleGrid>
-                        )}
-                      </Accordion.Panel>
-                    </Accordion.Item>
+                        </Accordion.Panel>
+                      </Accordion.Item>
+                    )}
 
-                    <Accordion.Item value="subscription">
-                      <Accordion.Control fz="xs" px="xs">
-                        {t('subscription')} {subscriptions.length > 0 && `(${subscriptions.length})`}
-                      </Accordion.Control>
+                    {subscriptions.length > 0 && (
+                      <Accordion.Item value="subscription">
+                        <Accordion.Control fz="xs" px="xs">
+                          {t('subscription')} ({subscriptions.length})
+                        </Accordion.Control>
 
-                      <Accordion.Panel>
-                        {subscriptions.length === 0 ? (
-                          <Center>
-                            <IconDatabaseOff />
-                          </Center>
-                        ) : (
+                        <Accordion.Panel>
                           <SimpleGrid cols={2}>
                             <DndContext modifiers={[restrictToParentElement]}>
                               <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
@@ -535,9 +525,9 @@ export const OrchestratePage = () => {
                               </SortableContext>
                             </DndContext>
                           </SimpleGrid>
-                        )}
-                      </Accordion.Panel>
-                    </Accordion.Item>
+                        </Accordion.Panel>
+                      </Accordion.Item>
+                    )}
                   </Accordion>
                 </DroppableGroupCard>
               ))}
