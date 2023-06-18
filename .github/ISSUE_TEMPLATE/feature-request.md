@@ -1,7 +1,7 @@
 ---
 name: Feature Request
 about: feature request related to daed
-labels: kind/feature
+labels: topic/feature
 ---
 
 <!--
