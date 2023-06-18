@@ -29,7 +29,7 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
-          # ref: ${{ inputs.pr-base-branch }}
+          ref: ${{ inputs.pr-base-branch }}
           # let's leave ref here for future testing
 
       - name: Pull & update submodules recursively
@@ -43,6 +43,7 @@ jobs:
         run: |
           git config user.name 'daebot'
           git config user.email 'daebot@v2raya.org'
+          git checkout -b ${{ env.pr_branch }}
           git add .
           git commit -m "${{ inputs.wing-sync-message }}" --no-verify
 
