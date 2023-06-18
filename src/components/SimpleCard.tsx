@@ -1,4 +1,4 @@
-import { ActionIcon, Card, Drawer, Group, Indicator, Title, UnstyledButton } from '@mantine/core'
+import { ActionIcon, Card, Group, Indicator, Modal, Title, UnstyledButton } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { IconDetails, IconTrash } from '@tabler/icons-react'
@@ -66,9 +66,9 @@ export const SimpleCard = ({
         </Card>
       </Indicator>
 
-      <Drawer title={name} opened={openedDetailsModal} onClose={closeDetailsModal}>
+      <Modal title={name} opened={openedDetailsModal} onClose={closeDetailsModal}>
         {children}
-      </Drawer>
+      </Modal>
     </Fragment>
   )
 }
