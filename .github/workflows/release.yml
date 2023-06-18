@@ -1,5 +1,6 @@
 name: Publish Release
-run-name: Publish release ${{ github.ref_name }} by @${{ github.actor }}
+# run-name: Publish release ${{ github.ref_name }} by @${{ github.actor }}
+# ${{ github.ref }} replaced by ==> ${{ inputs.x }}; x is undetermined
 
 on:
   workflow_dispatch:
