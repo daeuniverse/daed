@@ -34,7 +34,8 @@ Feel free to open issues or submit your PR, any feedbacks or help are greatly ap
 
 ## License
 
-[MIT License (C) daeuniverse](https://github.com/daeuniverse/daed/blob/main/LICENSE)
+Frontend: [MIT License (C) daeuniverse](https://github.com/daeuniverse/daed/blob/main/LICENSE)
+Backend: [AGPL-3.0-only License (C) daeuniverse](https://github.com/daeuniverse/dae-wing/blob/main/LICENSE)
 
 ### Dependencies used in this project
 
