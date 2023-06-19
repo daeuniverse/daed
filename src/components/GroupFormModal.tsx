@@ -9,6 +9,8 @@ import { FormActions } from '~/components/FormActions'
 import { DEFAULT_GROUP_POLICY } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
+import { SelectItemWithDescription } from './SelectItemWithDescription'
+
 const schema = z.object({
   name: z.string().nonempty(),
   policy: z.nativeEnum(Policy),
@@ -46,6 +48,29 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
   const createGroupMutation = useCreateGroupMutation()
   const groupSetPolicyMutation = useGroupSetPolicyMutation()
 
+  const policyData = [
+    {
+      label: Policy.MinMovingAvg,
+      value: Policy.MinMovingAvg,
+      description: t('descriptions.group.MinMovingAvg'),
+    },
+    {
+      label: Policy.MinAvg10,
+      value: Policy.MinAvg10,
+      description: t('descriptions.group.MinAvg10'),
+    },
+    {
+      label: Policy.Min,
+      value: Policy.Min,
+      description: t('descriptions.group.Min'),
+    },
+    {
+      label: Policy.Random,
+      value: Policy.Random,
+      description: t('descriptions.group.Random'),
+    },
+  ]
+
   return (
     <Modal title={t('group')} opened={opened} onClose={onClose}>
       <form
@@ -73,10 +98,8 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
           <Select
             label={t('policy')}
             dropdownPosition="bottom"
-            data={Object.values(Policy).map((policy) => ({
-              label: policy,
-              value: policy,
-            }))}
+            itemComponent={SelectItemWithDescription}
+            data={policyData}
             {...form.getInputProps('policy')}
           />
 
