@@ -256,4 +256,3 @@ jobs:
             *deb
             *rpm
             *dgst
-          generate_release_notes: true
