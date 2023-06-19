@@ -1,0 +1,42 @@
+name: Synchronize Upstream
+
+on:
+  workflow_dispatch:
+    inputs:
+      wing-head:
+        type: string
+        required: true
+        default: main
+      wing-sync-message:
+        type: string
+        required: true
+        default: 'chore(sync): upgrade dae-wing'
+      pr-branch:
+        type: string
+        required: true
+        default: sync-upstream
+
+jobs:
+  sync-wing:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.wing-head }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          ref: main
+
+      - name: Sync dae-wing upstream
+        run: |
+          git checkout origin/${{ inputs.wing-head }}
+        working-directory: wing
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "daebot"
+          git config user.email "daebot@v2raya.org"
+          git checkout -b ${{ inputs.pr-branch }}
+          git add .
+          git commit -m "${{ inputs.wing-sync-message }}" --no-verify
+          git push -u origin ${{ inputs.pr-branch }}
