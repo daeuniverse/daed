@@ -1,7 +1,7 @@
 import { Button, Group } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 
-export const FormActions = ({ reset }: { reset?: () => void }) => {
+export const FormActions = ({ loading, reset }: { loading?: boolean; reset?: () => void }) => {
   const { t } = useTranslation()
 
   return (
@@ -10,7 +10,9 @@ export const FormActions = ({ reset }: { reset?: () => void }) => {
         {t('actions.reset')}
       </Button>
 
-      <Button type="submit">{t('actions.submit')}</Button>
+      <Button type="submit" loading={loading}>
+        {t('actions.submit')}
+      </Button>
     </Group>
   )
 }

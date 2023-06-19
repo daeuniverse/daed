@@ -22,10 +22,10 @@ import { useStore } from '@nanostores/react'
 import {
   IconCloud,
   IconCloudComputing,
+  IconDownload,
   IconEdit,
   IconForms,
   IconMap,
-  IconRefresh,
   IconRoute,
   IconSettings,
   IconTable,
@@ -583,8 +583,12 @@ export const OrchestratePage = () => {
                   type={DraggableResourceType.subscription}
                   name={tag || link}
                   actions={
-                    <ActionIcon size="sm" onClick={() => updateSubscriptionsMutation.mutate([subscriptionID])}>
-                      <IconRefresh />
+                    <ActionIcon
+                      loading={updateSubscriptionsMutation.isLoading}
+                      size="sm"
+                      onClick={() => updateSubscriptionsMutation.mutate([subscriptionID])}
+                    >
+                      <IconDownload />
                     </ActionIcon>
                   }
                   onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
