@@ -7,7 +7,7 @@ import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
 
-const importResourceFormSchema = z.object({
+const schema = z.object({
   resources: z
     .array(
       z.object({
@@ -28,11 +28,11 @@ export const ImportResourceFormModal = ({
   title: string
   opened: boolean
   onClose: () => void
-  handleSubmit: (values: z.infer<typeof importResourceFormSchema>) => Promise<void>
+  handleSubmit: (values: z.infer<typeof schema>) => Promise<void>
 }) => {
   const { t } = useTranslation()
-  const importResourceForm = useForm<z.infer<typeof importResourceFormSchema>>({
-    validate: zodResolver(importResourceFormSchema),
+  const form = useForm<z.infer<typeof schema>>({
+    validate: zodResolver(schema),
     initialValues: {
       resources: [
         {
@@ -47,29 +47,24 @@ export const ImportResourceFormModal = ({
   return (
     <Modal title={title} opened={opened} onClose={onClose}>
       <form
-        onSubmit={importResourceForm.onSubmit((values) =>
+        onSubmit={form.onSubmit((values) =>
           handleSubmit(values).then(() => {
             onClose()
-            importResourceForm.reset()
+            form.reset()
           })
         )}
       >
         <Flex gap={20} direction="column">
-          {importResourceForm.values.resources.map(({ id }, i) => (
+          {form.values.resources.map(({ id }, i) => (
             <Flex key={id} gap={10}>
               <Flex w="100%" align="start" gap={10}>
                 <TextInput
                   className="flex-1"
                   withAsterisk
                   label={t('link')}
-                  {...importResourceForm.getInputProps(`resources.${i}.link`)}
+                  {...form.getInputProps(`resources.${i}.link`)}
                 />
-                <TextInput
-                  w="6rem"
-                  withAsterisk
-                  label={t('tag')}
-                  {...importResourceForm.getInputProps(`resources.${i}.tag`)}
-                />
+                <TextInput w="6rem" withAsterisk label={t('tag')} {...form.getInputProps(`resources.${i}.tag`)} />
               </Flex>
 
               <ActionIcon
@@ -78,7 +73,7 @@ export const ImportResourceFormModal = ({
                 size="sm"
                 mt={32}
                 onClick={() => {
-                  importResourceForm.removeListItem('resources', i)
+                  form.removeListItem('resources', i)
                 }}
               >
                 <IconMinus />
@@ -92,7 +87,7 @@ export const ImportResourceFormModal = ({
             variant="filled"
             color="green"
             onClick={() => {
-              importResourceForm.insertListItem('resources', {
+              form.insertListItem('resources', {
                 id: randomId(),
                 link: '',
                 tag: '',
@@ -102,7 +97,7 @@ export const ImportResourceFormModal = ({
             <IconPlus />
           </ActionIcon>
 
-          <FormActions reset={importResourceForm.reset} />
+          <FormActions reset={form.reset} />
         </Group>
       </form>
     </Modal>

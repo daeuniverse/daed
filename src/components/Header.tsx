@@ -27,7 +27,7 @@ import {
   IconCloudPause,
   IconLanguage,
   IconLogout,
-  IconReload,
+  IconRefreshAlert,
   IconTestPipe,
   IconUserEdit,
 } from '@tabler/icons-react'
@@ -190,7 +190,15 @@ export const Header = () => {
                 </Menu.Item>
 
                 <Menu.Label>{t('settings')}</Menu.Label>
-                <Menu.Item icon={<IconUserEdit size="0.9rem" stroke={1.5} />} onClick={openAccountSettingsFormModal}>
+                <Menu.Item
+                  icon={<IconUserEdit size="0.9rem" stroke={1.5} />}
+                  onClick={() => {
+                    accountSettingsForm.setValues({
+                      name: userQuery?.user.name || '',
+                    })
+                    openAccountSettingsFormModal()
+                  }}
+                >
                   {t('account settings')}
                 </Menu.Item>
 
@@ -220,12 +228,8 @@ export const Header = () => {
             <ColorSchemeToggle />
 
             {generalQuery?.general.dae.modified && (
-              <ActionIcon>
-                <IconReload
-                  onClick={() => {
-                    runMutation.mutateAsync(false)
-                  }}
-                />
+              <ActionIcon loading={runMutation.isLoading} onClick={() => runMutation.mutateAsync(false)}>
+                <IconRefreshAlert />
               </ActionIcon>
             )}
 
@@ -233,10 +237,9 @@ export const Header = () => {
               onLabel={<IconCloudCheck size="1.5rem" stroke={2.5} />}
               offLabel={<IconCloudPause size="1.5rem" stroke={2.5} />}
               size="lg"
+              disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
               checked={generalQuery?.general.dae.running}
-              onChange={(e) => {
-                runMutation.mutateAsync(!e.target.checked)
-              }}
+              onChange={(e) => runMutation.mutateAsync(!e.target.checked)}
             />
           </Group>
         </Group>
