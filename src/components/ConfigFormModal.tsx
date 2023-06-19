@@ -12,6 +12,7 @@ import {
   Select,
   Slider,
   Stack,
+  Text,
   TextInput,
   Title,
 } from '@mantine/core'
@@ -46,6 +47,7 @@ import {
 import { GlobalInput } from '~/schemas/gql/graphql'
 
 import { FormActions } from './FormActions'
+import { SelectItemWithDescription } from './SelectItemWithDescription'
 
 const schema = z.object({
   name: z.string().nonempty(),
@@ -174,9 +176,16 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
     if (interfaces) {
       return interfaces
         .filter(({ flag }) => !!flag.default)
-        .map(({ name }) => ({
+        .map(({ name, ip }) => ({
           label: name,
           value: name,
+          description: (
+            <Stack spacing="xs">
+              {ip.map((addr, i) => (
+                <Text key={i}>{addr}</Text>
+              ))}
+            </Stack>
+          ),
         }))
     }
 
@@ -187,9 +196,16 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
-      return interfaces.map(({ name }) => ({
+      return interfaces.map(({ name, ip }) => ({
         label: name,
         value: name,
+        description: (
+          <Stack spacing="xs">
+            {ip.map((addr, i) => (
+              <Text key={i}>{addr}</Text>
+            ))}
+          </Stack>
+        ),
       }))
     }
 
@@ -313,6 +329,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   <MultiSelect
                     label={t('lanInterface')}
                     description={t('descriptions.config.lanInterface')}
+                    itemComponent={SelectItemWithDescription}
                     data={lanInterfacesData}
                     {...form.getInputProps('lanInterface')}
                   />
@@ -320,6 +337,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   <MultiSelect
                     label={t('wanInterface')}
                     description={t('descriptions.config.wanInterface')}
+                    itemComponent={SelectItemWithDescription}
                     withAsterisk
                     data={wanInterfacesData}
                     {...form.getInputProps('wanInterface')}
