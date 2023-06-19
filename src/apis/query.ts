@@ -65,6 +65,7 @@ export const getInterfacesRequest = (gqlClient: GraphQLClient) => {
             interfaces(up: $up) {
               name
               ifindex
+              ip
               flag {
                 default {
                   gateway
@@ -129,6 +130,7 @@ export const useGeneralQuery = () => {
               interfaces(up: $up) {
                 name
                 ifindex
+                ip
                 flag {
                   default {
                     gateway

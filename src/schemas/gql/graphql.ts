@@ -885,6 +885,7 @@ export type InterfacesQuery = {
       __typename?: 'Interface'
       name: string
       ifindex: number
+      ip: Array<string>
       flag: {
         __typename?: 'InterfaceFlag'
         default?: Array<{ __typename?: 'DefaultRoute'; gateway?: string | null }> | null
@@ -912,6 +913,7 @@ export type GeneralQuery = {
       __typename?: 'Interface'
       name: string
       ifindex: number
+      ip: Array<string>
       flag: {
         __typename?: 'InterfaceFlag'
         default?: Array<{ __typename?: 'DefaultRoute'; gateway?: string | null }> | null
@@ -2665,6 +2667,7 @@ export const InterfacesDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'ifindex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ip' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'flag' },
@@ -2778,6 +2781,7 @@ export const GeneralDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'ifindex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'ip' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'flag' },
