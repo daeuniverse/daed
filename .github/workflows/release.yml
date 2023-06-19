@@ -1,10 +1,12 @@
 name: Publish Release
-# run-name: Publish release ${{ github.ref_name }} by @${{ github.actor }}
-# ${{ github.ref }} replaced by ==> ${{ inputs.x }}; x is undetermined
+run-name: Publish release ${{ inputs.tag }} by @${{ github.actor }}
 
 on:
   workflow_dispatch:
-  # will come back add add input here
+    inputs:
+      tag:
+        type: string
+        required: true
 
 jobs:
   checkout-full-src:
@@ -129,19 +131,11 @@ jobs:
       - name: Get the version
         id: get_version
         env:
-          REF: ${{ github.ref }}
+          REF: ${{ inputs.tag }}
         run: |
-          if [[ "$REF" == "refs/tags/v"* ]]; then
-            tag=${REF##*/}
-            version=${tag}
-            package_version="${tag:1}"
-          else
-            date=$(git log -1 --format="%cd" --date=short | sed s/-//g)
-            count=$(git rev-list --count HEAD)
-            commit=$(git rev-parse --short HEAD)
-            version="unstable-$date.r${count}.$commit"
-            package_version="$date.r${count}.$commit"
-          fi
+          tag=${REF}
+          version=${tag}
+          package_version="${tag:1}"
           echo "VERSION=$version" >> $GITHUB_OUTPUT
           echo "VERSION=$version" >> $GITHUB_ENV
           echo "PACKAGE_VERSION=$package_version" >> $GITHUB_OUTPUT
@@ -221,7 +215,6 @@ jobs:
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
 
   upload-release:
-    if: github.event_name == 'release'
     needs: [checkout-full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
@@ -256,11 +249,10 @@ jobs:
       - name: Upload Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ inputs.tag }}
           files: |
             *zip
             *pkg.tar.zst
             *deb
             *rpm
             *dgst
-          generate_release_notes: true

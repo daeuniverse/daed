@@ -272,4 +272,3 @@ jobs:
             *rpm
             *dgst
           prerelease: true
-          generate_release_notes: true
