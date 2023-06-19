@@ -262,7 +262,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                 <Stack>
                   <NumberInput
                     label={t('tproxyPort')}
-                    description={t('descriptions.tproxyPort')}
+                    description={t('descriptions.config.tproxyPort')}
                     withAsterisk
                     min={0}
                     max={65535}
@@ -271,7 +271,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
                   <Checkbox
                     label={t('tproxyPortProtect')}
-                    description={t('descriptions.tproxyPortProtect')}
+                    description={t('descriptions.config.tproxyPortProtect')}
                     {...form.getInputProps('tproxyPortProtect', {
                       type: 'checkbox',
                     })}
@@ -294,7 +294,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
                   <Checkbox
                     label={t('disableWaitingNetwork')}
-                    description={t('descriptions.disableWaitingNetwork')}
+                    description={t('descriptions.config.disableWaitingNetwork')}
                     {...form.getInputProps('disableWaitingNetwork', {
                       type: 'checkbox',
                     })}
@@ -312,14 +312,14 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                 <Stack>
                   <MultiSelect
                     label={t('lanInterface')}
-                    description={t('descriptions.lanInterface')}
+                    description={t('descriptions.config.lanInterface')}
                     data={lanInterfacesData}
                     {...form.getInputProps('lanInterface')}
                   />
 
                   <MultiSelect
                     label={t('wanInterface')}
-                    description={t('descriptions.wanInterface')}
+                    description={t('descriptions.config.wanInterface')}
                     withAsterisk
                     data={wanInterfacesData}
                     {...form.getInputProps('wanInterface')}
@@ -327,7 +327,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
                   <Checkbox
                     label={t('autoConfigKernelParameter')}
-                    description={t('descriptions.autoConfigKernelParameter')}
+                    description={t('descriptions.config.autoConfigKernelParameter')}
                     {...form.getInputProps('autoConfigKernelParameter', {
                       type: 'checkbox',
                     })}
@@ -346,14 +346,14 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   <InputList
                     form={form}
                     label={t('tcpCheckUrl')}
-                    description={t('descriptions.tcpCheckUrl')}
+                    description={t('descriptions.config.tcpCheckUrl')}
                     fieldName="tcpCheckUrl"
                     values={form.values.tcpCheckUrl}
                   />
 
                   <Select
                     label={t('tcpCheckHttpMethod')}
-                    description={t('descriptions.tcpCheckHttpMethod')}
+                    description={t('descriptions.config.tcpCheckHttpMethod')}
                     data={Object.values(TcpCheckHttpMethod).map((tcpCheckHttpMethod) => ({
                       label: tcpCheckHttpMethod,
                       value: tcpCheckHttpMethod,
@@ -364,7 +364,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   <InputList
                     form={form}
                     label={t('udpCheckDns')}
-                    description={t('descriptions.udpCheckDns')}
+                    description={t('descriptions.config.udpCheckDns')}
                     fieldName="udpCheckDns"
                     values={form.values.udpCheckDns}
                   />
@@ -377,7 +377,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
                   <NumberInput
                     label={`${t('checkTolerance')} (ms)`}
-                    description={t('descriptions.checkTolerance')}
+                    description={t('descriptions.config.checkTolerance')}
                     withAsterisk
                     step={500}
                     {...form.getInputProps('checkToleranceMS')}
@@ -395,28 +395,32 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                 <Stack>
                   <Radio.Group label={t('dialMode')} {...form.getInputProps('dialMode')}>
                     <Group mt="xs">
-                      <Radio value={DialMode.ip} label={DialMode.ip} description={t('descriptions.dialMode.ip')} />
+                      <Radio
+                        value={DialMode.ip}
+                        label={DialMode.ip}
+                        description={t('descriptions.config.dialMode.ip')}
+                      />
                       <Radio
                         value={DialMode.domain}
                         label={DialMode.domain}
-                        description={t('descriptions.dialMode.domain')}
+                        description={t('descriptions.config.dialMode.domain')}
                       />
                       <Radio
                         value={DialMode.domainP}
                         label={DialMode.domainP}
-                        description={t('descriptions.dialMode.domain+')}
+                        description={t('descriptions.config.dialMode.domain+')}
                       />
                       <Radio
                         value={DialMode.domainPP}
                         label={DialMode.domainPP}
-                        description={t('descriptions.dialMode.domain++')}
+                        description={t('descriptions.config.dialMode.domain++')}
                       />
                     </Group>
                   </Radio.Group>
 
                   <Checkbox
                     label={t('allowInsecure')}
-                    description={t('descriptions.allowInsecure')}
+                    description={t('descriptions.config.allowInsecure')}
                     {...form.getInputProps('allowInsecure', {
                       type: 'checkbox',
                     })}
@@ -424,14 +428,14 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
                   <NumberInput
                     label={`${t('sniffingTimeout')} (ms)`}
-                    description={t('descriptions.sniffingTimeout')}
+                    description={t('descriptions.config.sniffingTimeout')}
                     step={500}
                     {...form.getInputProps('sniffingTimeoutMS')}
                   />
 
                   <Select
                     label={t('tlsImplementation')}
-                    description={t('descriptions.tlsImplementation')}
+                    description={t('descriptions.config.tlsImplementation')}
                     data={Object.values(TLSImplementation).map((tlsImplementation) => ({
                       label: tlsImplementation,
                       value: tlsImplementation,
@@ -442,7 +446,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   {form.values.tlsImplementation === TLSImplementation.utls && (
                     <Select
                       label={t('utlsImitate')}
-                      description={t('descriptions.utlsImitate')}
+                      description={t('descriptions.config.utlsImitate')}
                       data={Object.values(UTLSImitate).map((utlsImitate) => ({
                         label: utlsImitate,
                         value: utlsImitate,
