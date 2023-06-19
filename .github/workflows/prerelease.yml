@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'v*.*.*rc'
+      - 'v*.*.*rc*'
       - 'v*.*.*p*'
 
 jobs:
