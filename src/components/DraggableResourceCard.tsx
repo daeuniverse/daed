@@ -8,6 +8,8 @@ import { DraggableResourceType } from '~/constants'
 
 export const DraggableResourceCard = ({
   id,
+  nodeID,
+  subscriptionID,
   type,
   name,
   onRemove,
@@ -15,6 +17,8 @@ export const DraggableResourceCard = ({
   children,
 }: {
   id: string
+  nodeID?: string
+  subscriptionID?: string
   type: DraggableResourceType
   name: string
   onRemove: () => void
@@ -22,7 +26,7 @@ export const DraggableResourceCard = ({
   children: React.ReactNode
 }) => {
   const { t } = useTranslation()
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { type } })
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { type, nodeID, subscriptionID } })
 
   return (
     <Card

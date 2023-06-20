@@ -168,6 +168,8 @@ export enum DraggableResourceType {
   node = 'node',
   subscription = 'subscription',
   subscription_node = 'subscription_node',
+  groupNode = 'group_node',
+  groupSubscription = 'group_subscription',
 }
 
 export enum RuleType {
