@@ -37,6 +37,7 @@ import {
 } from '~/apis'
 import { ConfigFormDrawer } from '~/components/ConfigFormModal'
 import { CreateNodeFormModal } from '~/components/CreateNodeFormModal'
+import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { GroupFormModal } from '~/components/GroupFormModal'
@@ -45,7 +46,6 @@ import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
-import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { DialMode, DraggableResourceType, LogLevel, RuleType } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
@@ -438,7 +438,7 @@ export const ExperimentPage = () => {
                           >
                             <SortableContext items={nodes} strategy={rectSwappingStrategy}>
                               {nodes.map(({ id: nodeId, name }) => (
-                                <SortableResourceBadge
+                                <DraggableResourceBadge
                                   key={nodeId}
                                   id={nodeId}
                                   name={name}
@@ -471,7 +471,7 @@ export const ExperimentPage = () => {
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
                               {subscriptions.map(({ id: subscriptionId, name }) => (
-                                <SortableResourceBadge
+                                <DraggableResourceBadge
                                   key={subscriptionId}
                                   id={subscriptionId}
                                   name={name}

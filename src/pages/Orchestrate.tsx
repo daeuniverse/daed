@@ -1,6 +1,5 @@
-import { DndContext, DragOverlay } from '@dnd-kit/core'
-import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd-kit/modifiers'
-import { SortableContext, rectSwappingStrategy } from '@dnd-kit/sortable'
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core'
+import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
 import {
   Accordion,
   ActionIcon,
@@ -65,24 +64,24 @@ import {
   useUpdateRoutingMutation,
 } from '~/apis'
 import { ConfigFormDrawer, ConfigFormDrawerRef } from '~/components/ConfigFormModal'
+import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
-import { DraggableSubscriptionNodeBadge } from '~/components/DraggableSubscriptionNodeBadge'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { GroupFormDrawerRef, GroupFormModal } from '~/components/GroupFormModal'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { PlainTextFormModal, PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
-import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
+import { HandleRenameSubmit, RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
-import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { DraggableResourceType, GET_LOG_LEVEL_STEPS, RuleType } from '~/constants'
 import { defaultResourcesAtom } from '~/store'
 import { deriveTime } from '~/utils'
 
 type DraggingResource = {
-  id: string
   type: DraggableResourceType
+  nodeID?: string
+  groupID?: string
   subscriptionID?: string
 }
 
@@ -121,16 +120,18 @@ export const OrchestratePage = () => {
 
   const draggingResourceDisplayName = useMemo(() => {
     if (draggingResource) {
-      const { type, id, subscriptionID } = draggingResource
+      const { type, nodeID, groupID, subscriptionID } = draggingResource
 
       if (type === DraggableResourceType.node) {
-        const node = nodesQuery?.nodes.edges.find((node) => node.id === id)
+        const node = nodesQuery?.nodes.edges.find((node) => node.id === nodeID)
 
         return node?.tag
       }
 
       if (type === DraggableResourceType.subscription) {
-        const subscription = subscriptionsQuery?.subscriptions.find((subscription) => subscription.id === id)
+        const subscription = subscriptionsQuery?.subscriptions.find(
+          (subscription) => subscription.id === subscriptionID
+        )
 
         return subscription?.tag || subscription?.link
       }
@@ -139,12 +140,67 @@ export const OrchestratePage = () => {
         const subscription = subscriptionsQuery?.subscriptions.find(
           (subscription) => subscription.id === subscriptionID
         )
-        const node = subscription?.nodes.edges.find((node) => node.id === id)
+        const node = subscription?.nodes.edges.find((node) => node.id === nodeID)
 
         return node?.name
       }
+
+      if (type === DraggableResourceType.groupNode) {
+        const group = groupsQuery?.groups.find((group) => group.id === groupID)
+
+        const node = group?.nodes.find((node) => node.id === nodeID)
+
+        return node?.name
+      }
+
+      if (type === DraggableResourceType.groupSubscription) {
+        const group = groupsQuery?.groups.find((group) => group.id === groupID)
+
+        const subscription = group?.subscriptions.find((subscription) => subscription.id === subscriptionID)
+
+        return subscription?.tag
+      }
     }
-  }, [draggingResource, nodesQuery, subscriptionsQuery])
+  }, [draggingResource, groupsQuery?.groups, nodesQuery?.nodes.edges, subscriptionsQuery?.subscriptions])
+
+  const onDragStart = (e: DragStartEvent) => {
+    setDraggingResource({
+      ...(e.active.data.current as DraggingResource),
+    })
+  }
+
+  const onDragEnd = (e: DragEndEvent) => {
+    const { over } = e
+
+    if (over?.id && draggingResource) {
+      const group = groupsQuery?.groups.find((group) => group.id === over.id)
+
+      if (
+        [DraggableResourceType.node, DraggableResourceType.groupNode].includes(draggingResource.type) &&
+        draggingResource?.nodeID &&
+        !group?.nodes.find((node) => node.id === draggingResource.nodeID)
+      ) {
+        groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.nodeID] })
+      }
+
+      if (
+        [DraggableResourceType.subscription, DraggableResourceType.groupSubscription].includes(draggingResource.type) &&
+        draggingResource.subscriptionID &&
+        !group?.subscriptions.find((subscription) => subscription.id === draggingResource.subscriptionID)
+      ) {
+        groupAddSubscriptionsMutation.mutate({
+          id: over.id as string,
+          subscriptionIDs: [draggingResource.subscriptionID],
+        })
+      }
+
+      if (draggingResource.type === DraggableResourceType.subscription_node && draggingResource.nodeID) {
+        groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.nodeID] })
+      }
+    }
+
+    setDraggingResource(null)
+  }
 
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
   const [openedCreateConfigFormDrawer, { open: openCreateConfigFormDrawer, close: closeCreateConfigFormDrawer }] =
@@ -180,6 +236,30 @@ export const OrchestratePage = () => {
   const renameDNSMutation = useRenameDNSMutation()
   const renameRoutingMutation = useRenameRoutingMutation()
   const renameGroupMutation = useRenameGroupMutation()
+
+  const handleRenameSubmit: HandleRenameSubmit = (type, id) => async (values) => {
+    const { name } = values
+
+    if (!type || !id) {
+      return
+    }
+
+    if (type === RuleType.config) {
+      renameConfigMutation.mutate({ id, name })
+    }
+
+    if (type === RuleType.dns) {
+      renameDNSMutation.mutate({ id, name })
+    }
+
+    if (type === RuleType.routing) {
+      renameRoutingMutation.mutate({ id, name })
+    }
+
+    if (type === RuleType.group) {
+      renameGroupMutation.mutate({ id, name })
+    }
+  }
 
   const { defaultConfigID, defaultDNSID, defaultGroupID, defaultRoutingID } = useStore(defaultResourcesAtom)
 
@@ -378,34 +458,7 @@ export const OrchestratePage = () => {
       />
 
       <SimpleGrid cols={3}>
-        <DndContext
-          modifiers={[restrictToFirstScrollableAncestor]}
-          onDragStart={(e) => {
-            setDraggingResource({
-              id: e.active.id as string,
-              ...(e.active.data.current as Omit<DraggingResource, 'id'>),
-            })
-          }}
-          onDragEnd={(e) => {
-            const { over } = e
-
-            if (over?.id && draggingResource?.id) {
-              if (draggingResource.type === DraggableResourceType.node) {
-                groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.id] })
-              }
-
-              if (draggingResource.type === DraggableResourceType.subscription) {
-                groupAddSubscriptionsMutation.mutate({ id: over.id as string, subscriptionIDs: [draggingResource.id] })
-              }
-
-              if (draggingResource.type === DraggableResourceType.subscription_node) {
-                groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.id] })
-              }
-            }
-
-            setDraggingResource(null)
-          }}
-        >
+        <DndContext modifiers={[restrictToFirstScrollableAncestor]} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <Section
             title={t('group')}
             icon={<IconTable />}
@@ -477,26 +530,25 @@ export const OrchestratePage = () => {
 
                           <Accordion.Panel>
                             <SimpleGrid cols={2}>
-                              <DndContext modifiers={[restrictToParentElement]}>
-                                <SortableContext items={groupNodes} strategy={rectSwappingStrategy}>
-                                  {groupNodes.map(({ id: nodeId, tag, name, subscriptionID }) => (
-                                    <SortableResourceBadge
-                                      key={nodeId}
-                                      id={nodeId}
-                                      name={tag || name}
-                                      onRemove={() =>
-                                        groupDelNodesMutation.mutate({
-                                          id: groupId,
-                                          nodeIDs: [nodeId],
-                                        })
-                                      }
-                                    >
-                                      {subscriptionID &&
-                                        subscriptionsQuery?.subscriptions.find((s) => s.id === subscriptionID)?.tag}
-                                    </SortableResourceBadge>
-                                  ))}
-                                </SortableContext>
-                              </DndContext>
+                              {groupNodes.map(({ id: nodeId, tag, name, subscriptionID }) => (
+                                <DraggableResourceBadge
+                                  key={nodeId}
+                                  id={`${groupId}-${nodeId}`}
+                                  nodeID={nodeId}
+                                  groupID={groupId}
+                                  type={DraggableResourceType.groupNode}
+                                  name={tag || name}
+                                  onRemove={() =>
+                                    groupDelNodesMutation.mutate({
+                                      id: groupId,
+                                      nodeIDs: [nodeId],
+                                    })
+                                  }
+                                >
+                                  {subscriptionID &&
+                                    subscriptionsQuery?.subscriptions.find((s) => s.id === subscriptionID)?.tag}
+                                </DraggableResourceBadge>
+                              ))}
                             </SimpleGrid>
                           </Accordion.Panel>
                         </Accordion.Item>
@@ -510,23 +562,22 @@ export const OrchestratePage = () => {
 
                           <Accordion.Panel>
                             <SimpleGrid cols={2}>
-                              <DndContext modifiers={[restrictToParentElement]}>
-                                <SortableContext items={groupSubscriptions} strategy={rectSwappingStrategy}>
-                                  {groupSubscriptions.map(({ id: subscriptionId, tag, link }) => (
-                                    <SortableResourceBadge
-                                      key={subscriptionId}
-                                      id={subscriptionId}
-                                      name={tag || link}
-                                      onRemove={() =>
-                                        groupDelSubscriptionsMutation.mutate({
-                                          id: groupId,
-                                          subscriptionIDs: [subscriptionId],
-                                        })
-                                      }
-                                    />
-                                  ))}
-                                </SortableContext>
-                              </DndContext>
+                              {groupSubscriptions.map(({ id: subscriptionId, tag, link }) => (
+                                <DraggableResourceBadge
+                                  key={subscriptionId}
+                                  id={`${groupId}-${subscriptionId}`}
+                                  groupID={groupId}
+                                  subscriptionID={subscriptionId}
+                                  type={DraggableResourceType.groupSubscription}
+                                  name={tag || link}
+                                  onRemove={() =>
+                                    groupDelSubscriptionsMutation.mutate({
+                                      id: groupId,
+                                      subscriptionIDs: [subscriptionId],
+                                    })
+                                  }
+                                />
+                              ))}
                             </SimpleGrid>
                           </Accordion.Panel>
                         </Accordion.Item>
@@ -544,6 +595,7 @@ export const OrchestratePage = () => {
                 <DraggableResourceCard
                   key={id}
                   id={id}
+                  nodeID={id}
                   type={DraggableResourceType.node}
                   name={tag!}
                   onRemove={() => removeNodesMutation.mutate([id])}
@@ -583,6 +635,7 @@ export const OrchestratePage = () => {
                 <DraggableResourceCard
                   key={subscriptionID}
                   id={subscriptionID}
+                  subscriptionID={subscriptionID}
                   type={DraggableResourceType.subscription}
                   name={tag || link}
                   actions={<UpdateSubscriptionAction id={subscriptionID} />}
@@ -613,14 +666,16 @@ export const OrchestratePage = () => {
                       <Accordion.Panel>
                         <Group spacing="sm">
                           {nodes.edges.map(({ id, name }) => (
-                            <DraggableSubscriptionNodeBadge
+                            <DraggableResourceBadge
                               key={id}
-                              subscriptionID={subscriptionID}
                               name={name}
                               id={id}
+                              nodeID={id}
+                              type={DraggableResourceType.subscription_node}
+                              subscriptionID={subscriptionID}
                             >
                               {name}
-                            </DraggableSubscriptionNodeBadge>
+                            </DraggableResourceBadge>
                           ))}
                         </Group>
                       </Accordion.Panel>
@@ -735,29 +790,7 @@ export const OrchestratePage = () => {
         ref={renameFormModalRef}
         opened={openedRenameFormModal}
         onClose={closeRenameFormModal}
-        handleSubmit={(type, id) => async (values) => {
-          const { name } = values
-
-          if (!type || !id) {
-            return
-          }
-
-          if (type === RuleType.config) {
-            renameConfigMutation.mutate({ id, name })
-          }
-
-          if (type === RuleType.dns) {
-            renameDNSMutation.mutate({ id, name })
-          }
-
-          if (type === RuleType.routing) {
-            renameRoutingMutation.mutate({ id, name })
-          }
-
-          if (type === RuleType.group) {
-            renameGroupMutation.mutate({ id, name })
-          }
-        }}
+        handleSubmit={handleRenameSubmit}
       />
     </Stack>
   )

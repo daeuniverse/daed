@@ -23,6 +23,11 @@ export type RenameFormModalRef = {
   setProps: (props: Props) => void
 }
 
+export type HandleRenameSubmit = (
+  type: RuleType | undefined,
+  id: string | undefined
+) => (values: z.infer<typeof schema>) => Promise<void>
+
 export const RenameFormModal = forwardRef(
   (
     {
@@ -32,10 +37,7 @@ export const RenameFormModal = forwardRef(
     }: {
       opened: boolean
       onClose: () => void
-      handleSubmit: (
-        type: RuleType | undefined,
-        id: string | undefined
-      ) => (values: z.infer<typeof schema>) => Promise<void>
+      handleSubmit: HandleRenameSubmit
     },
     ref
   ) => {
@@ -55,7 +57,7 @@ export const RenameFormModal = forwardRef(
       if (props.type === RuleType.routing) {
         return t('routing')
       }
-    }, [props.type])
+    }, [props.type, t])
 
     useImperativeHandle(ref, () => ({
       props,
