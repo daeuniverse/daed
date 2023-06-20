@@ -172,6 +172,13 @@ export enum DraggableResourceType {
   groupSubscription = 'group_subscription',
 }
 
+export type DraggingResource = {
+  type: DraggableResourceType
+  nodeID?: string
+  groupID?: string
+  subscriptionID?: string
+}
+
 export enum RuleType {
   config = 'config',
   dns = 'dns',
