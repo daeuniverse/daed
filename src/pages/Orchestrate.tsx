@@ -416,122 +416,127 @@ export const OrchestratePage = () => {
             bordered
           >
             <Stack>
-              {groupsQuery?.groups.map(({ id: groupId, name, policy, nodes, subscriptions }) => (
-                <DroppableGroupCard
-                  key={groupId}
-                  id={groupId}
-                  name={name}
-                  onRemove={defaultGroupID !== groupId ? () => removeGroupMutation.mutate(groupId) : undefined}
-                  actions={
-                    <Fragment>
-                      <ActionIcon
-                        size="xs"
-                        onClick={() => {
-                          if (renameFormModalRef.current) {
-                            renameFormModalRef.current.setProps({
-                              id: groupId,
-                              type: RuleType.group,
-                              oldName: name,
+              {groupsQuery?.groups.map(
+                ({ id: groupId, name, policy, nodes: groupNodes, subscriptions: groupSubscriptions }) => (
+                  <DroppableGroupCard
+                    key={groupId}
+                    id={groupId}
+                    name={name}
+                    onRemove={defaultGroupID !== groupId ? () => removeGroupMutation.mutate(groupId) : undefined}
+                    actions={
+                      <Fragment>
+                        <ActionIcon
+                          size="xs"
+                          onClick={() => {
+                            if (renameFormModalRef.current) {
+                              renameFormModalRef.current.setProps({
+                                id: groupId,
+                                type: RuleType.group,
+                                oldName: name,
+                              })
+                            }
+                            openRenameFormModal()
+                          }}
+                        >
+                          <IconForms />
+                        </ActionIcon>
+
+                        <ActionIcon
+                          size="xs"
+                          onClick={() => {
+                            updateGroupFormModalRef.current?.setEditingID(groupId)
+
+                            updateGroupFormModalRef.current?.initOrigins({
+                              name,
+                              policy,
                             })
-                          }
-                          openRenameFormModal()
-                        }}
-                      >
-                        <IconForms />
-                      </ActionIcon>
 
-                      <ActionIcon
-                        size="xs"
-                        onClick={() => {
-                          updateGroupFormModalRef.current?.setEditingID(groupId)
-
-                          updateGroupFormModalRef.current?.initOrigins({
-                            name,
-                            policy,
-                          })
-
-                          openUpdateGroupFormModal()
-                        }}
-                      >
-                        <IconEdit />
-                      </ActionIcon>
-                    </Fragment>
-                  }
-                >
-                  <Text fz="sm" fw={600}>
-                    {policy}
-                  </Text>
-
-                  <Space h={10} />
-
-                  <Accordion
-                    variant="filled"
-                    value={droppableGroupCardAccordionValues}
-                    onChange={setDroppableGroupCardAccordionValues}
-                    multiple
+                            openUpdateGroupFormModal()
+                          }}
+                        >
+                          <IconEdit />
+                        </ActionIcon>
+                      </Fragment>
+                    }
                   >
-                    {nodes.length > 0 && (
-                      <Accordion.Item value="node">
-                        <Accordion.Control fz="xs" px="xs">
-                          {t('node')} ({nodes.length})
-                        </Accordion.Control>
+                    <Text fz="sm" fw={600}>
+                      {policy}
+                    </Text>
 
-                        <Accordion.Panel>
-                          <SimpleGrid cols={2}>
-                            <DndContext modifiers={[restrictToParentElement]}>
-                              <SortableContext items={nodes} strategy={rectSwappingStrategy}>
-                                {nodes.map(({ id: nodeId, tag, name }) => (
-                                  <SortableResourceBadge
-                                    key={nodeId}
-                                    id={nodeId}
-                                    name={tag || name}
-                                    onRemove={() =>
-                                      groupDelNodesMutation.mutate({
-                                        id: groupId,
-                                        nodeIDs: [nodeId],
-                                      })
-                                    }
-                                  />
-                                ))}
-                              </SortableContext>
-                            </DndContext>
-                          </SimpleGrid>
-                        </Accordion.Panel>
-                      </Accordion.Item>
-                    )}
+                    <Space h={10} />
 
-                    {subscriptions.length > 0 && (
-                      <Accordion.Item value="subscription">
-                        <Accordion.Control fz="xs" px="xs">
-                          {t('subscription')} ({subscriptions.length})
-                        </Accordion.Control>
+                    <Accordion
+                      variant="filled"
+                      value={droppableGroupCardAccordionValues}
+                      onChange={setDroppableGroupCardAccordionValues}
+                      multiple
+                    >
+                      {groupNodes.length > 0 && (
+                        <Accordion.Item value="node">
+                          <Accordion.Control fz="xs" px="xs">
+                            {t('node')} ({groupNodes.length})
+                          </Accordion.Control>
 
-                        <Accordion.Panel>
-                          <SimpleGrid cols={2}>
-                            <DndContext modifiers={[restrictToParentElement]}>
-                              <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
-                                {subscriptions.map(({ id: subscriptionId, tag, link }) => (
-                                  <SortableResourceBadge
-                                    key={subscriptionId}
-                                    id={subscriptionId}
-                                    name={tag || link}
-                                    onRemove={() =>
-                                      groupDelSubscriptionsMutation.mutate({
-                                        id: groupId,
-                                        subscriptionIDs: [subscriptionId],
-                                      })
-                                    }
-                                  />
-                                ))}
-                              </SortableContext>
-                            </DndContext>
-                          </SimpleGrid>
-                        </Accordion.Panel>
-                      </Accordion.Item>
-                    )}
-                  </Accordion>
-                </DroppableGroupCard>
-              ))}
+                          <Accordion.Panel>
+                            <SimpleGrid cols={2}>
+                              <DndContext modifiers={[restrictToParentElement]}>
+                                <SortableContext items={groupNodes} strategy={rectSwappingStrategy}>
+                                  {groupNodes.map(({ id: nodeId, tag, name, subscriptionID }) => (
+                                    <SortableResourceBadge
+                                      key={nodeId}
+                                      id={nodeId}
+                                      name={tag || name}
+                                      onRemove={() =>
+                                        groupDelNodesMutation.mutate({
+                                          id: groupId,
+                                          nodeIDs: [nodeId],
+                                        })
+                                      }
+                                    >
+                                      {subscriptionID &&
+                                        subscriptionsQuery?.subscriptions.find((s) => s.id === subscriptionID)?.tag}
+                                    </SortableResourceBadge>
+                                  ))}
+                                </SortableContext>
+                              </DndContext>
+                            </SimpleGrid>
+                          </Accordion.Panel>
+                        </Accordion.Item>
+                      )}
+
+                      {groupSubscriptions.length > 0 && (
+                        <Accordion.Item value="subscription">
+                          <Accordion.Control fz="xs" px="xs">
+                            {t('subscription')} ({groupSubscriptions.length})
+                          </Accordion.Control>
+
+                          <Accordion.Panel>
+                            <SimpleGrid cols={2}>
+                              <DndContext modifiers={[restrictToParentElement]}>
+                                <SortableContext items={groupSubscriptions} strategy={rectSwappingStrategy}>
+                                  {groupSubscriptions.map(({ id: subscriptionId, tag, link }) => (
+                                    <SortableResourceBadge
+                                      key={subscriptionId}
+                                      id={subscriptionId}
+                                      name={tag || link}
+                                      onRemove={() =>
+                                        groupDelSubscriptionsMutation.mutate({
+                                          id: groupId,
+                                          subscriptionIDs: [subscriptionId],
+                                        })
+                                      }
+                                    />
+                                  ))}
+                                </SortableContext>
+                              </DndContext>
+                            </SimpleGrid>
+                          </Accordion.Panel>
+                        </Accordion.Item>
+                      )}
+                    </Accordion>
+                  </DroppableGroupCard>
+                )
+              )}
             </Stack>
           </Section>
 
