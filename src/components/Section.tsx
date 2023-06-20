@@ -53,7 +53,7 @@ export const Section = ({
         </Group>
       </Group>
 
-      <Stack pos="relative">{children}</Stack>
+      <Stack>{children}</Stack>
     </Stack>
   )
 }

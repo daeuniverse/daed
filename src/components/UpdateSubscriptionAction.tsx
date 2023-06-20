@@ -3,12 +3,12 @@ import { IconDownload } from '@tabler/icons-react'
 
 import { useUpdateSubscriptionsMutation } from '~/apis'
 
-export const UpdateSubscriptionAction = ({ id }: { id: string }) => {
+export const UpdateSubscriptionAction = ({ id, loading }: { id: string; loading?: boolean }) => {
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
 
   return (
     <ActionIcon
-      loading={updateSubscriptionsMutation.isLoading}
+      loading={loading || updateSubscriptionsMutation.isLoading}
       size="sm"
       onClick={() => updateSubscriptionsMutation.mutate([id])}
     >
