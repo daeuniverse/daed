@@ -1,10 +1,15 @@
-import { Accordion, Group, Spoiler, Text } from '@mantine/core'
+import { Accordion, ActionIcon, Group, Spoiler, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconCloudComputing } from '@tabler/icons-react'
+import { IconCloudComputing, IconDownload } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 
-import { useImportSubscriptionsMutation, useRemoveSubscriptionsMutation, useSubscriptionsQuery } from '~/apis'
+import {
+  useImportSubscriptionsMutation,
+  useRemoveSubscriptionsMutation,
+  useSubscriptionsQuery,
+  useUpdateSubscriptionsMutation,
+} from '~/apis'
 import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
@@ -18,9 +23,10 @@ export const SubscriptionResource = () => {
     openedImportSubscriptionFormModal,
     { open: openImportSubscriptionFormModal, close: closeImportSubscriptionFormModal },
   ] = useDisclosure(false)
-  const removeSubscriptionsMutation = useRemoveSubscriptionsMutation()
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
+  const removeSubscriptionsMutation = useRemoveSubscriptionsMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
+  const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
 
   return (
     <Section
@@ -28,6 +34,19 @@ export const SubscriptionResource = () => {
       icon={<IconCloudComputing />}
       onCreate={openImportSubscriptionFormModal}
       bordered
+      actions={
+        subscriptionsQuery?.subscriptions &&
+        subscriptionsQuery.subscriptions.length > 2 && (
+          <ActionIcon
+            onClick={() => {
+              updateSubscriptionsMutation.mutate(subscriptionsQuery?.subscriptions.map(({ id }) => id) || [])
+            }}
+            loading={updateSubscriptionsMutation.isLoading}
+          >
+            <IconDownload />
+          </ActionIcon>
+        )
+      }
     >
       {subscriptionsQuery?.subscriptions.map(({ id: subscriptionID, tag, link, updatedAt, nodes }) => (
         <DraggableResourceCard
@@ -36,7 +55,7 @@ export const SubscriptionResource = () => {
           subscriptionID={subscriptionID}
           type={DraggableResourceType.subscription}
           name={tag || link}
-          actions={<UpdateSubscriptionAction id={subscriptionID} />}
+          actions={<UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isLoading} />}
           onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
         >
           <Text fw={600}>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</Text>
