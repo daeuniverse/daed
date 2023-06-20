@@ -1,5 +1,4 @@
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core'
-import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
 import {
   Accordion,
   ActionIcon,
@@ -77,6 +76,7 @@ import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { DraggableResourceType, GET_LOG_LEVEL_STEPS, RuleType } from '~/constants'
 import { defaultResourcesAtom } from '~/store'
 import { deriveTime } from '~/utils'
+import { restrictToElement } from '~/utils/dnd-kit'
 
 type DraggingResource = {
   type: DraggableResourceType
@@ -271,6 +271,8 @@ export const OrchestratePage = () => {
   const updateDNSMutation = useUpdateDNSMutation()
   const updateRoutingMutation = useUpdateRoutingMutation()
 
+  const dndAreaRef = useRef<HTMLDivElement>(null)
+
   return (
     <Stack>
       <Divider
@@ -457,8 +459,8 @@ export const OrchestratePage = () => {
         }
       />
 
-      <SimpleGrid cols={3}>
-        <DndContext modifiers={[restrictToFirstScrollableAncestor]} onDragStart={onDragStart} onDragEnd={onDragEnd}>
+      <SimpleGrid ref={dndAreaRef} cols={3}>
+        <DndContext modifiers={[restrictToElement(dndAreaRef.current)]} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <Section
             title={t('group')}
             icon={<IconTable />}
