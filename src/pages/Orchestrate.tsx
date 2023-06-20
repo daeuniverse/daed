@@ -22,7 +22,6 @@ import { useStore } from '@nanostores/react'
 import {
   IconCloud,
   IconCloudComputing,
-  IconDownload,
   IconEdit,
   IconForms,
   IconMap,
@@ -64,7 +63,6 @@ import {
   useSubscriptionsQuery,
   useUpdateDNSMutation,
   useUpdateRoutingMutation,
-  useUpdateSubscriptionsMutation,
 } from '~/apis'
 import { ConfigFormDrawer, ConfigFormDrawerRef } from '~/components/ConfigFormModal'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
@@ -77,6 +75,7 @@ import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModa
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
+import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { DraggableResourceType, GET_LOG_LEVEL_STEPS, RuleType } from '~/constants'
 import { defaultResourcesAtom } from '~/store'
 import { deriveTime } from '~/utils'
@@ -175,7 +174,6 @@ export const OrchestratePage = () => {
   const createRoutingMutation = useCreateRoutingMutation()
   const importNodesMutation = useImportNodesMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
-  const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
 
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
   const renameConfigMutation = useRenameConfigMutation()
@@ -587,15 +585,7 @@ export const OrchestratePage = () => {
                   id={subscriptionID}
                   type={DraggableResourceType.subscription}
                   name={tag || link}
-                  actions={
-                    <ActionIcon
-                      loading={updateSubscriptionsMutation.isLoading}
-                      size="sm"
-                      onClick={() => updateSubscriptionsMutation.mutate([subscriptionID])}
-                    >
-                      <IconDownload />
-                    </ActionIcon>
-                  }
+                  actions={<UpdateSubscriptionAction id={subscriptionID} />}
                   onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
                 >
                   <Text fw={600}>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</Text>
@@ -628,7 +618,9 @@ export const OrchestratePage = () => {
                               subscriptionID={subscriptionID}
                               name={name}
                               id={id}
-                            />
+                            >
+                              {name}
+                            </DraggableSubscriptionNodeBadge>
                           ))}
                         </Group>
                       </Accordion.Panel>
