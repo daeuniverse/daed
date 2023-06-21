@@ -154,7 +154,7 @@ fallback: ${DEFAULT_GROUP_NAME}
 export const DEFAULT_DNS = `
 upstream {
   alidns: 'udp://223.5.5.5:53'
-  googledns: 'udp://8.8.8.8:53'
+  googledns: 'tcp+udp://8.8.8.8:53'
 }
 routing {
   request {
