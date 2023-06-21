@@ -12,9 +12,9 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 ## Releases
 
-- [0.1.0rc1 (Pre-release)](#010rc1-pre-release)
+- [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
 
-### 0.1.0rc1 (Pre-release)
+### v0.1.0rc1 (Pre-release)
 
 > Release date: 2023/06/19
 
