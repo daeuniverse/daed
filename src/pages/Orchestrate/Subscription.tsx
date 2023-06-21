@@ -51,7 +51,7 @@ export const SubscriptionResource = () => {
       {subscriptionsQuery?.subscriptions.map(({ id: subscriptionID, tag, link, updatedAt, nodes }) => (
         <DraggableResourceCard
           key={subscriptionID}
-          id={subscriptionID}
+          id={`subscription-${subscriptionID}`}
           subscriptionID={subscriptionID}
           type={DraggableResourceType.subscription}
           name={tag || link}
@@ -86,7 +86,7 @@ export const SubscriptionResource = () => {
                     <DraggableResourceBadge
                       key={id}
                       name={name}
-                      id={id}
+                      id={`subscription-node-${id}`}
                       nodeID={id}
                       type={DraggableResourceType.subscription_node}
                       subscriptionID={subscriptionID}
