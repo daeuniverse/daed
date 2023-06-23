@@ -14,7 +14,7 @@ import {
 } from '~/apis'
 import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
-import { GroupFormDrawerRef, GroupFormModal } from '~/components/GroupFormModal'
+import { GroupFormModal, GroupFormModalRef } from '~/components/GroupFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { DraggableResourceType, RuleType } from '~/constants'
@@ -34,7 +34,7 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
   const groupDelSubscriptionsMutation = useGroupDelSubscriptionsMutation()
   const [droppableGroupCardAccordionValues, setDroppableGroupCardAccordionValues] = useState<string[]>([])
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
-  const updateGroupFormModalRef = useRef<GroupFormDrawerRef>(null)
+  const updateGroupFormModalRef = useRef<GroupFormModalRef>(null)
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
 
   return (

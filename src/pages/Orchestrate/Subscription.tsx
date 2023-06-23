@@ -1,7 +1,8 @@
 import { Accordion, ActionIcon, Group, Spoiler, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconCloudComputing, IconDownload } from '@tabler/icons-react'
+import { IconCloudComputing, IconDetails, IconDownload } from '@tabler/icons-react'
 import dayjs from 'dayjs'
+import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -13,16 +14,20 @@ import {
 import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
+import { QRCodeModal, QRCodeModalRef } from '~/components/NodeQRCodeModal'
 import { Section } from '~/components/Section'
 import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { DraggableResourceType } from '~/constants'
 
 export const SubscriptionResource = () => {
   const { t } = useTranslation()
+
+  const [openedQRCodeModal, { open: openQRCodeModal, close: closeQRCodeModal }] = useDisclosure(false)
   const [
     openedImportSubscriptionFormModal,
     { open: openImportSubscriptionFormModal, close: closeImportSubscriptionFormModal },
   ] = useDisclosure(false)
+  const qrCodeModalRef = useRef<QRCodeModalRef>(null)
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
   const removeSubscriptionsMutation = useRemoveSubscriptionsMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
@@ -55,7 +60,23 @@ export const SubscriptionResource = () => {
           subscriptionID={subscriptionID}
           type={DraggableResourceType.subscription}
           name={tag || link}
-          actions={<UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isLoading} />}
+          actions={
+            <Fragment>
+              <ActionIcon
+                size="xs"
+                onClick={() => {
+                  qrCodeModalRef.current?.setProps({
+                    name: tag!,
+                    link,
+                  })
+                  openQRCodeModal()
+                }}
+              >
+                <IconDetails />
+              </ActionIcon>
+              <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isLoading} />
+            </Fragment>
+          }
           onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
         >
           <Text fw={600}>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</Text>
@@ -100,6 +121,8 @@ export const SubscriptionResource = () => {
           </Accordion>
         </DraggableResourceCard>
       ))}
+
+      <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={closeQRCodeModal} />
 
       <ImportResourceFormModal
         title={t('subscription')}

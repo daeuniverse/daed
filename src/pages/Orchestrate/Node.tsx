@@ -1,11 +1,13 @@
-import { Spoiler, Text, useMantineTheme } from '@mantine/core'
+import { ActionIcon, Spoiler, Text, useMantineTheme } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconCloud } from '@tabler/icons-react'
+import { IconCloud, IconDetails } from '@tabler/icons-react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '~/apis'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
+import { QRCodeModal, QRCodeModalRef } from '~/components/NodeQRCodeModal'
 import { Section } from '~/components/Section'
 import { DraggableResourceType } from '~/constants'
 
@@ -13,8 +15,10 @@ export const NodeResource = () => {
   const { t } = useTranslation()
   const theme = useMantineTheme()
 
+  const [openedQRCodeModal, { open: openQRCodeModal, close: closeQRCodeModal }] = useDisclosure(false)
   const [openedImportNodeFormModal, { open: openImportNodeFormModal, close: closeImportNodeFormModal }] =
     useDisclosure(false)
+  const qrCodeModalRef = useRef<QRCodeModalRef>(null)
   const { data: nodesQuery } = useNodesQuery()
   const removeNodesMutation = useRemoveNodesMutation()
   const importNodesMutation = useImportNodesMutation()
@@ -33,9 +37,23 @@ export const NodeResource = () => {
               {protocol}
             </Text>
           }
+          actions={
+            <ActionIcon
+              size="xs"
+              onClick={() => {
+                qrCodeModalRef.current?.setProps({
+                  name: name || tag!,
+                  link,
+                })
+                openQRCodeModal()
+              }}
+            >
+              <IconDetails />
+            </ActionIcon>
+          }
           onRemove={() => removeNodesMutation.mutate([id])}
         >
-          <Text fw={600} color={theme.primaryColor}>
+          <Text fw={600} color={theme.primaryColor} sx={{ wordBreak: 'break-all' }}>
             {name}
           </Text>
 
@@ -55,6 +73,8 @@ export const NodeResource = () => {
           </Spoiler>
         </DraggableResourceCard>
       ))}
+
+      <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={closeQRCodeModal} />
 
       <ImportResourceFormModal
         title={t('node')}
