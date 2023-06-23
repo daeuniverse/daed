@@ -20,6 +20,7 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Prism } from '@mantine/prism'
+import Editor from '@monaco-editor/react'
 import { IconForms } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
@@ -31,9 +32,6 @@ import {
   useCreateRoutingMutation,
   useImportNodesMutation,
   useImportSubscriptionsMutation,
-  useRenameConfigMutation,
-  useRenameDNSMutation,
-  useRenameRoutingMutation,
 } from '~/apis'
 import { ConfigFormDrawer } from '~/components/ConfigFormModal'
 import { CreateNodeFormModal } from '~/components/CreateNodeFormModal'
@@ -46,7 +44,7 @@ import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
-import { DialMode, DraggableResourceType, LogLevel, RuleType } from '~/constants'
+import { DialMode, DraggableResourceType, EDITOR_OPTIONS, LogLevel, RuleType } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
 export const ExperimentPage = () => {
@@ -227,12 +225,11 @@ export const ExperimentPage = () => {
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
 
   const renameModalRef = useRef<RenameFormModalRef>(null)
-  const renameConfigMutation = useRenameConfigMutation()
-  const renameDNSMutation = useRenameDNSMutation()
-  const renameRoutingMutation = useRenameRoutingMutation()
 
   return (
     <Stack>
+      <Editor height={500} defaultValue="hello world" theme="vs-dark" options={EDITOR_OPTIONS} />
+
       <SimpleGrid cols={3}>
         <Section title={t('config')} onCreate={openCreateConfigModal}>
           <Stack>
@@ -440,6 +437,7 @@ export const ExperimentPage = () => {
                               {nodes.map(({ id: nodeId, name }) => (
                                 <DraggableResourceBadge
                                   key={nodeId}
+                                  type={DraggableResourceType.node}
                                   id={nodeId}
                                   name={name}
                                   onRemove={() => {
@@ -473,6 +471,7 @@ export const ExperimentPage = () => {
                               {subscriptions.map(({ id: subscriptionId, name }) => (
                                 <DraggableResourceBadge
                                   key={subscriptionId}
+                                  type={DraggableResourceType.subscription}
                                   id={subscriptionId}
                                   name={name}
                                   onRemove={() => {
@@ -636,30 +635,7 @@ export const ExperimentPage = () => {
         }}
       />
 
-      <RenameFormModal
-        ref={renameModalRef}
-        opened={openedRenameModal}
-        onClose={closeRenameModal}
-        handleSubmit={(type, id) => async (values) => {
-          const { name } = values
-
-          if (!type || !id) {
-            return
-          }
-
-          if (type === RuleType.config) {
-            renameConfigMutation.mutate({ id, name })
-          }
-
-          if (type === RuleType.dns) {
-            renameDNSMutation.mutate({ id, name })
-          }
-
-          if (type === RuleType.routing) {
-            renameRoutingMutation.mutate({ id, name })
-          }
-        }}
-      />
+      <RenameFormModal ref={renameModalRef} opened={openedRenameModal} onClose={closeRenameModal} />
     </Stack>
   )
 }

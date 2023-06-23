@@ -33,6 +33,7 @@ import {
   IconTestPipe,
   IconUserEdit,
 } from '@tabler/icons-react'
+import { TFunction } from 'i18next'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -97,6 +98,16 @@ const accountSettingsSchema = z.object({
   name: z.string().nonempty(),
 })
 
+const getLinks = (t: TFunction) => {
+  const links = [{ link: '/orchestrate', label: t('orchestrate'), icon: <IconCloudComputing /> }]
+
+  if (import.meta.env.DEV) {
+    links.push({ link: '/experiment', label: t('experiment'), icon: <IconTestPipe /> })
+  }
+
+  return links
+}
+
 export const Header = () => {
   const { t } = useTranslation()
   const location = useLocation()
@@ -113,10 +124,7 @@ export const Header = () => {
   const [uploadingAvatarBase64, setUploadingAvatarBase64] = useState<string | null>(null)
   const resetUploadingAvatarRef = useRef<() => void>(null)
 
-  const links = [
-    { link: '/orchestrate', label: t('orchestrate'), icon: <IconCloudComputing /> },
-    { link: '/experiment', label: t('experiment'), icon: <IconTestPipe /> },
-  ]
+  const links = getLinks(t)
 
   const accountSettingsForm = useForm<z.infer<typeof accountSettingsSchema>>({
     validate: zodResolver(accountSettingsSchema),
@@ -139,25 +147,6 @@ export const Header = () => {
                 </Title>
               </Group>
             </Link>
-
-            {/* <SegmentedControl
-              value={mode}
-              onChange={async (mode) => {
-                await setModeMutation.mutateAsync(mode as MODE)
-
-                if (mode === MODE.simple) {
-                  navigate('/')
-                } else {
-                  navigate('/orchestrate')
-                }
-
-                modeAtom.set(mode as MODE)
-              }}
-              data={[
-                { label: t('actions.simple mode'), value: MODE.simple },
-                { label: t('actions.advanced mode'), value: MODE.advanced },
-              ]}
-            /> */}
           </Group>
 
           <Group>
