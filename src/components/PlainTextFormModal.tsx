@@ -6,7 +6,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { EDITOR_OPTIONS } from '~/constants'
+import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants'
 import { colorSchemeAtom } from '~/store'
 
 import { FormActions } from './FormActions'
@@ -78,7 +78,7 @@ export const PlainTextFormModal = forwardRef(
             <Stack spacing={4}>
               <Editor
                 height={320}
-                theme={colorScheme === 'dark' ? 'vs-dark' : 'light'}
+                theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
                 options={EDITOR_OPTIONS}
                 value={form.values.text}
                 onChange={(value) => form.setFieldValue('text', value || '')}

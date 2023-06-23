@@ -187,6 +187,9 @@ export enum RuleType {
   group = 'group',
 }
 
+export const EDITOR_THEME_DARK = 'vs-dark'
+export const EDITOR_THEME_LIGHT = 'github'
+
 export const EDITOR_OPTIONS: EditorProps['options'] = {
   fontSize: 14,
   fontWeight: 'bold',
