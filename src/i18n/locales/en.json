@@ -17,6 +17,7 @@
     "login": "Login",
     "logout": "Logout",
     "refresh": "Refresh",
+    "reload": "Reload",
     "remove": "Remove",
     "rename": "Rename",
     "reset": "Reset",

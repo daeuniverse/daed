@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Avatar,
+  Box,
   Center,
   Container,
   FileButton,
@@ -14,6 +15,7 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
   UnstyledButton,
   createStyles,
   rem,
@@ -228,19 +230,25 @@ export const Header = () => {
             <ColorSchemeToggle />
 
             {generalQuery?.general.dae.modified && (
-              <ActionIcon loading={runMutation.isLoading} onClick={() => runMutation.mutateAsync(false)}>
-                <IconRefreshAlert />
-              </ActionIcon>
+              <Tooltip label={t('actions.reload')} withArrow>
+                <ActionIcon loading={runMutation.isLoading} onClick={() => runMutation.mutateAsync(false)}>
+                  <IconRefreshAlert />
+                </ActionIcon>
+              </Tooltip>
             )}
 
-            <Switch
-              onLabel={<IconCloudCheck size="1.5rem" stroke={2.5} />}
-              offLabel={<IconCloudPause size="1.5rem" stroke={2.5} />}
-              size="lg"
-              disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
-              checked={generalQuery?.general.dae.running}
-              onChange={(e) => runMutation.mutateAsync(!e.target.checked)}
-            />
+            <Tooltip label={t('actions.switchRunning')} withArrow>
+              <Box>
+                <Switch
+                  size="md"
+                  onLabel={<IconCloudCheck />}
+                  offLabel={<IconCloudPause />}
+                  disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
+                  checked={generalQuery?.general.dae.running}
+                  onChange={(e) => runMutation.mutateAsync(!e.target.checked)}
+                />
+              </Box>
+            </Tooltip>
           </Group>
         </Group>
       </Container>
