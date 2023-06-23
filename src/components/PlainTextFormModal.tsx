@@ -1,4 +1,4 @@
-import { Input, Modal, Stack, TextInput } from '@mantine/core'
+import { Box, Input, Modal, Stack, TextInput } from '@mantine/core'
 import { UseFormReturnType, useForm, zodResolver } from '@mantine/form'
 import { Editor } from '@monaco-editor/react'
 import { useStore } from '@nanostores/react'
@@ -6,7 +6,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { EDITOR_OPTIONS } from '~/constants'
+import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants'
 import { colorSchemeAtom } from '~/store'
 
 import { FormActions } from './FormActions'
@@ -76,13 +76,20 @@ export const PlainTextFormModal = forwardRef(
             <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} disabled={!!editingID} />
 
             <Stack spacing={4}>
-              <Editor
-                height={320}
-                theme={colorScheme === 'dark' ? 'vs-dark' : 'light'}
-                options={EDITOR_OPTIONS}
-                value={form.values.text}
-                onChange={(value) => form.setFieldValue('text', value || '')}
-              />
+              <Box
+                sx={{
+                  overflow: 'hidden',
+                  borderRadius: 4,
+                }}
+              >
+                <Editor
+                  height={320}
+                  theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
+                  options={EDITOR_OPTIONS}
+                  value={form.values.text}
+                  onChange={(value) => form.setFieldValue('text', value || '')}
+                />
+              </Box>
 
               {form.errors['text'] && <Input.Error>{form.errors['text']}</Input.Error>}
             </Stack>
