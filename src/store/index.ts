@@ -1,7 +1,7 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
 import { ColorScheme } from '@mantine/core'
 import { persistentAtom, persistentMap } from '@nanostores/persistent'
-import { map } from 'nanostores'
+import { atom, map } from 'nanostores'
 
 import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL, MODE } from '~/constants'
 
@@ -53,3 +53,5 @@ export const defaultResourcesAtom = map<DEFAULT_RESOURCES>({
   defaultDNSID: '',
   defaultGroupID: '',
 })
+
+export const colorSchemeAtom = atom<ColorScheme>('dark')

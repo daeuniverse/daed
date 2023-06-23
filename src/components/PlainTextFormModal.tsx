@@ -1,11 +1,13 @@
 import { Input, Modal, Stack, TextInput } from '@mantine/core'
 import { UseFormReturnType, useForm, zodResolver } from '@mantine/form'
 import { Editor } from '@monaco-editor/react'
+import { useStore } from '@nanostores/react'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { EDITOR_OPTIONS } from '~/constants'
+import { colorSchemeAtom } from '~/store'
 
 import { FormActions } from './FormActions'
 
@@ -37,6 +39,7 @@ export const PlainTextFormModal = forwardRef(
     ref
   ) => {
     const { t } = useTranslation()
+    const colorScheme = useStore(colorSchemeAtom)
     const [editingID, setEditingID] = useState()
     const [origins, setOrigins] = useState<z.infer<typeof schema>>()
     const form = useForm<z.infer<typeof schema>>({
@@ -75,7 +78,7 @@ export const PlainTextFormModal = forwardRef(
             <Stack spacing={4}>
               <Editor
                 height={320}
-                theme="vs-dark"
+                theme={colorScheme === 'dark' ? 'vs-dark' : 'light'}
                 options={EDITOR_OPTIONS}
                 value={form.values.text}
                 onChange={(value) => form.setFieldValue('text', value || '')}
