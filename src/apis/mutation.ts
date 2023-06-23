@@ -682,6 +682,7 @@ export const useRemoveNodesMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
     },
   })
 }
@@ -769,6 +770,7 @@ export const useRemoveSubscriptionsMutation = () => {
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
     },
   })
 }
