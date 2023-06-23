@@ -1,4 +1,5 @@
 /* eslint-disable import/default */
+
 import '~/index.css'
 
 import { loader } from '@monaco-editor/react'
