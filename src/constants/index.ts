@@ -1,3 +1,4 @@
+import { EditorProps } from '@monaco-editor/react'
 import { TFunction } from 'i18next'
 import { z } from 'zod'
 
@@ -184,6 +185,27 @@ export enum RuleType {
   dns = 'dns',
   routing = 'routing',
   group = 'group',
+}
+
+export const EDITOR_OPTIONS: EditorProps['options'] = {
+  fontSize: 14,
+  fontWeight: 'bold',
+  fontFamily: 'Source Code Pro',
+  'semanticHighlighting.enabled': true,
+  lineHeight: 1.6,
+  minimap: {
+    enabled: false,
+  },
+  renderWhitespace: 'all',
+  cursorBlinking: 'solid',
+  formatOnPaste: true,
+  insertSpaces: true,
+  tabSize: 2,
+  lineNumbers: 'off',
+  padding: {
+    top: 8,
+    bottom: 8,
+  },
 }
 
 export const v2raySchema = z.object({

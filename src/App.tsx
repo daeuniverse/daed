@@ -14,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { QueryProvider } from '~/contexts'
 import { Router } from '~/Router'
-import { appStateAtom } from '~/store'
+import { appStateAtom, colorSchemeAtom } from '~/store'
 
 const emotionCache = createEmotionCache({ key: 'mantine' })
 
@@ -34,6 +34,10 @@ export const App = () => {
   useEffect(() => {
     setColorScheme(appState.preferredColorScheme || preferredColorScheme)
   }, [setColorScheme, preferredColorScheme, appState.preferredColorScheme])
+
+  useEffect(() => {
+    colorSchemeAtom.set(colorScheme)
+  }, [colorScheme])
 
   const themeObject: MantineThemeOverride = useMemo(
     () => ({
