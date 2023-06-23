@@ -27,13 +27,17 @@ export const NodeResource = () => {
           id={`node-${id}`}
           nodeID={id}
           type={DraggableResourceType.node}
-          name={tag!}
+          name={tag}
+          leftSection={
+            <Text fz="xs" fw={600}>
+              {protocol}
+            </Text>
+          }
           onRemove={() => removeNodesMutation.mutate([id])}
         >
           <Text fw={600} color={theme.primaryColor}>
             {name}
           </Text>
-          <Text fw={600}>{protocol}</Text>
 
           <Spoiler
             maxHeight={0}

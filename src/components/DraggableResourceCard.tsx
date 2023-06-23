@@ -2,6 +2,7 @@ import { useDraggable } from '@dnd-kit/core'
 import { ActionIcon, Badge, Card, Group, Text } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { IconTrash } from '@tabler/icons-react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { DraggableResourceType } from '~/constants'
@@ -12,6 +13,7 @@ export const DraggableResourceCard = ({
   subscriptionID,
   type,
   name,
+  leftSection,
   onRemove,
   actions,
   children,
@@ -20,7 +22,8 @@ export const DraggableResourceCard = ({
   nodeID?: string
   subscriptionID?: string
   type: DraggableResourceType
-  name: string
+  name: React.ReactNode
+  leftSection?: React.ReactNode
   onRemove: () => void
   actions?: React.ReactNode
   children: React.ReactNode
@@ -39,7 +42,9 @@ export const DraggableResourceCard = ({
       }}
     >
       <Card.Section withBorder p="sm">
-        <Group position="apart">
+        <Group position="apart" spacing="xs">
+          {leftSection}
+
           <Badge
             size="lg"
             style={{
