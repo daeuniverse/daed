@@ -24,7 +24,7 @@ export const NodeResource = () => {
       {nodesQuery?.nodes.edges.map(({ id, name, tag, protocol, link }) => (
         <DraggableResourceCard
           key={id}
-          id={id}
+          id={`node-${id}`}
           nodeID={id}
           type={DraggableResourceType.node}
           name={tag!}

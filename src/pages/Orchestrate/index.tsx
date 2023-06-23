@@ -108,7 +108,11 @@ export const OrchestratePage = () => {
         })
       }
 
-      if (draggingResource.type === DraggableResourceType.subscription_node && draggingResource.nodeID) {
+      if (
+        draggingResource.type === DraggableResourceType.subscription_node &&
+        draggingResource.nodeID &&
+        !group?.nodes.find((node) => node.id === draggingResource.nodeID)
+      ) {
         groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.nodeID] })
       }
     }
