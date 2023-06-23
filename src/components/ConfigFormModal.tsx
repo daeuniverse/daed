@@ -122,7 +122,7 @@ const InputList = <T extends z.infer<typeof schema>>({
   )
 }
 
-export type ConfigFormDrawerRef = {
+export type ConfigFormModalRef = {
   form: UseFormReturnType<z.infer<typeof schema>>
   setEditingID: (id: string) => void
   initOrigins: (origins: z.infer<typeof schema>) => void

@@ -7,7 +7,7 @@ import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useConfigsQuery, useRemoveConfigMutation, useSelectConfigMutation } from '~/apis'
-import { ConfigFormDrawer, ConfigFormDrawerRef } from '~/components/ConfigFormModal'
+import { ConfigFormDrawer, ConfigFormModalRef } from '~/components/ConfigFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
@@ -23,7 +23,7 @@ export const Config = () => {
   const { data: configsQuery } = useConfigsQuery()
   const selectConfigMutation = useSelectConfigMutation()
   const removeConfigMutation = useRemoveConfigMutation()
-  const updateConfigFormDrawerRef = useRef<ConfigFormDrawerRef>(null)
+  const updateConfigFormModalRef = useRef<ConfigFormModalRef>(null)
 
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
@@ -60,14 +60,14 @@ export const Config = () => {
               <ActionIcon
                 size="xs"
                 onClick={() => {
-                  updateConfigFormDrawerRef.current?.setEditingID(config.id)
+                  updateConfigFormModalRef.current?.setEditingID(config.id)
 
                   const { checkInterval, checkTolerance, sniffingTimeout, logLevel, ...global } = config.global
 
                   const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
                   const logLevelNumber = logLevelSteps.findIndex(([, l]) => l === logLevel)
 
-                  updateConfigFormDrawerRef.current?.initOrigins({
+                  updateConfigFormModalRef.current?.initOrigins({
                     name: config.name,
                     logLevelNumber,
                     checkIntervalSeconds: deriveTime(checkInterval, 's'),
@@ -93,7 +93,7 @@ export const Config = () => {
 
       <ConfigFormDrawer opened={openedCreateConfigFormDrawer} onClose={closeCreateConfigFormDrawer} />
       <ConfigFormDrawer
-        ref={updateConfigFormDrawerRef}
+        ref={updateConfigFormModalRef}
         opened={openedUpdateConfigFormDrawer}
         onClose={closeUpdateConfigFormDrawer}
       />

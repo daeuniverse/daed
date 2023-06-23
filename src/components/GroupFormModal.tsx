@@ -16,7 +16,7 @@ const schema = z.object({
   policy: z.nativeEnum(Policy),
 })
 
-export type GroupFormDrawerRef = {
+export type GroupFormModalRef = {
   form: UseFormReturnType<z.infer<typeof schema>>
   setEditingID: (id: string) => void
   initOrigins: (origins: z.infer<typeof schema>) => void
