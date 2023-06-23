@@ -14,7 +14,7 @@ import {
 import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
-import { QRCodeModal, QRCodeModalRef } from '~/components/NodeQRCodeModal'
+import { QRCodeModal, QRCodeModalRef } from '~/components/QRCodeModal'
 import { Section } from '~/components/Section'
 import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { DraggableResourceType } from '~/constants'

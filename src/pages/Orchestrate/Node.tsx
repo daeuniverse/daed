@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '~/apis'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
-import { QRCodeModal, QRCodeModalRef } from '~/components/NodeQRCodeModal'
+import { QRCodeModal, QRCodeModalRef } from '~/components/QRCodeModal'
 import { Section } from '~/components/Section'
 import { DraggableResourceType } from '~/constants'
 

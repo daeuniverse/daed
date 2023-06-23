@@ -1,5 +1,5 @@
 import { Center, Modal } from '@mantine/core'
-import { QRCodeSVG } from 'qrcode.react'
+import { QRCodeCanvas } from 'qrcode.react'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 
 type Props = {
@@ -26,7 +26,7 @@ export const QRCodeModal = forwardRef(({ opened, onClose }: { opened: boolean; o
   return (
     <Modal opened={opened} onClose={onClose} title={props.name}>
       <Center>
-        <QRCodeSVG size={320} value={props.link} />
+        <QRCodeCanvas size={320} value={props.link} />
       </Center>
     </Modal>
   )

@@ -9,7 +9,7 @@ export const UpdateSubscriptionAction = ({ id, loading }: { id: string; loading?
   return (
     <ActionIcon
       loading={loading || updateSubscriptionsMutation.isLoading}
-      size="sm"
+      size="xs"
       onClick={() => updateSubscriptionsMutation.mutate([id])}
     >
       <IconDownload />
