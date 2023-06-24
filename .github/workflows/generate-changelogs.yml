@@ -21,13 +21,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Generate release changelogs
-        uses: daeuniverse/changelogs-generator-action@test
+        uses: daeuniverse/changelogs-generator-action@main
         id: changelog
         with:
           # https://github.com/daeuniverse/changelogs-generator-action
           previousRelease: ${{ inputs.previous_release_tag }}
           futureRelease: ${{ inputs.future_release_tag }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Print outputs
         shell: bash
@@ -37,8 +37,8 @@ jobs:
       - name: Create an issue with proposed changelogs
         uses: dacbd/create-issue-action@main
         with:
-          token: ${{ github.token }}
-          title: '[Release Changelogs] v0.1.0'
+          token: ${{ secrets.GH_TOKEN }}
+          title: '[Release Changelogs] ${{ inputs.future_release_tag }}'
           labels: automated-issue,release
           assignees: daebot
           body: |
