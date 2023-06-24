@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Anchor,
   Avatar,
   Box,
   Center,
@@ -23,6 +24,7 @@ import {
 import { useForm, zodResolver } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import {
+  IconBrandGithub,
   IconChevronDown,
   IconCloudCheck,
   IconCloudComputing,
@@ -203,6 +205,12 @@ export const Header = () => {
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
+
+            <Anchor href="https://github.com/daeuniverse/daed" target="_blank">
+              <ActionIcon>
+                <IconBrandGithub />
+              </ActionIcon>
+            </Anchor>
 
             <ActionIcon
               onClick={() => {
