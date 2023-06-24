@@ -59,7 +59,7 @@ export const ImportResourceFormModal = ({
             <Flex key={id} gap={10}>
               <Flex w="100%" align="start" gap={10}>
                 <TextInput
-                  className="flex-1"
+                  sx={{ flex: 1 }}
                   withAsterisk
                   label={t('link')}
                   {...form.getInputProps(`resources.${i}.link`)}

@@ -1,5 +1,6 @@
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core'
-import { Anchor, Badge, Divider, SimpleGrid, Stack, Title } from '@mantine/core'
+import { Anchor, Badge, Divider, SimpleGrid, Stack, Title, useMantineTheme } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -121,6 +122,8 @@ export const OrchestratePage = () => {
   }
 
   const dndAreaRef = useRef<HTMLDivElement>(null)
+  const theme = useMantineTheme()
+  const matchSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
 
   return (
     <Stack>
@@ -134,7 +137,7 @@ export const OrchestratePage = () => {
         }
       />
 
-      <SimpleGrid cols={3}>
+      <SimpleGrid cols={matchSmallScreen ? 1 : 3}>
         <Config />
         <DNS />
         <Routing />
@@ -150,7 +153,7 @@ export const OrchestratePage = () => {
         }
       />
 
-      <SimpleGrid ref={dndAreaRef} cols={3}>
+      <SimpleGrid ref={dndAreaRef} cols={matchSmallScreen ? 1 : 3}>
         <DndContext modifiers={[restrictToElement(dndAreaRef.current)]} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <GroupResource highlight={!!draggingResource} />
           <NodeResource />

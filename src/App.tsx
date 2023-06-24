@@ -1,4 +1,5 @@
 import {
+  Box,
   ColorScheme,
   ColorSchemeProvider,
   createEmotionCache,
@@ -88,10 +89,10 @@ export const App = () => {
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
         <MantineProvider theme={themeObject} emotionCache={emotionCache} withGlobalStyles withNormalizeCSS>
           <ModalsProvider>
-            <div className="h-screen min-w-[1024px]">
+            <Box sx={{ height: '100dvh' }}>
               <Notifications limit={5} />
               <Router />
-            </div>
+            </Box>
           </ModalsProvider>
         </MantineProvider>
       </ColorSchemeProvider>

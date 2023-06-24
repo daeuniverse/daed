@@ -3,13 +3,17 @@ import {
   Anchor,
   Avatar,
   Box,
+  Burger,
+  Button,
   Center,
   Container,
+  Drawer,
   FileButton,
   Group,
   Image,
   Menu,
   Modal,
+  SimpleGrid,
   Stack,
   Switch,
   Tabs,
@@ -20,9 +24,10 @@ import {
   UnstyledButton,
   createStyles,
   rem,
+  useMantineColorScheme,
 } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
-import { useDisclosure } from '@mantine/hooks'
+import { useDisclosure, useMediaQuery } from '@mantine/hooks'
 import {
   IconBrandGithub,
   IconChevronDown,
@@ -31,12 +36,14 @@ import {
   IconCloudPause,
   IconLanguage,
   IconLogout,
+  IconMoon,
   IconRefreshAlert,
+  IconSun,
   IconTestPipe,
   IconUserEdit,
 } from '@tabler/icons-react'
 import { TFunction } from 'i18next'
-import { useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
@@ -47,7 +54,6 @@ import { i18n } from '~/i18n'
 import { tokenAtom } from '~/store'
 import { fileToBase64 } from '~/utils'
 
-import { ColorSchemeToggle } from './ColorSchemeToggle'
 import { FormActions } from './FormActions'
 
 const useStyles = createStyles((theme) => ({
@@ -114,8 +120,10 @@ export const Header = () => {
   const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { classes, theme, cx } = useStyles()
   const [userMenuOpened, setUserMenuOpened] = useState(false)
+  const [openedBurger, { toggle: toggleBurger, close: closeBurger }] = useDisclosure(false)
   const [openedAccountSettingsFormModal, { open: openAccountSettingsFormModal, close: closeAccountSettingsFormModal }] =
     useDisclosure(false)
   const { data: userQuery } = useUserQuery()
@@ -135,21 +143,21 @@ export const Header = () => {
     },
   })
 
+  const matchSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.xs})`)
+
   return (
     <header className={classes.header}>
       <Container className={classes.mainSection}>
         <Group position="apart">
-          <Group>
-            <Link to="/">
-              <Group>
-                <Image radius="sm" src={logo} width={32} height={32} />
+          <Anchor component={Link} to="/">
+            <Group>
+              <Image radius="sm" src={logo} width={32} height={32} />
 
-                <Title order={2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
-                  daed
-                </Title>
-              </Group>
-            </Link>
-          </Group>
+              <Title order={matchSmallScreen ? 5 : 2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
+                daed
+              </Title>
+            </Group>
+          </Anchor>
 
           <Group>
             <Menu
@@ -206,32 +214,40 @@ export const Header = () => {
               </Menu.Dropdown>
             </Menu>
 
-            <Anchor href="https://github.com/daeuniverse/daed" target="_blank">
-              <ActionIcon>
-                <IconBrandGithub />
-              </ActionIcon>
-            </Anchor>
+            {matchSmallScreen ? (
+              <Burger size="sm" opened={openedBurger} onClick={toggleBurger} />
+            ) : (
+              <Fragment>
+                <Anchor href="https://github.com/daeuniverse/daed" target="_blank">
+                  <ActionIcon>
+                    <IconBrandGithub />
+                  </ActionIcon>
+                </Anchor>
 
-            <ActionIcon
-              onClick={() => {
-                if (i18n.language.startsWith('zh')) {
-                  i18n.changeLanguage('en')
-                } else {
-                  i18n.changeLanguage('zh-Hans')
-                }
-              }}
-            >
-              <IconLanguage />
-            </ActionIcon>
-
-            <ColorSchemeToggle />
-
-            {generalQuery?.general.dae.modified && (
-              <Tooltip label={t('actions.reload')} withArrow>
-                <ActionIcon loading={runMutation.isLoading} onClick={() => runMutation.mutateAsync(false)}>
-                  <IconRefreshAlert />
+                <ActionIcon
+                  onClick={() => {
+                    if (i18n.language.startsWith('zh')) {
+                      i18n.changeLanguage('en')
+                    } else {
+                      i18n.changeLanguage('zh-Hans')
+                    }
+                  }}
+                >
+                  <IconLanguage />
                 </ActionIcon>
-              </Tooltip>
+
+                <ActionIcon onClick={() => toggleColorScheme()}>
+                  {colorScheme === 'dark' ? <IconSun /> : <IconMoon />}
+                </ActionIcon>
+
+                {generalQuery?.general.dae.modified && (
+                  <Tooltip label={t('actions.reload')} withArrow>
+                    <ActionIcon loading={runMutation.isLoading} onClick={() => runMutation.mutateAsync(false)}>
+                      <IconRefreshAlert />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
+              </Fragment>
             )}
 
             <Tooltip label={t('actions.switchRunning')} withArrow>
@@ -269,6 +285,31 @@ export const Header = () => {
           </Tabs.List>
         </Tabs>
       </Center>
+
+      <Drawer opened={openedBurger} onClose={closeBurger} size="100%">
+        <SimpleGrid cols={3}>
+          <Anchor href="https://github.com/daeuniverse/daed" target="_blank">
+            <Button fullWidth>Github</Button>
+          </Anchor>
+
+          <Button
+            fullWidth
+            onClick={() => {
+              if (i18n.language.startsWith('zh')) {
+                i18n.changeLanguage('en')
+              } else {
+                i18n.changeLanguage('zh-Hans')
+              }
+            }}
+          >
+            {t('actions.switchLanguage')}
+          </Button>
+
+          <Button fullWidth onClick={() => toggleColorScheme()}>
+            {t('actions.switchTheme')}
+          </Button>
+        </SimpleGrid>
+      </Drawer>
 
       <Modal
         title={t('account settings')}
