@@ -1,4 +1,4 @@
-import { Box, Input, Modal, Stack, TextInput } from '@mantine/core'
+import { Box, Flex, Input, Modal, Stack, TextInput } from '@mantine/core'
 import { UseFormReturnType, useForm, zodResolver } from '@mantine/form'
 import { Editor } from '@monaco-editor/react'
 import { useStore } from '@nanostores/react'
@@ -63,50 +63,60 @@ export const PlainTextFormModal = forwardRef(
     }))
 
     return (
-      <Modal title={title} opened={opened} onClose={onClose}>
-        <form
-          onSubmit={form.onSubmit((values) =>
-            handleSubmit(values).then(() => {
-              onClose()
-              form.reset()
-            })
-          )}
-        >
-          <Stack>
-            <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} disabled={!!editingID} />
+      <Modal.Root opened={opened} onClose={onClose} fullScreen>
+        <Modal.Overlay />
 
-            <Stack spacing={4}>
-              <Box
-                sx={{
-                  overflow: 'hidden',
-                  borderRadius: 4,
-                }}
+        <Modal.Content>
+          <Flex h="100%" direction="column">
+            <Modal.Header>
+              <Modal.Title>{title}</Modal.Title>
+              <Modal.CloseButton />
+            </Modal.Header>
+
+            <Modal.Body sx={{ flex: 1 }}>
+              <form
+                onSubmit={form.onSubmit((values) =>
+                  handleSubmit(values).then(() => {
+                    onClose()
+                    form.reset()
+                  })
+                )}
               >
-                <Editor
-                  height={320}
-                  theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
-                  options={EDITOR_OPTIONS}
-                  language="routingA"
-                  value={form.values.text}
-                  onChange={(value) => form.setFieldValue('text', value || '')}
-                />
-              </Box>
+                <Stack h="100%" pb={100} sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                  <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} disabled={!!editingID} />
 
-              {form.errors['text'] && <Input.Error>{form.errors['text']}</Input.Error>}
-            </Stack>
+                  <Stack sx={{ flex: 1 }} spacing={4}>
+                    <Box h="100%" sx={{ overflow: 'hidden', borderRadius: 4 }}>
+                      <Editor
+                        height="100%"
+                        theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
+                        options={EDITOR_OPTIONS}
+                        language="routingA"
+                        value={form.values.text}
+                        onChange={(value) => form.setFieldValue('text', value || '')}
+                      />
+                    </Box>
 
-            <FormActions
-              reset={() => {
-                if (editingID && origins) {
-                  form.setValues(origins)
-                } else {
-                  form.reset()
-                }
-              }}
-            />
-          </Stack>
-        </form>
-      </Modal>
+                    {form.errors['text'] && <Input.Error>{form.errors['text']}</Input.Error>}
+                  </Stack>
+
+                  <Box sx={{ position: 'absolute', insetInline: 0, bottom: 50 }}>
+                    <FormActions
+                      reset={() => {
+                        if (editingID && origins) {
+                          form.setValues(origins)
+                        } else {
+                          form.reset()
+                        }
+                      }}
+                    />
+                  </Box>
+                </Stack>
+              </form>
+            </Modal.Body>
+          </Flex>
+        </Modal.Content>
+      </Modal.Root>
     )
   }
 )
