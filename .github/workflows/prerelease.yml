@@ -3,10 +3,10 @@ run-name: Publish prerelease ${{ github.ref_name }} by @${{ github.actor }}
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*.*.*rc*'
-      - 'v*.*.*p*'
+    inputs:
+      tag:
+        type: string
+        required: true
 
 jobs:
   checkout-full-src:
