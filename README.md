@@ -38,7 +38,7 @@ Special thanks go to all [contributors](https://github.com/daeuniverse/daed/grap
 
 Made with passion 🔥 by [@daeuniverse](https://github.com/daeuniverse)
 
-The project is dual licensed under the [GNU Affero General Public License v3.0 (dae-wing)](https://github.com/daeuniverse/dae-wing/blob/main/LICENSE) and the [MIT License (daed)](https://github.com/daeuniverse/daed/blob/main/LICENSE.MIT).
+The project is dual licensed under the [GNU Affero General Public License v3.0 (dae-wing)](https://github.com/daeuniverse/dae-wing/blob/main/LICENSE) and the [MIT License (daed)](https://github.com/daeuniverse/daed/blob/main/LICENSE).
 
 ### Dependencies used in this project
 
