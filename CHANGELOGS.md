@@ -12,15 +12,15 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 ## Releases
 
+<!-- BEGIN NEW TOC ENTRY -->
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
+<!-- BEGIN NEW CHANGELOGS -->
 
 ### v0.1.0rc1 (Pre-release)
 
 > Release date: 2023/06/19
 
-#### Changes
-
-##### Features
+#### Features
 
 - feat(rules): hide remove button if selected by @kunish in https://github.com/daeuniverse/daed/pull/39
 - feat: add switch language button by @kecrily in https://github.com/daeuniverse/daed/pull/1
@@ -30,7 +30,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - feat: rename default config (global) and group (proxy) by @kunish in https://github.com/daeuniverse/daed/pull/38
 - feat: set `DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER` to true by @kunish in https://github.com/daeuniverse/daed/pull/28
 
-##### Bug Fixes
+#### Bug Fixes
 
 - fix bunch of issues, add bunch of missing functionalities, collected from our community by @kunish in https://github.com/daeuniverse/daed/pull/58
 - fix(config): add missing form modal fields and data inconsistency by @kunish in https://github.com/daeuniverse/daed/pull/13
@@ -40,7 +40,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - fix: limit the tproxy port input range, add descriptive help texts by @kunish in https://github.com/daeuniverse/daed/pull/27
 - fix: systemd service file description and service start command by @kunish in https://github.com/daeuniverse/daed/pull/64
 
-##### Other Changes
+#### Other Changes
 
 - Add a new `develop` branch, publish a `prerelease` Github Release by @kunish in https://github.com/daeuniverse/daed/pull/31
 - build.yml: Fix upload zip files to release by @MarksonHon in https://github.com/daeuniverse/daed/pull/52
