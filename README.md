@@ -26,16 +26,19 @@
 
 ## Getting Started
 
-Please refer to [Quick Start Guide](./docs/getting-started.md) to start using `daed` and `dae-wing` right away!
+Please refer to [Quick Start Guide](./docs/getting-started.md) to start using `daed` right away!
 
-## Contribute to daed
+## Contrubuting
 
-Feel free to open issues or submit your PR, any feedbacks or help are greatly appreciated. Special thanks goes to all [contributors](https://github.com/daeuniverse/daed/graphs/contributors). If you would like to contribute, please see the [instructions](./CONTRIBUTING.md). Also, it is recommended following the [commit-msg-guide](./docs/commit-msg-guide.md).
+Feel free to open issues or submit your PR, any feedbacks or help are greatly appreciated.
+
+Special thanks go to all [contributors](https://github.com/daeuniverse/daed/graphs/contributors). If you would like to contribute, please see the [instructions](./CONTRIBUTING.md). Also, it is recommended following the [commit-msg-guide](./docs/commit-msg-guide.md).
 
 ## License
 
-Frontend: [MIT License (C) daeuniverse](https://github.com/daeuniverse/daed/blob/main/LICENSE)
-Backend: [AGPL-3.0-only License (C) daeuniverse](https://github.com/daeuniverse/dae-wing/blob/main/LICENSE)
+Made with passion 🔥 by [@daeuniverse](https://github.com/daeuniverse)
+
+The project is dual licensed under the [GNU Affero General Public License v3.0 (dae-wing)](https://github.com/daeuniverse/dae-wing/blob/main/LICENSE) and the [MIT License (daed)](https://github.com/daeuniverse/daed/blob/main/LICENSE).
 
 ### Dependencies used in this project
 
