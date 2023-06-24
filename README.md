@@ -36,8 +36,9 @@ Special thanks goes to all [contributors](https://github.com/daeuniverse/daed/gr
 
 ## License
 
-Frontend: [MIT License (C) daeuniverse](https://github.com/daeuniverse/daed/blob/main/LICENSE)
-Backend: [AGPL-3.0-only License (C) daeuniverse](https://github.com/daeuniverse/dae-wing/blob/main/LICENSE)
+Made with passion 🔥 by @kunish
+
+The project is dual licensed under the [Apache License 3.0 (dae-wing)](https://github.com/daeuniverse/dae-wing/blob/main/LICENSE) and the [MIT License (daed)](https://github.com/daeuniverse/daed/blob/main/LICENSE).
 
 ### Dependencies used in this project
 
