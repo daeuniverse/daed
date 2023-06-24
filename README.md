@@ -32,7 +32,7 @@ Please refer to [Quick Start Guide](./docs/getting-started.md) to start using `d
 
 Feel free to open issues or submit your PR, any feedbacks or help are greatly appreciated.
 
-Special thanks goes to all [contributors](https://github.com/daeuniverse/daed/graphs/contributors). If you would like to contribute, please see the [instructions](./CONTRIBUTING.md). Also, it is recommended following the [commit-msg-guide](./docs/commit-msg-guide.md).
+Special thanks go to all [contributors](https://github.com/daeuniverse/daed/graphs/contributors). If you would like to contribute, please see the [instructions](./CONTRIBUTING.md). Also, it is recommended following the [commit-msg-guide](./docs/commit-msg-guide.md).
 
 ## License
 
