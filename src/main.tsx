@@ -51,6 +51,79 @@ const loadMonaco = () =>
     }
 
     loader.init().then((monaco) => {
+      monaco.languages.register({ id: 'routingA', extensions: ['dae'] })
+
+      monaco.languages.setMonarchTokensProvider('routingA', {
+        defaultToken: 'invalid',
+        ignoreCase: false,
+        keywords: [
+          // routing
+          'geoip',
+          'geosite',
+          'pname',
+          'dip',
+          'sip',
+          'dport',
+          'sport',
+          'l4proto',
+          'ipversion',
+          'mac',
+          'domain',
+          'fallback',
+          'upstream',
+          // dns
+          'routing',
+          'qname',
+          'request',
+          'response',
+        ],
+        brackets: [
+          {
+            open: '{',
+            close: '}',
+            token: 'delimiter.brackets',
+          },
+          {
+            open: '(',
+            close: ')',
+            token: 'delimiter.parenthesis',
+          },
+        ],
+
+        operators: ['->', '&&', '!', ':'],
+
+        symbols: /[->&!:,.]+/,
+
+        tokenizer: {
+          root: [
+            [/[a-z_$][\w$]*/, { cases: { '@keywords': 'keyword', '@default': 'identifier' } }],
+            { include: '@whitespace' },
+
+            [/[{}()]/, '@brackets'],
+            [/@symbols/, { cases: { '@operators': 'operator', '@default': '' } }],
+
+            [/[,]/, 'delimiter'],
+
+            [/"([^"\\]|\\.)*$/, 'string.invalid'],
+            [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+
+            [/'[^\\']'/, 'string'],
+            [/'/, 'string.invalid'],
+          ],
+
+          string: [
+            [/[^\\"]+/, 'string'],
+            [/\\./, 'string.escape.invalid'],
+            [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }],
+          ],
+
+          whitespace: [
+            [/[ \t\r\n]+/, 'white'],
+            [/#.*$/, 'comment'],
+          ],
+        },
+      })
+
       import('monaco-themes/themes/GitHub.json').then((data) => {
         monaco.editor.defineTheme(EDITOR_THEME_LIGHT, data as editor.IStandaloneThemeData)
 
