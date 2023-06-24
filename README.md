@@ -28,9 +28,11 @@
 
 Please refer to [Quick Start Guide](./docs/getting-started.md) to start using `daed` and `dae-wing` right away!
 
-## Contribute to daed
+## Contrubuting
 
-Feel free to open issues or submit your PR, any feedbacks or help are greatly appreciated. Special thanks goes to all [contributors](https://github.com/daeuniverse/daed/graphs/contributors). If you would like to contribute, please see the [instructions](./CONTRIBUTING.md). Also, it is recommended following the [commit-msg-guide](./docs/commit-msg-guide.md).
+Feel free to open issues or submit your PR, any feedbacks or help are greatly appreciated.
+
+Special thanks goes to all [contributors](https://github.com/daeuniverse/daed/graphs/contributors). If you would like to contribute, please see the [instructions](./CONTRIBUTING.md). Also, it is recommended following the [commit-msg-guide](./docs/commit-msg-guide.md).
 
 ## License
 
