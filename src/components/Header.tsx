@@ -139,17 +139,15 @@ export const Header = () => {
     <header className={classes.header}>
       <Container className={classes.mainSection}>
         <Group position="apart">
-          <Group>
-            <Link to="/">
-              <Group>
-                <Image radius="sm" src={logo} width={32} height={32} />
+          <Anchor component={Link} to="/">
+            <Group>
+              <Image radius="sm" src={logo} width={32} height={32} />
 
-                <Title order={2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
-                  daed
-                </Title>
-              </Group>
-            </Link>
-          </Group>
+              <Title order={2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
+                daed
+              </Title>
+            </Group>
+          </Anchor>
 
           <Group>
             <Menu

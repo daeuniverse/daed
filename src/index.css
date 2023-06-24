@@ -2,10 +2,6 @@
 @import '@fontsource/source-code-pro';
 @import 'graphiql/graphiql.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 #root {
   display: contents;
 }

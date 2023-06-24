@@ -1,6 +1,7 @@
 import {
   Accordion,
   ActionIcon,
+  Box,
   Checkbox,
   Flex,
   Group,
@@ -296,7 +297,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   <Stack>
                     <Input.Label>{t('logLevel')}</Input.Label>
 
-                    <div className="px-4 pb-4">
+                    <Box px={4} pb={4}>
                       <Slider
                         min={0}
                         max={4}
@@ -305,7 +306,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                         marks={logLevelMarks}
                         {...form.getInputProps('logLevelNumber')}
                       />
-                    </div>
+                    </Box>
                   </Stack>
 
                   <Checkbox
