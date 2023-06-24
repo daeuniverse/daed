@@ -26,7 +26,7 @@
 
 ## Getting Started
 
-Please refer to [Quick Start Guide](./docs/getting-started.md) to start using `daed` and `dae-wing` right away!
+Please refer to [Quick Start Guide](./docs/getting-started.md) to start using `daed` right away!
 
 ## Contrubuting
 
@@ -36,7 +36,7 @@ Special thanks goes to all [contributors](https://github.com/daeuniverse/daed/gr
 
 ## License
 
-Made with passion 🔥 by @kunish
+Made with passion 🔥 by @daeuniverse
 
 The project is dual licensed under the [Apache License 3.0 (dae-wing)](https://github.com/daeuniverse/dae-wing/blob/main/LICENSE) and the [MIT License (daed)](https://github.com/daeuniverse/daed/blob/main/LICENSE).
 
