@@ -54,28 +54,30 @@ const loadMonaco = () =>
       monaco.languages.register({ id: 'routingA', extensions: ['dae'] })
 
       monaco.languages.setMonarchTokensProvider('routingA', {
-        defaultToken: 'invalid',
+        // set defaultToken as `invalid` to turn on debug mode
+        // defaultToken: 'invalid',
         ignoreCase: false,
         keywords: [
-          // routing
+          'dip',
+          'direct',
+          'domain',
+          'dport',
+          'fallback',
           'geoip',
           'geosite',
-          'pname',
-          'dip',
-          'sip',
-          'dport',
-          'sport',
-          'l4proto',
           'ipversion',
+          'l4proto',
           'mac',
-          'domain',
-          'fallback',
-          'upstream',
-          // dns
-          'routing',
+          'pname',
           'qname',
           'request',
           'response',
+          'routing',
+          'sip',
+          'sport',
+          'tcp',
+          'udp',
+          'upstream',
         ],
         brackets: [
           {
@@ -90,9 +92,11 @@ const loadMonaco = () =>
           },
         ],
 
+        escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+
         operators: ['->', '&&', '!', ':'],
 
-        symbols: /[->&!:,.]+/,
+        symbols: /[->&!:,]+/,
 
         tokenizer: {
           root: [
@@ -104,17 +108,26 @@ const loadMonaco = () =>
 
             [/[,]/, 'delimiter'],
 
-            [/"([^"\\]|\\.)*$/, 'string.invalid'],
-            [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+            [/\d+/, 'number'],
 
-            [/'[^\\']'/, 'string'],
-            [/'/, 'string.invalid'],
+            [/"([^"\\]|\\.)*$/, 'string.invalid'],
+            [/'([^'\\]|\\.)*$/, 'string.invalid'],
+            [/"/, 'string', '@string_double'],
+            [/'/, 'string', '@string_single'],
           ],
 
-          string: [
+          string_double: [
             [/[^\\"]+/, 'string'],
+            [/@escapes/, 'string.escape'],
             [/\\./, 'string.escape.invalid'],
-            [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }],
+            [/"/, 'string', '@pop'],
+          ],
+
+          string_single: [
+            [/[^\\']+/, 'string'],
+            [/@escapes/, 'string.escape'],
+            [/\\./, 'string.escape.invalid'],
+            [/'/, 'string', '@pop'],
           ],
 
           whitespace: [
