@@ -10,9 +10,6 @@ on:
       future_release_tag:
         required: true
         description: future release tag
-  push:
-    branches:
-      - 'changelogs-gen'
 
 jobs:
   build:
