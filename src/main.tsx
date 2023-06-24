@@ -51,6 +51,92 @@ const loadMonaco = () =>
     }
 
     loader.init().then((monaco) => {
+      monaco.languages.register({ id: 'routingA', extensions: ['dae'] })
+
+      monaco.languages.setMonarchTokensProvider('routingA', {
+        // set defaultToken as `invalid` to turn on debug mode
+        // defaultToken: 'invalid',
+        ignoreCase: false,
+        keywords: [
+          'dip',
+          'direct',
+          'domain',
+          'dport',
+          'fallback',
+          'geoip',
+          'geosite',
+          'ipversion',
+          'l4proto',
+          'mac',
+          'pname',
+          'qname',
+          'request',
+          'response',
+          'routing',
+          'sip',
+          'sport',
+          'tcp',
+          'udp',
+          'upstream',
+        ],
+        brackets: [
+          {
+            open: '{',
+            close: '}',
+            token: 'delimiter.brackets',
+          },
+          {
+            open: '(',
+            close: ')',
+            token: 'delimiter.parenthesis',
+          },
+        ],
+
+        escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+
+        operators: ['->', '&&', '!', ':'],
+
+        symbols: /[->&!:,]+/,
+
+        tokenizer: {
+          root: [
+            [/[a-z_$][\w$]*/, { cases: { '@keywords': 'keyword', '@default': 'identifier' } }],
+            { include: '@whitespace' },
+
+            [/[{}()]/, '@brackets'],
+            [/@symbols/, { cases: { '@operators': 'operator', '@default': '' } }],
+
+            [/[,]/, 'delimiter'],
+
+            [/\d+/, 'number'],
+
+            [/"([^"\\]|\\.)*$/, 'string.invalid'],
+            [/'([^'\\]|\\.)*$/, 'string.invalid'],
+            [/"/, 'string', '@string_double'],
+            [/'/, 'string', '@string_single'],
+          ],
+
+          string_double: [
+            [/[^\\"]+/, 'string'],
+            [/@escapes/, 'string.escape'],
+            [/\\./, 'string.escape.invalid'],
+            [/"/, 'string', '@pop'],
+          ],
+
+          string_single: [
+            [/[^\\']+/, 'string'],
+            [/@escapes/, 'string.escape'],
+            [/\\./, 'string.escape.invalid'],
+            [/'/, 'string', '@pop'],
+          ],
+
+          whitespace: [
+            [/[ \t\r\n]+/, 'white'],
+            [/#.*$/, 'comment'],
+          ],
+        },
+      })
+
       import('monaco-themes/themes/GitHub.json').then((data) => {
         monaco.editor.defineTheme(EDITOR_THEME_LIGHT, data as editor.IStandaloneThemeData)
 

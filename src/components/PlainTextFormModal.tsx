@@ -86,6 +86,7 @@ export const PlainTextFormModal = forwardRef(
                   height={320}
                   theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
                   options={EDITOR_OPTIONS}
+                  language="routingA"
                   value={form.values.text}
                   onChange={(value) => form.setFieldValue('text', value || '')}
                 />
