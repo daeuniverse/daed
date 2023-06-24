@@ -17,7 +17,7 @@ import ReactDOM from 'react-dom/client'
 import { App } from '~/App'
 import { i18nInit } from '~/i18n'
 
-import { EDITOR_THEME_LIGHT } from './constants'
+import { EDITOR_LANGUAGE_ROUTINGA, EDITOR_THEME_LIGHT } from './constants'
 
 dayjs.extend(duration)
 
@@ -51,6 +51,9 @@ const loadMonaco = () =>
     }
 
     loader.init().then((monaco) => {
+      monaco.languages.register({ id: 'routingA', extensions: ['dae'] })
+      monaco.languages.setMonarchTokensProvider('routingA', EDITOR_LANGUAGE_ROUTINGA)
+
       import('monaco-themes/themes/GitHub.json').then((data) => {
         monaco.editor.defineTheme(EDITOR_THEME_LIGHT, data as editor.IStandaloneThemeData)
 
