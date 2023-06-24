@@ -1,4 +1,4 @@
-import { Anchor, Center, Container, Footer, ScrollArea, Stack, Text } from '@mantine/core'
+import { Anchor, Box, Center, Container, Footer, ScrollArea, Stack, Text } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -173,13 +173,13 @@ export const MainLayout = () => {
     <Stack h="100%">
       <Header />
 
-      <main className="w-full overflow-auto">
-        <ScrollArea w="100%" h="100%" type="scroll">
+      <Box component="main" sx={{ overflow: 'auto' }}>
+        <ScrollArea h="100%" type="scroll">
           <Container size="lg" p="sm">
             <Outlet />
           </Container>
         </ScrollArea>
-      </main>
+      </Box>
 
       <Footer height={50}>
         <Center h="100%">

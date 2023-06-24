@@ -1,4 +1,4 @@
-import { Button, Group, Modal, createStyles } from '@mantine/core'
+import { Box, Button, Group, Modal, createStyles } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { DataTable, DataTableColumn, DataTableRowExpansionProps } from 'mantine-datatable'
 import { useState } from 'react'
@@ -40,8 +40,8 @@ export const Table = <Data extends Record<string, unknown>>({
   const [removing, setRemoving] = useState(false)
 
   return (
-    <div className="p-2">
-      <Group className="py-4">
+    <Box p={2}>
+      <Group py={4}>
         <Button onClick={open}>{t('actions.add')}</Button>
 
         <Button
@@ -84,6 +84,6 @@ export const Table = <Data extends Record<string, unknown>>({
       <Modal opened={opened} onClose={close} title={createModalTitle}>
         {createModalContent && createModalContent(close)}
       </Modal>
-    </div>
+    </Box>
   )
 }
