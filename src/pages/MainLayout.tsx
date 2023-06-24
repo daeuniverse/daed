@@ -1,4 +1,4 @@
-import { Container, ScrollArea, Stack } from '@mantine/core'
+import { Anchor, Center, Container, Footer, ScrollArea, Stack, Text } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -180,6 +180,17 @@ export const MainLayout = () => {
           </Container>
         </ScrollArea>
       </main>
+
+      <Footer height={50}>
+        <Center h="100%">
+          <Text fw="lighter" fz="xs" color="dimmed">
+            Made with passion 🔥 by{' '}
+            <Anchor href="https://github.com/daeuniverse" target="_blank">
+              @daeuniverse
+            </Anchor>
+          </Text>
+        </Center>
+      </Footer>
     </Stack>
   )
 }
