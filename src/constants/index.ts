@@ -200,6 +200,7 @@ export const EDITOR_OPTIONS: EditorProps['options'] = {
   minimap: {
     enabled: false,
   },
+  scrollBeyondLastLine: false,
   renderWhitespace: 'selection',
   cursorBlinking: 'solid',
   formatOnPaste: true,
