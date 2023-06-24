@@ -21,8 +21,6 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/06/24
 
-
-
 ### Features
 
 * feat: responsive header in [#111](https://github.com/daeuniverse/daed/pull/111) by (@kunish)
