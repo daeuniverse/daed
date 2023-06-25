@@ -14,8 +14,8 @@ clean:
 ## Begin Git Submodules
 .gitmodules.d.mk: .gitmodules Makefile
 	@set -e && \
-	submodules=$$(grep '\[submodule "' .gitmodules | cut -d'"' -f2 | tr '\n' ' ' | tr ' \n' '\n') && \
-	echo "submodule_ready=$${submodules}/.git" > $@
+	submodules=$$(grep '\[submodule "' .gitmodules | cut -d'"' -f2 | tr '\n' ' ' | tr ' \n' '\n' | sed 's/$$/\/.git/g') && \
+	echo "submodule_ready=$${submodules}" > $@
 
 -include .gitmodules.d.mk
 
