@@ -82,7 +82,7 @@ export const PlainTextFormModal = forwardRef(
                   })
                 )}
               >
-                <Stack h="100%" pb={100} sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                <Stack h="100%" sx={{ display: 'flex', flexDirection: 'column' }}>
                   <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} disabled={!!editingID} />
 
                   <Stack sx={{ flex: 1 }} spacing={4}>
@@ -100,17 +100,15 @@ export const PlainTextFormModal = forwardRef(
                     {form.errors['text'] && <Input.Error>{form.errors['text']}</Input.Error>}
                   </Stack>
 
-                  <Box sx={{ position: 'absolute', insetInline: 0, bottom: 50 }}>
-                    <FormActions
-                      reset={() => {
-                        if (editingID && origins) {
-                          form.setValues(origins)
-                        } else {
-                          form.reset()
-                        }
-                      }}
-                    />
-                  </Box>
+                  <FormActions
+                    reset={() => {
+                      if (editingID && origins) {
+                        form.setValues(origins)
+                      } else {
+                        form.reset()
+                      }
+                    }}
+                  />
                 </Stack>
               </form>
             </Modal.Body>

@@ -297,7 +297,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   <Stack>
                     <Input.Label>{t('logLevel')}</Input.Label>
 
-                    <Box px={4} pb={4}>
+                    <Box px="sm" pb="lg">
                       <Slider
                         min={0}
                         max={4}
