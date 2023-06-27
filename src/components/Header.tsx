@@ -58,13 +58,13 @@ import { FormActions } from './FormActions'
 
 const useStyles = createStyles((theme) => ({
   header: {
-    paddingTop: theme.spacing.sm,
+    paddingTop: theme.spacing.xs,
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     boxShadow: theme.shadows.sm,
   },
 
   mainSection: {
-    paddingBottom: theme.spacing.sm,
+    paddingBottom: theme.spacing.xs,
   },
 
   user: {
@@ -116,7 +116,7 @@ const getLinks = (t: TFunction) => {
   return links
 }
 
-export const Header = () => {
+export const HeaderWithActions = () => {
   const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()

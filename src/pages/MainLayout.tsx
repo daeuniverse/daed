@@ -1,4 +1,4 @@
-import { Anchor, Box, Center, Container, Footer, ScrollArea, Stack, Text } from '@mantine/core'
+import { Anchor, AppShell, Center, Container, Footer, Text } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -16,7 +16,7 @@ import {
   useSelectRoutingMutation,
   useSetJsonStorageMutation,
 } from '~/apis'
-import { Header } from '~/components/Header'
+import { HeaderWithActions } from '~/components/Header'
 import {
   DEFAULT_CONFIG_NAME,
   DEFAULT_CONFIG_WITH_INTERFACE,
@@ -170,27 +170,24 @@ export const MainLayout = () => {
   }, [endpointURL, navigate, token])
 
   return (
-    <Stack h="100%">
-      <Header />
-
-      <Box component="main" sx={{ overflow: 'auto' }}>
-        <ScrollArea h="100%" type="scroll">
-          <Container size="lg" p="sm">
-            <Outlet />
-          </Container>
-        </ScrollArea>
-      </Box>
-
-      <Footer height={50}>
-        <Center h="100%">
-          <Text fw="lighter" fz="xs" color="dimmed">
-            Made with passion 🔥 by{' '}
-            <Anchor href="https://github.com/daeuniverse" target="_blank">
-              @daeuniverse
-            </Anchor>
-          </Text>
-        </Center>
-      </Footer>
-    </Stack>
+    <AppShell
+      header={<HeaderWithActions />}
+      footer={
+        <Footer height={50}>
+          <Center h="100%">
+            <Text fw="lighter" fz="xs" color="dimmed">
+              Made with passion 🔥 by{' '}
+              <Anchor href="https://github.com/daeuniverse" target="_blank">
+                @daeuniverse
+              </Anchor>
+            </Text>
+          </Center>
+        </Footer>
+      }
+    >
+      <Container size="lg" p="sm">
+        <Outlet />
+      </Container>
+    </AppShell>
   )
 }
