@@ -193,6 +193,7 @@ export const EDITOR_THEME_LIGHT = 'github'
 
 export const EDITOR_OPTIONS: EditorProps['options'] = {
   fontSize: 14,
+  fontLigatures: false,
   fontWeight: 'bold',
   fontFamily: 'Source Code Pro',
   'semanticHighlighting.enabled': true,
