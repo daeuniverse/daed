@@ -258,7 +258,9 @@ export const HeaderWithActions = () => {
                   offLabel={<IconCloudPause />}
                   disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
                   checked={generalQuery?.general.dae.running}
-                  onChange={(e) => runMutation.mutateAsync(!e.target.checked)}
+                  onChange={(e) => {
+                    runMutation.mutateAsync(!e.target.checked)
+                  }}
                 />
               </Box>
             </Tooltip>

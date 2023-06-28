@@ -125,6 +125,9 @@ dependencies:
   '@types/react-dom':
     specifier: ^18.2.6
     version: 18.2.6
+  '@types/urijs':
+    specifier: ^1.19.19
+    version: 1.19.19
   '@types/uuid':
     specifier: ^9.0.2
     version: 9.0.2
@@ -227,6 +230,9 @@ dependencies:
   typescript:
     specifier: ^5.1.3
     version: 5.1.3
+  urijs:
+    specifier: ^1.19.11
+    version: 1.19.11
   vite:
     specifier: ^4.3.9
     version: 4.3.9(@types/node@20.3.1)
@@ -3528,6 +3534,10 @@ packages:
 
   /@types/throttle-debounce@2.1.0:
     resolution: {integrity: sha512-5eQEtSCoESnh2FsiLTxE121IiE60hnMqcb435fShf4bpLRjEu1Eoekht23y6zXS9Ts3l+Szu3TARnTsA0GkOkQ==}
+    dev: false
+
+  /@types/urijs@1.19.19:
+    resolution: {integrity: sha512-FDJNkyhmKLw7uEvTxx5tSXfPeQpO0iy73Ry+PmYZJvQy0QIWX8a7kJ4kLWRf+EbTPJEPDSgPXHaM7pzr5lmvCg==}
     dev: false
 
   /@types/uuid@9.0.2:
@@ -8164,6 +8174,10 @@ packages:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
       punycode: 2.3.0
+    dev: false
+
+  /urijs@1.19.11:
+    resolution: {integrity: sha512-HXgFDgDommxn5/bIv0cnQZsPhHDA90NPHD6+c/v21U5+Sx5hoP8+dP9IZXBU1gIfvdRfhG8cel9QNPeionfcCQ==}
     dev: false
 
   /urlpattern-polyfill@8.0.2:

@@ -40,6 +40,7 @@ import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { GroupFormModal } from '~/components/GroupFormModal'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
+import { NodeModal } from '~/components/NodeModal'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
@@ -637,6 +638,13 @@ export const ExperimentPage = () => {
       />
 
       <RenameFormModal ref={renameModalRef} opened={openedRenameModal} onClose={closeRenameModal} />
+
+      <NodeModal
+        opened
+        onClose={() => {
+          //
+        }}
+      />
     </Stack>
   )
 }

@@ -50,6 +50,7 @@ export const DraggableResourceBadge = ({
         }
         style={{
           zIndex: isDragging ? 10 : 0,
+          cursor: isDragging ? 'grabbing' : 'grab',
         }}
         opacity={isDragging ? 0.5 : undefined}
       >
