@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { GlobalInput, Policy } from '~/schemas/gql/graphql'
 
 import { DialMode, LogLevel, TLSImplementation, TcpCheckHttpMethod, UTLSImitate } from './misc'
-import { ssSchema, v2raySchema } from './schema'
+import { ssSchema, ssrSchema, v2raySchema } from './schema'
 
 export const DEFAULT_ENDPOINT_URL = `${location.protocol}//${location.hostname}:2023/graphql`
 
@@ -101,4 +101,16 @@ export const DEFAULT_SS_FORM_VALUES: z.infer<typeof ssSchema> = {
   port: 0,
   server: '',
   tls: '',
+}
+
+export const DEFAULT_SSR_FORM_VALUES: z.infer<typeof ssrSchema> = {
+  method: 'aes-128-cfb',
+  proto: 'origin',
+  obfs: 'plain',
+  name: '',
+  obfsParam: '',
+  password: '',
+  port: 0,
+  protoParam: '',
+  server: '',
 }

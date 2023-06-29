@@ -3,7 +3,14 @@ import { useForm, zodResolver } from '@mantine/form'
 import { Base64 } from 'js-base64'
 import { z } from 'zod'
 
-import { DEFAULT_SS_FORM_VALUES, DEFAULT_V2RAY_FORM_VALUES, ssSchema, v2raySchema } from '~/constants'
+import {
+  DEFAULT_SSR_FORM_VALUES,
+  DEFAULT_SS_FORM_VALUES,
+  DEFAULT_V2RAY_FORM_VALUES,
+  ssSchema,
+  ssrSchema,
+  v2raySchema,
+} from '~/constants'
 import { generateURL } from '~/utils/node'
 
 import { FormActions } from './FormActions'
@@ -344,20 +351,24 @@ const SSForm = () => {
 }
 
 const SSRForm = () => {
-  const { values, onSubmit, getInputProps, reset } = useForm({
-    initialValues: {
-      method: 'aes-128-cfb',
-      proto: 'origin',
-      obfs: 'plain',
-    },
+  const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof ssrSchema>>({
+    initialValues: DEFAULT_SSR_FORM_VALUES,
+    validate: zodResolver(ssrSchema),
+  })
+
+  const handleSubmit = onSubmit((values) => {
+    /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
+    return `ssr://${Base64.encode(
+      `${values.server}:${values.port}:${values.proto}:${values.method}:${values.obfs}:${Base64.encodeURI(
+        values.password
+      )}/?remarks=${Base64.encodeURI(values.name)}&protoparam=${Base64.encodeURI(
+        values.protoParam
+      )}&obfsparam=${Base64.encodeURI(values.obfsParam)}`
+    )}`
   })
 
   return (
-    <form
-      onSubmit={onSubmit((values) => {
-        console.log(values)
-      })}
-    >
+    <form onSubmit={handleSubmit}>
       <TextInput label="Name" {...getInputProps('name')} />
 
       <TextInput label="Host" withAsterisk {...getInputProps('server')} />
