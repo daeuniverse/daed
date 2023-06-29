@@ -11,13 +11,13 @@ export const generateURL = ({
   path,
 }: {
   username: string
-  password: string
+  password?: string
   protocol: string
   host: string
-  port: string
+  port: number
   params: Record<string, unknown>
   hash: string
-  path: string
+  path?: string
 }) => {
   /**
    * 所有参数设置默认值
@@ -29,7 +29,7 @@ export const generateURL = ({
     .username(username || '')
     .password(password || '')
     .host(host || '')
-    .port(port || '80')
+    .port(String(port) || '80')
     .path(path || '')
     .query(params || {})
     .hash(hash || '')

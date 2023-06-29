@@ -191,6 +191,9 @@ dependencies:
   immer:
     specifier: ^10.0.2
     version: 10.0.2
+  js-base64:
+    specifier: ^3.7.5
+    version: 3.7.5
   lint-staged:
     specifier: ^13.2.2
     version: 13.2.2
@@ -6074,6 +6077,10 @@ packages:
 
   /jose@4.14.4:
     resolution: {integrity: sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g==}
+    dev: false
+
+  /js-base64@3.7.5:
+    resolution: {integrity: sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA==}
     dev: false
 
   /js-tokens@4.0.0:

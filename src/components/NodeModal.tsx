@@ -1,23 +1,92 @@
 import { Checkbox, MantineProvider, Modal, NumberInput, Select, Stack, Tabs, TextInput } from '@mantine/core'
-import { useForm } from '@mantine/form'
+import { useForm, zodResolver } from '@mantine/form'
+import { Base64 } from 'js-base64'
+import { z } from 'zod'
+
+import { DEFAULT_V2RAY_VALUES, v2raySchema } from '~/constants'
+import { generateURL } from '~/utils/node'
 
 import { FormActions } from './FormActions'
 
 const V2rayForm = () => {
-  const { values, onSubmit, getInputProps, reset } = useForm({
+  const { values, onSubmit, getInputProps, reset } = useForm<
+    z.infer<typeof v2raySchema> & {
+      protocol: 'vless' | 'vmess'
+    }
+  >({
     initialValues: {
       protocol: 'vmess',
-      type: 'none',
-      tls: 'none',
-      net: 'tcp',
-      scy: 'auto',
+      ...DEFAULT_V2RAY_VALUES,
     },
+    validate: zodResolver(v2raySchema),
   })
 
   return (
     <form
       onSubmit={onSubmit((values) => {
-        console.log(values)
+        const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = values
+
+        if (protocol === 'vless') {
+          const params: Record<string, unknown> = {
+            type: net,
+            security: tls,
+            path,
+            host,
+            headerType: type,
+            sni,
+            flow,
+            allowInsecure,
+          }
+
+          if (alpn !== '') {
+            params.alpn = alpn
+          }
+
+          if (net === 'grpc') {
+            params.serviceName = path
+          }
+
+          if (net === 'kcp') {
+            params.seed = path
+          }
+
+          return generateURL({
+            protocol,
+            username: id,
+            host: add,
+            port,
+            hash: ps,
+            params,
+          })
+        }
+
+        if (protocol === 'vmess') {
+          const body: Record<string, unknown> = structuredClone(values)
+
+          switch (net) {
+            case 'kcp':
+            case 'tcp':
+            default:
+              body.type = ''
+          }
+          switch (body.net) {
+            case 'ws':
+            case 'h2':
+            case 'grpc':
+            case 'kcp':
+            default:
+              if (body.net === 'tcp' && body.type === 'http') {
+                break
+              }
+              body.path = ''
+          }
+
+          if (!(body.protocol === 'vless' && body.tls === 'xtls')) {
+            delete body.flow
+          }
+
+          return 'vmess://' + Base64.encode(JSON.stringify(body))
+        }
       })}
     >
       <Select
@@ -67,18 +136,16 @@ const V2rayForm = () => {
 
       {values.tls !== 'none' && <TextInput label="SNI" {...getInputProps('sni')} />}
 
-      {values.tls === 'xtls' && (
-        <Select
-          label="Flow"
-          data={[
-            { label: 'none', value: 'none' },
-            { label: 'xtls-rprx-origin', value: 'xtls-rprx-origin' },
-            { label: 'xtls-rprx-origin-udp443', value: 'xtls-rprx-origin-udp443' },
-            { label: 'xtls-rprx-vision', value: 'xtls-rprx-vision-udp443' },
-          ]}
-          {...getInputProps('flow')}
-        />
-      )}
+      <Select
+        label="Flow"
+        data={[
+          { label: 'none', value: 'none' },
+          { label: 'xtls-rprx-origin', value: 'xtls-rprx-origin' },
+          { label: 'xtls-rprx-origin-udp443', value: 'xtls-rprx-origin-udp443' },
+          { label: 'xtls-rprx-vision', value: 'xtls-rprx-vision-udp443' },
+        ]}
+        {...getInputProps('flow')}
+      />
 
       {values.tls !== 'none' && (
         <Checkbox label="AllowInsecure" {...getInputProps('allowInsecure', { type: 'checkbox' })} />
@@ -134,7 +201,7 @@ const V2rayForm = () => {
         values.net === 'h2' ||
         (values.net === 'tcp' && values.type === 'http' && <TextInput label="Path" {...getInputProps('path')} />)}
 
-      {values.net === 'mkcp' || (values.net === 'kcp' && <TextInput label="Seed" {...getInputProps('path')} />)}
+      {values.net === 'kcp' && <TextInput label="Seed" {...getInputProps('path')} />}
 
       {values.net === 'grpc' && <TextInput label="ServiceName" {...getInputProps('path')} />}
 
@@ -472,11 +539,12 @@ const Socks5Form = () => {
 
 export const NodeModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
   return (
-    <Modal opened={opened} onClose={onClose} title="Configure Node">
+    <Modal opened={opened} onClose={onClose} title="Configure Node" size="md">
       <MantineProvider
         theme={{
           components: {
             TabsPanel: { defaultProps: { pt: 'md' } },
+            Stack: { defaultProps: { spacing: 'sm' } },
           },
         }}
         inherit

@@ -1,23 +1,22 @@
 import { z } from 'zod'
 
 export const v2raySchema = z.object({
-  ps: z.string().default(''),
-  add: z.string().url().nonempty().or(z.string().ip().nonempty()),
-  port: z.number().min(0).max(65535).positive(),
-  id: z.string().uuid().nonempty(),
-  aid: z.number().min(0).max(65535).default(0),
-  net: z.enum(['tcp', 'kcp', 'ws', 'h2', 'grpc']).default('tcp'),
-  type: z.enum(['none', 'http', 'srtp', 'utp', 'wechat-video', 'dtls', 'wireguard']).default('none'),
-  host: z.string().url().default(''),
-  path: z.string().default(''),
-  tls: z.enum(['none', 'tls']).default('none'),
-  flow: z
-    .enum(['none', 'xtls-rprx-origin', 'xtls-rprx-origin-udp443', 'xtls-rprx-vision', 'xtls-rprx-vision-udp443'])
-    .default('none'),
-  alpn: z.enum(['http/1.1', 'h2']),
-  scy: z.enum(['auto', 'aes-128-gcm', 'chacha20-poly1305', 'none', 'zero']).default('auto'),
+  ps: z.string(),
+  add: z.string().nonempty(),
+  port: z.number().min(0).max(65535),
+  id: z.string().nonempty(),
+  aid: z.number().min(0).max(65535),
+  net: z.enum(['tcp', 'kcp', 'ws', 'h2', 'grpc']),
+  type: z.enum(['none', 'http', 'srtp', 'utp', 'wechat-video', 'dtls', 'wireguard']),
+  host: z.string(),
+  path: z.string(),
+  tls: z.enum(['none', 'tls']),
+  flow: z.enum(['none', 'xtls-rprx-origin', 'xtls-rprx-origin-udp443', 'xtls-rprx-vision', 'xtls-rprx-vision-udp443']),
+  alpn: z.string(),
+  scy: z.enum(['auto', 'aes-128-gcm', 'chacha20-poly1305', 'none', 'zero']),
   v: z.literal(''),
-  allowInsecure: z.boolean().default(false),
+  allowInsecure: z.boolean(),
+  sni: z.string(),
 })
 
 export const ssSchema = z.object({

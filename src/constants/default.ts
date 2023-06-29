@@ -1,6 +1,9 @@
+import { z } from 'zod'
+
 import { GlobalInput, Policy } from '~/schemas/gql/graphql'
 
 import { DialMode, LogLevel, TLSImplementation, TcpCheckHttpMethod, UTLSImitate } from './misc'
+import { v2raySchema } from './schema'
 
 export const DEFAULT_ENDPOINT_URL = `${location.protocol}//${location.hostname}:2023/graphql`
 
@@ -65,3 +68,22 @@ routing {
   }
 }
 `.trim()
+
+export const DEFAULT_V2RAY_VALUES: z.infer<typeof v2raySchema> = {
+  type: 'none',
+  tls: 'none',
+  net: 'tcp',
+  scy: 'auto',
+  add: '',
+  aid: 0,
+  allowInsecure: false,
+  alpn: '',
+  flow: 'none',
+  host: '',
+  id: '',
+  path: '',
+  port: 0,
+  ps: '',
+  v: '',
+  sni: '',
+}

@@ -77,6 +77,7 @@
     "i18next": "^23.2.3",
     "i18next-browser-languagedetector": "^7.0.2",
     "immer": "^10.0.2",
+    "js-base64": "^3.7.5",
     "lint-staged": "^13.2.2",
     "mantine-datatable": "^2.6.4",
     "monaco-editor": "^0.39.0",
