@@ -4,16 +4,18 @@ import { Base64 } from 'js-base64'
 import { z } from 'zod'
 
 import {
+  DEFAULT_HTTP_FORM_VALUES,
   DEFAULT_SSR_FORM_VALUES,
   DEFAULT_SS_FORM_VALUES,
   DEFAULT_TROJAN_FORM_VALUES,
   DEFAULT_V2RAY_FORM_VALUES,
+  httpSchema,
   ssSchema,
   ssrSchema,
   trojanSchema,
   v2raySchema,
 } from '~/constants'
-import { generateURL } from '~/utils/node'
+import { GenerateURLParams, generateURL } from '~/utils/node'
 
 import { FormActions } from './FormActions'
 
@@ -555,18 +557,31 @@ const TrojanForm = () => {
 }
 
 const HTTPForm = () => {
-  const { onSubmit, getInputProps, reset } = useForm({
-    initialValues: {
-      protocol: 'http',
-    },
+  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof httpSchema>>({
+    initialValues: DEFAULT_HTTP_FORM_VALUES,
+    validate: zodResolver(httpSchema),
+  })
+
+  const handleSubmit = onSubmit((values) => {
+    const generateURLParams: GenerateURLParams = {
+      protocol: `${values.protocol}-proxy`,
+      host: values.host,
+      port: values.port,
+      hash: values.name,
+    }
+
+    if (values.username && values.password) {
+      Object.assign(generateURLParams, {
+        username: values.username,
+        password: values.password,
+      })
+    }
+
+    return generateURL(generateURLParams)
   })
 
   return (
-    <form
-      onSubmit={onSubmit((values) => {
-        console.log(values)
-      })}
-    >
+    <form onSubmit={handleSubmit}>
       <Select
         label="Protocol"
         data={[

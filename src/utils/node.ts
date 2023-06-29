@@ -1,24 +1,17 @@
 import URI from 'urijs'
 
-export const generateURL = ({
-  username,
-  password,
-  protocol,
-  host,
-  port,
-  params,
-  hash,
-  path,
-}: {
-  username: string
+export type GenerateURLParams = {
+  username?: string
   password?: string
   protocol: string
   host: string
   port: number
-  params: Record<string, unknown>
+  params?: Record<string, unknown>
   hash: string
   path?: string
-}) => {
+}
+
+export const generateURL = ({ username, password, protocol, host, port, params, hash, path }: GenerateURLParams) => {
   /**
    * 所有参数设置默认值
    * 避免方法检测到参数为null/undefine返回该值查询结果

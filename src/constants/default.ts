@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { GlobalInput, Policy } from '~/schemas/gql/graphql'
 
 import { DialMode, LogLevel, TLSImplementation, TcpCheckHttpMethod, UTLSImitate } from './misc'
-import { ssSchema, ssrSchema, trojanSchema, v2raySchema } from './schema'
+import { httpSchema, ssSchema, ssrSchema, trojanSchema, v2raySchema } from './schema'
 
 export const DEFAULT_ENDPOINT_URL = `${location.protocol}//${location.hostname}:2023/graphql`
 
@@ -128,4 +128,13 @@ export const DEFAULT_TROJAN_FORM_VALUES: z.infer<typeof trojanSchema> = {
   server: '',
   ssCipher: 'aes-128-gcm',
   ssPassword: '',
+}
+
+export const DEFAULT_HTTP_FORM_VALUES: z.infer<typeof httpSchema> = {
+  protocol: 'http',
+  host: '',
+  name: '',
+  password: '',
+  port: 0,
+  username: '',
 }
