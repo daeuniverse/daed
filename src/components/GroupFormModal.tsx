@@ -88,6 +88,7 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
               policyParams: [],
             })
           }
+
           onClose()
           form.reset()
         })}

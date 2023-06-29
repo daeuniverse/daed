@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { GlobalInput, Policy } from '~/schemas/gql/graphql'
 
 import { DialMode, LogLevel, TLSImplementation, TcpCheckHttpMethod, UTLSImitate } from './misc'
-import { v2raySchema } from './schema'
+import { ssSchema, v2raySchema } from './schema'
 
 export const DEFAULT_ENDPOINT_URL = `${location.protocol}//${location.hostname}:2023/graphql`
 
@@ -69,7 +69,7 @@ routing {
 }
 `.trim()
 
-export const DEFAULT_V2RAY_VALUES: z.infer<typeof v2raySchema> = {
+export const DEFAULT_V2RAY_FORM_VALUES: z.infer<typeof v2raySchema> = {
   type: 'none',
   tls: 'none',
   net: 'tcp',
@@ -86,4 +86,19 @@ export const DEFAULT_V2RAY_VALUES: z.infer<typeof v2raySchema> = {
   ps: '',
   v: '',
   sni: '',
+}
+
+export const DEFAULT_SS_FORM_VALUES: z.infer<typeof ssSchema> = {
+  plugin: '',
+  method: 'aes-128-gcm',
+  obfs: 'http',
+  host: '',
+  impl: '',
+  mode: '',
+  name: '',
+  password: '',
+  path: '',
+  port: 0,
+  server: '',
+  tls: '',
 }

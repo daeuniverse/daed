@@ -55,6 +55,7 @@ export const Routing = () => {
                       oldName: routing.name,
                     })
                   }
+
                   openRenameFormModal()
                 }}
               >

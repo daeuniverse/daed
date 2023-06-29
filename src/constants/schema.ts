@@ -20,20 +20,18 @@ export const v2raySchema = z.object({
 })
 
 export const ssSchema = z.object({
-  method: z
-    .enum(['aes-128-gcm', 'aes-256-gcm', 'chacha20-poly1305', 'chacha20-ietf-poly1305', 'plain', 'none'])
-    .default('aes-128-gcm'),
-  plugin: z.enum(['', 'simple-obfs', 'v2ray-plugin']).default(''),
-  obfs: z.enum(['http', 'tls']).default('http'),
-  tls: z.enum(['', 'tls']).default(''),
-  path: z.string().default('/'),
-  mode: z.string().default('websocket'),
-  host: z.string().url().default(''),
+  method: z.enum(['aes-128-gcm', 'aes-256-gcm', 'chacha20-poly1305', 'chacha20-ietf-poly1305', 'plain', 'none']),
+  plugin: z.enum(['', 'simple-obfs', 'v2ray-plugin']),
+  obfs: z.enum(['http', 'tls']),
+  tls: z.enum(['', 'tls']),
+  path: z.string(),
+  mode: z.string(),
+  host: z.string(),
   password: z.string().nonempty(),
-  server: z.string().url().nonempty().or(z.string().ip().nonempty()),
+  server: z.string().nonempty(),
   port: z.number().min(0).max(65535),
-  name: z.string().default(''),
-  impl: z.enum(['', 'chained', 'transport']).default(''),
+  name: z.string(),
+  impl: z.enum(['', 'chained', 'transport']),
 })
 
 export const ssrSchema = z.object({

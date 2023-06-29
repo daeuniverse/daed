@@ -3,92 +3,83 @@ import { useForm, zodResolver } from '@mantine/form'
 import { Base64 } from 'js-base64'
 import { z } from 'zod'
 
-import { DEFAULT_V2RAY_VALUES, v2raySchema } from '~/constants'
+import { DEFAULT_SS_FORM_VALUES, DEFAULT_V2RAY_FORM_VALUES, ssSchema, v2raySchema } from '~/constants'
 import { generateURL } from '~/utils/node'
 
 import { FormActions } from './FormActions'
 
 const V2rayForm = () => {
   const { values, onSubmit, getInputProps, reset } = useForm<
-    z.infer<typeof v2raySchema> & {
-      protocol: 'vless' | 'vmess'
-    }
+    z.infer<typeof v2raySchema> & { protocol: 'vless' | 'vmess' }
   >({
-    initialValues: {
-      protocol: 'vmess',
-      ...DEFAULT_V2RAY_VALUES,
-    },
+    initialValues: { protocol: 'vmess', ...DEFAULT_V2RAY_FORM_VALUES },
     validate: zodResolver(v2raySchema),
   })
 
+  const handleSubmit = onSubmit((values) => {
+    const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = values
+
+    if (protocol === 'vless') {
+      const params: Record<string, unknown> = {
+        type: net,
+        security: tls,
+        path,
+        host,
+        headerType: type,
+        sni,
+        flow,
+        allowInsecure,
+      }
+
+      if (alpn !== '') params.alpn = alpn
+
+      if (net === 'grpc') params.serviceName = path
+
+      if (net === 'kcp') params.seed = path
+
+      return generateURL({
+        protocol,
+        username: id,
+        host: add,
+        port,
+        hash: ps,
+        params,
+      })
+    }
+
+    if (protocol === 'vmess') {
+      const body: Record<string, unknown> = structuredClone(values)
+
+      switch (net) {
+        case 'kcp':
+        case 'tcp':
+        default:
+          body.type = ''
+      }
+
+      switch (body.net) {
+        case 'ws':
+        case 'h2':
+        case 'grpc':
+        case 'kcp':
+        default:
+          if (body.net === 'tcp' && body.type === 'http') {
+            break
+          }
+
+          body.path = ''
+      }
+
+      if (!(body.protocol === 'vless' && body.tls === 'xtls')) {
+        delete body.flow
+      }
+
+      return 'vmess://' + Base64.encode(JSON.stringify(body))
+    }
+  })
+
   return (
-    <form
-      onSubmit={onSubmit((values) => {
-        const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = values
-
-        if (protocol === 'vless') {
-          const params: Record<string, unknown> = {
-            type: net,
-            security: tls,
-            path,
-            host,
-            headerType: type,
-            sni,
-            flow,
-            allowInsecure,
-          }
-
-          if (alpn !== '') {
-            params.alpn = alpn
-          }
-
-          if (net === 'grpc') {
-            params.serviceName = path
-          }
-
-          if (net === 'kcp') {
-            params.seed = path
-          }
-
-          return generateURL({
-            protocol,
-            username: id,
-            host: add,
-            port,
-            hash: ps,
-            params,
-          })
-        }
-
-        if (protocol === 'vmess') {
-          const body: Record<string, unknown> = structuredClone(values)
-
-          switch (net) {
-            case 'kcp':
-            case 'tcp':
-            default:
-              body.type = ''
-          }
-          switch (body.net) {
-            case 'ws':
-            case 'h2':
-            case 'grpc':
-            case 'kcp':
-            default:
-              if (body.net === 'tcp' && body.type === 'http') {
-                break
-              }
-              body.path = ''
-          }
-
-          if (!(body.protocol === 'vless' && body.tls === 'xtls')) {
-            delete body.flow
-          }
-
-          return 'vmess://' + Base64.encode(JSON.stringify(body))
-        }
-      })}
-    >
+    <form onSubmit={handleSubmit}>
       <Select
         label="Protocol"
         data={[
@@ -211,20 +202,65 @@ const V2rayForm = () => {
 }
 
 const SSForm = () => {
-  const { values, onSubmit, getInputProps, reset } = useForm({
-    initialValues: {
-      plugin: '',
-      method: 'aes-128-gcm',
-      obfs: '',
-    },
+  const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof ssSchema>>({
+    initialValues: DEFAULT_SS_FORM_VALUES,
+    validate: zodResolver(ssSchema),
+  })
+
+  const handleSubmit = onSubmit((values) => {
+    /* ss://BASE64(method:password)@server:port#name */
+    let link = `ss://${Base64.encode(`${values.method}:${values.password}`)}@${values.server}:${values.port}/`
+
+    if (values.plugin) {
+      const plugin: string[] = [values.plugin]
+
+      if (values.plugin === 'v2ray-plugin') {
+        if (values.tls) {
+          plugin.push('tls')
+        }
+
+        if (values.mode !== 'websocket') {
+          plugin.push('mode=' + values.mode)
+        }
+
+        if (values.host) {
+          plugin.push('host=' + values.host)
+        }
+
+        if (values.path) {
+          if (!values.path.startsWith('/')) {
+            values.path = '/' + values.path
+          }
+
+          plugin.push('path=' + values.path)
+        }
+
+        if (values.impl) {
+          plugin.push('impl=' + values.impl)
+        }
+      } else {
+        plugin.push('obfs=' + values.obfs)
+        plugin.push('obfs-host=' + values.host)
+
+        if (values.obfs === 'http') {
+          plugin.push('obfs-path=' + values.path)
+        }
+
+        if (values.impl) {
+          plugin.push('impl=' + values.impl)
+        }
+      }
+
+      link += `?plugin=${encodeURIComponent(plugin.join(';'))}`
+    }
+
+    link += values.name.length ? `#${encodeURIComponent(values.name)}` : ''
+
+    return link
   })
 
   return (
-    <form
-      onSubmit={onSubmit((values) => {
-        console.log(values)
-      })}
-    >
+    <form onSubmit={handleSubmit}>
       <TextInput label="Name" {...getInputProps('name')} />
 
       <TextInput label="Host" withAsterisk {...getInputProps('server')} />

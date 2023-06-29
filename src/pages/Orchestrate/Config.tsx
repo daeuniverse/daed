@@ -51,6 +51,7 @@ export const Config = () => {
                       oldName: config.name,
                     })
                   }
+
                   openRenameFormModal()
                 }}
               >
