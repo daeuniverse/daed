@@ -103,7 +103,6 @@ export const httpSchema = z.object({
   password: z.string().default(''),
   host: z.string().nonempty(),
   port: z.number().min(0).max(65535),
-  protocol: z.enum(['http', 'https']).default('http'),
   name: z.string().default(''),
 })
 
@@ -112,6 +111,5 @@ export const socks5Schema = z.object({
   password: z.string().default(''),
   host: z.string().nonempty(),
   port: z.number().min(0).max(65535),
-  protocol: z.literal('socks5'),
   name: z.string().default(''),
 })

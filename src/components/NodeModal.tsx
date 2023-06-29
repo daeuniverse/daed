@@ -5,11 +5,13 @@ import { z } from 'zod'
 
 import {
   DEFAULT_HTTP_FORM_VALUES,
+  DEFAULT_SOCKS5_FORM_VALUES,
   DEFAULT_SSR_FORM_VALUES,
   DEFAULT_SS_FORM_VALUES,
   DEFAULT_TROJAN_FORM_VALUES,
   DEFAULT_V2RAY_FORM_VALUES,
   httpSchema,
+  socks5Schema,
   ssSchema,
   ssrSchema,
   trojanSchema,
@@ -557,8 +559,11 @@ const TrojanForm = () => {
 }
 
 const HTTPForm = () => {
-  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof httpSchema>>({
-    initialValues: DEFAULT_HTTP_FORM_VALUES,
+  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof httpSchema> & { protocol: 'http' | 'https' }>({
+    initialValues: {
+      protocol: 'http',
+      ...DEFAULT_HTTP_FORM_VALUES,
+    },
     validate: zodResolver(httpSchema),
   })
 
@@ -607,16 +612,31 @@ const HTTPForm = () => {
 }
 
 const Socks5Form = () => {
-  const { onSubmit, getInputProps, reset } = useForm({
-    initialValues: {},
+  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof socks5Schema>>({
+    initialValues: DEFAULT_SOCKS5_FORM_VALUES,
+    validate: zodResolver(socks5Schema),
+  })
+
+  const handleSubmit = onSubmit((values) => {
+    const generateURLParams: GenerateURLParams = {
+      protocol: 'socks5',
+      host: values.host,
+      port: values.port,
+      hash: values.name,
+    }
+
+    if (values.username && values.password) {
+      Object.assign(generateURLParams, {
+        username: values.username,
+        password: values.password,
+      })
+    }
+
+    return generateURL(generateURLParams)
   })
 
   return (
-    <form
-      onSubmit={onSubmit((values) => {
-        console.log(values)
-      })}
-    >
+    <form onSubmit={handleSubmit}>
       <TextInput label="Name" {...getInputProps('name')} />
 
       <TextInput label="Host" withAsterisk {...getInputProps('host')} />
