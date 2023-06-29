@@ -6,9 +6,11 @@ import { z } from 'zod'
 import {
   DEFAULT_SSR_FORM_VALUES,
   DEFAULT_SS_FORM_VALUES,
+  DEFAULT_TROJAN_FORM_VALUES,
   DEFAULT_V2RAY_FORM_VALUES,
   ssSchema,
   ssrSchema,
+  trojanSchema,
   v2raySchema,
 } from '~/constants'
 import { generateURL } from '~/utils/node'
@@ -446,19 +448,50 @@ const SSRForm = () => {
 }
 
 const TrojanForm = () => {
-  const { values, onSubmit, getInputProps, reset } = useForm({
-    initialValues: {
-      method: 'origin',
-      obfs: 'none',
-    },
+  const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof trojanSchema>>({
+    initialValues: DEFAULT_TROJAN_FORM_VALUES,
+    validate: zodResolver(trojanSchema),
+  })
+
+  const handleSubmit = onSubmit((values) => {
+    const query: Record<string, unknown> = {
+      allowInsecure: values.allowInsecure,
+    }
+
+    if (values.peer !== '') {
+      query.sni = values.peer
+    }
+
+    let protocol = 'trojan'
+
+    if (values.method !== 'origin' || values.obfs !== 'none') {
+      protocol = 'trojan-go'
+      query.type = values.obfs === 'none' ? 'original' : 'ws'
+
+      if (values.method === 'shadowsocks') {
+        query.encryption = `ss;${values.ssCipher};${values.ssPassword}`
+      }
+
+      if (query.type === 'ws') {
+        query.host = values.host || ''
+        query.path = values.path || '/'
+      }
+
+      delete query.allowInsecure
+    }
+
+    return generateURL({
+      protocol: protocol,
+      username: values.password,
+      host: values.server,
+      port: values.port,
+      hash: values.name,
+      params: query,
+    })
   })
 
   return (
-    <form
-      onSubmit={onSubmit((values) => {
-        console.log(values)
-      })}
-    >
+    <form onSubmit={handleSubmit}>
       <TextInput label="Name" {...getInputProps('name')} />
 
       <TextInput label="Host" withAsterisk {...getInputProps('server')} />
