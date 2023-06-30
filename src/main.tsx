@@ -17,7 +17,7 @@ import ReactDOM from 'react-dom/client'
 import { App } from '~/App'
 import { i18nInit } from '~/i18n'
 
-import { EDITOR_LANGUAGE_ROUTINGA, EDITOR_THEME_LIGHT } from './constants'
+import { EDITOR_LANGUAGE_ROUTINGA, EDITOR_THEME_LIGHT } from './constants/editor'
 
 dayjs.extend(duration)
 
