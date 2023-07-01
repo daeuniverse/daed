@@ -37,6 +37,15 @@ rules:
     - blankLine: always
       prev: '*'
       next: if
+    - blankLine: always
+      prev: 'if'
+      next: '*'
+    - blankLine: always
+      prev: '*'
+      next: switch
+    - blankLine: always
+      prev: switch
+      next: '*'
   react/prop-types: off
   react/display-name: off
   react/self-closing-comp: error

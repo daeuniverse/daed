@@ -58,6 +58,7 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
                         oldName: name,
                       })
                     }
+
                     openRenameFormModal()
                   }}
                 >

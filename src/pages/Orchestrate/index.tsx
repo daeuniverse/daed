@@ -12,7 +12,7 @@ import {
   useSubscriptionsQuery,
 } from '~/apis'
 import { DraggableResourceType, DraggingResource } from '~/constants'
-import { restrictToElement } from '~/utils/dnd-kit'
+import { restrictToElement } from '~/utils'
 
 import { Config } from './Config'
 import { DNS } from './DNS'

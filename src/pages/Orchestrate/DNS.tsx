@@ -56,6 +56,7 @@ export const DNS = () => {
                       oldName: dns.name,
                     })
                   }
+
                   openRenameFormModal()
                 }}
               >
