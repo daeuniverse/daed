@@ -6,7 +6,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants'
+import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants/editor'
 import { colorSchemeAtom } from '~/store'
 
 import { FormActions } from './FormActions'

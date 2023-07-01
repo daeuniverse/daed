@@ -44,7 +44,8 @@ import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
-import { DialMode, DraggableResourceType, EDITOR_OPTIONS, LogLevel, RuleType } from '~/constants'
+import { DialMode, DraggableResourceType, LogLevel, RuleType } from '~/constants'
+import { EDITOR_OPTIONS } from '~/constants/editor'
 import { Policy } from '~/schemas/gql/graphql'
 
 export const ExperimentPage = () => {
