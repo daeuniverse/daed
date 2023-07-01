@@ -1,4 +1,5 @@
 import { MantineProvider, Modal, Stack, Tabs } from '@mantine/core'
+import { useTranslation } from 'react-i18next'
 
 import { HTTPForm } from './HTTPForm'
 import { SSForm } from './SSForm'
@@ -8,14 +9,13 @@ import { TrojanForm } from './TrojanForm'
 import { V2rayForm } from './V2rayForm'
 
 export const NodeModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
+  const { t } = useTranslation()
+
   return (
-    <Modal opened={opened} onClose={onClose} title="Configure Node" size="md">
+    <Modal opened={opened} onClose={onClose} title={t('configureNode.title')} size="md">
       <MantineProvider
         theme={{
-          components: {
-            TabsPanel: { defaultProps: { pt: 'md' } },
-            Stack: { defaultProps: { spacing: 'sm' } },
-          },
+          components: { TabsPanel: { defaultProps: { pt: 'md' } }, Stack: { defaultProps: { spacing: 'sm' } } },
         }}
         inherit
       >

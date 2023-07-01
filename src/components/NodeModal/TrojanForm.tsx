@@ -1,5 +1,6 @@
 import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
@@ -7,6 +8,7 @@ import { DEFAULT_TROJAN_FORM_VALUES, trojanSchema } from '~/constants'
 import { generateURL } from '~/utils'
 
 export const TrojanForm = () => {
+  const { t } = useTranslation()
   const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof trojanSchema>>({
     initialValues: DEFAULT_TROJAN_FORM_VALUES,
     validate: zodResolver(trojanSchema),
@@ -51,16 +53,16 @@ export const TrojanForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <TextInput label="Name" {...getInputProps('name')} />
+      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
 
-      <TextInput label="Host" withAsterisk {...getInputProps('server')} />
+      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('server')} />
 
-      <NumberInput label="Port" withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
 
-      <TextInput label="Password" withAsterisk {...getInputProps('password')} />
+      <TextInput label={t('configureNode.password')} withAsterisk {...getInputProps('password')} />
 
       <Select
-        label="Protocol"
+        label={t('configureNode.protocol')}
         withAsterisk
         data={[
           { label: 'origin', value: 'origin' },
@@ -98,15 +100,15 @@ export const TrojanForm = () => {
       <Select
         label="Obfs"
         data={[
-          { label: 'No obfuscation', value: 'none' },
+          { label: t('configureNode.noObfuscation'), value: 'none' },
           { label: 'websocket', value: 'websocket' },
         ]}
         {...getInputProps('obfs')}
       />
 
-      {values.obfs === 'websocket' && <TextInput label="Websocket Host" {...getInputProps('host')} />}
+      {values.obfs === 'websocket' && <TextInput label={t('configureNode.websocketHost')} {...getInputProps('host')} />}
 
-      {values.obfs === 'websocket' && <TextInput label="Websocket Path" {...getInputProps('path')} />}
+      {values.obfs === 'websocket' && <TextInput label={t('configureNode.websocketPath')} {...getInputProps('path')} />}
 
       <FormActions reset={reset} />
     </form>

@@ -1,12 +1,14 @@
 import { NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { Base64 } from 'js-base64'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
 import { DEFAULT_SS_FORM_VALUES, ssSchema } from '~/constants'
 
 export const SSForm = () => {
+  const { t } = useTranslation()
   const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof ssSchema>>({
     initialValues: DEFAULT_SS_FORM_VALUES,
     validate: zodResolver(ssSchema),
@@ -66,13 +68,13 @@ export const SSForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <TextInput label="Name" {...getInputProps('name')} />
+      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
 
-      <TextInput label="Host" withAsterisk {...getInputProps('server')} />
+      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('server')} />
 
-      <NumberInput label="Port" withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
 
-      <TextInput label="Password" withAsterisk {...getInputProps('password')} />
+      <TextInput label={t('configureNode.password')} withAsterisk {...getInputProps('password')} />
 
       <Select
         label="Method"

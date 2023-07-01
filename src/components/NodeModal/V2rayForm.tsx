@@ -1,6 +1,7 @@
 import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { Base64 } from 'js-base64'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
@@ -8,6 +9,7 @@ import { DEFAULT_V2RAY_FORM_VALUES, v2raySchema } from '~/constants'
 import { generateURL } from '~/utils'
 
 export const V2rayForm = () => {
+  const { t } = useTranslation()
   const { values, onSubmit, getInputProps, reset } = useForm<
     z.infer<typeof v2raySchema> & { protocol: 'vless' | 'vmess' }
   >({
@@ -80,7 +82,7 @@ export const V2rayForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Select
-        label="Protocol"
+        label={t('configureNode.protocol')}
         data={[
           { label: 'VMESS', value: 'vmess' },
           { label: 'VLESS', value: 'vless' },
@@ -88,11 +90,11 @@ export const V2rayForm = () => {
         {...getInputProps('protocol')}
       />
 
-      <TextInput label="Name" {...getInputProps('ps')} />
+      <TextInput label={t('configureNode.name')} {...getInputProps('ps')} />
 
-      <TextInput label="Host" withAsterisk {...getInputProps('add')} />
+      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('add')} />
 
-      <NumberInput label="Port" withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
 
       <TextInput label="ID" withAsterisk {...getInputProps('id')} />
 
@@ -100,7 +102,7 @@ export const V2rayForm = () => {
 
       {values.protocol === 'vmess' && (
         <Select
-          label="Security"
+          label={t('configureNode.security')}
           data={[
             { label: 'auto', value: 'auto' },
             { label: 'aes-128-gcm', value: 'aes-128-gcm' },
@@ -142,7 +144,7 @@ export const V2rayForm = () => {
       )}
 
       <Select
-        label="Network"
+        label={t('configureNode.network')}
         withAsterisk
         data={[
           { label: 'TCP', value: 'tcp' },
@@ -156,10 +158,10 @@ export const V2rayForm = () => {
 
       {values.net === 'tcp' && (
         <Select
-          label="Type"
+          label={t('configureNode.type')}
           data={[
-            { label: 'No obfuscation', value: 'none' },
-            { label: 'Obfuscated as Video Calls (SRTP)', value: 'srtp' },
+            { label: t('configureNode.noObfuscation'), value: 'none' },
+            { label: t('configureNode.httpObfuscation'), value: 'srtp' },
           ]}
           {...getInputProps('type')}
         />
@@ -167,14 +169,14 @@ export const V2rayForm = () => {
 
       {values.net === 'kcp' && (
         <Select
-          label="Type"
+          label={t('configureNode.type')}
           data={[
-            { label: 'No obfuscation', value: 'none' },
-            { label: 'Obfuscated as Video Calls (SRTP)', value: 'srtp' },
-            { label: 'Obfuscated as Bittorrent (uTP)', value: 'utp' },
-            { label: 'Obfuscated as Wechat Video Calls', value: 'wechat-video' },
-            { label: 'Obfuscated as DTLS1.2 Packets (forcibly TLS on)', value: 'dtls' },
-            { label: 'Obfuscated as WireGuard Packets', value: 'wireguard' },
+            { label: t('configureNode.noObfuscation'), value: 'none' },
+            { label: t('configureNode.srtpObfuscation'), value: 'srtp' },
+            { label: t('configureNode.utpObfuscation'), value: 'utp' },
+            { label: t('configureNode.wechatVideoObfuscation'), value: 'wechat-video' },
+            { label: t('configureNode.dtlsObfuscation'), value: 'dtls' },
+            { label: t('configureNode.wireguardObfuscation'), value: 'wireguard' },
           ]}
           {...getInputProps('type')}
         />
@@ -183,13 +185,17 @@ export const V2rayForm = () => {
       {(values.net === 'ws' ||
         values.net === 'h2' ||
         values.tls === 'tls' ||
-        (values.net === 'tcp' && values.type === 'http')) && <TextInput label="Host" {...getInputProps('host')} />}
+        (values.net === 'tcp' && values.type === 'http')) && (
+        <TextInput label={t('configureNode.host')} {...getInputProps('host')} />
+      )}
 
       {values.tls === 'tls' && <TextInput label="Alpn" {...getInputProps('alpn')} />}
 
       {values.net === 'ws' ||
         values.net === 'h2' ||
-        (values.net === 'tcp' && values.type === 'http' && <TextInput label="Path" {...getInputProps('path')} />)}
+        (values.net === 'tcp' && values.type === 'http' && (
+          <TextInput label={t('configureNode.path')} {...getInputProps('path')} />
+        ))}
 
       {values.net === 'kcp' && <TextInput label="Seed" {...getInputProps('path')} />}
 

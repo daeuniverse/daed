@@ -1,5 +1,6 @@
 import { NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
@@ -7,6 +8,7 @@ import { DEFAULT_HTTP_FORM_VALUES, httpSchema } from '~/constants'
 import { GenerateURLParams, generateURL } from '~/utils'
 
 export const HTTPForm = () => {
+  const { t } = useTranslation()
   const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof httpSchema> & { protocol: 'http' | 'https' }>({
     initialValues: {
       protocol: 'http',
@@ -36,7 +38,7 @@ export const HTTPForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Select
-        label="Protocol"
+        label={t('configureNode.protocol')}
         data={[
           { label: 'HTTP', value: 'http' },
           { label: 'HTTPS', value: 'https' },
@@ -44,15 +46,15 @@ export const HTTPForm = () => {
         {...getInputProps('protocol')}
       />
 
-      <TextInput label="Name" {...getInputProps('name')} />
+      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
 
-      <TextInput label="Host" withAsterisk {...getInputProps('host')} />
+      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('host')} />
 
-      <NumberInput label="Port" withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
 
-      <TextInput label="Username" {...getInputProps('username')} />
+      <TextInput label={t('configureNode.username')} {...getInputProps('username')} />
 
-      <TextInput label="Password" {...getInputProps('password')} />
+      <TextInput label={t('configureNode.password')} {...getInputProps('password')} />
 
       <FormActions reset={reset} />
     </form>

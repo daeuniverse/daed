@@ -1,5 +1,6 @@
 import { NumberInput, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
@@ -7,6 +8,7 @@ import { DEFAULT_SOCKS5_FORM_VALUES, socks5Schema } from '~/constants'
 import { GenerateURLParams, generateURL } from '~/utils'
 
 export const Socks5Form = () => {
+  const { t } = useTranslation()
   const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof socks5Schema>>({
     initialValues: DEFAULT_SOCKS5_FORM_VALUES,
     validate: zodResolver(socks5Schema),
@@ -32,15 +34,15 @@ export const Socks5Form = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <TextInput label="Name" {...getInputProps('name')} />
+      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
 
-      <TextInput label="Host" withAsterisk {...getInputProps('host')} />
+      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('host')} />
 
-      <NumberInput label="Port" withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
 
-      <TextInput label="Username" {...getInputProps('username')} />
+      <TextInput label={t('configureNode.username')} {...getInputProps('username')} />
 
-      <TextInput label="Password" {...getInputProps('password')} />
+      <TextInput label={t('configureNode.password')} {...getInputProps('password')} />
 
       <FormActions reset={reset} />
     </form>

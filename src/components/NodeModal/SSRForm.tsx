@@ -1,12 +1,14 @@
 import { NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { Base64 } from 'js-base64'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
 import { DEFAULT_SSR_FORM_VALUES, ssrSchema } from '~/constants'
 
 export const SSRForm = () => {
+  const { t } = useTranslation()
   const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof ssrSchema>>({
     initialValues: DEFAULT_SSR_FORM_VALUES,
     validate: zodResolver(ssrSchema),
@@ -25,13 +27,13 @@ export const SSRForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <TextInput label="Name" {...getInputProps('name')} />
+      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
 
-      <TextInput label="Host" withAsterisk {...getInputProps('server')} />
+      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('server')} />
 
-      <NumberInput label="Port" withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
 
-      <TextInput label="Password" withAsterisk {...getInputProps('password')} />
+      <TextInput label={t('configureNode.password')} withAsterisk {...getInputProps('password')} />
 
       <Select
         label="Method"
@@ -65,7 +67,7 @@ export const SSRForm = () => {
       />
 
       <Select
-        label="Protocol"
+        label={t('configureNode.protocol')}
         withAsterisk
         data={[
           { label: 'origin', value: 'origin' },
@@ -79,10 +81,12 @@ export const SSRForm = () => {
         {...getInputProps('proto')}
       />
 
-      {values.proto !== 'origin' && <TextInput label="Protocol Param" {...getInputProps('protoParam')} />}
+      {values.proto !== 'origin' && (
+        <TextInput label={t('configureNode.protocolParam')} {...getInputProps('protoParam')} />
+      )}
 
       <Select
-        label="Obfs"
+        label={t('configureNode.obfs')}
         withAsterisk
         data={[
           { label: 'plain', value: 'plain' },
@@ -94,7 +98,7 @@ export const SSRForm = () => {
         {...getInputProps('obfs')}
       />
 
-      {values.obfs !== 'plain' && <TextInput label="Obfs Param" {...getInputProps('obfsParam')} />}
+      {values.obfs !== 'plain' && <TextInput label={t('configureNode.obfsParam')} {...getInputProps('obfsParam')} />}
 
       <FormActions reset={reset} />
     </form>
