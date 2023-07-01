@@ -63,7 +63,7 @@ export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) 
 
     link += values.name.length ? `#${encodeURIComponent(values.name)}` : ''
 
-    return link
+    return onLinkGeneration(link)
   })
 
   return (

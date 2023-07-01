@@ -19,7 +19,7 @@ export const HTTPForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string
 
   const handleSubmit = onSubmit((values) => {
     const generateURLParams: GenerateURLParams = {
-      protocol: `${values.protocol}-proxy`,
+      protocol: values.protocol,
       host: values.host,
       port: values.port,
       hash: values.name,
@@ -32,7 +32,7 @@ export const HTTPForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string
       })
     }
 
-    return generateURL(generateURLParams)
+    return onLinkGeneration(generateURL(generateURLParams))
   })
 
   return (

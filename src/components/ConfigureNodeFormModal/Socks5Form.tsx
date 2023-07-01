@@ -29,7 +29,7 @@ export const Socks5Form = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
       })
     }
 
-    return generateURL(generateURLParams)
+    return onLinkGeneration(generateURL(generateURLParams))
   })
 
   return (

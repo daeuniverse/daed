@@ -41,14 +41,16 @@ export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
       delete query.allowInsecure
     }
 
-    return generateURL({
-      protocol: protocol,
-      username: values.password,
-      host: values.server,
-      port: values.port,
-      hash: values.name,
-      params: query,
-    })
+    return onLinkGeneration(
+      generateURL({
+        protocol: protocol,
+        username: values.password,
+        host: values.server,
+        port: values.port,
+        hash: values.name,
+        params: query,
+      })
+    )
   })
 
   return (

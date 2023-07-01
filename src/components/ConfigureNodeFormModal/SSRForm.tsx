@@ -16,13 +16,15 @@ export const SSRForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string)
 
   const handleSubmit = onSubmit((values) => {
     /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
-    return `ssr://${Base64.encode(
-      `${values.server}:${values.port}:${values.proto}:${values.method}:${values.obfs}:${Base64.encodeURI(
-        values.password
-      )}/?remarks=${Base64.encodeURI(values.name)}&protoparam=${Base64.encodeURI(
-        values.protoParam
-      )}&obfsparam=${Base64.encodeURI(values.obfsParam)}`
-    )}`
+    return onLinkGeneration(
+      `ssr://${Base64.encode(
+        `${values.server}:${values.port}:${values.proto}:${values.method}:${values.obfs}:${Base64.encodeURI(
+          values.password
+        )}/?remarks=${Base64.encodeURI(values.name)}&protoparam=${Base64.encodeURI(
+          values.protoParam
+        )}&obfsparam=${Base64.encodeURI(values.obfsParam)}`
+      )}`
+    )
   })
 
   return (
