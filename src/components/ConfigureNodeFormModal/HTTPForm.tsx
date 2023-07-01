@@ -7,7 +7,7 @@ import { FormActions } from '~/components/FormActions'
 import { DEFAULT_HTTP_FORM_VALUES, httpSchema } from '~/constants'
 import { GenerateURLParams, generateURL } from '~/utils'
 
-export const HTTPForm = () => {
+export const HTTPForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
   const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof httpSchema> & { protocol: 'http' | 'https' }>({
     initialValues: {

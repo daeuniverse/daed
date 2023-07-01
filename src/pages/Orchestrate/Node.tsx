@@ -1,10 +1,11 @@
 import { ActionIcon, Spoiler, Text, useMantineTheme } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconCloud, IconDetails } from '@tabler/icons-react'
+import { IconCloud, IconDetails, IconFileImport } from '@tabler/icons-react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '~/apis'
+import { ConfigureNodeFormModal } from '~/components'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { QRCodeModal, QRCodeModalRef } from '~/components/QRCodeModal'
@@ -18,13 +19,25 @@ export const NodeResource = () => {
   const [openedQRCodeModal, { open: openQRCodeModal, close: closeQRCodeModal }] = useDisclosure(false)
   const [openedImportNodeFormModal, { open: openImportNodeFormModal, close: closeImportNodeFormModal }] =
     useDisclosure(false)
+  const [openedConfigureNodeFormModal, { open: openConfigureNodeFormModal, close: closeConfigureNodeFormModal }] =
+    useDisclosure(false)
   const qrCodeModalRef = useRef<QRCodeModalRef>(null)
   const { data: nodesQuery } = useNodesQuery()
   const removeNodesMutation = useRemoveNodesMutation()
   const importNodesMutation = useImportNodesMutation()
 
   return (
-    <Section title={t('node')} icon={<IconCloud />} onCreate={openImportNodeFormModal} bordered>
+    <Section
+      title={t('node')}
+      icon={<IconCloud />}
+      onCreate={openConfigureNodeFormModal}
+      actions={
+        <ActionIcon onClick={openImportNodeFormModal}>
+          <IconFileImport />
+        </ActionIcon>
+      }
+      bordered
+    >
       {nodesQuery?.nodes.edges.map(({ id, name, tag, protocol, link }) => (
         <DraggableResourceCard
           key={id}
@@ -84,6 +97,8 @@ export const NodeResource = () => {
           await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
         }}
       />
+
+      <ConfigureNodeFormModal opened={openedConfigureNodeFormModal} onClose={closeConfigureNodeFormModal} />
     </Section>
   )
 }

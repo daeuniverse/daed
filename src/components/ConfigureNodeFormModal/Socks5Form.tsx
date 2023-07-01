@@ -7,7 +7,7 @@ import { FormActions } from '~/components/FormActions'
 import { DEFAULT_SOCKS5_FORM_VALUES, socks5Schema } from '~/constants'
 import { GenerateURLParams, generateURL } from '~/utils'
 
-export const Socks5Form = () => {
+export const Socks5Form = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
   const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof socks5Schema>>({
     initialValues: DEFAULT_SOCKS5_FORM_VALUES,

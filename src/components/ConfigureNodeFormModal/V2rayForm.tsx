@@ -8,7 +8,7 @@ import { FormActions } from '~/components/FormActions'
 import { DEFAULT_V2RAY_FORM_VALUES, v2raySchema } from '~/constants'
 import { generateURL } from '~/utils'
 
-export const V2rayForm = () => {
+export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
   const { values, onSubmit, getInputProps, reset } = useForm<
     z.infer<typeof v2raySchema> & { protocol: 'vless' | 'vmess' }
@@ -38,14 +38,16 @@ export const V2rayForm = () => {
 
       if (net === 'kcp') params.seed = path
 
-      return generateURL({
-        protocol,
-        username: id,
-        host: add,
-        port,
-        hash: ps,
-        params,
-      })
+      return onLinkGeneration(
+        generateURL({
+          protocol,
+          username: id,
+          host: add,
+          port,
+          hash: ps,
+          params,
+        })
+      )
     }
 
     if (protocol === 'vmess') {
@@ -75,7 +77,7 @@ export const V2rayForm = () => {
         delete body.flow
       }
 
-      return 'vmess://' + Base64.encode(JSON.stringify(body))
+      return onLinkGeneration('vmess://' + Base64.encode(JSON.stringify(body)))
     }
   })
 
@@ -145,7 +147,6 @@ export const V2rayForm = () => {
 
       <Select
         label={t('configureNode.network')}
-        withAsterisk
         data={[
           { label: 'TCP', value: 'tcp' },
           { label: 'mKCP', value: 'kcp' },

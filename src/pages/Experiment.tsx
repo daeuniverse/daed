@@ -21,7 +21,7 @@ import {
 import { useDisclosure } from '@mantine/hooks'
 import { Prism } from '@mantine/prism'
 import Editor from '@monaco-editor/react'
-import { IconForms } from '@tabler/icons-react'
+import { IconFileImport, IconForms } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
 import { useRef, useState } from 'react'
@@ -33,18 +33,20 @@ import {
   useImportNodesMutation,
   useImportSubscriptionsMutation,
 } from '~/apis'
-import { ConfigFormDrawer } from '~/components/ConfigFormModal'
-import { CreateNodeFormModal } from '~/components/CreateNodeFormModal'
-import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
-import { DraggableResourceCard } from '~/components/DraggableResourceCard'
-import { DroppableGroupCard } from '~/components/DroppableGroupCard'
-import { GroupFormModal } from '~/components/GroupFormModal'
-import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
-import { NodeModal } from '~/components/NodeModal'
-import { PlainTextFormModal } from '~/components/PlainTextFormModal'
-import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
-import { Section } from '~/components/Section'
-import { SimpleCard } from '~/components/SimpleCard'
+import {
+  ConfigFormDrawer,
+  ConfigureNodeFormModal,
+  DraggableResourceBadge,
+  DraggableResourceCard,
+  DroppableGroupCard,
+  GroupFormModal,
+  ImportResourceFormModal,
+  PlainTextFormModal,
+  RenameFormModal,
+  RenameFormModalRef,
+  Section,
+  SimpleCard,
+} from '~/components'
 import { DialMode, DraggableResourceType, EDITOR_OPTIONS, LogLevel, RuleType } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
@@ -217,6 +219,8 @@ export const ExperimentPage = () => {
     useDisclosure(false)
   const [openedCreateGroupModal, { open: openCreateGroupModal, close: closeCreateGroupModal }] = useDisclosure(false)
   const [openedImportNodeModal, { open: openImportNodeModal, close: closeImportNodeModal }] = useDisclosure(false)
+  const [openedConfigureNodeFormModal, { open: openConfigureNodeFormModal, close: closeConfigureNodeFormModal }] =
+    useDisclosure(false)
   const [openedImportSubscriptionModal, { open: openImportSubscriptionModal, close: closeImportSubscriptionModal }] =
     useDisclosure(false)
 
@@ -504,7 +508,16 @@ export const ExperimentPage = () => {
             </Stack>
           </Section>
 
-          <Section title={t('node')} onCreate={openImportNodeModal} bordered>
+          <Section
+            title={t('node')}
+            onCreate={openConfigureNodeFormModal}
+            actions={
+              <ActionIcon onClick={openImportNodeModal}>
+                <IconFileImport />
+              </ActionIcon>
+            }
+            bordered
+          >
             <Stack>
               {fakeNodes.map(({ id, name, tag, protocol, link }) => (
                 <DraggableResourceCard
@@ -632,21 +645,9 @@ export const ExperimentPage = () => {
         }}
       />
 
-      <CreateNodeFormModal
-        opened={false}
-        onClose={() => {
-          //
-        }}
-      />
-
       <RenameFormModal ref={renameModalRef} opened={openedRenameModal} onClose={closeRenameModal} />
 
-      <NodeModal
-        opened
-        onClose={() => {
-          //
-        }}
-      />
+      <ConfigureNodeFormModal opened={openedConfigureNodeFormModal} onClose={closeConfigureNodeFormModal} />
     </Stack>
   )
 }

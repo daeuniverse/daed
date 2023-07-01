@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { FormActions } from '~/components/FormActions'
 import { DEFAULT_SSR_FORM_VALUES, ssrSchema } from '~/constants'
 
-export const SSRForm = () => {
+export const SSRForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
   const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof ssrSchema>>({
     initialValues: DEFAULT_SSR_FORM_VALUES,

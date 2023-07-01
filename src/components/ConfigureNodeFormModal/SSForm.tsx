@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { FormActions } from '~/components/FormActions'
 import { DEFAULT_SS_FORM_VALUES, ssSchema } from '~/constants'
 
-export const SSForm = () => {
+export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
   const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof ssSchema>>({
     initialValues: DEFAULT_SS_FORM_VALUES,

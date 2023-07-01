@@ -1,5 +1,9 @@
-import { MantineProvider, Modal, Stack, Tabs } from '@mantine/core'
+import { Divider, MantineProvider, Modal, Stack, Tabs, TextInput } from '@mantine/core'
+import { useForm, zodResolver } from '@mantine/form'
 import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
+
+import { useImportNodesMutation } from '~/apis'
 
 import { HTTPForm } from './HTTPForm'
 import { SSForm } from './SSForm'
@@ -8,11 +12,39 @@ import { Socks5Form } from './Socks5Form'
 import { TrojanForm } from './TrojanForm'
 import { V2rayForm } from './V2rayForm'
 
-export const NodeModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
+const schema = z.object({
+  tag: z.string().nonempty(),
+})
+
+export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
   const { t } = useTranslation()
+  const importNodesMutation = useImportNodesMutation()
+  const form = useForm<z.infer<typeof schema>>({
+    initialValues: { tag: '' },
+    validate: zodResolver(schema),
+  })
+
+  const onLinkGeneration = async (link: string) => {
+    const { hasErrors } = form.validate()
+
+    if (hasErrors) return
+
+    await importNodesMutation.mutateAsync([
+      {
+        link,
+        tag: form.values.tag,
+      },
+    ])
+
+    onClose()
+  }
 
   return (
     <Modal opened={opened} onClose={onClose} title={t('configureNode.title')} size="md">
+      <TextInput label={t('tag')} withAsterisk {...form.getInputProps('tag')} />
+
+      <Divider />
+
       <MantineProvider
         theme={{
           components: { TabsPanel: { defaultProps: { pt: 'md' } }, Stack: { defaultProps: { spacing: 'sm' } } },
@@ -31,37 +63,37 @@ export const NodeModal = ({ opened, onClose }: { opened: boolean; onClose: () =>
 
           <Tabs.Panel value="v2ray">
             <Stack>
-              <V2rayForm />
+              <V2rayForm onLinkGeneration={onLinkGeneration} />
             </Stack>
           </Tabs.Panel>
 
           <Tabs.Panel value="ss">
             <Stack>
-              <SSForm />
+              <SSForm onLinkGeneration={onLinkGeneration} />
             </Stack>
           </Tabs.Panel>
 
           <Tabs.Panel value="ssr">
             <Stack>
-              <SSRForm />
+              <SSRForm onLinkGeneration={onLinkGeneration} />
             </Stack>
           </Tabs.Panel>
 
           <Tabs.Panel value="trojan">
             <Stack>
-              <TrojanForm />
+              <TrojanForm onLinkGeneration={onLinkGeneration} />
             </Stack>
           </Tabs.Panel>
 
           <Tabs.Panel value="http">
             <Stack>
-              <HTTPForm />
+              <HTTPForm onLinkGeneration={onLinkGeneration} />
             </Stack>
           </Tabs.Panel>
 
           <Tabs.Panel value="socks5">
             <Stack>
-              <Socks5Form />
+              <Socks5Form onLinkGeneration={onLinkGeneration} />
             </Stack>
           </Tabs.Panel>
         </Tabs>

@@ -7,7 +7,7 @@ import { FormActions } from '~/components/FormActions'
 import { DEFAULT_TROJAN_FORM_VALUES, trojanSchema } from '~/constants'
 import { generateURL } from '~/utils'
 
-export const TrojanForm = () => {
+export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
   const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof trojanSchema>>({
     initialValues: DEFAULT_TROJAN_FORM_VALUES,
