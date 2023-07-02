@@ -3,7 +3,7 @@ import { forwardRef } from 'react'
 
 interface SelectItemWithDescriptionProps extends React.ComponentPropsWithoutRef<'div'> {
   label: React.ReactNode
-  description: React.ReactNode
+  description?: React.ReactNode
   selected?: boolean
 }
 
@@ -12,13 +12,15 @@ export const SelectItemWithDescription = forwardRef<HTMLDivElement, SelectItemWi
     <Stack ref={ref} spacing={4} {...props}>
       <Text>{label}</Text>
 
-      <Input.Description
-        sx={{
-          color: props.selected ? 'white' : undefined,
-        }}
-      >
-        {description}
-      </Input.Description>
+      {description && (
+        <Input.Description
+          sx={{
+            color: props.selected ? 'white' : undefined,
+          }}
+        >
+          {description}
+        </Input.Description>
+      )}
     </Stack>
   )
 )

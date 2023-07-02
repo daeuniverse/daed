@@ -34,6 +34,7 @@
   "address": "地址",
   "allowInsecure": "允许不安全",
   "autoConfigKernelParameter": "自动配置内核参数",
+  "autoDetect": "自动识别",
   "avatar": "头像",
   "checkInterval": "检测间隔",
   "checkTolerance": "检测公差",

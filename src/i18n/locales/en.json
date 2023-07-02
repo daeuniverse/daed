@@ -34,6 +34,7 @@
   "address": "address",
   "allowInsecure": "Allow Insecure",
   "autoConfigKernelParameter": "Auto Config Kernel Parameter",
+  "autoDetect": "Auto Detect",
   "avatar": "avatar",
   "checkInterval": "Check Interval",
   "checkTolerance": "Check Tolerance",

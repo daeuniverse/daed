@@ -171,27 +171,33 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
   const { data: generalQuery } = useGeneralQuery()
 
-  const wanInterfacesData: { value: string; label: string }[] = useMemo(() => {
+  const wanInterfacesData = useMemo(() => {
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
-      return interfaces
-        .filter(({ flag }) => !!flag.default)
-        .map(({ name, ip }) => ({
-          label: name,
-          value: name,
-          description: (
-            <Stack spacing="xs">
-              {ip.map((addr, i) => (
-                <Text key={i}>{addr}</Text>
-              ))}
-            </Stack>
-          ),
-        }))
+      return [
+        {
+          label: t('autoDetect'),
+          value: 'auto',
+        },
+        ...interfaces
+          .filter(({ flag }) => !!flag.default)
+          .map(({ name, ip }) => ({
+            label: name,
+            value: name,
+            description: (
+              <Stack spacing="xs">
+                {ip.map((addr, i) => (
+                  <Text key={i}>{addr}</Text>
+                ))}
+              </Stack>
+            ),
+          })),
+      ]
     }
 
     return []
-  }, [generalQuery?.general.interfaces])
+  }, [generalQuery?.general.interfaces, t])
 
   const lanInterfacesData: { value: string; label: string }[] = useMemo(() => {
     const interfaces = generalQuery?.general.interfaces
