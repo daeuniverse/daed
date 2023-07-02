@@ -29,11 +29,11 @@ import {
 } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
+import { useStore } from '@nanostores/react'
 import {
   IconBrandGithub,
   IconChevronDown,
   IconCloudCheck,
-  IconCloudComputing,
   IconCloudPause,
   IconLanguage,
   IconLogout,
@@ -52,7 +52,7 @@ import { z } from 'zod'
 import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUpdateNameMutation, useUserQuery } from '~/apis'
 import logo from '~/assets/logo.svg'
 import { i18n } from '~/i18n'
-import { tokenAtom } from '~/store'
+import { endpointURLAtom, tokenAtom } from '~/store'
 import { fileToBase64 } from '~/utils'
 
 import { FormActions } from './FormActions'
@@ -112,7 +112,7 @@ const accountSettingsSchema = z.object({
 })
 
 const getLinks = (t: TFunction) => {
-  const links = [{ link: '/orchestrate', label: t('orchestrate'), icon: <IconCloudComputing /> }]
+  const links = []
 
   if (import.meta.env.DEV) {
     links.push({ link: '/experiment', label: t('experiment'), icon: <IconTestPipe /> })
@@ -123,6 +123,7 @@ const getLinks = (t: TFunction) => {
 
 export const HeaderWithActions = () => {
   const { t } = useTranslation()
+  const endpointURL = useStore(endpointURLAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
@@ -168,18 +169,11 @@ export const HeaderWithActions = () => {
               </Group>
             </Anchor>
 
-            <Code fz="xs" fw={700}>
-              {import.meta.env.DEV ? (
-                'dev'
-              ) : (
-                <Anchor
-                  href={`https://github.com/daeuniverse/daed/commits/${import.meta.env.__VERSION__}`}
-                  target="_blank"
-                >
-                  {import.meta.env.__VERSION__}
-                </Anchor>
-              )}
-            </Code>
+            <Tooltip label={endpointURL} withArrow>
+              <Code fz="xs" fw={700}>
+                {generalQuery?.general.dae.version || import.meta.env.__VERSION__}
+              </Code>
+            </Tooltip>
           </Group>
 
           <Group spacing={matchSmallScreen ? 'xs' : 'md'}>
@@ -275,41 +269,54 @@ export const HeaderWithActions = () => {
 
             <Tooltip label={t('actions.switchRunning')} withArrow>
               <Box>
-                <Switch
-                  size="md"
-                  onLabel={<IconCloudCheck />}
-                  offLabel={<IconCloudPause />}
-                  disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
-                  checked={generalQuery?.general.dae.running}
-                  onChange={(e) => {
-                    runMutation.mutateAsync(!e.target.checked)
-                  }}
-                />
+                {matchSmallScreen ? (
+                  <Switch
+                    size="xs"
+                    disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
+                    checked={generalQuery?.general.dae.running}
+                    onChange={(e) => {
+                      runMutation.mutateAsync(!e.target.checked)
+                    }}
+                  />
+                ) : (
+                  <Switch
+                    size="md"
+                    onLabel={<IconCloudCheck />}
+                    offLabel={<IconCloudPause />}
+                    disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
+                    checked={generalQuery?.general.dae.running}
+                    onChange={(e) => {
+                      runMutation.mutateAsync(!e.target.checked)
+                    }}
+                  />
+                )}
               </Box>
             </Tooltip>
           </Group>
         </Group>
       </Container>
 
-      <Center>
-        <Tabs
-          variant="outline"
-          value={location.pathname}
-          onTabChange={(to) => navigate(`${to}`)}
-          classNames={{
-            tabsList: classes.tabsList,
-            tab: classes.tab,
-          }}
-        >
-          <Tabs.List>
-            {links.map(({ link, icon, label }) => (
-              <Tabs.Tab key={link} value={link} icon={icon}>
-                {label}
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-        </Tabs>
-      </Center>
+      {links.length > 0 && (
+        <Center>
+          <Tabs
+            variant="outline"
+            value={location.pathname}
+            onTabChange={(to) => navigate(`${to}`)}
+            classNames={{
+              tabsList: classes.tabsList,
+              tab: classes.tab,
+            }}
+          >
+            <Tabs.List>
+              {links.map(({ link, icon, label }) => (
+                <Tabs.Tab key={link} value={link} icon={icon}>
+                  {label}
+                </Tabs.Tab>
+              ))}
+            </Tabs.List>
+          </Tabs>
+        </Center>
+      )}
 
       <Drawer opened={openedBurger} onClose={closeBurger} size="100%">
         <SimpleGrid cols={3}>
