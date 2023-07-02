@@ -6,6 +6,7 @@ import {
   Burger,
   Button,
   Center,
+  Code,
   Container,
   Drawer,
   FileButton,
@@ -75,6 +76,10 @@ const useStyles = createStyles((theme) => ({
 
     '&:hover': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+    },
+
+    [theme.fn.smallerThan('sm')]: {
+      padding: 0,
     },
   },
 
@@ -149,17 +154,35 @@ export const HeaderWithActions = () => {
     <header className={classes.header}>
       <Container className={classes.mainSection}>
         <Group position="apart">
-          <Anchor component={Link} to="/">
-            <Group>
-              <Image radius="sm" src={logo} width={32} height={32} />
+          <Group spacing="sm">
+            <Anchor component={Link} to="/">
+              <Group spacing="sm">
+                <Image radius="sm" src={logo} width={32} height={32} />
 
-              <Title order={matchSmallScreen ? 5 : 2} color={theme.colorScheme === 'dark' ? theme.white : theme.black}>
-                daed
-              </Title>
-            </Group>
-          </Anchor>
+                <Title
+                  order={matchSmallScreen ? 5 : 2}
+                  color={theme.colorScheme === 'dark' ? theme.white : theme.black}
+                >
+                  daed
+                </Title>
+              </Group>
+            </Anchor>
 
-          <Group>
+            <Code fz="xs" fw={700}>
+              {import.meta.env.DEV ? (
+                'dev'
+              ) : (
+                <Anchor
+                  href={`https://github.com/daeuniverse/daed/commits/${import.meta.env.__VERSION__}`}
+                  target="_blank"
+                >
+                  {import.meta.env.__VERSION__}
+                </Anchor>
+              )}
+            </Code>
+          </Group>
+
+          <Group spacing={matchSmallScreen ? 'xs' : 'md'}>
             <Menu
               width={260}
               position="bottom-end"
