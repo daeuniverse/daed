@@ -126,6 +126,7 @@ export const useGeneralQuery = () => {
               dae {
                 running
                 modified
+                version
               }
               interfaces(up: $up) {
                 name

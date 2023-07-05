@@ -908,7 +908,7 @@ export type GeneralQuery = {
   __typename?: 'Query'
   general: {
     __typename?: 'General'
-    dae: { __typename?: 'Dae'; running: boolean; modified: boolean }
+    dae: { __typename?: 'Dae'; running: boolean; modified: boolean; version: string }
     interfaces: Array<{
       __typename?: 'Interface'
       name: string
@@ -2763,6 +2763,7 @@ export const GeneralDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'running' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'modified' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'version' } },
                     ],
                   },
                 },
