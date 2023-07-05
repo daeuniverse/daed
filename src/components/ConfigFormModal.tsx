@@ -146,7 +146,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
       checkToleranceMS: DEFAULT_CHECK_TOLERANCE_MS,
       sniffingTimeoutMS: DEFAULT_SNIFFING_TIMEOUT_MS,
       lanInterface: [],
-      wanInterface: [],
+      wanInterface: ['auto'],
       udpCheckDns: DEFAULT_UDP_CHECK_DNS,
       tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
       dialMode: DEFAULT_DIAL_MODE,
