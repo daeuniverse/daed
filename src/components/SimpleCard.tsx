@@ -26,7 +26,7 @@ export const SimpleCard = ({
 
   return (
     <Fragment>
-      <Indicator position="bottom-center" size={18} disabled={!selected}>
+      <Indicator position="bottom-center" size={12} disabled={!selected}>
         <Card withBorder shadow="sm">
           <Card.Section withBorder>
             <Group position="apart" spacing={0}>

@@ -221,14 +221,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
   const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
 
-  const logLevelMarks = useMemo(
-    () =>
-      logLevelSteps.map(([label], value) => ({
-        value,
-        label,
-      })),
-    [logLevelSteps]
-  )
+  const logLevelMarks = useMemo(() => logLevelSteps.map(([label], value) => ({ value, label })), [logLevelSteps])
 
   const createConfigMutation = useCreateConfigMutation()
   const updateConfigMutation = useUpdateConfigMutation()

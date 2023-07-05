@@ -34,7 +34,7 @@ export const Config = () => {
     useDisclosure(false)
 
   return (
-    <Section title={t('config')} icon={<IconSettings />} onCreate={openCreateConfigFormDrawer}>
+    <Section title={t('config')} icon={<IconSettings />} onCreate={openCreateConfigFormDrawer} bordered>
       {configsQuery?.configs.map((config) => (
         <SimpleCard
           key={config.id}

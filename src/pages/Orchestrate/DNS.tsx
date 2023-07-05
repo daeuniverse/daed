@@ -39,7 +39,7 @@ export const DNS = () => {
     useDisclosure(false)
 
   return (
-    <Section title={t('dns')} icon={<IconRoute />} onCreate={openCreateDNSFormModal}>
+    <Section title={t('dns')} icon={<IconRoute />} onCreate={openCreateDNSFormModal} bordered>
       {dnssQuery?.dnss.map((dns) => (
         <SimpleCard
           key={dns.id}

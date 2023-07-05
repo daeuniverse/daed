@@ -48,11 +48,10 @@ export const App = () => {
       primaryColor: 'violet',
       cursorType: 'pointer',
       components: {
-        Button: {
-          defaultProps: {
-            uppercase: true,
-          },
-        },
+        Stack: { defaultProps: { spacing: 'sm' } },
+        Group: { defaultProps: { spacing: 'sm' } },
+        Button: { defaultProps: { uppercase: true } },
+        ActionIcon: { defaultProps: { size: 'sm' } },
         Modal: {
           defaultProps: {
             size: 'lg',

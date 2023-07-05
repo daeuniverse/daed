@@ -12,9 +12,7 @@ import { Socks5Form } from './Socks5Form'
 import { TrojanForm } from './TrojanForm'
 import { V2rayForm } from './V2rayForm'
 
-const schema = z.object({
-  tag: z.string().nonempty(),
-})
+const schema = z.object({ tag: z.string().nonempty() })
 
 export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
   const { t } = useTranslation()
