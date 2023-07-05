@@ -6,7 +6,10 @@
   "homepage": "https://daeuniverse.github.io/daed",
   "repository": "https://github.com/daeuniverse/daed",
   "description": "A Web Dashboard For dae",
-  "author": "daeuniverse",
+  "author": {
+    "name": "daeuniverse",
+    "email": "dae@v2raya.org"
+  },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",

@@ -41,13 +41,17 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
 
   return (
     <Modal opened={opened} onClose={onClose} title={t('configureNode.title')} size="md">
-      <TextInput label={t('tag')} withAsterisk {...form.getInputProps('tag')} />
+      <TextInput size="xs" label={t('tag')} withAsterisk {...form.getInputProps('tag')} />
 
       <Divider />
 
       <MantineProvider
         theme={{
-          components: { TabsPanel: { defaultProps: { pt: 'md' } }, Stack: { defaultProps: { spacing: 'sm' } } },
+          components: {
+            Tabs: { defaultProps: { variant: 'outline' } },
+            TabsPanel: { defaultProps: { pt: 'md' } },
+            Stack: { defaultProps: { spacing: 'xs' } },
+          },
         }}
         inherit
       >

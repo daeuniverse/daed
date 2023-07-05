@@ -53,11 +53,6 @@ export const App = () => {
             uppercase: true,
           },
         },
-        Select: {
-          defaultProps: {
-            withinPortal: true,
-          },
-        },
         Modal: {
           defaultProps: {
             size: 'lg',
@@ -79,6 +74,19 @@ export const App = () => {
             },
           },
         },
+        Select: {
+          defaultProps: {
+            withinPortal: true,
+            size: 'xs',
+          },
+        },
+        MultiSelect: { defaultProps: { size: 'xs' } },
+        Switch: { defaultProps: { size: 'xs' } },
+        Checkbox: { defaultProps: { size: 'xs' } },
+        Radio: { defaultProps: { size: 'xs' } },
+        RadioGroup: { defaultProps: { size: 'xs' } },
+        TextInput: { defaultProps: { size: 'xs' } },
+        NumberInput: { defaultProps: { size: 'xs' } },
       },
     }),
     [colorScheme]
