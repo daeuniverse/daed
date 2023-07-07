@@ -29,7 +29,7 @@ export const App = () => {
       setColorScheme(toScheme)
       appStateAtom.setKey('preferredColorScheme', toScheme)
     },
-    [colorScheme]
+    [colorScheme],
   )
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export const App = () => {
         NumberInput: { defaultProps: { size: 'xs' } },
       },
     }),
-    [colorScheme]
+    [colorScheme],
   )
 
   return (

@@ -22,5 +22,5 @@ export const SelectItemWithDescription = forwardRef<HTMLDivElement, SelectItemWi
         </Input.Description>
       )}
     </Stack>
-  )
+  ),
 )

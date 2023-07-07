@@ -25,7 +25,7 @@ export const getModeRequest = (gqlClient: GraphQLClient) => {
       `),
       {
         paths: ['mode'],
-      }
+      },
     )
 
     return jsonStorage[0]
@@ -42,7 +42,7 @@ export const getDefaultsRequest = (gqlClient: GraphQLClient) => {
       `),
       {
         paths: ['defaultConfigID', 'defaultRoutingID', 'defaultDNSID', 'defaultGroupID'],
-      }
+      },
     )
 
     const [defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID] = data.jsonStorage
@@ -77,7 +77,7 @@ export const getInterfacesRequest = (gqlClient: GraphQLClient) => {
       `),
       {
         up: true,
-      }
+      },
     )
 }
 
@@ -95,7 +95,7 @@ export const useDefaultsQuery = () => {
         `),
         {
           paths: ['defaultConfigID', 'defaultRoutingID', 'defaultDNSID', 'defaultGroupID'],
-        }
+        },
       ),
   })
 
@@ -143,7 +143,7 @@ export const useGeneralQuery = () => {
         `),
         {
           up: true,
-        }
+        },
       ),
   })
 }
@@ -168,7 +168,7 @@ export const useNodesQuery = () => {
               }
             }
           }
-        `)
+        `),
       ),
   })
 }
@@ -199,7 +199,7 @@ export const useSubscriptionsQuery = () => {
               }
             }
           }
-        `)
+        `),
       ),
   })
 }
@@ -238,7 +238,7 @@ export const useConfigsQuery = () => {
               }
             }
           }
-        `)
+        `),
       ),
   })
 }
@@ -291,7 +291,7 @@ export const useGroupsQuery = () => {
               }
             }
           }
-        `)
+        `),
       ),
   })
 }
@@ -314,7 +314,7 @@ export const useRoutingsQuery = () => {
               }
             }
           }
-        `)
+        `),
       ),
   })
 }
@@ -346,7 +346,7 @@ export const useDNSsQuery = () => {
               selected
             }
           }
-        `)
+        `),
       ),
   })
 }
@@ -366,7 +366,7 @@ export const useUserQuery = () => {
               avatar
             }
           }
-        `)
+        `),
       ),
   })
 }

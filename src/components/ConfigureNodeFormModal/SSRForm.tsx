@@ -19,11 +19,11 @@ export const SSRForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string)
     return onLinkGeneration(
       `ssr://${Base64.encode(
         `${values.server}:${values.port}:${values.proto}:${values.method}:${values.obfs}:${Base64.encodeURI(
-          values.password
+          values.password,
         )}/?remarks=${Base64.encodeURI(values.name)}&protoparam=${Base64.encodeURI(
-          values.protoParam
-        )}&obfsparam=${Base64.encodeURI(values.obfsParam)}`
-      )}`
+          values.protoParam,
+        )}&obfsparam=${Base64.encodeURI(values.obfsParam)}`,
+      )}`,
     )
   })
 

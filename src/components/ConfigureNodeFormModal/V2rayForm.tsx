@@ -46,7 +46,7 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
           port,
           hash: ps,
           params,
-        })
+        }),
       )
     }
 

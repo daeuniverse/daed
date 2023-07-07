@@ -78,8 +78,8 @@ export const ExperimentPage = () => {
       }),
       {
         count: 2,
-      }
-    )
+      },
+    ),
   )
 
   const [fakeDnss, setFakeDnss] = useState(
@@ -92,8 +92,8 @@ export const ExperimentPage = () => {
       }),
       {
         count: 2,
-      }
-    )
+      },
+    ),
   )
 
   const [fakeRoutings, setFakeRoutings] = useState(
@@ -110,8 +110,8 @@ export const ExperimentPage = () => {
       }),
       {
         count: 2,
-      }
-    )
+      },
+    ),
   )
 
   const [fakeGroups, setFakeGroups] = useState(
@@ -126,7 +126,7 @@ export const ExperimentPage = () => {
           }),
           {
             count: faker.number.int({ min: 5, max: 10 }),
-          }
+          },
         ),
         subscriptions: faker.helpers.multiple(
           () => ({
@@ -135,14 +135,14 @@ export const ExperimentPage = () => {
           }),
           {
             count: 5,
-          }
+          },
         ),
         policy: faker.helpers.enumValue(Policy),
       }),
       {
         count: 2,
-      }
-    )
+      },
+    ),
   )
 
   const [fakeNodes, setFakeNodes] = useState(
@@ -165,8 +165,8 @@ export const ExperimentPage = () => {
       }),
       {
         count: 3,
-      }
-    )
+      },
+    ),
   )
 
   const [fakeSubscriptions, setFakeSubscriptions] = useState(
@@ -196,13 +196,13 @@ export const ExperimentPage = () => {
           }),
           {
             count: { min: 5, max: 10 },
-          }
+          },
         ),
       }),
       {
         count: 2,
-      }
-    )
+      },
+    ),
   )
 
   const [droppableGroupCardAccordionValues, setDroppableGroupCardAccordionValues] = useState<string[]>([])
@@ -488,7 +488,7 @@ export const ExperimentPage = () => {
 
                                       if (group) {
                                         group.subscriptions = group.subscriptions.filter(
-                                          (subscription) => subscription.id !== subscriptionId
+                                          (subscription) => subscription.id !== subscriptionId,
                                         )
                                       }
                                     })
@@ -556,7 +556,7 @@ export const ExperimentPage = () => {
                   name={name}
                   onRemove={() => {
                     setFakeSubscriptions((subscriptions) =>
-                      subscriptions.filter((subscription) => subscription.id !== id)
+                      subscriptions.filter((subscription) => subscription.id !== id),
                     )
                   }}
                 >

@@ -43,7 +43,7 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
           return response
         },
       }),
-    [endpointURL, token]
+    [endpointURL, token],
   )
 
   return (

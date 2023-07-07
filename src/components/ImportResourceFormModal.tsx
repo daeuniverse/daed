@@ -14,7 +14,7 @@ const schema = z.object({
         id: z.string(),
         link: z.string().url().nonempty(),
         tag: z.string().nonempty(),
-      })
+      }),
     )
     .nonempty(),
 })
@@ -51,7 +51,7 @@ export const ImportResourceFormModal = ({
           handleSubmit(values).then(() => {
             onClose()
             form.reset()
-          })
+          }),
         )}
       >
         <Flex gap={20} direction="column">

@@ -42,7 +42,7 @@ export const OrchestratePage = () => {
 
       if (type === DraggableResourceType.subscription) {
         const subscription = subscriptionsQuery?.subscriptions.find(
-          (subscription) => subscription.id === subscriptionID
+          (subscription) => subscription.id === subscriptionID,
         )
 
         return subscription?.tag || subscription?.link
@@ -50,7 +50,7 @@ export const OrchestratePage = () => {
 
       if (type === DraggableResourceType.subscription_node) {
         const subscription = subscriptionsQuery?.subscriptions.find(
-          (subscription) => subscription.id === subscriptionID
+          (subscription) => subscription.id === subscriptionID,
         )
         const node = subscription?.nodes.edges.find((node) => node.id === nodeID)
 
