@@ -153,7 +153,7 @@ export const HeaderWithActions = () => {
             {!matchSmallScreen && (
               <Tooltip label={endpointURL} withArrow>
                 <Code fz="xs" fw={700}>
-                  {generalQuery?.general.dae.version || import.meta.env.__VERSION__}
+                  {generalQuery?.general.dae.version}
                 </Code>
               </Tooltip>
             )}

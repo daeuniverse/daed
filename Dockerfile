@@ -24,6 +24,8 @@ RUN apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpk
 
 FROM alpine
 
+LABEL org.opencontainers.image.source=https://github.com/daeuniverse/daed
+
 RUN mkdir -p /usr/local/share/daed/
 RUN mkdir -p /etc/daed/
 RUN wget -O /usr/local/share/daed/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
