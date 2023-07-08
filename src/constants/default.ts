@@ -24,9 +24,11 @@ export const DEFAULT_TLS_IMPLEMENTATION = TLSImplementation.tls
 export const DEFAULT_UTLS_IMITATE = UTLSImitate.chrome_auto
 
 export const DEFAULT_CONFIG_NAME = 'global'
+export const DEFAULT_DNS_NAME = 'default'
+export const DEFAULT_ROUTING_NAME = 'default'
 export const DEFAULT_GROUP_NAME = 'proxy'
 
-export const DEFAULT_CONFIG_WITH_INTERFACE = (interfaces?: string[]): GlobalInput => ({
+export const DEFAULT_CONFIG_WITH_LAN_INTERFACEs = (interfaces: string[] = []): GlobalInput => ({
   logLevel: DEFAULT_LOG_LEVEL,
   tproxyPort: DEFAULT_TPROXY_PORT,
   tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
@@ -34,8 +36,8 @@ export const DEFAULT_CONFIG_WITH_INTERFACE = (interfaces?: string[]): GlobalInpu
   checkInterval: `${DEFAULT_CHECK_INTERVAL_SECONDS}s`,
   checkTolerance: `${DEFAULT_CHECK_TOLERANCE_MS}ms`,
   sniffingTimeout: `${DEFAULT_SNIFFING_TIMEOUT_MS}ms`,
-  lanInterface: interfaces ? interfaces : [],
-  wanInterface: interfaces ? interfaces : [],
+  lanInterface: interfaces,
+  wanInterface: ['auto'],
   udpCheckDns: DEFAULT_UDP_CHECK_DNS,
   tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
   tcpCheckHttpMethod: DEFAULT_TCP_CHECK_HTTP_METHOD,

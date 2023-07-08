@@ -32,7 +32,7 @@ export const useSetJsonStorageMutation = () => {
         {
           paths,
           values,
-        }
+        },
       )
     },
   })
@@ -52,7 +52,7 @@ export const useSetModeMutation = () => {
         {
           paths: ['mode'],
           values: [mode],
-        }
+        },
       )
     },
   })
@@ -75,7 +75,7 @@ export const useCreateConfigMutation = () => {
         {
           name,
           global,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -101,7 +101,7 @@ export const useUpdateConfigMutation = () => {
         {
           id,
           global,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -125,7 +125,7 @@ export const useRemoveConfigMutation = () => {
         `),
         {
           id,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -148,7 +148,7 @@ export const useSelectConfigMutation = () => {
         `),
         {
           id,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -173,7 +173,7 @@ export const useRenameConfigMutation = () => {
         {
           id,
           name,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -199,7 +199,7 @@ export const useCreateRoutingMutation = () => {
         {
           name,
           routing,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -225,7 +225,7 @@ export const useUpdateRoutingMutation = () => {
         {
           id,
           routing,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -249,7 +249,7 @@ export const useRemoveRoutingMutation = () => {
         `),
         {
           id,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -273,7 +273,7 @@ export const useSelectRoutingMutation = () => {
         `),
         {
           id,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -298,7 +298,7 @@ export const useRenameRoutingMutation = () => {
         {
           id,
           name,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -325,7 +325,7 @@ export const useCreateDNSMutation = () => {
         {
           name,
           dns,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -351,7 +351,7 @@ export const useUpdateDNSMutation = () => {
         {
           id,
           dns,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -375,7 +375,7 @@ export const useRemoveDNSMutation = () => {
         `),
         {
           id,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -398,7 +398,7 @@ export const useSelectDNSMutation = () => {
         `),
         {
           id,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -423,7 +423,7 @@ export const useRenameDNSMutation = () => {
         {
           id,
           name,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -450,7 +450,7 @@ export const useCreateGroupMutation = () => {
           name,
           policy,
           policyParams,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -473,7 +473,7 @@ export const useRemoveGroupMutation = () => {
         `),
         {
           id,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -498,7 +498,7 @@ export const useGroupSetPolicyMutation = () => {
           id,
           policy,
           policyParams,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -523,7 +523,7 @@ export const useRenameGroupMutation = () => {
         {
           id,
           name,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -548,7 +548,7 @@ export const useGroupAddNodesMutation = () => {
         {
           id,
           nodeIDs,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -573,7 +573,7 @@ export const useGroupDelNodesMutation = () => {
         {
           id,
           nodeIDs,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -598,7 +598,7 @@ export const useGroupAddSubscriptionsMutation = () => {
         {
           id,
           subscriptionIDs,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -623,7 +623,7 @@ export const useGroupDelSubscriptionsMutation = () => {
         {
           id,
           subscriptionIDs,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -654,7 +654,7 @@ export const useImportNodesMutation = () => {
         {
           rollbackError: true,
           args: data,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -677,7 +677,7 @@ export const useRemoveNodesMutation = () => {
         `),
         {
           ids,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -715,9 +715,9 @@ export const useImportSubscriptionsMutation = () => {
             {
               rollbackError: true,
               arg: subscription,
-            }
-          )
-        )
+            },
+          ),
+        ),
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
@@ -743,9 +743,9 @@ export const useUpdateSubscriptionsMutation = () => {
             `),
             {
               id,
-            }
-          )
-        )
+            },
+          ),
+        ),
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
@@ -769,7 +769,7 @@ export const useRemoveSubscriptionsMutation = () => {
         `),
         {
           ids,
-        }
+        },
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
@@ -793,7 +793,7 @@ export const useRunMutation = () => {
         `),
         {
           dry,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -816,7 +816,7 @@ export const useUpdateAvatarMutation = () => {
         `),
         {
           avatar,
-        }
+        },
       )
     },
     onSuccess: () => {
@@ -839,7 +839,7 @@ export const useUpdateNameMutation = () => {
         `),
         {
           name,
-        }
+        },
       )
     },
     onSuccess: () => {

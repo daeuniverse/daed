@@ -37,7 +37,7 @@ export const appStateAtom = persistentMap<AppState>(
   {
     encode: JSON.stringify,
     decode: JSON.parse,
-  }
+  },
 )
 
 export type DEFAULT_RESOURCES = {

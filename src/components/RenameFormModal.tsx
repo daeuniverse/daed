@@ -33,7 +33,7 @@ export const RenameFormModal = forwardRef(
       opened: boolean
       onClose: () => void
     },
-    ref
+    ref,
   ) => {
     const { t } = useTranslation()
 
@@ -112,5 +112,5 @@ export const RenameFormModal = forwardRef(
         </form>
       </Modal>
     )
-  }
+  },
 )

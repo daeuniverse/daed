@@ -38,7 +38,7 @@ export const Routing = () => {
     useDisclosure(false)
 
   return (
-    <Section title={t('routing')} icon={<IconMap />} onCreate={openCreateRoutingFormModal}>
+    <Section title={t('routing')} icon={<IconMap />} onCreate={openCreateRoutingFormModal} bordered>
       {routingsQuery?.routings.map((routing) => (
         <SimpleCard
           key={routing.id}

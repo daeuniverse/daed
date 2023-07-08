@@ -46,7 +46,7 @@ const getNumberUsers = async (endpointURL: string) => {
       query NumberUsers {
         numberUsers
       }
-    `)
+    `),
   )
 
   return numberUsers
@@ -114,7 +114,7 @@ export const SetupPage = () => {
         {
           username,
           password,
-        }
+        },
       )
 
       const numberUsers = await getNumberUsers(endpointURLForm.values.endpointURL)
@@ -143,7 +143,7 @@ export const SetupPage = () => {
         {
           username,
           password,
-        }
+        },
       )
 
       notifications.show({

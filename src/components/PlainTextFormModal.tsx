@@ -36,7 +36,7 @@ export const PlainTextFormModal = forwardRef(
       onClose: () => void
       handleSubmit: (values: z.infer<typeof schema>) => Promise<void>
     },
-    ref
+    ref,
   ) => {
     const { t } = useTranslation()
     const colorScheme = useStore(colorSchemeAtom)
@@ -79,7 +79,7 @@ export const PlainTextFormModal = forwardRef(
                   handleSubmit(values).then(() => {
                     onClose()
                     form.reset()
-                  })
+                  }),
                 )}
               >
                 <Stack h="100%" sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -116,5 +116,5 @@ export const PlainTextFormModal = forwardRef(
         </Modal.Content>
       </Modal.Root>
     )
-  }
+  },
 )

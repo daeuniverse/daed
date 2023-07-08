@@ -29,7 +29,7 @@ export const App = () => {
       setColorScheme(toScheme)
       appStateAtom.setKey('preferredColorScheme', toScheme)
     },
-    [colorScheme]
+    [colorScheme],
   )
 
   useEffect(() => {
@@ -48,16 +48,10 @@ export const App = () => {
       primaryColor: 'violet',
       cursorType: 'pointer',
       components: {
-        Button: {
-          defaultProps: {
-            uppercase: true,
-          },
-        },
-        Select: {
-          defaultProps: {
-            withinPortal: true,
-          },
-        },
+        Stack: { defaultProps: { spacing: 'sm' } },
+        Group: { defaultProps: { spacing: 'sm' } },
+        Button: { defaultProps: { uppercase: true } },
+        ActionIcon: { defaultProps: { size: 'sm' } },
         Modal: {
           defaultProps: {
             size: 'lg',
@@ -79,9 +73,22 @@ export const App = () => {
             },
           },
         },
+        Select: {
+          defaultProps: {
+            withinPortal: true,
+            size: 'xs',
+          },
+        },
+        MultiSelect: { defaultProps: { size: 'xs' } },
+        Switch: { defaultProps: { size: 'xs' } },
+        Checkbox: { defaultProps: { size: 'xs' } },
+        Radio: { defaultProps: { size: 'xs' } },
+        RadioGroup: { defaultProps: { size: 'xs' } },
+        TextInput: { defaultProps: { size: 'xs' } },
+        NumberInput: { defaultProps: { size: 'xs' } },
       },
     }),
-    [colorScheme]
+    [colorScheme],
   )
 
   return (

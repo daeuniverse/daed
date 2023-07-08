@@ -5,19 +5,18 @@ import {
   Box,
   Burger,
   Button,
-  Center,
   Code,
   Container,
   Drawer,
   FileButton,
   Group,
+  Header,
   Image,
   Menu,
   Modal,
   SimpleGrid,
   Stack,
   Switch,
-  Tabs,
   Text,
   TextInput,
   Title,
@@ -40,13 +39,11 @@ import {
   IconMoon,
   IconRefreshAlert,
   IconSun,
-  IconTestPipe,
   IconUserEdit,
 } from '@tabler/icons-react'
-import { TFunction } from 'i18next'
 import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
 import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUpdateNameMutation, useUserQuery } from '~/apis'
@@ -59,13 +56,11 @@ import { FormActions } from './FormActions'
 
 const useStyles = createStyles((theme) => ({
   header: {
-    paddingTop: theme.spacing.xs,
+    zIndex: 200,
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     boxShadow: theme.shadows.sm,
-  },
-
-  mainSection: {
-    paddingBottom: theme.spacing.xs,
+    display: 'flex',
+    alignItems: 'center',
   },
 
   user: {
@@ -111,21 +106,9 @@ const accountSettingsSchema = z.object({
   name: z.string().nonempty(),
 })
 
-const getLinks = (t: TFunction) => {
-  const links = []
-
-  if (import.meta.env.DEV) {
-    links.push({ link: '/experiment', label: t('experiment'), icon: <IconTestPipe /> })
-  }
-
-  return links
-}
-
 export const HeaderWithActions = () => {
   const { t } = useTranslation()
   const endpointURL = useStore(endpointURLAtom)
-  const location = useLocation()
-  const navigate = useNavigate()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { classes, theme, cx } = useStyles()
   const [userMenuOpened, setUserMenuOpened] = useState(false)
@@ -140,8 +123,6 @@ export const HeaderWithActions = () => {
   const [uploadingAvatarBase64, setUploadingAvatarBase64] = useState<string | null>(null)
   const resetUploadingAvatarRef = useRef<() => void>(null)
 
-  const links = getLinks(t)
-
   const accountSettingsForm = useForm<z.infer<typeof accountSettingsSchema>>({
     validate: zodResolver(accountSettingsSchema),
     initialValues: {
@@ -152,8 +133,8 @@ export const HeaderWithActions = () => {
   const matchSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.xs})`)
 
   return (
-    <header className={classes.header}>
-      <Container className={classes.mainSection}>
+    <Header height={60} className={classes.header}>
+      <Container sx={{ flex: 1 }}>
         <Group position="apart">
           <Group spacing="sm">
             <Anchor component={Link} to="/">
@@ -169,11 +150,13 @@ export const HeaderWithActions = () => {
               </Group>
             </Anchor>
 
-            <Tooltip label={endpointURL} withArrow>
-              <Code fz="xs" fw={700}>
-                {generalQuery?.general.dae.version || import.meta.env.__VERSION__}
-              </Code>
-            </Tooltip>
+            {!matchSmallScreen && (
+              <Tooltip label={endpointURL} withArrow>
+                <Code fz="xs" fw={700}>
+                  {generalQuery?.general.dae.version || import.meta.env.__VERSION__}
+                </Code>
+              </Tooltip>
+            )}
           </Group>
 
           <Group spacing={matchSmallScreen ? 'xs' : 'md'}>
@@ -296,28 +279,6 @@ export const HeaderWithActions = () => {
         </Group>
       </Container>
 
-      {links.length > 0 && (
-        <Center>
-          <Tabs
-            variant="outline"
-            value={location.pathname}
-            onTabChange={(to) => navigate(`${to}`)}
-            classNames={{
-              tabsList: classes.tabsList,
-              tab: classes.tab,
-            }}
-          >
-            <Tabs.List>
-              {links.map(({ link, icon, label }) => (
-                <Tabs.Tab key={link} value={link} icon={icon}>
-                  {label}
-                </Tabs.Tab>
-              ))}
-            </Tabs.List>
-          </Tabs>
-        </Center>
-      )}
-
       <Drawer opened={openedBurger} onClose={closeBurger} size="100%">
         <SimpleGrid cols={3}>
           <Anchor href="https://github.com/daeuniverse/daed" target="_blank">
@@ -395,6 +356,6 @@ export const HeaderWithActions = () => {
           </Stack>
         </form>
       </Modal>
-    </header>
+    </Header>
   )
 }

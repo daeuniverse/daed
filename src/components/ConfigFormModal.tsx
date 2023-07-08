@@ -146,7 +146,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
       checkToleranceMS: DEFAULT_CHECK_TOLERANCE_MS,
       sniffingTimeoutMS: DEFAULT_SNIFFING_TIMEOUT_MS,
       lanInterface: [],
-      wanInterface: [],
+      wanInterface: ['auto'],
       udpCheckDns: DEFAULT_UDP_CHECK_DNS,
       tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
       dialMode: DEFAULT_DIAL_MODE,
@@ -171,27 +171,33 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
   const { data: generalQuery } = useGeneralQuery()
 
-  const wanInterfacesData: { value: string; label: string }[] = useMemo(() => {
+  const wanInterfacesData = useMemo(() => {
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
-      return interfaces
-        .filter(({ flag }) => !!flag.default)
-        .map(({ name, ip }) => ({
-          label: name,
-          value: name,
-          description: (
-            <Stack spacing="xs">
-              {ip.map((addr, i) => (
-                <Text key={i}>{addr}</Text>
-              ))}
-            </Stack>
-          ),
-        }))
+      return [
+        {
+          label: t('autoDetect'),
+          value: 'auto',
+        },
+        ...interfaces
+          .filter(({ flag }) => !!flag.default)
+          .map(({ name, ip }) => ({
+            label: name,
+            value: name,
+            description: (
+              <Stack spacing="xs">
+                {ip.map((addr, i) => (
+                  <Text key={i}>{addr}</Text>
+                ))}
+              </Stack>
+            ),
+          })),
+      ]
     }
 
     return []
-  }, [generalQuery?.general.interfaces])
+  }, [generalQuery?.general.interfaces, t])
 
   const lanInterfacesData: { value: string; label: string }[] = useMemo(() => {
     const interfaces = generalQuery?.general.interfaces
@@ -215,14 +221,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
   const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
 
-  const logLevelMarks = useMemo(
-    () =>
-      logLevelSteps.map(([label], value) => ({
-        value,
-        label,
-      })),
-    [logLevelSteps]
-  )
+  const logLevelMarks = useMemo(() => logLevelSteps.map(([label], value) => ({ value, label })), [logLevelSteps])
 
   const createConfigMutation = useCreateConfigMutation()
   const updateConfigMutation = useUpdateConfigMutation()

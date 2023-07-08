@@ -1,8 +1,7 @@
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core'
-import { Anchor, Badge, Divider, SimpleGrid, Stack, Title, useMantineTheme } from '@mantine/core'
+import { Badge, SimpleGrid, Stack, useMantineTheme } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 import { useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import {
   useGroupAddNodesMutation,
@@ -22,8 +21,6 @@ import { Routing } from './Routing'
 import { SubscriptionResource } from './Subscription'
 
 export const OrchestratePage = () => {
-  const { t } = useTranslation()
-
   const { data: nodesQuery } = useNodesQuery()
   const { data: groupsQuery } = useGroupsQuery()
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
@@ -45,7 +42,7 @@ export const OrchestratePage = () => {
 
       if (type === DraggableResourceType.subscription) {
         const subscription = subscriptionsQuery?.subscriptions.find(
-          (subscription) => subscription.id === subscriptionID
+          (subscription) => subscription.id === subscriptionID,
         )
 
         return subscription?.tag || subscription?.link
@@ -53,7 +50,7 @@ export const OrchestratePage = () => {
 
       if (type === DraggableResourceType.subscription_node) {
         const subscription = subscriptionsQuery?.subscriptions.find(
-          (subscription) => subscription.id === subscriptionID
+          (subscription) => subscription.id === subscriptionID,
         )
         const node = subscription?.nodes.edges.find((node) => node.id === nodeID)
 
@@ -126,32 +123,12 @@ export const OrchestratePage = () => {
   const matchSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
 
   return (
-    <Stack>
-      <Divider
-        variant="dashed"
-        labelPosition="center"
-        label={
-          <Title id="rule" order={3} tt="uppercase">
-            <Anchor href="#rule">{t('rule')}</Anchor>
-          </Title>
-        }
-      />
-
+    <Stack spacing="lg">
       <SimpleGrid cols={matchSmallScreen ? 1 : 3}>
         <Config />
         <DNS />
         <Routing />
       </SimpleGrid>
-
-      <Divider
-        variant="dashed"
-        labelPosition="center"
-        label={
-          <Title id="resource" order={3} tt="uppercase">
-            <Anchor href="#resource">{t('resource')}</Anchor>
-          </Title>
-        }
-      />
 
       <SimpleGrid ref={dndAreaRef} cols={matchSmallScreen ? 1 : 3}>
         <DndContext modifiers={[restrictToElement(dndAreaRef.current)]} onDragStart={onDragStart} onDragEnd={onDragEnd}>

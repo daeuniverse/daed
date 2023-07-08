@@ -49,7 +49,7 @@ export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
         port: values.port,
         hash: values.name,
         params: query,
-      })
+      }),
     )
   })
 

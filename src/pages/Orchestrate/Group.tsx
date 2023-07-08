@@ -157,7 +157,7 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
               )}
             </Accordion>
           </DroppableGroupCard>
-        )
+        ),
       )}
 
       <GroupFormModal opened={openedCreateGroupFormModal} onClose={closeCreateGroupFormModal} />
