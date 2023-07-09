@@ -1,9 +1,12 @@
-name: Build
+name: Build (Stable)
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - README.md
 
 jobs:
   checkout-full-src:
