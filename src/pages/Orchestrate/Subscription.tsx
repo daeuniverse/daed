@@ -1,6 +1,6 @@
 import { Accordion, ActionIcon, Group, Spoiler, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconCloudComputing, IconDetails, IconDownload } from '@tabler/icons-react'
+import { IconCloudComputing, IconCloudPlus, IconDownload, IconEye } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -37,6 +37,7 @@ export const SubscriptionResource = () => {
     <Section
       title={t('subscription')}
       icon={<IconCloudComputing />}
+      iconPlus={<IconCloudPlus />}
       onCreate={openImportSubscriptionFormModal}
       bordered
       actions={
@@ -72,7 +73,7 @@ export const SubscriptionResource = () => {
                   openQRCodeModal()
                 }}
               >
-                <IconDetails />
+                <IconEye />
               </ActionIcon>
               <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isLoading} />
             </Fragment>
