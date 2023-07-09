@@ -1,19 +1,26 @@
-name: Build (Nightly)
+name: PR Build (Preview)
+run-name: '#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }} @${{ github.event.pull_request.head.ref }}:${{ github.event.pull_request.head.sha }}'
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - hotfix-*
-      - test-pr-*
+  pull_request:
+    types: [opened, synchronize, reopened]
     paths-ignore:
       - '**/*.md'
       - README.md
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
+  context:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
   checkout-full-src:
+    needs: context
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
