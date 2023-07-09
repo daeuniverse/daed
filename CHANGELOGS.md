@@ -13,11 +13,44 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 ## Releases
 
 <!-- BEGIN NEW TOC ENTRY -->
-- [v0.1.0 (Latest)](#v010-latest)
+- [v0.1.1 (Latest)](#v011-latest)
+- [v0.1.0](#v010)
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
 <!-- BEGIN NEW CHANGELOGS -->
 
-### v0.1.0 (Latest)
+### v0.1.1 (Latest)
+
+> Release date: 2023/07/09
+
+### Features
+
+- feat(tuic): upgrade dae-wing to support tuic v5 in [#135](https://github.com/daeuniverse/daed/pull/135) by (@kunish)
+- feat: wan interface auto detect in [#133](https://github.com/daeuniverse/daed/pull/133) by (@kunish)
+- feat: display daed version in header in [#132](https://github.com/daeuniverse/daed/pull/132) by (@kunish)
+- feat: add a configure node modal in [#125](https://github.com/daeuniverse/daed/pull/125) by (@kunish)
+- feat: disable zooming and panning on mobile in [#113](https://github.com/daeuniverse/daed/pull/113) by (@kunish)
+
+### Bug Fixes
+
+- fix: import missing packages and clean up unreference files in [#128](https://github.com/daeuniverse/daed/pull/128) by (@earrmouth)
+- fix: try fixing caret misplacement in [#124](https://github.com/daeuniverse/daed/pull/124) by (@kunish)
+- fix: footer is floating above modal overlay in [#121](https://github.com/daeuniverse/daed/pull/121) by (@kunish)
+
+### Others
+
+- chore(sync): keep upstream source up-to-date in [#141](https://github.com/daeuniverse/daed/pull/141) by (@dae-bot[bot])
+- ci: refine pr-build workflow in [#138](https://github.com/daeuniverse/daed/pull/138) by (@yqlbu)
+- docs(readme): add release badge in [#136](https://github.com/daeuniverse/daed/pull/136) by (@yqlbu)
+- chore: refine makefile in [#120](https://github.com/daeuniverse/daed/pull/120) by (@mzz2017)
+- docs(readme): fix license badge issue and rework contributing section in [#107](https://github.com/daeuniverse/daed/pull/107) by (@yqlbu)
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.1.0...v0.1.1
+
+### New Contributors
+
+* @earrmouth made their first contribution in [#128](https://github.com/daeuniverse/daed/pull/128)
+
+### v0.1.0
 
 > Release date: 2023/06/24
 
