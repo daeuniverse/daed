@@ -1,6 +1,6 @@
 import { ActionIcon, Spoiler, Text, useMantineTheme } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconCloud, IconDetails, IconFileImport } from '@tabler/icons-react'
+import { IconCloud, IconCloudPlus, IconEye, IconFileImport } from '@tabler/icons-react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -30,9 +30,10 @@ export const NodeResource = () => {
     <Section
       title={t('node')}
       icon={<IconCloud />}
-      onCreate={openConfigureNodeFormModal}
+      iconPlus={<IconCloudPlus />}
+      onCreate={openImportNodeFormModal}
       actions={
-        <ActionIcon onClick={openImportNodeFormModal}>
+        <ActionIcon onClick={openConfigureNodeFormModal}>
           <IconFileImport />
         </ActionIcon>
       }
@@ -61,7 +62,7 @@ export const NodeResource = () => {
                 openQRCodeModal()
               }}
             >
-              <IconDetails />
+              <IconEye />
             </ActionIcon>
           }
           onRemove={() => removeNodesMutation.mutate([id])}

@@ -1,7 +1,7 @@
 import { ActionIcon, Card, Group, Indicator, Modal, Title, UnstyledButton } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
-import { IconDetails, IconTrash } from '@tabler/icons-react'
+import { IconEye, IconTrash } from '@tabler/icons-react'
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -38,7 +38,7 @@ export const SimpleCard = ({
                 {actions}
 
                 <ActionIcon size="xs" onClick={openDetailsModal}>
-                  <IconDetails />
+                  <IconEye />
                 </ActionIcon>
 
                 {!selected && onRemove && (
