@@ -15,6 +15,7 @@ export const Section = ({
   title,
   icon,
   bordered,
+  iconPlus,
   onCreate,
   actions,
   highlight,
@@ -23,6 +24,7 @@ export const Section = ({
   title: string
   icon?: React.ReactNode
   bordered?: boolean
+  iconPlus?: React.ReactNode
   onCreate: () => void
   actions?: React.ReactNode
   highlight?: boolean
@@ -47,9 +49,7 @@ export const Section = ({
         <Group>
           {actions}
 
-          <ActionIcon onClick={onCreate}>
-            <IconPlus />
-          </ActionIcon>
+          <ActionIcon onClick={onCreate}>{iconPlus || <IconPlus />}</ActionIcon>
         </Group>
       </Group>
 
