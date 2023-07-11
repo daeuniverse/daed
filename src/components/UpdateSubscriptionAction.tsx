@@ -1,5 +1,5 @@
 import { ActionIcon } from '@mantine/core'
-import { IconDownload } from '@tabler/icons-react'
+import { IconRefresh } from '@tabler/icons-react'
 
 import { useUpdateSubscriptionsMutation } from '~/apis'
 
@@ -12,7 +12,7 @@ export const UpdateSubscriptionAction = ({ id, loading }: { id: string; loading?
       size="xs"
       onClick={() => updateSubscriptionsMutation.mutate([id])}
     >
-      <IconDownload />
+      <IconRefresh />
     </ActionIcon>
   )
 }
