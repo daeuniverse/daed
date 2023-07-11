@@ -1,4 +1,5 @@
-import { Center, Modal } from '@mantine/core'
+import { ActionIcon, Badge, CopyButton, Flex, Group, Modal } from '@mantine/core'
+import { IconCheck, IconCopy } from '@tabler/icons-react'
 import { QRCodeCanvas } from 'qrcode.react'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 
@@ -24,10 +25,28 @@ export const QRCodeModal = forwardRef(({ opened, onClose }: { opened: boolean; o
   }))
 
   return (
-    <Modal opened={opened} onClose={onClose} title={props.name}>
-      <Center>
-        <QRCodeCanvas size={320} value={props.link} />
-      </Center>
+    <Modal opened={opened} onClose={onClose} title={props.name} keepMounted={false}>
+      <Flex mx="auto" py="md" direction="column" align="center" justify="center" gap="md">
+        <QRCodeCanvas size={240} value={props.link} />
+
+        <Group position="apart" spacing="xs">
+          <Badge
+            sx={{
+              width: 240,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+            size="lg"
+          >
+            {props.link}
+          </Badge>
+
+          <CopyButton value={props.link}>
+            {({ copied, copy }) => <ActionIcon onClick={copy}>{copied ? <IconCheck /> : <IconCopy />}</ActionIcon>}
+          </CopyButton>
+        </Group>
+      </Flex>
     </Modal>
   )
 })

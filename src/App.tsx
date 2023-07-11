@@ -11,7 +11,7 @@ import { useColorScheme } from '@mantine/hooks'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { QueryProvider } from '~/contexts'
 import { Router } from '~/Router'
@@ -40,56 +40,63 @@ export const App = () => {
     colorSchemeAtom.set(colorScheme)
   }, [colorScheme])
 
-  const themeObject: MantineThemeOverride = useMemo(
-    () => ({
-      colorScheme,
-      fontFamily: 'Fira Sans, Monaco, Consolas, sans-serif',
-      fontFamilyMonospace: 'Source Code Pro, Monaco, Consolas, monospace',
-      primaryColor: 'violet',
-      cursorType: 'pointer',
-      components: {
-        Stack: { defaultProps: { spacing: 'sm' } },
-        Group: { defaultProps: { spacing: 'sm' } },
-        Button: { defaultProps: { uppercase: true } },
-        ActionIcon: { defaultProps: { size: 'sm' } },
-        Modal: {
-          defaultProps: {
-            size: 'lg',
-            radius: 'md',
-            centered: true,
-            scrollAreaComponent: ScrollArea.Autosize,
-          },
+  const themeObject: MantineThemeOverride = {
+    colorScheme,
+    fontFamily: 'Fira Sans, Monaco, Consolas, sans-serif',
+    fontFamilyMonospace: 'Source Code Pro, Monaco, Consolas, monospace',
+    primaryColor: 'violet',
+    cursorType: 'pointer',
+    components: {
+      Stack: { defaultProps: { spacing: 'sm' } },
+      Group: { defaultProps: { spacing: 'sm' } },
+      Button: { defaultProps: { uppercase: true } },
+      ActionIcon: { defaultProps: { size: 'sm' } },
+      Modal: {
+        defaultProps: {
+          size: 'lg',
+          radius: 'md',
+          centered: true,
+          scrollAreaComponent: ScrollArea.Autosize,
         },
-        Drawer: {
-          defaultProps: {
-            size: 'lg',
-            scrollAreaComponent: ScrollArea.Autosize,
-          },
-        },
-        Menu: {
-          styles: {
-            label: {
-              textTransform: 'uppercase',
-            },
-          },
-        },
-        Select: {
-          defaultProps: {
-            withinPortal: true,
-            size: 'xs',
-          },
-        },
-        MultiSelect: { defaultProps: { size: 'xs' } },
-        Switch: { defaultProps: { size: 'xs' } },
-        Checkbox: { defaultProps: { size: 'xs' } },
-        Radio: { defaultProps: { size: 'xs' } },
-        RadioGroup: { defaultProps: { size: 'xs' } },
-        TextInput: { defaultProps: { size: 'xs' } },
-        NumberInput: { defaultProps: { size: 'xs' } },
       },
-    }),
-    [colorScheme],
-  )
+      ModalHeader: {
+        defaultProps: (theme) => ({
+          bg: colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4],
+        }),
+      },
+      ModalTitle: {
+        defaultProps: {
+          color: 'white',
+        },
+      },
+      Drawer: {
+        defaultProps: {
+          size: 'lg',
+          scrollAreaComponent: ScrollArea.Autosize,
+        },
+      },
+      Menu: {
+        styles: {
+          label: {
+            textTransform: 'uppercase',
+          },
+        },
+      },
+      Select: {
+        defaultProps: {
+          withinPortal: true,
+          size: 'xs',
+        },
+      },
+      MultiSelect: { defaultProps: { size: 'xs' } },
+      Switch: { defaultProps: { size: 'xs' } },
+      Checkbox: { defaultProps: { size: 'xs' } },
+      Radio: { defaultProps: { size: 'xs' } },
+      RadioGroup: { defaultProps: { size: 'xs' } },
+      TextInput: { defaultProps: { size: 'xs' } },
+      NumberInput: { defaultProps: { size: 'xs' } },
+    },
+  }
 
   return (
     <QueryProvider>
