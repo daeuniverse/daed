@@ -2,7 +2,7 @@ import { EditorProps } from '@monaco-editor/react'
 import { languages } from 'monaco-editor'
 
 export const EDITOR_THEME_DARK = 'vs-dark'
-export const EDITOR_THEME_LIGHT = 'github'
+export const EDITOR_THEME_LIGHT = 'githubLight'
 
 export const EDITOR_OPTIONS: EditorProps['options'] = {
   fontSize: 14,
