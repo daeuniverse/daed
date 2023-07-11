@@ -16,7 +16,7 @@ on:
 
 jobs:
   sync-dae-core:
-    uses: daeuniverse/ci-seed-jobs/.github/workflows/sync-upstream.yml@main
+    uses: daeuniverse/ci-seed-jobs/.github/workflows/sync-upstream.yml@master
     with:
       submodule-name: wing
     secrets: inherit
