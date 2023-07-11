@@ -216,3 +216,11 @@ jobs:
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
+          
+  report:
+    needs: [build-bundle]
+    uses: daeuniverse/ci-seed-jobs/.github/workflows/report-build-result.yml@report_build_result
+    with:
+      checkrun_name: build-bundle-check
+      job_result: ${{ needs.build-bundle.result }}
+    secrets: inherit
