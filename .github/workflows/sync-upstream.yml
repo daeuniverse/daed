@@ -1,42 +1,22 @@
+#      _                _
+#   __| | __ _  ___  __| |
+#  / _` |/ _` |/ _ \/ _` |
+# | (_| | (_| |  __/ (_| |
+#  \__,_|\__,_|\___|\__,_|
+#
+# Copyright (C) 2023 @daeuniverse <https://github.com/daeuniverse>
+#
+# This is a open-source software, liscensed under the MIT License.
+# See /License for more information.
+
 name: Synchronize Upstream
 
 on:
   workflow_dispatch:
-    inputs:
-      wing-head:
-        type: string
-        required: true
-        default: main
-      wing-sync-message:
-        type: string
-        required: true
-        default: 'chore(sync): upgrade dae-wing'
-      pr-branch:
-        type: string
-        required: true
-        default: sync-upstream
 
 jobs:
-  sync-wing:
-    runs-on: ubuntu-latest
-    if: ${{ inputs.wing-head }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          fetch-depth: 0
-          ref: main
-
-      - name: Sync dae-wing upstream
-        run: |
-          git checkout origin/${{ inputs.wing-head }}
-        working-directory: wing
-
-      - name: Commit and push changes
-        run: |
-          git config user.name "daebot"
-          git config user.email "daebot@v2raya.org"
-          git checkout -b ${{ inputs.pr-branch }}
-          git add .
-          git commit -m "${{ inputs.wing-sync-message }}" --no-verify
-          git push -u origin ${{ inputs.pr-branch }}
+  sync-dae-core:
+    uses: daeuniverse/ci-seed-jobs/.github/workflows/sync-upstream.yml@main
+    with:
+      submodule-name: wing
+    secrets: inherit
