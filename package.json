@@ -1,20 +1,20 @@
 {
   "name": "daed",
-  "private": true,
   "version": "v0.1.0",
-  "license": "MIT",
+  "private": true,
+  "description": "A Web Dashboard For dae",
   "homepage": "https://daeuniverse.github.io/daed",
   "repository": "https://github.com/daeuniverse/daed",
-  "description": "A Web Dashboard For dae",
+  "license": "MIT",
   "author": {
     "name": "daeuniverse",
     "email": "dae@v2raya.org"
   },
   "scripts": {
-    "dev": "vite dev",
     "build": "vite build",
-    "lint": "vite lint",
     "codegen": "graphql-codegen",
+    "dev": "vite dev",
+    "lint": "vite lint",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -95,6 +95,7 @@
     "react-router": "^6.14.1",
     "react-router-dom": "^6.14.1",
     "simple-git": "^3.19.1",
+    "sort-package-json": "^2.5.1",
     "typescript": "^5.1.6",
     "urijs": "^1.19.11",
     "vite": "^4.4.1",
