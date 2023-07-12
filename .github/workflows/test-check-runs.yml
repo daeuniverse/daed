@@ -16,7 +16,6 @@ on:
 
 jobs:
   instantiate-check-runs:
-    needs: [clone-seed-jobs]
     runs-on: ubuntu-latest
     steps:
       - uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
