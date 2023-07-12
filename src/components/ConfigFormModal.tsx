@@ -59,7 +59,7 @@ const schema = z.object({
   checkToleranceMS: z.number(),
   sniffingTimeoutMS: z.number(),
   lanInterface: z.array(z.string().nonempty()),
-  wanInterface: z.array(z.string().nonempty()).min(1),
+  wanInterface: z.array(z.string()),
   udpCheckDns: z.array(z.string()).min(1),
   tcpCheckUrl: z.array(z.string()).min(1),
   dialMode: z.string(),
@@ -338,7 +338,6 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                     label={t('wanInterface')}
                     description={t('descriptions.config.wanInterface')}
                     itemComponent={SelectItemWithDescription}
-                    withAsterisk
                     data={wanInterfacesData}
                     {...form.getInputProps('wanInterface')}
                   />
