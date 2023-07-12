@@ -22,4 +22,4 @@ jobs:
     needs: [clone-seed-jobs]
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/seed-jobs/core/daed/instantiate-check-runs@master
+      - uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
