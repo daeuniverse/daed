@@ -192,11 +192,9 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
 
       {values.tls === 'tls' && <TextInput label="Alpn" {...getInputProps('alpn')} />}
 
-      {values.net === 'ws' ||
-        values.net === 'h2' ||
-        (values.net === 'tcp' && values.type === 'http' && (
-          <TextInput label={t('configureNode.path')} {...getInputProps('path')} />
-        ))}
+      {(values.net === 'ws' || values.net === 'h2' || (values.net === 'tcp' && values.type === 'http')) && (
+        <TextInput label={t('configureNode.path')} {...getInputProps('path')} />
+      )}
 
       {values.net === 'kcp' && <TextInput label="Seed" {...getInputProps('path')} />}
 

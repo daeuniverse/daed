@@ -62,10 +62,10 @@ export const TuicForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string
 
       <TextInput label="SNI" {...getInputProps('sni')} />
 
-      <Checkbox label="Disable SNI" {...getInputProps('disable_sni', { type: 'checkbox' })} />
+      <Checkbox label={t('configureNode.disableSNI')} {...getInputProps('disable_sni', { type: 'checkbox' })} />
 
       <Select
-        label="UDP Relay Mode"
+        label={t('configureNode.udpRelayMode')}
         data={[
           { label: 'native', value: 'native' },
           { label: 'quic', value: 'quic' },
