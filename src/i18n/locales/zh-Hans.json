@@ -41,6 +41,7 @@
   "collapse": "折叠",
   "config": "配置",
   "configureNode": {
+    "congestionControl": "拥堵控制算法",
     "dtlsObfuscation": "伪装为 DTLS1.2 数据包",
     "forceTLS": "强制开启 TLS",
     "host": "主机地址",

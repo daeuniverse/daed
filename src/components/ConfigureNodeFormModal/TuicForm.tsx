@@ -49,7 +49,14 @@ export const TuicForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string
 
       <TextInput label={t('configureNode.password')} withAsterisk {...getInputProps('password')} />
 
-      <TextInput label="Congestion Control" {...getInputProps('congestion_control')} />
+      <Select
+        label={t('configureNode.congestionControl')}
+        data={[
+          { label: 'bbr', value: 'bbr' },
+          { label: 'cubic', value: 'cubic' },
+        ]}
+        {...getInputProps('congestion_control')}
+      />
 
       <TextInput label="Alpn" {...getInputProps('alpn')} />
 
