@@ -1,4 +1,4 @@
-name: Build (Stable)
+name: Build (Main)
 
 on:
   workflow_dispatch:
