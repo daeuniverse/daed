@@ -92,6 +92,20 @@ export const trojanSchema = z.object({
   obfs: z.enum(['none', 'websocket']),
 })
 
+export const tuicSchema = z.object({
+  name: z.string(),
+  server: z.string().nonempty(),
+  port: z.number().min(0).max(65535),
+  uuid: z.string().nonempty(),
+  password: z.string().nonempty(),
+  allowInsecure: z.boolean(),
+  disable_sni: z.boolean(),
+  sni: z.string(),
+  congestion_control: z.string(),
+  alpn: z.string(),
+  udp_relay_mode: z.string(),
+})
+
 export const httpSchema = z.object({
   username: z.string(),
   password: z.string(),

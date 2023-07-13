@@ -41,6 +41,7 @@
   "collapse": "collapse",
   "config": "Config",
   "configureNode": {
+    "congestionControl": "Congestion Control",
     "dtlsObfuscation": "Obfuscated as DTLS1.2 Packets",
     "forceTLS": "forcibly TLS on",
     "host": "Host",
