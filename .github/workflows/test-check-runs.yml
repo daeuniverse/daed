@@ -33,5 +33,16 @@ jobs:
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          id: "dae-bot[bot]/checkout-full-src"
+          
+      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          id: "dae-bot[bot]/build-web"
+          
+      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           id: "dae-bot[bot]/build-bundle"
-          conclusion: ${{ steps.checkout.outcome }}
