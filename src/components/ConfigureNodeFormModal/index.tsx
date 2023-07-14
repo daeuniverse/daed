@@ -1,4 +1,4 @@
-import { Divider, MantineProvider, Modal, Stack, Tabs, TextInput } from '@mantine/core'
+import { MantineProvider, Modal, Stack, Tabs, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -10,6 +10,7 @@ import { SSForm } from './SSForm'
 import { SSRForm } from './SSRForm'
 import { Socks5Form } from './Socks5Form'
 import { TrojanForm } from './TrojanForm'
+import { TuicForm } from './TuicForm'
 import { V2rayForm } from './V2rayForm'
 
 const schema = z.object({ tag: z.string().nonempty() })
@@ -38,16 +39,18 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
   }
 
   return (
-    <Modal opened={opened} onClose={onClose} title={t('configureNode.title')} size="md">
+    <Modal opened={opened} onClose={onClose} title={t('configureNode.title')} size="auto">
       <TextInput size="xs" label={t('tag')} withAsterisk {...form.getInputProps('tag')} />
-
-      <Divider />
 
       <MantineProvider
         theme={{
           components: {
             Tabs: { defaultProps: { variant: 'outline' } },
-            TabsPanel: { defaultProps: { pt: 'md' } },
+            TabsPanel: { defaultProps: { pt: 'xs' } },
+            TextInput: { defaultProps: { size: 'xs' } },
+            Select: { defaultProps: { size: 'xs' } },
+            NumberInput: { defaultProps: { size: 'xs' } },
+            Checkbox: { defaultProps: { size: 'xs' } },
             Stack: { defaultProps: { spacing: 'xs' } },
           },
         }}
@@ -59,6 +62,7 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
             <Tabs.Tab value="ss">SS</Tabs.Tab>
             <Tabs.Tab value="ssr">SSR</Tabs.Tab>
             <Tabs.Tab value="trojan">Trojan</Tabs.Tab>
+            <Tabs.Tab value="tuic">Tuic</Tabs.Tab>
             <Tabs.Tab value="http">HTTP</Tabs.Tab>
             <Tabs.Tab value="socks5">SOCKS5</Tabs.Tab>
           </Tabs.List>
@@ -84,6 +88,12 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
           <Tabs.Panel value="trojan">
             <Stack>
               <TrojanForm onLinkGeneration={onLinkGeneration} />
+            </Stack>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="tuic">
+            <Stack>
+              <TuicForm onLinkGeneration={onLinkGeneration} />
             </Stack>
           </Tabs.Panel>
 
