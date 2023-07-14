@@ -21,11 +21,16 @@ jobs:
           
   instantiate-check-runs:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        id: ["checkout-full-src", "build-web", "build-bundle"]
     steps:
-      - uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
+      - name: Instantiate required check runs
+        uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          id: "dae-bot[bot]/${{ matrix.id }}"
 
   checkout-full-src:
     runs-on: ubuntu-latest
