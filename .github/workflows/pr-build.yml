@@ -68,7 +68,6 @@ jobs:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           id: "dae-bot[bot]/checkout-full-src"
-          conclusion: ${{ steps.upload_artifact.outcome }}
 
   build-web:
     runs-on: ubuntu-latest
@@ -103,7 +102,6 @@ jobs:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           id: "dae-bot[bot]/build-web"
-          conclusion: ${{ steps.upload_artifact.outcome }}
 
   build-bundle:
     needs: build-web
@@ -252,4 +250,3 @@ jobs:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           id: "dae-bot[bot]/build-bundle"
-          conclusion: ${{ steps.upload_artifact.outcome }}
