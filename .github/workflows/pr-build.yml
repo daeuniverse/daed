@@ -60,7 +60,6 @@ jobs:
           shasum -a 512 $FILE >>$DGST
 
       - name: Upload artifact - full source
-        id: upload_artifact
         uses: actions/upload-artifact@v3
         with:
           name: daed-full-src.zip
@@ -94,7 +93,6 @@ jobs:
           pnpm build
 
       - name: Upload artifact - web
-        id: upload_artifact
         uses: actions/upload-artifact@v3
         with:
           name: web
