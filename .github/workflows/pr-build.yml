@@ -255,3 +255,17 @@ jobs:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           id: "dae-bot[bot]/build-bundle"
+
+  conclusion:
+    if: always()
+    needs: [build-bundle]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report workflow run result
+        uses: daeuniverse/ci-seed-jobs/core/daed/report-workflow-run@master
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          id: "dae-bot[bot]/build-passed"
+          conclusion: ${{ needs.build-bundle.result }}
+    
