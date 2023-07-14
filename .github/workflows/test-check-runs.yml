@@ -26,9 +26,10 @@ jobs:
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          id: matrix.id
+          id: ${{ matrix.id }}
           
   build:
+    needs: [instantiate-check-runs]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -42,4 +43,4 @@ jobs:
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          id: matrix.id
+          id: ${{ matrix.id }}
