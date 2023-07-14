@@ -18,6 +18,14 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           echo "$GITHUB_CONTEXT"
+          
+  instantiate-check-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
   checkout-full-src:
     runs-on: ubuntu-latest
