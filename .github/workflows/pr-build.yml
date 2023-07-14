@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        id: ["checkout-full-src", "build-web", "build-bundle"]
+        id: ["checkout-full-src", "build-web", "build-bundle", "build-passed"]
     steps:
       - name: Instantiate required check runs
         uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
