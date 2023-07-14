@@ -196,12 +196,30 @@ jobs:
             sudo apt install -y libarchive-tools rpm
             sudo gem install fpm -v 1.15.1
             pushd bundled || exit 1
-            if [ "$GOARCH" == 'arm' ] && [ "$GOARM" == '7' ];then
-              package_arch='armhf'
-            else
-              package_arch="$GOARCH"
-            fi
             for package_manager in deb rpm pacman; do
+              if [ "$package_manager" == 'pacman' ];then
+                if [ "$GOARCH" == 'arm' ] && [ "$GOARM" == '7' ];then
+                  package_arch='arm7hf'
+                elif [ "$GOARCH" == 'arm64' ];then
+                  package_arch='aarch64'
+                else
+                  package_arch="$GOARCH"
+                fi
+              elif [ "$package_manager" == 'rpm' ];then
+                if [ "$GOARCH" == 'arm' ] && [ "$GOARM" == '7' ];then
+                  package_arch='armhfp'
+                elif [ "$GOARCH" == 'arm64' ];then
+                  package_arch='aarch64'
+                else
+                  package_arch="$GOARCH"
+                fi
+              elif [ "$package_manager" == 'deb' ];then
+                if [ "$GOARCH" == 'arm' ] && [ "$GOARM" == '7' ];then
+                  package_arch='armhf'
+                else
+                  package_arch="$GOARCH"
+                fi
+              fi
               fpm -s dir -t "$package_manager" -a $package_arch --version "$PACKAGE_VERSION" \
                 --url 'https://github.com/daeuniverse/daed' --description "daed, A Modern Dashboard For dae." \
                 --maintainer "daed@dae.v2raya.org" --name daed --license 'MIT AGPL' \
