@@ -53,7 +53,8 @@ jobs:
           name: daed-full-src.zip
           path: daed-full-src.zip
           
-      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+      - name: Report result
+        uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
         if: always()
         with:
           app_id: ${{ secrets.GH_APP_ID }}
@@ -87,7 +88,8 @@ jobs:
           name: web
           path: dist
           
-      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+      - name: Report result
+        uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
         if: always()
         with:
           app_id: ${{ secrets.GH_APP_ID }}
@@ -235,7 +237,8 @@ jobs:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
           
-      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+      - name: Report result
+        uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
         if: always()
         with:
           app_id: ${{ secrets.GH_APP_ID }}
