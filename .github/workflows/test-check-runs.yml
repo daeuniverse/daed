@@ -21,7 +21,8 @@ jobs:
       matrix:
         id: ["dae-bot[bot]/checkout-full-src", "dae-bot[bot]/build-web", "dae-bot[bot]/build-bundle"]
     steps:
-      - uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
+      - name: Instantiate required check runs
+        uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -36,7 +37,8 @@ jobs:
       - uses: actions/checkout@master
         id: checkout
 
-      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+      - name: Report result
+        uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
