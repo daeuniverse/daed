@@ -18,14 +18,6 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           echo "$GITHUB_CONTEXT"
-          
-  instantiate-check-runs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
-        with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
   checkout-full-src:
     runs-on: ubuntu-latest
@@ -55,10 +47,19 @@ jobs:
           shasum -a 512 $FILE >>$DGST
 
       - name: Upload artifact - full source
+        id: upload_artifact
         uses: actions/upload-artifact@v3
         with:
           name: daed-full-src.zip
           path: daed-full-src.zip
+          
+      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+        if: always()
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          id: "dae-bot[bot]/checkout-full-src"
+          conclusion: ${{ steps.upload_artifact.outcome }}
 
   build-web:
     runs-on: ubuntu-latest
@@ -80,10 +81,19 @@ jobs:
           pnpm build
 
       - name: Upload artifact - web
+        id: upload_artifact
         uses: actions/upload-artifact@v3
         with:
           name: web
           path: dist
+          
+      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+        if: always()
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          id: "dae-bot[bot]/build-web"
+          conclusion: ${{ steps.upload_artifact.outcome }}
 
   build-bundle:
     needs: build-web
@@ -224,3 +234,11 @@ jobs:
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
+          
+      - uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
+        if: always()
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          id: "dae-bot[bot]/build-bundle"
+          conclusion: ${{ steps.upload_artifact.outcome }}
