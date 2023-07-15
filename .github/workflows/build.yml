@@ -196,9 +196,8 @@ jobs:
             sudo apt install -y libarchive-tools rpm
             sudo gem install fpm -v 1.15.1
             pushd bundled || exit 1
-            if [ "$GOARCH" == 'mips64' ] || [ "$GOARCH" == 'mips64le' ] || [ $GOARCH" == 'mipsle' ] || [ $GOARCH" == 'mips' ];then
+            if [ "$GOARCH" == 'mips64' ] || [ "$GOARCH" == 'mips64le' ] || [ "$GOARCH" == 'mipsle' ] || [ "$GOARCH" == 'mips' ];then
               echo "Skip pacman package build for Arch Linux has never been port to MIPS family, Debian package and RPM package are enough."
-              no_arch_pkg="yes"
               ARCH_PACMAN=''
             else
               ARCH_PACMAN='pacman'
@@ -240,17 +239,25 @@ jobs:
             popd || exit 1
             cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.deb installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
             cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.rpm installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
-            if [ "$no_arch_pkg" != 'yes' ];then
+            if [ "$ARCH_PACMAN" == 'pacman' ];then
               cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.pacman installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
             fi
             ls | grep -E ".deb|.rpm|.pkg.tar.zst"
           fi
 
       - name: Upload Linux packages
-        if: ${{ env.GOARM != '5' && env.GOARM != '6' }}
+        if: ${{ env.GOARM != '5' && env.GOARM != '6' && env.GOARCH != 'mips' && env.GOARCH != 'mipsle' && env.GOARCH != 'mips64' && env.GOARCH != 'mips64le' }}
         uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
         with:
           path: |
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
+
+      - name: Upload Linux packages with out Arch Linux package
+        if: ${{  env.GOARCH == 'mips' || env.GOARCH == 'mipsle' || env.GOARCH == 'mips64' || env.GOARCH == 'mips64le' }}
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
+        with:
+          path: |
+            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
+            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
