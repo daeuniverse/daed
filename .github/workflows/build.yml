@@ -198,6 +198,10 @@ jobs:
             pushd bundled || exit 1
             for package_manager in deb rpm pacman; do
               if [ "$package_manager" == 'pacman' ];then
+                if [[ "$GOARCH" == 'mips64' || "$GOARCH" == 'mips64le' || $GOARCH" == 'mipsle' || $GOARCH" == 'mips' ]];then
+                  echo "Skip pacman package build for Arch Linux has never been port to MIPS family, Debian package and RPM package are enough."
+                  exit 0
+                fi
                 if [ "$GOARCH" == 'arm' ] && [ "$GOARM" == '7' ];then
                   package_arch='arm7hf'
                 elif [ "$GOARCH" == 'arm64' ];then
