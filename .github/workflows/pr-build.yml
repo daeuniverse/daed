@@ -20,6 +20,7 @@ jobs:
           echo "$GITHUB_CONTEXT"
           
   instantiate-check-runs:
+    if: ${{ github.event.pull_request.repo.full_name == "daeuniverse/daed" }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -247,15 +248,15 @@ jobs:
           path: bundled/*
           
       - name: Report result
+        if: always() && ${{ github.event.pull_request.repo.full_name == "daeuniverse/daed" }}
         uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
-        if: always()
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           id: "dae-bot[bot]/build-bundle"
 
   conclusion:
-    if: always()
+    if: always() && ${{ github.event.pull_request.repo.full_name == "daeuniverse/daed" }}
     needs: [build-bundle]
     runs-on: ubuntu-latest
     steps:
