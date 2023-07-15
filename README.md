@@ -16,7 +16,7 @@
 
 ## Preview
 
-![preview](public/preview.png)
+![preview](docs/preview.png)
 
 ## Features
 

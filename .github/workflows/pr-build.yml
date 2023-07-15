@@ -18,20 +18,20 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           echo "$GITHUB_CONTEXT"
-          
+
   instantiate-check-runs:
     if: startsWith(github.event.pull_request.head.repo.full_name, github.repository_owner)
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        id: ["checkout-full-src", "build-web", "build-bundle", "build-passed"]
+        id: ['checkout-full-src', 'build-web', 'build-bundle', 'build-passed']
     steps:
       - name: Instantiate required check runs
         uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          id: "dae-bot[bot]/${{ matrix.id }}"
+          id: 'dae-bot[bot]/${{ matrix.id }}'
 
   checkout-full-src:
     runs-on: ubuntu-latest
@@ -65,14 +65,14 @@ jobs:
         with:
           name: daed-full-src.zip
           path: daed-full-src.zip
-          
+
       - name: Report result
         if: always() && startsWith(github.event.pull_request.head.repo.full_name, github.repository_owner)
         uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          id: "dae-bot[bot]/checkout-full-src"
+          id: 'dae-bot[bot]/checkout-full-src'
 
   build-web:
     runs-on: ubuntu-latest
@@ -98,14 +98,14 @@ jobs:
         with:
           name: web
           path: dist
-          
+
       - name: Report result
         if: always() && startsWith(github.event.pull_request.head.repo.full_name, github.repository_owner)
         uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          id: "dae-bot[bot]/build-web"
+          id: 'dae-bot[bot]/build-web'
 
   build-bundle:
     needs: build-web
@@ -246,14 +246,14 @@ jobs:
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
-          
+
       - name: Report result
         if: always() && startsWith(github.event.pull_request.head.repo.full_name, github.repository_owner)
         uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          id: "dae-bot[bot]/build-bundle"
+          id: 'dae-bot[bot]/build-bundle'
 
   conclusion:
     if: always() && startsWith(github.event.pull_request.head.repo.full_name, github.repository_owner)
@@ -265,6 +265,5 @@ jobs:
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          id: "dae-bot[bot]/build-passed"
+          id: 'dae-bot[bot]/build-passed'
           conclusion: ${{ needs.build-bundle.result }}
-    

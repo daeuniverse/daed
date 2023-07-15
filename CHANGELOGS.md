@@ -13,6 +13,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 ## Releases
 
 <!-- BEGIN NEW TOC ENTRY -->
+
 - [v0.1.1 (Latest)](#v011-latest)
 - [v0.1.0](#v010)
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
@@ -48,7 +49,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 ### New Contributors
 
-* @earrmouth made their first contribution in [#128](https://github.com/daeuniverse/daed/pull/128)
+- @earrmouth made their first contribution in [#128](https://github.com/daeuniverse/daed/pull/128)
 
 ### v0.1.0
 
@@ -56,42 +57,42 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 ### Features
 
-* feat: responsive header in [#111](https://github.com/daeuniverse/daed/pull/111) by (@kunish)
-* feat: support small screen devices in [#110](https://github.com/daeuniverse/daed/pull/110) by (@kunish)
-* feat: make plaintext modal fullscreen in [#109](https://github.com/daeuniverse/daed/pull/109) by (@kunish)
-* feat: add header icon link to github project, and a footer in [#108](https://github.com/daeuniverse/daed/pull/108) by (@kunish)
-* feat(editor): render tags in [#106](https://github.com/daeuniverse/daed/pull/106) by (@kunish)
-* feat(editor): add routingA code highlight in [#105](https://github.com/daeuniverse/daed/pull/105) by (@kunish)
-* feat: use theme `github` as default monaco editor light theme in [#102](https://github.com/daeuniverse/daed/pull/102) by (@kunish)
-* feat: use monaco editor for dns and routing in [#101](https://github.com/daeuniverse/daed/pull/101) by (@kunish)
-* feat: render qrcode in canvas to allow user to save image in [#100](https://github.com/daeuniverse/daed/pull/100) by (@kunish)
-* feat: add a modal to show node qrcode in [#99](https://github.com/daeuniverse/daed/pull/99) by (@kunish)
-* feat: show node protocol in card title in [#98](https://github.com/daeuniverse/daed/pull/98) by (@kunish)
-* feat: add tooltip for header actions in [#97](https://github.com/daeuniverse/daed/pull/97) by (@kunish)
-* feat: restrict drag and drop area in [#80](https://github.com/daeuniverse/daed/pull/80) by (@kunish)
-* feat: drag nodes and subscriptions between groups in [#79](https://github.com/daeuniverse/daed/pull/79) by (@kunish)
-* feat(group): show subscription tag on node hover in [#77](https://github.com/daeuniverse/daed/pull/77) by (@kunish)
-* feat(config): show interface ip addresses in interface select in [#72](https://github.com/daeuniverse/daed/pull/72) by (@kunish)
-* feat: add description text for group policies in [#71](https://github.com/daeuniverse/daed/pull/71) by (@kunish)
-* feat: add loading state indicators in [#70](https://github.com/daeuniverse/daed/pull/70) by (@kunish)
+- feat: responsive header in [#111](https://github.com/daeuniverse/daed/pull/111) by (@kunish)
+- feat: support small screen devices in [#110](https://github.com/daeuniverse/daed/pull/110) by (@kunish)
+- feat: make plaintext modal fullscreen in [#109](https://github.com/daeuniverse/daed/pull/109) by (@kunish)
+- feat: add header icon link to github project, and a footer in [#108](https://github.com/daeuniverse/daed/pull/108) by (@kunish)
+- feat(editor): render tags in [#106](https://github.com/daeuniverse/daed/pull/106) by (@kunish)
+- feat(editor): add routingA code highlight in [#105](https://github.com/daeuniverse/daed/pull/105) by (@kunish)
+- feat: use theme `github` as default monaco editor light theme in [#102](https://github.com/daeuniverse/daed/pull/102) by (@kunish)
+- feat: use monaco editor for dns and routing in [#101](https://github.com/daeuniverse/daed/pull/101) by (@kunish)
+- feat: render qrcode in canvas to allow user to save image in [#100](https://github.com/daeuniverse/daed/pull/100) by (@kunish)
+- feat: add a modal to show node qrcode in [#99](https://github.com/daeuniverse/daed/pull/99) by (@kunish)
+- feat: show node protocol in card title in [#98](https://github.com/daeuniverse/daed/pull/98) by (@kunish)
+- feat: add tooltip for header actions in [#97](https://github.com/daeuniverse/daed/pull/97) by (@kunish)
+- feat: restrict drag and drop area in [#80](https://github.com/daeuniverse/daed/pull/80) by (@kunish)
+- feat: drag nodes and subscriptions between groups in [#79](https://github.com/daeuniverse/daed/pull/79) by (@kunish)
+- feat(group): show subscription tag on node hover in [#77](https://github.com/daeuniverse/daed/pull/77) by (@kunish)
+- feat(config): show interface ip addresses in interface select in [#72](https://github.com/daeuniverse/daed/pull/72) by (@kunish)
+- feat: add description text for group policies in [#71](https://github.com/daeuniverse/daed/pull/71) by (@kunish)
+- feat: add loading state indicators in [#70](https://github.com/daeuniverse/daed/pull/70) by (@kunish)
 
 ### Bug Fixes
 
-* fix(group): refresh after remove nodes/subs in [#96](https://github.com/daeuniverse/daed/pull/96) by (@kunish)
-* fix: default googledns add tcp in [#92](https://github.com/daeuniverse/daed/pull/92) by (@kunish)
-* fix: dragging not working properly in [#91](https://github.com/daeuniverse/daed/pull/91) by (@kunish)
-* fix(subscription): loading indicator of update in [#78](https://github.com/daeuniverse/daed/pull/78) by (@kunish)
-* fix(config): disable allow insecure by default in [#73](https://github.com/daeuniverse/daed/pull/73) by (@kunish)
+- fix(group): refresh after remove nodes/subs in [#96](https://github.com/daeuniverse/daed/pull/96) by (@kunish)
+- fix: default googledns add tcp in [#92](https://github.com/daeuniverse/daed/pull/92) by (@kunish)
+- fix: dragging not working properly in [#91](https://github.com/daeuniverse/daed/pull/91) by (@kunish)
+- fix(subscription): loading indicator of update in [#78](https://github.com/daeuniverse/daed/pull/78) by (@kunish)
+- fix(config): disable allow insecure by default in [#73](https://github.com/daeuniverse/daed/pull/73) by (@kunish)
 
 ### Other Changes
 
-* ci: introduce generate-changelogs workflow in [#104](https://github.com/daeuniverse/daed/pull/104) by (@yqlbu)
-* chore(sync): keep upstream source up-to-date in [#90](https://github.com/daeuniverse/daed/pull/90) by (@dae-bot[bot])
-* chore(sync): keep upstream source up-to-date in [#86](https://github.com/daeuniverse/daed/pull/86) by (@dae-bot[bot])
-* refactor: split orchestrate page into multiple components in [#81](https://github.com/daeuniverse/daed/pull/81) by (@kunish)
-* ci: add sync-upstream workflow in [#76](https://github.com/daeuniverse/daed/pull/76) by (@yqlbu)
-* ci(prerelease): include v*.*.*rc* (v0.1.1rc1) case in [#75](https://github.com/daeuniverse/daed/pull/75) by (@yqlbu)
-* ci(release): retrieve release tag (version) from dispatch inputs in [#74](https://github.com/daeuniverse/daed/pull/74) by (@yqlbu)
+- ci: introduce generate-changelogs workflow in [#104](https://github.com/daeuniverse/daed/pull/104) by (@yqlbu)
+- chore(sync): keep upstream source up-to-date in [#90](https://github.com/daeuniverse/daed/pull/90) by (@dae-bot[bot])
+- chore(sync): keep upstream source up-to-date in [#86](https://github.com/daeuniverse/daed/pull/86) by (@dae-bot[bot])
+- refactor: split orchestrate page into multiple components in [#81](https://github.com/daeuniverse/daed/pull/81) by (@kunish)
+- ci: add sync-upstream workflow in [#76](https://github.com/daeuniverse/daed/pull/76) by (@yqlbu)
+- ci(prerelease): include v*.*._rc_ (v0.1.1rc1) case in [#75](https://github.com/daeuniverse/daed/pull/75) by (@yqlbu)
+- ci(release): retrieve release tag (version) from dispatch inputs in [#74](https://github.com/daeuniverse/daed/pull/74) by (@yqlbu)
 
 **Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.1.0rc...v0.1.0
 
