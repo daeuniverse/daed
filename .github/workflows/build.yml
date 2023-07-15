@@ -254,7 +254,7 @@ jobs:
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
 
-      - name: Upload Linux packages with out Arch Linux package
+      - name: Upload Linux packages without Arch Linux package
         if: ${{  env.GOARCH == 'mips' || env.GOARCH == 'mipsle' || env.GOARCH == 'mips64' || env.GOARCH == 'mips64le' }}
         uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
         with:
