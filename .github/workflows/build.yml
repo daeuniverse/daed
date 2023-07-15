@@ -196,7 +196,7 @@ jobs:
             sudo apt install -y libarchive-tools rpm
             sudo gem install fpm -v 1.15.1
             pushd bundled || exit 1
-            if [[ "$GOARCH" == 'mips64' || "$GOARCH" == 'mips64le' || $GOARCH" == 'mipsle' || $GOARCH" == 'mips' ]];then
+            if [ "$GOARCH" == 'mips64' ] || [ "$GOARCH" == 'mips64le' ] || [ $GOARCH" == 'mipsle' ] || [ $GOARCH" == 'mips' ];then
               echo "Skip pacman package build for Arch Linux has never been port to MIPS family, Debian package and RPM package are enough."
               no_arch_pkg="yes"
               ARCH_PACMAN=''
