@@ -43,7 +43,7 @@ export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
 
     return onLinkGeneration(
       generateURL({
-        protocol: protocol,
+        protocol,
         username: values.password,
         host: values.server,
         port: values.port,
@@ -92,7 +92,7 @@ export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
       )}
 
       <Checkbox
-        label="Allow Insecure"
+        label={t('allowInsecure')}
         disabled={values.method !== 'origin' || values.obfs !== 'none'}
         {...getInputProps('allowInsecure', { type: 'checkbox' })}
       />

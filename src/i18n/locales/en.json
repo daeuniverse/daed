@@ -41,6 +41,8 @@
   "collapse": "collapse",
   "config": "Config",
   "configureNode": {
+    "congestionControl": "Congestion Control",
+    "disableSNI": "Disable SNI",
     "dtlsObfuscation": "Obfuscated as DTLS1.2 Packets",
     "forceTLS": "forcibly TLS on",
     "host": "Host",
@@ -64,6 +66,7 @@
     "srtpObfuscation": "Obfuscated as Video Calls (SRTP)",
     "title": "Configure Node",
     "type": "Type",
+    "udpRelayMode": "UDP Relay Mode",
     "username": "Username",
     "utpObfuscation": "Obfuscated as Bittorrent (uTP)",
     "websocketHost": "WebSocket Host",

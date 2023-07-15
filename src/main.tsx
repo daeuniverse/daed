@@ -15,52 +15,50 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import ReactDOM from 'react-dom/client'
 
 import { App } from '~/App'
+import { EDITOR_LANGUAGE_ROUTINGA } from '~/constants/editor'
 import { i18nInit } from '~/i18n'
-
-import { EDITOR_LANGUAGE_ROUTINGA, EDITOR_THEME_LIGHT } from './constants/editor'
 
 dayjs.extend(duration)
 
-const loadMonaco = () =>
-  new Promise<void>((res) => {
-    loader.config({ monaco })
+const loadMonaco = async () => {
+  loader.config({ monaco })
 
-    self.MonacoEnvironment = {
-      createTrustedTypesPolicy() {
-        return undefined
-      },
-      getWorker(_, label) {
-        if (label === 'json') {
-          return new jsonWorker()
-        }
+  self.MonacoEnvironment = {
+    createTrustedTypesPolicy() {
+      return undefined
+    },
 
-        if (label === 'css' || label === 'scss' || label === 'less') {
-          return new cssWorker()
-        }
+    getWorker(_, label) {
+      if (label === 'json') {
+        return new jsonWorker()
+      }
 
-        if (label === 'html' || label === 'handlebars' || label === 'razor') {
-          return new htmlWorker()
-        }
+      if (label === 'css' || label === 'scss' || label === 'less') {
+        return new cssWorker()
+      }
 
-        if (label === 'typescript' || label === 'javascript') {
-          return new tsWorker()
-        }
+      if (label === 'html' || label === 'handlebars' || label === 'razor') {
+        return new htmlWorker()
+      }
 
-        return new editorWorker()
-      },
-    }
+      if (label === 'typescript' || label === 'javascript') {
+        return new tsWorker()
+      }
 
-    loader.init().then((monaco) => {
-      monaco.languages.register({ id: 'routingA', extensions: ['dae'] })
-      monaco.languages.setMonarchTokensProvider('routingA', EDITOR_LANGUAGE_ROUTINGA)
+      return new editorWorker()
+    },
+  }
 
-      import('monaco-themes/themes/GitHub.json').then((data) => {
-        monaco.editor.defineTheme(EDITOR_THEME_LIGHT, data as editor.IStandaloneThemeData)
+  const monacoInstance = await loader.init()
 
-        res()
-      })
-    })
-  })
+  monacoInstance.languages.register({ id: 'routingA', extensions: ['dae'] })
+  monacoInstance.languages.setMonarchTokensProvider('routingA', EDITOR_LANGUAGE_ROUTINGA)
+
+  const themeGithub = await import('monaco-themes/themes/GitHub.json')
+  const themeGithubLight = await import('monaco-themes/themes/GitHub Light.json')
+  monacoInstance.editor.defineTheme('github', themeGithub as editor.IStandaloneThemeData)
+  monacoInstance.editor.defineTheme('githubLight', themeGithubLight as editor.IStandaloneThemeData)
+}
 
 Promise.all([i18nInit(), loadMonaco()]).then(() => {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />)

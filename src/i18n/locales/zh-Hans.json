@@ -41,6 +41,8 @@
   "collapse": "折叠",
   "config": "配置",
   "configureNode": {
+    "congestionControl": "拥堵控制算法",
+    "disableSNI": "关闭 SNI",
     "dtlsObfuscation": "伪装为 DTLS1.2 数据包",
     "forceTLS": "强制开启 TLS",
     "host": "主机地址",
@@ -64,6 +66,7 @@
     "srtpObfuscation": "伪装视频通话 (SRTP)",
     "title": "配置节点",
     "type": "类型",
+    "udpRelayMode": "UDP 中继模式",
     "username": "用户名",
     "utpObfuscation": "伪装为 BT 下载 (uTP)",
     "websocketHost": "WebSocket 地址",
