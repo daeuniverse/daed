@@ -20,18 +20,15 @@ jobs:
           echo "$GITHUB_CONTEXT"
           
   instantiate-check-runs:
-#     if: "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
+#     if: "${{ startsWith(github.event.pull_request.head.repo.full_name, github.repository_owner) }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
         id: ["checkout-full-src", "build-web", "build-bundle", "build-passed"]
-    env:
-        EVENT_CONTEXT: ${{ toJson(github.event.pull_request) }}
     steps:
       - run: |
-          echo "$EVENT_CONTEXT"
           echo "${{ github.repository_owner }}"
-          echo "${{ github.event.pull_request.head.full_name }}"
+          echo "${{ github.event.pull_request.head.repo.full_name }}"
           echo "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
       - name: Instantiate required check runs
         uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
