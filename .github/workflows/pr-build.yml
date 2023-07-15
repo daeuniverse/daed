@@ -27,8 +27,8 @@ jobs:
         id: ["checkout-full-src", "build-web", "build-bundle", "build-passed"]
     steps:
       - run: |
-          echo "{{ github.event.pull_request.head.full_name }}"
-          echo "{{ github.repository_owner }}"
+          echo "${{ github.event.pull_request.head.full_name }}"
+          echo "${{ github.repository_owner }}"
           echo "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
       - name: Instantiate required check runs
         uses: daeuniverse/ci-seed-jobs/core/daed/instantiate-check-runs@master
