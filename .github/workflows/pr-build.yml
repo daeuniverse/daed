@@ -25,9 +25,11 @@ jobs:
     strategy:
       matrix:
         id: ["checkout-full-src", "build-web", "build-bundle", "build-passed"]
+    env:
+        EVENT_CONTEXT: ${{ toJson(github.event.pull_request) }}
     steps:
       - run: |
-          echo "${{ github.event.pull_request.head.full_name }}"
+          echo "$EVENT_CONTEXT"
           echo "${{ github.repository_owner }}"
           echo "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
       - name: Instantiate required check runs
