@@ -20,7 +20,7 @@ jobs:
           echo "$GITHUB_CONTEXT"
           
   instantiate-check-runs:
-    if: "${{ github.event.pull_request.repo.full_name == daeuniverse/daed }}"
+    if: "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -67,8 +67,8 @@ jobs:
           path: daed-full-src.zip
           
       - name: Report result
+        if: always() && "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
         uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
-        if: always()
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -100,8 +100,8 @@ jobs:
           path: dist
           
       - name: Report result
+        if: always() && "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
         uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
-        if: always()
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -248,7 +248,7 @@ jobs:
           path: bundled/*
           
       - name: Report result
-        if: always() && "${{ github.event.pull_request.repo.full_name == daeuniverse/daed }}"
+        if: always() && "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
         uses: daeuniverse/ci-seed-jobs/core/daed/report-check-run@master
         with:
           app_id: ${{ secrets.GH_APP_ID }}
@@ -256,7 +256,7 @@ jobs:
           id: "dae-bot[bot]/build-bundle"
 
   conclusion:
-    if: always() && "${{ github.event.pull_request.repo.full_name == daeuniverse/daed }}"
+    if: always() && "${{ startsWith(github.event.pull_request.head.full_name, github.repository_owner) }}"
     needs: [build-bundle]
     runs-on: ubuntu-latest
     steps:
