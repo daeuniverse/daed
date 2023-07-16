@@ -19,6 +19,10 @@ test('deriveTime can parse seconds', () => {
   expect(deriveTime('60s', 's')).toBe(60)
 })
 
+test('deriveTime can parse multiple units combined', () => {
+  expect(deriveTime('1h1m1s100ms', 's')).toBe(3661.1)
+})
+
 test('deriveTime can parse seconds to milliseconds', () => {
   expect(deriveTime('1s', 'ms')).toBe(1000)
 })

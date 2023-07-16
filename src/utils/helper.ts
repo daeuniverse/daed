@@ -74,6 +74,5 @@ export const parseDigitAndUnit = (
   return parseDigitAndUnit(timeStr.replace(r, ''), output)
 }
 
-export const deriveTime = (timeStr: string, outputUnit: 'ms' | 's') => {
-  return dayjs.duration(parseDigitAndUnit(timeStr)).as(outputUnit === 'ms' ? 'milliseconds' : 'seconds')
-}
+export const deriveTime = (timeStr: string, outputUnit: 'ms' | 's') =>
+  dayjs.duration(parseDigitAndUnit(timeStr)).as(outputUnit === 'ms' ? 'milliseconds' : 'seconds')
