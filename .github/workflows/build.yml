@@ -246,7 +246,7 @@ jobs:
           fi
 
       - name: Upload Linux packages
-        if: !contains(fromJSON('["5", "6"]'), env.GOARM) && !contains(fromJSON('["mips", "mipsle", "mips64", "mips64le"]'), env.GOARCH)
+        if: ${{ env.GOARM != '5' && env.GOARM != '6' && env.GOARCH != 'mips' && env.GOARCH != 'mipsle' && env.GOARCH != 'mips64' && env.GOARCH != 'mips64le' }}
         uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
         with:
           path: |
