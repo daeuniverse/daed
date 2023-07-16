@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <img src="https://github.com/daeuniverse/daed/actions/workflows/build.yml/badge.svg" alt="build-status" />
   <img src="https://custom-icon-badges.herokuapp.com/github/license/daeuniverse/daed?logo=law&color=orange" alt="license" />
   <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fdaeuniverse%2Fdaed&count_bg=%235C3DC8&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" alt="hits" />
   <img src="https://custom-icon-badges.herokuapp.com/github/v/release/daeuniverse/daed?logo=rocket" alt="version">
