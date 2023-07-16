@@ -15,7 +15,8 @@
     "codegen": "graphql-codegen",
     "dev": "vite dev",
     "lint": "vite lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "vitest"
   },
   "dependencies": {
     "@commitlint/cli": "^17.6.6",
