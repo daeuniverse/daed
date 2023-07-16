@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import { DurationUnitType } from 'dayjs/plugin/duration'
 
 export class Defer<T> {
   promise: Promise<T>
@@ -35,16 +34,45 @@ export const fileToBase64 = (file: File) => {
   return defer.promise
 }
 
-const r = new RegExp('([0-9]+)([a-z]+)')
+const r = /([0-9]+)([a-z]+)/
 
-export const deriveTime = (timeStr: string, outputUnit: 'ms' | 's') => {
-  const execRes = r.exec(timeStr)
+type Time = {
+  hours: number
+  minutes: number
+  seconds: number
+  milliseconds: number
+}
 
-  if (!execRes) {
-    return 0
+export const parseDigitAndUnit = (
+  timeStr: string,
+  output: Time = { hours: 0, milliseconds: 0, minutes: 0, seconds: 0 },
+): Time => {
+  const matchRes = timeStr.match(r)
+
+  if (!matchRes) {
+    return output
   }
 
-  return dayjs
-    .duration(Number.parseInt(execRes[1]), execRes[2] as DurationUnitType)
-    .as(outputUnit === 'ms' ? 'milliseconds' : 'seconds')
+  const digit = Number.parseInt(matchRes[1])
+  const unit = matchRes[2]
+
+  switch (unit) {
+    case 'h':
+      output.hours = digit
+      break
+    case 'm':
+      output.minutes = digit
+      break
+    case 's':
+      output.seconds = digit
+      break
+    case 'ms':
+      output.milliseconds = digit
+      break
+  }
+
+  return parseDigitAndUnit(timeStr.replace(r, ''), output)
 }
+
+export const deriveTime = (timeStr: string, outputUnit: 'ms' | 's') =>
+  dayjs.duration(parseDigitAndUnit(timeStr)).as(outputUnit === 'ms' ? 'milliseconds' : 'seconds')
