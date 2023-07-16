@@ -188,8 +188,37 @@ jobs:
             sudo apt install -y libarchive-tools rpm
             sudo gem install fpm -v 1.15.1
             pushd bundled || exit 1
-            for package_manager in deb rpm pacman; do
-              fpm -s dir -t "$package_manager" -a $GOARCH --version "$PACKAGE_VERSION" \
+            if [ "$GOARCH" == 'mips64' ] || [ "$GOARCH" == 'mips64le' ] || [ "$GOARCH" == 'mipsle' ] || [ "$GOARCH" == 'mips' ];then
+              echo "Skip pacman package build for Arch Linux has never been port to MIPS family, Debian package and RPM package are enough."
+              ARCH_PACMAN=''
+            else
+              ARCH_PACMAN='pacman'
+            fi
+            for package_manager in deb rpm $ARCH_PACMAN; do
+              if [ "$package_manager" == 'pacman' ];then
+                if [ "$GOARCH" == 'arm' ] && [ "$GOARM" == '7' ];then
+                  package_arch='arm7hf'
+                elif [ "$GOARCH" == 'arm64' ];then
+                  package_arch='aarch64'
+                else
+                  package_arch="$GOARCH"
+                fi
+              elif [ "$package_manager" == 'rpm' ];then
+                if [ "$GOARCH" == 'arm' ] && [ "$GOARM" == '7' ];then
+                  package_arch='armhfp'
+                elif [ "$GOARCH" == 'arm64' ];then
+                  package_arch='aarch64'
+                else
+                  package_arch="$GOARCH"
+                fi
+              elif [ "$package_manager" == 'deb' ];then
+                if [ "$GOARCH" == 'arm' ] && [ "$GOARM" == '7' ];then
+                  package_arch='armhf'
+                else
+                  package_arch="$GOARCH"
+                fi
+              fi
+              fpm -s dir -t "$package_manager" -a $package_arch --version "$PACKAGE_VERSION" \
                 --url 'https://github.com/daeuniverse/daed' --description "daed, A Modern Dashboard For dae." \
                 --maintainer "daed@dae.v2raya.org" --name daed --license 'MIT AGPL' \
                 --package daed-linux-$GOARCH$GOAMD64$GOARM.$package_manager \
@@ -202,17 +231,28 @@ jobs:
             popd || exit 1
             cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.deb installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
             cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.rpm installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
-            cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.pacman installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
+            if [ "$ARCH_PACMAN" == 'pacman' ];then
+              cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.pacman installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
+            fi
+            ls | grep -E ".deb|.rpm|.pkg.tar.zst"
           fi
 
       - name: Upload Linux packages
-        if: ${{ env.GOARM != '5' && env.GOARM != '6' }}
+        if: ${{ env.GOARM != '5' && env.GOARM != '6' && env.GOARCH != 'mips' && env.GOARCH != 'mipsle' && env.GOARCH != 'mips64' && env.GOARCH != 'mips64le' }}
         uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
         with:
           path: |
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
+
+      - name: Upload Linux packages without Arch Linux package
+        if: ${{  env.GOARCH == 'mips' || env.GOARCH == 'mipsle' || env.GOARCH == 'mips64' || env.GOARCH == 'mips64le' }}
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
+        with:
+          path: |
+            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
+            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
 
   upload-release:
     needs: [checkout-full-src, build-bundle]
