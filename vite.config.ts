@@ -7,11 +7,8 @@ import { defineConfig } from 'vite'
 export default defineConfig(() => {
   return {
     base: './',
-    resolve: {
-      alias: {
-        '~': path.resolve('src'),
-      },
-    },
+    resolve: { alias: { '~': path.resolve('src') } },
     plugins: [react()],
+    test: { globals: true },
   }
 })
