@@ -14,12 +14,50 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 <!-- BEGIN NEW TOC ENTRY -->
 
-- [v0.1.1 (Latest)](#v011-latest)
+- [v0.2.0 (Latest)](#v020-latest)
+- [v0.1.1](#v011)
 - [v0.1.0](#v010)
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
 <!-- BEGIN NEW CHANGELOGS -->
 
-### v0.1.1 (Latest)
+### v0.2.0 (Latest)
+
+> Release date: 2023/07/17
+
+### Features
+
+- feat: add configure tuic modal in [#157](https://github.com/daeuniverse/daed/pull/157) by (@kunish)
+- feat: modal reworks in [#149](https://github.com/daeuniverse/daed/pull/149) by (@kunish)
+- feat: change icons in [#147](https://github.com/daeuniverse/daed/pull/147) by (@kunish)
+
+### Bug Fixes
+
+- fix: time parsing is wrong in [#171](https://github.com/daeuniverse/daed/pull/171) by (@kunish)
+- fix(v2ray): add missing websocket path field in [#159](https://github.com/daeuniverse/daed/pull/159) by (@kunish)
+- fix: wan interface should be optional in [#156](https://github.com/daeuniverse/daed/pull/156) by (@kunish)
+
+### Others
+
+- ci(pr-build): add ready_for_review trigger in [#175](https://github.com/daeuniverse/daed/pull/175) by (@yqlbu)
+- chore(sync): keep upstream source up-to-date in [#174](https://github.com/daeuniverse/daed/pull/174) by (@daebot)
+- chore: run unite tests before commiting in [#172](https://github.com/daeuniverse/daed/pull/172) by (@kunish)
+- docs(readme): add build-status badge in [#170](https://github.com/daeuniverse/daed/pull/170) by (@yqlbu)
+- chore: update packages in [#169](https://github.com/daeuniverse/daed/pull/169) by (@kunish)
+- ci/fix(pr-build): skip check-run related actions based on condition in [#167](https://github.com/daeuniverse/daed/pull/167) by (@yqlbu)
+- chore(sync): keep upstream source up-to-date in [#165](https://github.com/daeuniverse/daed/pull/165) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#164](https://github.com/daeuniverse/daed/pull/164) by (@daebot)
+- ci/chore(pr-build): remove unnecessary lines in [#163](https://github.com/daeuniverse/daed/pull/163) by (@yqlbu)
+- ci(pr-build): integrate check runs to report build status in [#162](https://github.com/daeuniverse/daed/pull/162) by (@yqlbu)
+- chore(sync): keep upstream source up-to-date in [#160](https://github.com/daeuniverse/daed/pull/160) by (@daebot)
+- ci(build): rename Build (Stable) -> Build (Main) in [#158](https://github.com/daeuniverse/daed/pull/158) by (@yqlbu)
+- chore(sync): keep upstream source up-to-date in [#155](https://github.com/daeuniverse/daed/pull/155) by (@daebot)
+- ci(sync-upstream): fix invalid downstream workflow ref in [#152](https://github.com/daeuniverse/daed/pull/152) by (@yqlbu)
+- ci(sync-upstream) apply modularity support in [#151](https://github.com/daeuniverse/daed/pull/151) by (@yqlbu)
+- chore(pr_template): add test result section in [#148](https://github.com/daeuniverse/daed/pull/148) by (@yqlbu)
+- ci(generate-changelogs): set dry_run to true by default in [#146](https://github.com/daeuniverse/daed/pull/146) by (@yqlbu)
+- ci(build.yml): fix armv7 packages' architecture in [#145](https://github.com/daeuniverse/daed/pull/145) by (@MarksonHon)
+
+### v0.1.1
 
 > Release date: 2023/07/09
 
