@@ -114,7 +114,7 @@ jobs:
     strategy:
       matrix:
         goos: [linux]
-        goarch: [arm64, 386, riscv64, mips64, mips64le, mipsle, mips]
+        goarch: [arm64]
 
         include:
           # BEGIN Linux ARM 5 6 7
@@ -140,25 +140,6 @@ jobs:
             goarch: amd64
             goamd64: v3
           # END Linux AMD64 v1 v2 v3
-
-          # BEGIN Linux mips
-          - goos: linux
-            goarch: mips64
-            cgo_enabled: 1
-            cc: mips64-linux-gnuabi64-gcc
-          - goos: linux
-            goarch: mips64le
-            cgo_enabled: 1
-            cc: mips64el-linux-gnuabi64-gcc
-          - goos: linux
-            goarch: mipsle
-            cgo_enabled: 1
-            cc: mipsel-linux-gnu-gcc
-          - goos: linux
-            goarch: mips
-            cgo_enabled: 1
-            cc: mips-linux-gnu-gcc
-          # END Linux mips
       fail-fast: false
 
     env:
