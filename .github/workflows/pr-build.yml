@@ -5,9 +5,15 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - '**/*.md'
-      - README.md
+    paths:
+      - '**.ts'
+      - '.github/workflows/pr-build.yml'
+      - 'install/friendly-filenames.json'
+      - 'public/**'
+      - Makefile
+      - tsconfig.json
+      - .npmrc
+      - .gitmodules
 
 jobs:
   context:
