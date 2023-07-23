@@ -10,6 +10,7 @@ on:
       - '.github/workflows/pr-build.yml'
       - 'install/friendly-filenames.json'
       - 'public/**'
+      - 'wing/**'
       - Makefile
       - tsconfig.json
       - .npmrc
