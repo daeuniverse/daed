@@ -114,8 +114,7 @@ jobs:
     strategy:
       matrix:
         goos: [linux]
-        goarch: [arm64, 386, riscv64, mips64, mips64le, mipsle, mips]
-
+        goarch: [arm64,amd64]
         include:
           # BEGIN Linux ARM 5 6 7
           - goos: linux
@@ -128,37 +127,6 @@ jobs:
             goarch: arm
             goarm: 5
           # END Linux ARM 5 6 7
-
-          # BEGIN Linux AMD64 v1 v2 v3
-          - goos: linux
-            goarch: amd64
-            goamd64: v1
-          - goos: linux
-            goarch: amd64
-            goamd64: v2
-          - goos: linux
-            goarch: amd64
-            goamd64: v3
-          # END Linux AMD64 v1 v2 v3
-
-          # BEGIN Linux mips
-          - goos: linux
-            goarch: mips64
-            cgo_enabled: 1
-            cc: mips64-linux-gnuabi64-gcc
-          - goos: linux
-            goarch: mips64le
-            cgo_enabled: 1
-            cc: mips64el-linux-gnuabi64-gcc
-          - goos: linux
-            goarch: mipsle
-            cgo_enabled: 1
-            cc: mipsel-linux-gnu-gcc
-          - goos: linux
-            goarch: mips
-            cgo_enabled: 1
-            cc: mips-linux-gnu-gcc
-          # END Linux mips
       fail-fast: false
 
     env:
@@ -226,7 +194,7 @@ jobs:
           curl -L -o ./bundled/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
 
       - name: Smoking test
-        if: matrix.goarch == 'amd64' && matrix.goamd64 == 'v1'
+        if: matrix.goarch == 'amd64'
         run: ./bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }} --version
 
       - name: Create binary ZIP archive and Signature
