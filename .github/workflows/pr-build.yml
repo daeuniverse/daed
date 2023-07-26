@@ -6,16 +6,16 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - '*.ts'
-      - '*.tsx'
-      - '.github/workflows/pr-build.yml'
-      - 'install/friendly-filenames.json'
+      - 'src/**'
       - 'public/**'
       - 'wing/**'
-      - Makefile
+      - .github/workflows/pr-build.yml
+      - install/friendly-filenames.json
+      - index.html
       - package.json
-      - tsconfig.json
       - .npmrc
+      - vite.config.ts
+      - Makefile
       - .gitmodules
 
 jobs:
