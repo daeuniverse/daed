@@ -51,6 +51,8 @@ export const App = () => {
       Group: { defaultProps: { spacing: 'sm' } },
       Button: { defaultProps: { uppercase: true } },
       ActionIcon: { defaultProps: { size: 'sm' } },
+      Tooltip: { defaultProps: { withArrow: true } },
+      HoverCard: { defaultProps: { withArrow: true } },
       Modal: {
         defaultProps: {
           size: 'lg',

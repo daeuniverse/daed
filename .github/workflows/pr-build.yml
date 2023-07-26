@@ -123,7 +123,7 @@ jobs:
     strategy:
       matrix:
         goos: [linux]
-        goarch: [arm64,amd64]
+        goarch: [arm64, amd64]
         include:
           # BEGIN Linux ARM 5 6 7
           - goos: linux
@@ -142,9 +142,6 @@ jobs:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
       GOARM: ${{ matrix.goarm }}
-      GOAMD64: ${{ matrix.goamd64 }}
-      CGO_ENABLED: ${{ matrix.cgo_enabled || 0 }}
-      CC: ${{ matrix.cc }}
 
     steps:
       - uses: actions/checkout@v3

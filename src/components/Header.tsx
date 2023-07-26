@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Anchor,
   Avatar,
-  Box,
   Burger,
   Button,
   Code,
@@ -151,7 +150,7 @@ export const HeaderWithActions = () => {
             </Anchor>
 
             {!matchSmallScreen && (
-              <Tooltip label={endpointURL} withArrow>
+              <Tooltip label={endpointURL}>
                 <Code fz="xs" fw={700}>
                   {generalQuery?.general.dae.version}
                 </Code>
@@ -239,42 +238,42 @@ export const HeaderWithActions = () => {
                 <ActionIcon onClick={() => toggleColorScheme()}>
                   {colorScheme === 'dark' ? <IconSun /> : <IconMoon />}
                 </ActionIcon>
-
-                {generalQuery?.general.dae.modified && (
-                  <Tooltip label={t('actions.reload')} withArrow>
-                    <ActionIcon loading={runMutation.isLoading} onClick={() => runMutation.mutateAsync(false)}>
-                      <IconRefreshAlert />
-                    </ActionIcon>
-                  </Tooltip>
-                )}
               </Fragment>
             )}
 
-            <Tooltip label={t('actions.switchRunning')} withArrow>
-              <Box>
-                {matchSmallScreen ? (
-                  <Switch
-                    size="xs"
-                    disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
-                    checked={generalQuery?.general.dae.running}
-                    onChange={(e) => {
-                      runMutation.mutateAsync(!e.target.checked)
-                    }}
-                  />
-                ) : (
-                  <Switch
-                    size="md"
-                    onLabel={<IconCloudCheck />}
-                    offLabel={<IconCloudPause />}
-                    disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
-                    checked={generalQuery?.general.dae.running}
-                    onChange={(e) => {
-                      runMutation.mutateAsync(!e.target.checked)
-                    }}
-                  />
-                )}
-              </Box>
-            </Tooltip>
+            {generalQuery?.general.dae.modified && (
+              <Tooltip label={t('actions.reload')}>
+                <ActionIcon loading={runMutation.isLoading} onClick={() => runMutation.mutateAsync(false)}>
+                  <IconRefreshAlert />
+                </ActionIcon>
+              </Tooltip>
+            )}
+
+            {matchSmallScreen ? (
+              <Tooltip label={t('actions.switchRunning')}>
+                <Switch
+                  size="xs"
+                  disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
+                  checked={generalQuery?.general.dae.running}
+                  onChange={(e) => {
+                    runMutation.mutateAsync(!e.target.checked)
+                  }}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip label={t('actions.switchRunning')}>
+                <Switch
+                  size="md"
+                  onLabel={<IconCloudCheck />}
+                  offLabel={<IconCloudPause />}
+                  disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
+                  checked={generalQuery?.general.dae.running}
+                  onChange={(e) => {
+                    runMutation.mutateAsync(!e.target.checked)
+                  }}
+                />
+              </Tooltip>
+            )}
           </Group>
         </Group>
       </Container>
