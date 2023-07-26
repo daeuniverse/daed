@@ -96,6 +96,8 @@ export const RenameFormModal = forwardRef(
             if (type === RuleType.group) {
               renameGroupMutation.mutate({ id, name })
             }
+
+            onClose()
           })}
         >
           <Stack>
