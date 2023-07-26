@@ -32,8 +32,12 @@ submodule submodules: $(submodule_ready)
 ## End Git Submodules
 
 ## Begin Web
+PFLAGS ?=
+ifeq (,$(wildcard ./.git))
+	PFLAGS += HUSKY=0
+endif
 dist: package.json pnpm-lock.yaml
-	pnpm i
+	$(PFLAGS) pnpm i
 	pnpm build
 ## End Web
 
