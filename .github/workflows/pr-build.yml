@@ -5,9 +5,18 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - '**/*.md'
-      - README.md
+    paths:
+      - .github/workflows/pr-build.yml
+      - install/friendly-filenames.json
+      - Makefile
+      - 'wing/**'
+      - 'src/**'
+      - 'public/**'
+      - index.html
+      - vite.config.ts
+      - .npmrc
+      - package.json
+      - pnpm-lock.yaml
 
 jobs:
   context:

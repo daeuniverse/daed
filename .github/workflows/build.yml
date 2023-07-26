@@ -4,9 +4,18 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths-ignore:
-      - '**/*.md'
-      - README.md
+    paths:
+      - .github/workflows/pr-build.yml
+      - install/friendly-filenames.json
+      - Makefile
+      - 'wing/**'
+      - 'src/**'
+      - 'public/**'
+      - index.html
+      - vite.config.ts
+      - .npmrc
+      - package.json
+      - pnpm-lock.yaml
 
 jobs:
   checkout-full-src:
