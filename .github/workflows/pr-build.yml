@@ -6,17 +6,17 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - 'src/**'
-      - 'public/**'
-      - 'wing/**'
       - .github/workflows/pr-build.yml
       - install/friendly-filenames.json
-      - index.html
-      - package.json
-      - .npmrc
-      - vite.config.ts
       - Makefile
-      - .gitmodules
+      - 'wing/**'
+      - 'src/**'
+      - 'public/**'
+      - index.html
+      - vite.config.ts
+      - .npmrc
+      - package.json
+      - pnpm-lock.yaml
 
 jobs:
   context:

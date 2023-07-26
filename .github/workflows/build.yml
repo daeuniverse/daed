@@ -5,17 +5,17 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/**'
-      - 'public/**'
-      - 'wing/**'
       - .github/workflows/pr-build.yml
       - install/friendly-filenames.json
-      - index.html
-      - package.json
-      - .npmrc
-      - vite.config.ts
       - Makefile
-      - .gitmodules
+      - 'wing/**'
+      - 'src/**'
+      - 'public/**'
+      - index.html
+      - vite.config.ts
+      - .npmrc
+      - package.json
+      - pnpm-lock.yaml
 
 jobs:
   checkout-full-src:
