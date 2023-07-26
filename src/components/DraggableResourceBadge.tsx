@@ -37,7 +37,7 @@ export const DraggableResourceBadge = ({
   })
 
   return (
-    <Tooltip disabled={!children} label={<Text fz="xs">{children}</Text>} withArrow>
+    <Tooltip disabled={!children} label={<Text fz="xs">{children}</Text>}>
       <Badge
         ref={setNodeRef}
         pr={onRemove ? 3 : undefined}

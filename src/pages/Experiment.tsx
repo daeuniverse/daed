@@ -533,7 +533,7 @@ export const ExperimentPage = () => {
                     {tag}
                   </Text>
                   <Text fw={600}>{protocol}</Text>
-                  <HoverCard withArrow>
+                  <HoverCard>
                     <HoverCard.Target>
                       <Text truncate>{link}</Text>
                     </HoverCard.Target>
@@ -564,7 +564,7 @@ export const ExperimentPage = () => {
                     {tag}
                   </Text>
                   <Text fw={600}>{updatedAt}</Text>
-                  <HoverCard withArrow>
+                  <HoverCard>
                     <HoverCard.Target>
                       <Text truncate>{link}</Text>
                     </HoverCard.Target>
