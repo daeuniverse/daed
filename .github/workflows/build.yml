@@ -5,12 +5,12 @@ on:
   push:
     branches: [main]
     paths:
+      - 'src/**'
+      - 'public/**'
       - .github/workflows/pr-build.yml
       - install/friendly-filenames.json
       - Makefile
-      - 'wing/**'
-      - 'src/**'
-      - 'public/**'
+      - wing
       - index.html
       - vite.config.ts
       - .npmrc
