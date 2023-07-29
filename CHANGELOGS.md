@@ -13,14 +13,26 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 ## Releases
 
 <!-- BEGIN NEW TOC ENTRY -->
-- [v0.3.0 (Latest)](#v030-latest)
+
+- [v0.3.1 (Latest)](#v031-latest)
+- [v0.3.0](#v030)
 - [v0.2.0](#v020)
 - [v0.1.1](#v011)
 - [v0.1.0](#v010)
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
 <!-- BEGIN NEW CHANGELOGS -->
 
-### v0.3.0 (Latest)
+### v0.3.1 (Latest)
+
+> Release date: 2023/07/29
+
+### Others
+
+- chore(sync): keep upstream source up-to-date in [#199](https://github.com/daeuniverse/daed/pull/199) by (@daebot)
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.3.0...v0.3.1
+
+### v0.3.0
 
 > Release date: 2023/07/29
 
