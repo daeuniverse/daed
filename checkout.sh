@@ -1,6 +1,6 @@
 #/bin/bash
 
-ask_coninue() {
+ask_continue() {
     read -r -p "All your code changes will be lost, continue? [y/N] " response
     case "$response" in
         [yY][eE][sS]|[yY]) 
