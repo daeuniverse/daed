@@ -106,6 +106,17 @@ export const tuicSchema = z.object({
   udp_relay_mode: z.string(),
 })
 
+export const juicitySchema = z.object({
+  name: z.string(),
+  server: z.string().nonempty(),
+  port: z.number().min(0).max(65535),
+  uuid: z.string().nonempty(),
+  password: z.string().nonempty(),
+  allowInsecure: z.boolean(),
+  sni: z.string(),
+  congestion_control: z.string(),
+})
+
 export const httpSchema = z.object({
   username: z.string(),
   password: z.string(),
