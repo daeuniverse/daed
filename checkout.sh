@@ -13,8 +13,8 @@ ask_coninue() {
 }
 
 repo_rinse() {
-    git submodule foreach --recursive git clean -xfd
     git reset --hard
+    git pull
     git submodule foreach --recursive git reset --hard
     git submodule update --init --recursive
 }
@@ -87,14 +87,20 @@ while [ $# != 0 ] ; do
             shift
             break
             ;;
+        -h)
+            opt_help=1
+            shift
+            break
+            ;;
         *)
-            error_help=1
+            opt_help=1
             echo "${RED}error: Unknown command: $1${RESET}"
             shift
+            break
             ;;
     esac
 done
-if [ ! -z "$error_help" ];then
+if [ ! -z "$opt_help" ];then
     show_helps
     exit 1
 fi
