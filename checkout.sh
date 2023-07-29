@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 
 ask_continue() {
     read -r -p "All your code changes will be lost, continue? [y/N] " response
