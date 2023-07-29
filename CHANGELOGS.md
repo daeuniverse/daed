@@ -14,8 +14,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 <!-- BEGIN NEW TOC ENTRY -->
 - [v0.3.0 (Latest)](#v030-latest)
-
-- [v0.2.0 (Latest)](#v020-latest)
+- [v0.2.0](#v020)
 - [v0.1.1](#v011)
 - [v0.1.0](#v010)
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
@@ -25,16 +24,18 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/07/29
 
-
 ### Features
+
 - feat: add configure juicity modal in [#191](https://github.com/daeuniverse/daed/pull/191) by (@wanlce)
 
 ### Bug Fixes
+
 - fix: rename modal not closing after changing rule names in [#188](https://github.com/daeuniverse/daed/pull/188) by (@kunish)
 - fix: reload icon not showing on small size screens in [#187](https://github.com/daeuniverse/daed/pull/187) by (@kunish)
 - fix: avoid to install husky when not in a git repo in [#185](https://github.com/daeuniverse/daed/pull/185) by (@douglarek)
 
 ### Others
+
 - chore(sync): keep upstream source up-to-date in [#194](https://github.com/daeuniverse/daed/pull/194) by (@daebot)
 - ci/fix(generate-changelogs): fix dry_run input description in [#193](https://github.com/daeuniverse/daed/pull/193) by (@yqlbu)
 - chore/feat: add checkout.sh in [#192](https://github.com/daeuniverse/daed/pull/192) by (@mzz2017)
@@ -56,7 +57,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - @douglarek made their first contribution in #185
 - @wanlce made their first contribution in #191
 
-### v0.2.0 (Latest)
+### v0.2.0
 
 > Release date: 2023/07/17
 
