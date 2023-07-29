@@ -21,7 +21,7 @@ repo_rinse() {
 
 checkout_wing() {
     branch="$1"
-    ask_coninue
+    ask_continue
     repo_rinse
     cd wing && git fetch
     result=$(git branch -l -r "*/$branch")
@@ -37,7 +37,7 @@ checkout_wing() {
 
 checkout_core() {
     branch="$1"
-    ask_coninue
+    ask_continue
     repo_rinse
     cd wing/dae-core && git fetch
     result=$(git branch -l -r "*/$branch")
