@@ -12,7 +12,7 @@ on:
         description: future release tag
       dry_run:
         required: true
-        description: export changelogs to an issue page
+        description: dry run
         default: true
 
 jobs:
