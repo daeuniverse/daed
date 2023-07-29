@@ -3,7 +3,16 @@ import { z } from 'zod'
 import { GlobalInput, Policy } from '~/schemas/gql/graphql'
 
 import { DialMode, LogLevel, TLSImplementation, TcpCheckHttpMethod, UTLSImitate } from './misc'
-import { httpSchema, socks5Schema, ssSchema, ssrSchema, trojanSchema, tuicSchema, v2raySchema } from './schema'
+import {
+  httpSchema,
+  juicitySchema,
+  socks5Schema,
+  ssSchema,
+  ssrSchema,
+  trojanSchema,
+  tuicSchema,
+  v2raySchema,
+} from './schema'
 
 export const DEFAULT_ENDPOINT_URL = `${location.protocol}//${location.hostname}:2023/graphql`
 
@@ -143,6 +152,17 @@ export const DEFAULT_TUIC_FORM_VALUES: z.infer<typeof tuicSchema> = {
   uuid: '',
   password: '',
   udp_relay_mode: '',
+  sni: '',
+}
+
+export const DEFAULT_JUICITY_FORM_VALUES: z.infer<typeof juicitySchema> = {
+  name: '',
+  port: 0,
+  server: '',
+  congestion_control: '',
+  allowInsecure: false,
+  uuid: '',
+  password: '',
   sni: '',
 }
 
