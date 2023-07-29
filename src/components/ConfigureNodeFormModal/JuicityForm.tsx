@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
-import { DEFAULT_TUIC_FORM_VALUES, juicitySchema } from '~/constants'
+import { DEFAULT_JUICITY_FORM_VALUES, juicitySchema } from '~/constants'
 import { generateURL } from '~/utils'
 
 export const JuicityForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
   const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof juicitySchema>>({
-    initialValues: DEFAULT_TUIC_FORM_VALUES,
+    initialValues: DEFAULT_JUICITY_FORM_VALUES,
     validate: zodResolver(juicitySchema),
   })
 
