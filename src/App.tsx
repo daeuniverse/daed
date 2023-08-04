@@ -33,6 +33,15 @@ export const App = () => {
   )
 
   useEffect(() => {
+    const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
+    const onDarkModeChange = (e: MediaQueryListEvent) => toggleColorScheme(e.matches ? 'dark' : 'light')
+
+    darkModePreference.addEventListener('change', onDarkModeChange)
+
+    return () => darkModePreference.removeEventListener('change', onDarkModeChange)
+  }, [toggleColorScheme])
+
+  useEffect(() => {
     setColorScheme(appState.preferredColorScheme || preferredColorScheme)
   }, [setColorScheme, preferredColorScheme, appState.preferredColorScheme])
 
