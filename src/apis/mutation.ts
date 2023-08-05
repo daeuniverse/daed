@@ -663,6 +663,32 @@ export const useImportNodesMutation = () => {
   })
 }
 
+export const useUpdateNodeMutation = () => {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, newLink }: { id: string; newLink: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateNode($id: ID!, $newLink: String!) {
+            updateNode(id: $id, newLink: $newLink) {
+              id
+            }
+          }
+        `),
+        {
+          id,
+          newLink,
+        },
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE })
+    },
+  })
+}
+
 export const useRemoveNodesMutation = () => {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()

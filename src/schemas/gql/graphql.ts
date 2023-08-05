@@ -232,6 +232,8 @@ export type Mutation = {
   updateDns: Dns
   /** updateName update name for current user. Remove name if name is null. */
   updateName: Scalars['Int']['output']
+  /** updateNode is to update a node with no subscription ID. */
+  updateNode: Node
   /** updatePassword update password for current user. currentPassword is needed to authenticate. Return new token. */
   updatePassword: Scalars['String']['output']
   /** updateRouting is to update routing config with given id. */
@@ -399,6 +401,11 @@ export type MutationUpdateDnsArgs = {
 
 export type MutationUpdateNameArgs = {
   name?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MutationUpdateNodeArgs = {
+  id: Scalars['ID']['input']
+  newLink: Scalars['String']['input']
 }
 
 export type MutationUpdatePasswordArgs = {
@@ -806,6 +813,13 @@ export type ImportNodesMutation = {
     node?: { __typename?: 'Node'; id: string } | null
   }>
 }
+
+export type UpdateNodeMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  newLink: Scalars['String']['input']
+}>
+
+export type UpdateNodeMutation = { __typename?: 'Mutation'; updateNode: { __typename?: 'Node'; id: string } }
 
 export type RemoveNodesMutationVariables = Exact<{
   ids: Array<Scalars['ID']['input']> | Scalars['ID']['input']
@@ -2269,6 +2283,53 @@ export const ImportNodesDocument = {
     },
   ],
 } as unknown as DocumentNode<ImportNodesMutation, ImportNodesMutationVariables>
+export const UpdateNodeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateNode' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'newLink' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateNode' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'newLink' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'newLink' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateNodeMutation, UpdateNodeMutationVariables>
 export const RemoveNodesDocument = {
   kind: 'Document',
   definitions: [

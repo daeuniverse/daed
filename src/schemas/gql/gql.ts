@@ -65,6 +65,8 @@ const documents = {
     types.GroupDelSubscriptionsDocument,
   '\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n              node {\n                id\n              }\n            }\n          }\n        ':
     types.ImportNodesDocument,
+  '\n          mutation UpdateNode($id: ID!, $newLink: String!) {\n            updateNode(id: $id, newLink: $newLink) {\n              id\n            }\n          }\n        ':
+    types.UpdateNodeDocument,
   '\n          mutation RemoveNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ':
     types.RemoveNodesDocument,
   '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  sub {\n                    id\n                  }\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ':
@@ -279,6 +281,12 @@ export function graphql(
 export function graphql(
   source: '\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n              node {\n                id\n              }\n            }\n          }\n        ',
 ): (typeof documents)['\n          mutation ImportNodes($rollbackError: Boolean!, $args: [ImportArgument!]!) {\n            importNodes(rollbackError: $rollbackError, args: $args) {\n              link\n              error\n              node {\n                id\n              }\n            }\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation UpdateNode($id: ID!, $newLink: String!) {\n            updateNode(id: $id, newLink: $newLink) {\n              id\n            }\n          }\n        ',
+): (typeof documents)['\n          mutation UpdateNode($id: ID!, $newLink: String!) {\n            updateNode(id: $id, newLink: $newLink) {\n              id\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
