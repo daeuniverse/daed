@@ -1,7 +1,8 @@
-import { ActionIcon, Badge, CopyButton, Flex, Group, Modal } from '@mantine/core'
+import { ActionIcon, Badge, Flex, Group, Modal } from '@mantine/core'
 import { IconCheck, IconCopy } from '@tabler/icons-react'
 import { QRCodeCanvas } from 'qrcode.react'
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 type Props = {
   name: string
@@ -18,6 +19,16 @@ export const QRCodeModal = forwardRef(({ opened, onClose }: { opened: boolean; o
     name: '',
     link: '',
   })
+
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    if (copied) {
+      setTimeout(() => {
+        setCopied(false)
+      }, 500)
+    }
+  }, [copied])
 
   useImperativeHandle(ref, () => ({
     props,
@@ -42,9 +53,9 @@ export const QRCodeModal = forwardRef(({ opened, onClose }: { opened: boolean; o
             {props.link}
           </Badge>
 
-          <CopyButton value={props.link}>
-            {({ copied, copy }) => <ActionIcon onClick={copy}>{copied ? <IconCheck /> : <IconCopy />}</ActionIcon>}
-          </CopyButton>
+          <CopyToClipboard text={props.link} onCopy={() => setCopied(true)}>
+            <ActionIcon>{copied ? <IconCheck /> : <IconCopy />}</ActionIcon>
+          </CopyToClipboard>
         </Group>
       </Flex>
     </Modal>
