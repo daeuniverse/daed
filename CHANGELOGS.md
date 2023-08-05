@@ -15,8 +15,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 <!-- BEGIN NEW TOC ENTRY -->
 
 - [v0.3.2 (Latest)](#v032-latest)
-
-- [v0.3.1 (Latest)](#v031-latest)
+- [v0.3.1](#v031)
 - [v0.3.0](#v030)
 - [v0.2.0](#v020)
 - [v0.1.1](#v011)
@@ -44,7 +43,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 **Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.3.1...v0.3.2
 
-### v0.3.1 (Latest)
+### v0.3.1
 
 > Release date: 2023/07/29
 
