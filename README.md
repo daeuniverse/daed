@@ -1,6 +1,6 @@
 <h1 align="center">daed</h1>
 <p align="center">
-  <img width="100" src="public/logo.svg" />
+  <img width="100" src="public/logo.webp" />
 </p>
 <p align="center">
   <em>A modern web dashboard for dae</em>
@@ -17,7 +17,7 @@
 
 ## Preview
 
-![preview](docs/preview.png)
+![preview](docs/preview.webp)
 
 ## Features
 

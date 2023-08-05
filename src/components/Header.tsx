@@ -46,7 +46,6 @@ import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
 import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUpdateNameMutation, useUserQuery } from '~/apis'
-import logo from '~/assets/logo.svg'
 import { i18n } from '~/i18n'
 import { endpointURLAtom, tokenAtom } from '~/store'
 import { fileToBase64 } from '~/utils'
@@ -138,7 +137,7 @@ export const HeaderWithActions = () => {
           <Group spacing="sm">
             <Anchor component={Link} to="/">
               <Group spacing="sm">
-                <Image radius="sm" src={logo} width={32} height={32} />
+                <Image radius="sm" src="/logo.webp" width={32} height={32} />
 
                 <Title
                   order={matchSmallScreen ? 5 : 2}
