@@ -652,7 +652,7 @@ export const useImportNodesMutation = () => {
           }
         `),
         {
-          rollbackError: true,
+          rollbackError: false,
           args: data,
         },
       )
@@ -713,7 +713,7 @@ export const useImportSubscriptionsMutation = () => {
               }
             `),
             {
-              rollbackError: true,
+              rollbackError: false,
               arg: subscription,
             },
           ),
