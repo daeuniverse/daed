@@ -14,7 +14,8 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 <!-- BEGIN NEW TOC ENTRY -->
 
-- [v0.3.1 (Latest)](#v031-latest)
+- [v0.3.2 (Latest)](#v032-latest)
+- [v0.3.1](#v031)
 - [v0.3.0](#v030)
 - [v0.2.0](#v020)
 - [v0.1.1](#v011)
@@ -22,7 +23,27 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
 <!-- BEGIN NEW CHANGELOGS -->
 
-### v0.3.1 (Latest)
+### v0.3.2 (Latest)
+
+> Release date: 2023/08/05
+
+### Features
+
+- feat: disable rollbackError, fixes #207 in [#208](https://github.com/daeuniverse/daed/pull/208) by (@kunish)
+- feat: set color scheme based on system preference in [#205](https://github.com/daeuniverse/daed/pull/205) by (@kunish)
+
+### Others
+
+- chore(sync): keep upstream source up-to-date in [#210](https://github.com/daeuniverse/daed/pull/210) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#209](https://github.com/daeuniverse/daed/pull/209) by (@daebot)
+- chore(pr_template): fix typo in [#206](https://github.com/daeuniverse/daed/pull/206) by (@yqlbu)
+- chore(sync): manual sync upstream in [#204](https://github.com/daeuniverse/daed/pull/204) by (@yqlbu)
+- chore(sync): keep upstream source up-to-date in [#202](https://github.com/daeuniverse/daed/pull/202) by (@daebot)
+- ci(release): draft release v0.3.1 in [#201](https://github.com/daeuniverse/daed/pull/201) by (@daebot)
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.3.1...v0.3.2
+
+### v0.3.1
 
 > Release date: 2023/07/29
 
