@@ -14,7 +14,7 @@ export const JuicityForm = ({ onLinkGeneration }: { onLinkGeneration: (link: str
     validate: zodResolver(resolver.current.schema),
   })
 
-  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.resolve(values)))
+  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.generate(values)))
 
   return (
     <form onSubmit={handleSubmit}>

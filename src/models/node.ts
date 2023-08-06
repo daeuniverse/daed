@@ -16,12 +16,13 @@ export enum NodeType {
   socks5,
 }
 
-export abstract class BaseNodeResolver<Schema extends ZodSchema> {
+abstract class BaseNodeResolver<Schema extends ZodSchema> {
   abstract type: NodeType
   abstract schema: Schema
   abstract defaultValues: z.infer<Schema>
 
-  abstract resolve(values: z.infer<Schema>): string
+  abstract generate(values: z.infer<Schema>): string
+  abstract resolve(url: string): z.infer<Schema>
 
   generateURL = ({ username, password, protocol, host, port, params, hash, path }: GenerateURLParams) =>
     /**
@@ -84,7 +85,7 @@ export class VmessNodeResolver extends BaseNodeResolver<typeof v2raySchema> {
   schema = v2raySchema
   defaultValues = DEFAULT_V2RAY_FORM_VALUES
 
-  resolve(values: z.infer<typeof v2raySchema>) {
+  generate(values: z.infer<typeof v2raySchema>) {
     const { net } = values
     const body: Record<string, unknown> = structuredClone(values)
 
@@ -114,6 +115,10 @@ export class VmessNodeResolver extends BaseNodeResolver<typeof v2raySchema> {
 
     return 'vmess://' + Base64.encode(JSON.stringify(body))
   }
+
+  resolve(_url: string) {
+    return {} as z.infer<typeof v2raySchema>
+  }
 }
 
 export class VlessNodeResolver extends BaseNodeResolver<typeof v2raySchema> {
@@ -121,7 +126,7 @@ export class VlessNodeResolver extends BaseNodeResolver<typeof v2raySchema> {
   schema = v2raySchema
   defaultValues = DEFAULT_V2RAY_FORM_VALUES
 
-  resolve(values: z.infer<typeof v2raySchema>) {
+  generate(values: z.infer<typeof v2raySchema>) {
     const { net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = values
 
     const params: Record<string, unknown> = {
@@ -187,7 +192,7 @@ export class ShadowsocksNodeResolver extends BaseNodeResolver<typeof ssSchema> {
   schema = ssSchema
   defaultValues = DEFAULT_SS_FORM_VALUES
 
-  resolve(values: z.infer<typeof ssSchema>) {
+  generate(values: z.infer<typeof ssSchema>) {
     /* ss://BASE64(method:password)@server:port#name */
     let link = `ss://${Base64.encode(`${values.method}:${values.password}`)}@${values.server}:${values.port}/`
 
@@ -300,7 +305,7 @@ export class ShadowsocksRNodeResolver extends BaseNodeResolver<typeof ssrSchema>
   schema = ssrSchema
   defaultValues = DEFAULT_SSR_FORM_VALUES
 
-  resolve = (values: z.infer<typeof ssrSchema>) =>
+  generate = (values: z.infer<typeof ssrSchema>) =>
     /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
     `ssr://${Base64.encode(
       `${values.server}:${values.port}:${values.proto}:${values.method}:${values.obfs}:${Base64.encodeURI(
@@ -346,7 +351,7 @@ export class TrojanNodeResolver extends BaseNodeResolver<typeof trojanSchema> {
   schema = trojanSchema
   defaultValues = DEFAULT_TROJAN_FORM_VALUES
 
-  resolve = (values: z.infer<typeof trojanSchema>) => {
+  generate = (values: z.infer<typeof trojanSchema>) => {
     const query: Record<string, unknown> = {
       allowInsecure: values.allowInsecure,
     }
@@ -417,26 +422,23 @@ export class TuicNodeResolver extends BaseNodeResolver<typeof tuicSchema> {
   schema = tuicSchema
   defaultValues = DEFAULT_TUIC_FORM_VALUES
 
-  resolve = (values: z.infer<typeof tuicSchema>) => {
-    const query = {
-      congestion_control: values.congestion_control,
-      alpn: values.alpn,
-      sni: values.sni,
-      allow_insecure: values.allowInsecure,
-      disable_sni: values.disable_sni,
-      udp_relay_mode: values.udp_relay_mode,
-    }
-
-    return this.generateURL({
+  generate = (values: z.infer<typeof tuicSchema>) =>
+    this.generateURL({
       protocol: 'tuic',
       username: values.uuid,
       password: values.password,
       host: values.server,
       port: values.port,
       hash: values.name,
-      params: query,
+      params: {
+        congestion_control: values.congestion_control,
+        alpn: values.alpn,
+        sni: values.sni,
+        allow_insecure: values.allowInsecure,
+        disable_sni: values.disable_sni,
+        udp_relay_mode: values.udp_relay_mode,
+      },
     })
-  }
 }
 
 export const juicitySchema = z.object({
@@ -466,23 +468,20 @@ export class JuicityNodeResolver extends BaseNodeResolver<typeof juicitySchema> 
   schema = juicitySchema
   defaultValues = DEFAULT_JUICITY_FORM_VALUES
 
-  resolve = (values: z.infer<typeof juicitySchema>) => {
-    const query = {
-      congestion_control: values.congestion_control,
-      sni: values.sni,
-      allow_insecure: values.allowInsecure,
-    }
-
-    return this.generateURL({
+  generate = (values: z.infer<typeof juicitySchema>) =>
+    this.generateURL({
       protocol: 'juicity',
       username: values.uuid,
       password: values.password,
       host: values.server,
       port: values.port,
       hash: values.name,
-      params: query,
+      params: {
+        congestion_control: values.congestion_control,
+        sni: values.sni,
+        allow_insecure: values.allowInsecure,
+      },
     })
-  }
 }
 
 export const httpSchema = z.object({
@@ -506,7 +505,7 @@ export class HTTPNodeResolver extends BaseNodeResolver<typeof httpSchema> {
   schema = httpSchema
   defaultValues = DEFAULT_HTTP_FORM_VALUES
 
-  resolve = (values: z.infer<typeof httpSchema> & { protocol: 'http' | 'https' }) => {
+  generate = (values: z.infer<typeof httpSchema> & { protocol: 'http' | 'https' }) => {
     const generateURLParams: GenerateURLParams = {
       protocol: values.protocol,
       host: values.host,
@@ -546,7 +545,7 @@ export class Socks5NodeResolver extends BaseNodeResolver<typeof socks5Schema> {
   schema = socks5Schema
   defaultValues = DEFAULT_SOCKS5_FORM_VALUES
 
-  resolve = (values: z.infer<typeof socks5Schema>) => {
+  generate = (values: z.infer<typeof socks5Schema>) => {
     const generateURLParams: GenerateURLParams = {
       protocol: 'socks5',
       host: values.host,

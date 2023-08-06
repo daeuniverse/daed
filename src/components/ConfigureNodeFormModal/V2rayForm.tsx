@@ -20,11 +20,11 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
 
   const handleSubmit = onSubmit((values) => {
     if (values.protocol === 'vless') {
-      return onLinkGeneration(vlessResolver.current.resolve(values))
+      return onLinkGeneration(vlessResolver.current.generate(values))
     }
 
     if (values.protocol === 'vmess') {
-      return onLinkGeneration(vmessResolver.current.resolve(values))
+      return onLinkGeneration(vmessResolver.current.generate(values))
     }
   })
 

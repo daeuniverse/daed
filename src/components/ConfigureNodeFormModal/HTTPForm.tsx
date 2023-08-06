@@ -15,7 +15,7 @@ export const HTTPForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string
     validate: zodResolver(httpSchema),
   })
 
-  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.resolve(values)))
+  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.generate(values)))
 
   return (
     <form onSubmit={handleSubmit}>
