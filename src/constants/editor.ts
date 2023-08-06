@@ -7,7 +7,7 @@ export const EDITOR_THEME_LIGHT = 'githubLight'
 export const EDITOR_OPTIONS: EditorProps['options'] = {
   fontSize: 14,
   fontWeight: 'bold',
-  fontFamily: 'monospace',
+  fontFamily: 'Source Code Pro',
   'semanticHighlighting.enabled': true,
   lineHeight: 1.6,
   minimap: {
