@@ -1,57 +1,20 @@
 import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
-import { DEFAULT_TROJAN_FORM_VALUES, trojanSchema } from '~/constants'
-import { generateURL } from '~/utils'
+import { TrojanNodeResolver } from '~/models'
 
 export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof trojanSchema>>({
-    initialValues: DEFAULT_TROJAN_FORM_VALUES,
-    validate: zodResolver(trojanSchema),
+  const resolver = useRef(new TrojanNodeResolver())
+  const { values, onSubmit, getInputProps, reset } = useForm({
+    initialValues: resolver.current.defaultValues,
+    validate: zodResolver(resolver.current.schema),
   })
 
-  const handleSubmit = onSubmit((values) => {
-    const query: Record<string, unknown> = {
-      allowInsecure: values.allowInsecure,
-    }
-
-    if (values.peer !== '') {
-      query.sni = values.peer
-    }
-
-    let protocol = 'trojan'
-
-    if (values.method !== 'origin' || values.obfs !== 'none') {
-      protocol = 'trojan-go'
-      query.type = values.obfs === 'none' ? 'original' : 'ws'
-
-      if (values.method === 'shadowsocks') {
-        query.encryption = `ss;${values.ssCipher};${values.ssPassword}`
-      }
-
-      if (query.type === 'ws') {
-        query.host = values.host || ''
-        query.path = values.path || '/'
-      }
-
-      delete query.allowInsecure
-    }
-
-    return onLinkGeneration(
-      generateURL({
-        protocol,
-        username: values.password,
-        host: values.server,
-        port: values.port,
-        hash: values.name,
-        params: query,
-      }),
-    )
-  })
+  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.resolve(values)))
 
   return (
     <form onSubmit={handleSubmit}>

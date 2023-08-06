@@ -1,83 +1,30 @@
 import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
-import { Base64 } from 'js-base64'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
-import { DEFAULT_V2RAY_FORM_VALUES, v2raySchema } from '~/constants'
-import { generateURL } from '~/utils'
+import { VlessNodeResolver, VmessNodeResolver, v2raySchema } from '~/models'
 
 export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
+  const vmessResolver = useRef(new VmessNodeResolver())
+  const vlessResolver = useRef(new VlessNodeResolver())
   const { values, onSubmit, getInputProps, reset } = useForm<
     z.infer<typeof v2raySchema> & { protocol: 'vless' | 'vmess' }
   >({
-    initialValues: { protocol: 'vmess', ...DEFAULT_V2RAY_FORM_VALUES },
-    validate: zodResolver(v2raySchema),
+    initialValues: { protocol: 'vmess', ...vmessResolver.current.defaultValues },
+    validate: zodResolver(vmessResolver.current.schema),
   })
 
   const handleSubmit = onSubmit((values) => {
-    const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = values
-
-    if (protocol === 'vless') {
-      const params: Record<string, unknown> = {
-        type: net,
-        security: tls,
-        path,
-        host,
-        headerType: type,
-        sni,
-        flow,
-        allowInsecure,
-      }
-
-      if (alpn !== '') params.alpn = alpn
-
-      if (net === 'grpc') params.serviceName = path
-
-      if (net === 'kcp') params.seed = path
-
-      return onLinkGeneration(
-        generateURL({
-          protocol,
-          username: id,
-          host: add,
-          port,
-          hash: ps,
-          params,
-        }),
-      )
+    if (values.protocol === 'vless') {
+      return onLinkGeneration(vlessResolver.current.resolve(values))
     }
 
-    if (protocol === 'vmess') {
-      const body: Record<string, unknown> = structuredClone(values)
-
-      switch (net) {
-        case 'kcp':
-        case 'tcp':
-        default:
-          body.type = ''
-      }
-
-      switch (body.net) {
-        case 'ws':
-        case 'h2':
-        case 'grpc':
-        case 'kcp':
-        default:
-          if (body.net === 'tcp' && body.type === 'http') {
-            break
-          }
-
-          body.path = ''
-      }
-
-      if (!(body.protocol === 'vless' && body.tls === 'xtls')) {
-        delete body.flow
-      }
-
-      return onLinkGeneration('vmess://' + Base64.encode(JSON.stringify(body)))
+    if (values.protocol === 'vmess') {
+      return onLinkGeneration(vmessResolver.current.resolve(values))
     }
   })
 

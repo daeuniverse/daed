@@ -1,41 +1,20 @@
 import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
-import { DEFAULT_TUIC_FORM_VALUES, tuicSchema } from '~/constants'
-import { generateURL } from '~/utils'
+import { TuicNodeResolver } from '~/models'
 
 export const TuicForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof tuicSchema>>({
-    initialValues: DEFAULT_TUIC_FORM_VALUES,
-    validate: zodResolver(tuicSchema),
+  const resolver = useRef(new TuicNodeResolver())
+  const { onSubmit, getInputProps, reset } = useForm({
+    initialValues: resolver.current.defaultValues,
+    validate: zodResolver(resolver.current.schema),
   })
 
-  const handleSubmit = onSubmit((values) => {
-    const query = {
-      congestion_control: values.congestion_control,
-      alpn: values.alpn,
-      sni: values.sni,
-      allow_insecure: values.allowInsecure,
-      disable_sni: values.disable_sni,
-      udp_relay_mode: values.udp_relay_mode,
-    }
-
-    return onLinkGeneration(
-      generateURL({
-        protocol: 'tuic',
-        username: values.uuid,
-        password: values.password,
-        host: values.server,
-        port: values.port,
-        hash: values.name,
-        params: query,
-      }),
-    )
-  })
+  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.resolve(values)))
 
   return (
     <form onSubmit={handleSubmit}>

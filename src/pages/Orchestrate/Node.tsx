@@ -1,7 +1,7 @@
 import { ActionIcon, Spoiler, Text, useMantineTheme } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconCloud, IconCloudPlus, IconEye, IconFileImport } from '@tabler/icons-react'
-import { useRef } from 'react'
+import { IconCloud, IconCloudPlus, IconEdit, IconEye, IconFileImport } from '@tabler/icons-react'
+import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '~/apis'
@@ -20,6 +20,8 @@ export const NodeResource = () => {
   const [openedImportNodeFormModal, { open: openImportNodeFormModal, close: closeImportNodeFormModal }] =
     useDisclosure(false)
   const [openedConfigureNodeFormModal, { open: openConfigureNodeFormModal, close: closeConfigureNodeFormModal }] =
+    useDisclosure(false)
+  const [openedUpdateNodeFormModal, { open: openUpdateNodeFormModal, close: closeUpdateNodeFormModal }] =
     useDisclosure(false)
   const qrCodeModalRef = useRef<QRCodeModalRef>(null)
   const { data: nodesQuery } = useNodesQuery()
@@ -52,18 +54,29 @@ export const NodeResource = () => {
             </Text>
           }
           actions={
-            <ActionIcon
-              size="xs"
-              onClick={() => {
-                qrCodeModalRef.current?.setProps({
-                  name: name || tag!,
-                  link,
-                })
-                openQRCodeModal()
-              }}
-            >
-              <IconEye />
-            </ActionIcon>
+            <Fragment>
+              <ActionIcon
+                size="xs"
+                onClick={() => {
+                  qrCodeModalRef.current?.setProps({
+                    name: name || tag!,
+                    link,
+                  })
+                  openQRCodeModal()
+                }}
+              >
+                <IconEye />
+              </ActionIcon>
+
+              <ActionIcon
+                size="xs"
+                onClick={() => {
+                  openUpdateNodeFormModal()
+                }}
+              >
+                <IconEdit />
+              </ActionIcon>
+            </Fragment>
           }
           onRemove={() => removeNodesMutation.mutate([id])}
         >
@@ -76,12 +89,7 @@ export const NodeResource = () => {
             showLabel={<Text fz="xs">{t('actions.show content')}</Text>}
             hideLabel={<Text fz="xs">{t('actions.hide')}</Text>}
           >
-            <Text
-              fz="sm"
-              style={{
-                wordBreak: 'break-all',
-              }}
-            >
+            <Text fz="sm" style={{ wordBreak: 'break-all' }}>
               {link}
             </Text>
           </Spoiler>
@@ -100,6 +108,7 @@ export const NodeResource = () => {
       />
 
       <ConfigureNodeFormModal opened={openedConfigureNodeFormModal} onClose={closeConfigureNodeFormModal} />
+      <ConfigureNodeFormModal opened={openedUpdateNodeFormModal} onClose={closeUpdateNodeFormModal} />
     </Section>
   )
 }

@@ -1,39 +1,21 @@
 import { NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
-import { DEFAULT_HTTP_FORM_VALUES, httpSchema } from '~/constants'
-import { GenerateURLParams, generateURL } from '~/utils'
+import { HTTPNodeResolver, httpSchema } from '~/models'
 
 export const HTTPForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
+  const resolver = useRef(new HTTPNodeResolver())
   const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof httpSchema> & { protocol: 'http' | 'https' }>({
-    initialValues: {
-      protocol: 'http',
-      ...DEFAULT_HTTP_FORM_VALUES,
-    },
+    initialValues: { protocol: 'http', ...resolver.current.defaultValues },
     validate: zodResolver(httpSchema),
   })
 
-  const handleSubmit = onSubmit((values) => {
-    const generateURLParams: GenerateURLParams = {
-      protocol: values.protocol,
-      host: values.host,
-      port: values.port,
-      hash: values.name,
-    }
-
-    if (values.username && values.password) {
-      Object.assign(generateURLParams, {
-        username: values.username,
-        password: values.password,
-      })
-    }
-
-    return onLinkGeneration(generateURL(generateURLParams))
-  })
+  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.resolve(values)))
 
   return (
     <form onSubmit={handleSubmit}>

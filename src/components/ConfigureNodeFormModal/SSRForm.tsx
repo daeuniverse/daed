@@ -1,31 +1,20 @@
 import { NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
-import { Base64 } from 'js-base64'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
-import { DEFAULT_SSR_FORM_VALUES, ssrSchema } from '~/constants'
+import { ShadowsocksRNodeResolver } from '~/models'
 
 export const SSRForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof ssrSchema>>({
-    initialValues: DEFAULT_SSR_FORM_VALUES,
-    validate: zodResolver(ssrSchema),
+  const resolver = useRef(new ShadowsocksRNodeResolver())
+  const { values, onSubmit, getInputProps, reset } = useForm({
+    initialValues: resolver.current.defaultValues,
+    validate: zodResolver(resolver.current.schema),
   })
 
-  const handleSubmit = onSubmit((values) => {
-    /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
-    return onLinkGeneration(
-      `ssr://${Base64.encode(
-        `${values.server}:${values.port}:${values.proto}:${values.method}:${values.obfs}:${Base64.encodeURI(
-          values.password,
-        )}/?remarks=${Base64.encodeURI(values.name)}&protoparam=${Base64.encodeURI(
-          values.protoParam,
-        )}&obfsparam=${Base64.encodeURI(values.obfsParam)}`,
-      )}`,
-    )
-  })
+  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.resolve(values)))
 
   return (
     <form onSubmit={handleSubmit}>

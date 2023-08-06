@@ -1,38 +1,20 @@
 import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
-import { DEFAULT_JUICITY_FORM_VALUES, juicitySchema } from '~/constants'
-import { generateURL } from '~/utils'
+import { JuicityNodeResolver } from '~/models'
 
 export const JuicityForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof juicitySchema>>({
-    initialValues: DEFAULT_JUICITY_FORM_VALUES,
-    validate: zodResolver(juicitySchema),
+  const resolver = useRef(new JuicityNodeResolver())
+  const { onSubmit, getInputProps, reset } = useForm({
+    initialValues: resolver.current.defaultValues,
+    validate: zodResolver(resolver.current.schema),
   })
 
-  const handleSubmit = onSubmit((values) => {
-    const query = {
-      congestion_control: values.congestion_control,
-      sni: values.sni,
-      allow_insecure: values.allowInsecure,
-    }
-
-    return onLinkGeneration(
-      generateURL({
-        protocol: 'juicity',
-        username: values.uuid,
-        password: values.password,
-        host: values.server,
-        port: values.port,
-        hash: values.name,
-        params: query,
-      }),
-    )
-  })
+  const handleSubmit = onSubmit((values) => onLinkGeneration(resolver.current.resolve(values)))
 
   return (
     <form onSubmit={handleSubmit}>
