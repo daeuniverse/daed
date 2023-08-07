@@ -57,6 +57,7 @@
     "password": "Password",
     "path": "Path",
     "pathObfuscation": "Path",
+    "pinned_certchain_sha256": "Pinned certchain SHA256",
     "port": "Port",
     "protocol": "Protocol",
     "protocolParam": "Protocol Param",

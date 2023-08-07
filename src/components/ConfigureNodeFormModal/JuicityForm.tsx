@@ -57,7 +57,7 @@ export const JuicityForm = ({ onLinkGeneration }: { onLinkGeneration: (link: str
         {...getInputProps('congestion_control')}
       />
 
-      <TextInput label="pinned_certchain_sha256" {...getInputProps('pinned_certchain_sha256')} />
+      <TextInput label={t('configureNode.pinned_certchain_sha256')} {...getInputProps('pinned_certchain_sha256')} />
 
       <TextInput label="SNI" {...getInputProps('sni')} />
 
