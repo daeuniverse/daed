@@ -163,6 +163,7 @@ export const DEFAULT_JUICITY_FORM_VALUES: z.infer<typeof juicitySchema> = {
   allowInsecure: false,
   uuid: '',
   password: '',
+  pinned_certchain_sha256: '',
   sni: '',
 }
 
