@@ -17,6 +17,7 @@ export const JuicityForm = ({ onLinkGeneration }: { onLinkGeneration: (link: str
   const handleSubmit = onSubmit((values) => {
     const query = {
       congestion_control: values.congestion_control,
+      pinned_certchain_sha256: values.pinned_certchain_sha256,
       sni: values.sni,
       allow_insecure: values.allowInsecure,
     }
@@ -55,6 +56,8 @@ export const JuicityForm = ({ onLinkGeneration }: { onLinkGeneration: (link: str
         ]}
         {...getInputProps('congestion_control')}
       />
+
+      <TextInput label={t('configureNode.pinned_certchain_sha256')} {...getInputProps('pinned_certchain_sha256')} />
 
       <TextInput label="SNI" {...getInputProps('sni')} />
 

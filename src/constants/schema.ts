@@ -113,6 +113,7 @@ export const juicitySchema = z.object({
   uuid: z.string().nonempty(),
   password: z.string().nonempty(),
   allowInsecure: z.boolean(),
+  pinned_certchain_sha256: z.string(),
   sni: z.string(),
   congestion_control: z.string(),
 })

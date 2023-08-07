@@ -57,6 +57,7 @@
     "password": "密码",
     "path": "路径",
     "pathObfuscation": "路径 (path)",
+    "pinned_certchain_sha256": "固定证书链 SHA256",
     "port": "端口号",
     "protocol": "协议",
     "protocolParam": "协议参数",
