@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Terminal=false
+Type=Application
+Name=daed Web Panel
+GenericName=A modern web dashboard for dae
+GenericName[zh_CN]=一款时尚的 dae 网络仪表盘
+Comment=A high-performance proxy tool based on eBPF
+Comment[zh_CN]=一款基于eBPF的高性能代理工具
+Categories=Network;
+Keywords=Internet;VPN;Proxy;
+Exec=xdg-open "http://127.0.0.1:2023"
+Icon=daed
+
