@@ -1,27 +1,23 @@
 name: Pick Build (Preview)
-run-name: Build to '${{ github.event.inputs.wing }}-${{ github.event.inputs.dae-core }} by @${{ github.actor }}'
+run-name: 'Build to ${{ github.event.inputs.daed }}-${{ github.event.inputs.wing }}-${{ github.event.inputs.dae-core }}'
 
 on:
   workflow_dispatch:
     inputs:
-      wing:
-        description: 'Commit hash or branch for wing'
+      daed:
+        description: 'Commit ID or branch for daed'
         required: false
-        default: 'main' # Default to latest commit on main branch
+        default: 'main'
+      wing:
+        description: 'Commit ID or branch for wing'
+        required: false
+        default: 'main'
       dae-core:
-        description: 'Commit hash or branch for dae-core'
-        required: true
+        description: 'Commit ID or branch for dae-core'
+        required: false
+        default: 'main'
 
 jobs:
-  context:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
-
   checkout-full-src:
     runs-on: ubuntu-latest
     steps:
@@ -29,21 +25,32 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: Pick daed
+        run: |
+          git remote update
+          git checkout ${{ github.event.inputs.daed }}
+
       - name: Download wing vendor
         run: |
-          git submodule deinit -f .
+          git remote update
           git submodule update --init --recursive
           git checkout ${{ github.event.inputs.wing }}
           export GOMODCACHE="${PWD}"/go-mod
           go mod download -modcacherw
-          cd dae-core && git checkout ${{ github.event.inputs.dae-core }} && go mod download -modcacherw && cd ..
+          cd dae-core && git merge origin/${{ github.event.inputs.dae-core }} && go mod download -modcacherw && cd ..
           find "$GOMODCACHE" -maxdepth 1 ! -name "cache" ! -name "go-mod" -exec rm -rf {} \;
           sed -i 's/#export GOMODCACHE=$(PWD)\/go-mod/export GOMODCACHE=$(PWD)\/go-mod/' Makefile
         working-directory: wing
 
       - name: Create full source ZIP archive and Signature
         run: |
-          zip -9vr daed-full-src.zip . -x .git/\*
+          zip -9vr daed-full-src.zip .
+          FILE=./daed-full-src.zip
+          DGST=$FILE.dgst
+          md5sum        $FILE >>$DGST
+          shasum -a 1   $FILE >>$DGST
+          shasum -a 256 $FILE >>$DGST
+          shasum -a 512 $FILE >>$DGST
 
       - name: Upload artifact - full source
         uses: actions/upload-artifact@v3
@@ -55,6 +62,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.daed }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v2
         with:
@@ -83,30 +93,39 @@ jobs:
     strategy:
       matrix:
         goos: [linux]
-        goarch: [arm64, amd64]
+        goarch: [386, riscv64]
+
         include:
-          # BEGIN Linux ARM 5 6 7
+          # BEGIN Linux ARM 5 6 7 64
+          - goos: linux
+            goarch: arm64
           - goos: linux
             goarch: arm
             goarm: 7
           - goos: linux
-            goarch: arm
-            goarm: 6
+            goarch: amd64
+            goamd64: v1
           - goos: linux
-            goarch: arm
-            goarm: 5
-          # END Linux ARM 5 6 7
+            goarch: amd64
+            goamd64: v2
+          - goos: linux
+            goarch: amd64
+            goamd64: v3
+          # END Linux AMD64 v1 v2 v3
+
       fail-fast: false
 
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
       GOARM: ${{ matrix.goarm }}
+      GOAMD64: ${{ matrix.goamd64 }}
+      CGO_ENABLED: ${{ matrix.cgo_enabled || 0 }}
+      CC: ${{ matrix.cc }}
+      BUILD_ARGS: ${{ matrix.buildargs }}
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Get the version
         id: get_version
@@ -136,17 +155,23 @@ jobs:
           echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "BUNDLE_NAME=daed-$_NAME" >> $GITHUB_OUTPUT
 
-      - name: Install mips build dependencies
-        if: ${{ startsWith(matrix.goarch, 'mips') }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
-
       - name: Download artifact - web
         uses: actions/download-artifact@v3
         with:
           name: web
           path: dist/
+
+      - name: Pick wing and dae-core
+        run: |
+          git submodule update --init --recursive
+          cd wing && git reset --hard remotes/origin/${{ github.event.inputs.wing }}
+          cd dae-core && git reset --hard remotes/origin/${{ github.event.inputs.dae-core }} && cd ../..
+
+      - name: Change Makefile
+        if: ${{ !endsWith(matrix.goarch, '64') }}
+        run: |
+          sed -i 's/buildmode=pie -//g' Makefile
+        working-directory: wing
 
       - name: make
         run: |
@@ -154,6 +179,7 @@ jobs:
           export VERSION=${{ steps.get_version.outputs.VERSION }}
           export GOFLAGS="-trimpath -modcacherw"
           export OUTPUT=bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }}
+          sed -i '/^## Begin Git Submodules$/,/^## End Git Submodules$/d' Makefile
           make
           cp ./install/daed.service ./bundled/
           curl -L -o ./bundled/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
