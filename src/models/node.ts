@@ -16,6 +16,72 @@ export enum NodeType {
   socks5,
 }
 
+function parseURL(u: string) {
+  let url = u
+  let protocol = ''
+  let fakeProto = false
+
+  if (url.indexOf('://') === -1) {
+    url = 'http://' + url
+  } else {
+    protocol = url.substring(0, url.indexOf('://'))
+
+    switch (protocol) {
+      case 'http':
+      case 'https':
+      case 'ws':
+      case 'wss':
+        break
+      default:
+        url = 'http' + url.substring(url.indexOf('://'))
+        fakeProto = true
+    }
+  }
+
+  const a = document.createElement('a')
+  a.href = url
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const r: Record<string, any> = {
+    source: u,
+    username: a.username,
+    password: a.password,
+    protocol: fakeProto ? protocol : a.protocol.replace(':', ''),
+    host: a.hostname,
+    port: a.port ? parseInt(a.port) : protocol === 'https' || protocol === 'wss' ? 443 : 80,
+    query: a.search,
+    params: (function () {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ret: Record<string, any> = {},
+        seg = a.search.replace(/^\?/, '').split('&'),
+        len = seg.length
+
+      let i = 0
+
+      let s
+
+      for (; i < len; i++) {
+        if (!seg[i]) {
+          continue
+        }
+
+        s = seg[i].split('=')
+        ret[s[0]] = decodeURIComponent(s[1])
+      }
+
+      return ret
+    })(),
+    file: (a.pathname.match(/\/([^/?#]+)$/i) || [null, ''])[1],
+    hash: a.hash.replace('#', ''),
+    path: a.pathname.replace(/^([^/])/, '/$1'),
+    relative: (a.href.match(/tps?:\/\/[^/]+(.+)/) || [null, ''])[1],
+    segments: a.pathname.replace(/^\//, '').split('/'),
+  }
+  a.remove()
+
+  return r
+}
+
 abstract class BaseNodeResolver<Schema extends ZodSchema> {
   abstract type: NodeType
   abstract schema: Schema
@@ -116,8 +182,15 @@ export class VmessNodeResolver extends BaseNodeResolver<typeof v2raySchema> {
     return 'vmess://' + Base64.encode(JSON.stringify(body))
   }
 
-  resolve(_url: string) {
-    return {} as z.infer<typeof v2raySchema>
+  resolve(url: string) {
+    const values = JSON.parse(Base64.decode(url.substring(url.indexOf('://') + 3)))
+
+    values.ps = decodeURIComponent(values.ps)
+    values.tls = values.tls || 'none'
+    values.type = values.type || 'none'
+    values.scy = values.scy || 'auto'
+
+    return values
   }
 }
 
@@ -154,6 +227,39 @@ export class VlessNodeResolver extends BaseNodeResolver<typeof v2raySchema> {
       hash: ps,
       params,
     })
+  }
+
+  resolve(url: string) {
+    const u = parseURL(url)
+
+    const o: z.infer<typeof v2raySchema> = {
+      ps: decodeURIComponent(u.hash),
+      add: u.host,
+      port: u.port,
+      id: decodeURIComponent(u.username),
+      net: u.params.type || 'tcp',
+      type: u.params.headerType || 'none',
+      host: u.params.host || u.params.sni || '',
+      path: u.params.path || u.params.serviceName || '',
+      alpn: u.params.alpn || '',
+      flow: u.params.flow || 'none',
+      sni: u.params.sni || '',
+      tls: u.params.security || 'none',
+      allowInsecure: u.params.allowInsecure || false,
+      aid: 0,
+      scy: 'none',
+      v: '',
+    }
+
+    if (o.alpn !== '') {
+      o.alpn = decodeURIComponent(o.alpn)
+    }
+
+    if (o.net === 'kcp') {
+      o.path = u.params.seed
+    }
+
+    return o
   }
 }
 
@@ -243,6 +349,93 @@ export class ShadowsocksNodeResolver extends BaseNodeResolver<typeof ssSchema> {
 
     return link
   }
+
+  resolve(url: string) {
+    const u = parseURL(url)
+
+    let mp
+
+    if (!u.password) {
+      try {
+        u.username = Base64.decode(decodeURIComponent(u.username))
+        mp = u.username.split(':')
+
+        if (mp.length > 2) {
+          mp[1] = mp.slice(1).join(':')
+          mp = mp.slice(0, 2)
+        }
+      } catch (e) {
+        //pass
+      }
+    } else {
+      mp = [u.username, u.password]
+    }
+
+    u.hash = decodeURIComponent(u.hash)
+
+    const obj: z.infer<typeof ssSchema> = {
+      method: mp[0],
+      password: mp[1],
+      server: u.host,
+      port: u.port,
+      name: u.hash,
+      obfs: 'http',
+      plugin: '',
+      impl: '',
+      path: '',
+      tls: '',
+      mode: '',
+      host: '',
+    }
+
+    if (u.params.plugin) {
+      u.params.plugin = decodeURIComponent(u.params.plugin)
+
+      const arr = u.params.plugin.split(';')
+
+      const plugin = arr[0]
+
+      switch (plugin) {
+        case 'obfs-local':
+        case 'simpleobfs':
+          obj.plugin = 'simple-obfs'
+          break
+        case 'v2ray-plugin':
+          obj.tls = ''
+          obj.mode = 'websocket'
+          break
+      }
+
+      for (let i = 1; i < arr.length; i++) {
+        //"obfs-local;obfs=tls;obfs-host=4cb6a43103.wns.windows.com"
+        const a = arr[i].split('=')
+
+        switch (a[0]) {
+          case 'obfs':
+            obj.obfs = a[1]
+            break
+          case 'host':
+          case 'obfs-host':
+            obj.host = a[1]
+            break
+          case 'path':
+          case 'obfs-path':
+            obj.path = a[1]
+            break
+          case 'mode':
+            obj.mode = a[1]
+            break
+          case 'tls':
+            obj.tls = 'tls'
+            break
+          case 'impl':
+            obj.impl = a[1]
+        }
+      }
+    }
+
+    return obj
+  }
 }
 
 export const ssrSchema = z.object({
@@ -314,6 +507,45 @@ export class ShadowsocksRNodeResolver extends BaseNodeResolver<typeof ssrSchema>
         values.protoParam,
       )}&obfsparam=${Base64.encodeURI(values.obfsParam)}`,
     )}`
+
+  resolve(url: string) {
+    url = Base64.decode(url.substring(6))
+
+    const arr = url.split('/?')
+    const query = arr[1].split('&')
+
+    const m: Record<string, unknown> = {}
+
+    for (const param of query) {
+      const pair = param.split('=', 2)
+      const key = pair[0]
+      const val = Base64.decode(pair[1])
+
+      m[key] = val
+    }
+
+    let pre = arr[0].split(':')
+
+    if (pre.length > 6) {
+      //如果长度多于6，说明host中包含字符:，重新合并前几个分组到host去
+      pre[pre.length - 6] = pre.slice(0, pre.length - 5).join(':')
+      pre = pre.slice(pre.length - 6)
+    }
+
+    pre[5] = Base64.decode(pre[5])
+
+    return {
+      method: pre[3],
+      password: pre[5],
+      server: pre[0],
+      port: pre[1],
+      name: m['remarks'],
+      proto: pre[2],
+      protoParam: m['protoparam'],
+      obfs: pre[4],
+      obfsParam: m['obfsparam'],
+    } as unknown as z.infer<typeof ssrSchema>
+  }
 }
 
 export const trojanSchema = z.object({
@@ -387,6 +619,52 @@ export class TrojanNodeResolver extends BaseNodeResolver<typeof trojanSchema> {
       params: query,
     })
   }
+
+  resolve(url: string) {
+    const u = parseURL(url)
+
+    const o: Record<string, unknown> = {
+      password: decodeURIComponent(u.username),
+      server: u.host,
+      port: u.port,
+      name: decodeURIComponent(u.hash),
+      peer: u.params.peer || u.params.sni || '',
+      allowInsecure: u.params.allowInsecure === true || u.params.allowInsecure === '1',
+      method: 'origin',
+      obfs: 'none',
+      ssCipher: 'aes-128-gcm',
+    }
+
+    if (url.toLowerCase().startsWith('' + '')) {
+      console.log(u.params.encryption)
+
+      if (u.params.encryption?.startsWith('ss;')) {
+        o.method = 'shadowsocks'
+        const fields = u.params.encryption.split(';')
+        o.ssCipher = fields[1]
+        o.ssPassword = fields[2]
+      }
+
+      const obfsMap = {
+        original: 'none',
+        '': 'none',
+        ws: 'websocket',
+      }
+
+      o.obfs = obfsMap[(u.params.type as keyof typeof obfsMap) || '']
+
+      if (o.obfs === 'ws') {
+        o.obfs = 'websocket'
+      }
+
+      if (o.obfs === 'websocket') {
+        o.host = u.params.host || ''
+        o.path = u.params.path || '/'
+      }
+    }
+
+    return o as unknown as z.infer<typeof trojanSchema>
+  }
 }
 
 export const tuicSchema = z.object({
@@ -439,6 +717,10 @@ export class TuicNodeResolver extends BaseNodeResolver<typeof tuicSchema> {
         udp_relay_mode: values.udp_relay_mode,
       },
     })
+
+  resolve(_url: string) {
+    return {} as z.infer<typeof tuicSchema>
+  }
 }
 
 export const juicitySchema = z.object({
@@ -482,6 +764,10 @@ export class JuicityNodeResolver extends BaseNodeResolver<typeof juicitySchema> 
         allow_insecure: values.allowInsecure,
       },
     })
+
+  resolve(_url: string) {
+    return {} as z.infer<typeof juicitySchema>
+  }
 }
 
 export const httpSchema = z.object({
@@ -522,6 +808,10 @@ export class HTTPNodeResolver extends BaseNodeResolver<typeof httpSchema> {
 
     return this.generateURL(generateURLParams)
   }
+
+  resolve(_url: string) {
+    return {} as z.infer<typeof httpSchema>
+  }
 }
 
 export const socks5Schema = z.object({
@@ -561,5 +851,9 @@ export class Socks5NodeResolver extends BaseNodeResolver<typeof socks5Schema> {
     }
 
     return this.generateURL(generateURLParams)
+  }
+
+  resolve(_url: string) {
+    return {} as z.infer<typeof socks5Schema>
   }
 }

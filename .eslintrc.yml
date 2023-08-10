@@ -29,6 +29,9 @@ settings:
     version: detect
 rules:
   '@typescript-eslint/no-non-null-assertion': off
+  '@typescript-eslint/no-unused-vars':
+    - error
+    - argsIgnorePattern: '^_'
   padding-line-between-statements:
     - error
     - blankLine: always
