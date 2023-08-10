@@ -118,3 +118,15 @@ export enum RuleType {
   routing = 'routing',
   group = 'group',
 }
+
+export enum NodeType {
+  vmess,
+  vless,
+  shadowsocks,
+  shadowsocksR,
+  trojan,
+  tuic,
+  juicity,
+  http,
+  socks5,
+}
