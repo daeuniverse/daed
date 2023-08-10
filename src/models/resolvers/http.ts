@@ -27,7 +27,16 @@ export class HTTPNodeResolver extends BaseNodeResolver<typeof httpSchema> {
     return this.generateURL(generateURLParams)
   }
 
-  resolve(_url: string) {
-    return {} as z.infer<typeof httpSchema>
+  resolve(url: string) {
+    const u = this.parseURL(url)
+
+    return {
+      username: decodeURIComponent(u.username),
+      password: decodeURIComponent(u.password),
+      host: u.host,
+      port: u.port,
+      protocol: u.protocol,
+      name: decodeURIComponent(u.hash),
+    }
   }
 }
