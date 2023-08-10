@@ -1,15 +1,15 @@
-name: Custom Build (Preview)
-run-name: Deploy to '#${{ input.deploy_target }} by @${{ github.actor }}'
+name: Pick Build (Preview)
+run-name: Build to '#${{ github.event.inputs.dae-core }} by @${{ github.actor }}'
 
 on:
   workflow_dispatch:
     inputs:
-      wing-commit-hash:
-        description: 'Commit hash for wing'
+      wing:
+        description: 'Commit hash or branch for wing'
         required: false
         default: 'main' # Default to latest commit on main branch
-      dae-core-hash:
-        description: 'Commit hash for dae-core'
+      dae-core:
+        description: 'Commit hash or branch for dae-core'
         required: true
 
 jobs:
@@ -32,10 +32,10 @@ jobs:
       - name: Download wing vendor
         run: |
           git submodule update --init --recursive
-          git checkout ${{ github.event.inputs.wing-commit-hash }}
+          git checkout ${{ github.event.inputs.wing }}
           export GOMODCACHE="${PWD}"/go-mod
           go mod download -modcacherw
-          cd dae-core && git checkout ${{ github.event.inputs.dae-core-hash }} && go mod download -modcacherw && cd ..
+          cd dae-core && git checkout ${{ github.event.inputs.dae-core }} && go mod download -modcacherw && cd ..
           find "$GOMODCACHE" -maxdepth 1 ! -name "cache" ! -name "go-mod" -exec rm -rf {} \;
           sed -i 's/#export GOMODCACHE=$(PWD)\/go-mod/export GOMODCACHE=$(PWD)\/go-mod/' Makefile
         working-directory: wing
