@@ -1,5 +1,5 @@
 name: Pick Build (Preview)
-run-name: Build to '#${{ github.event.inputs.dae-core }} by @${{ github.actor }}'
+run-name: Build to '${{ github.event.inputs.wing }}-${{ github.event.inputs.dae-core }} by @${{ github.actor }}'
 
 on:
   workflow_dispatch:
@@ -31,6 +31,7 @@ jobs:
 
       - name: Download wing vendor
         run: |
+          git submodule deinit -f .
           git submodule update --init --recursive
           git checkout ${{ github.event.inputs.wing }}
           export GOMODCACHE="${PWD}"/go-mod
