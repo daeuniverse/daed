@@ -9,6 +9,6 @@ export default defineConfig(() => {
     base: './',
     resolve: { alias: { '~': path.resolve('src') } },
     plugins: [react()],
-    test: { globals: true },
+    test: { globals: true, environment: 'jsdom' },
   }
 })

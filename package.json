@@ -107,5 +107,8 @@
     "vite-plugin-environment": "^1.1.3",
     "vitest": "^0.34.1",
     "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "jsdom": "^22.1.0"
   }
 }

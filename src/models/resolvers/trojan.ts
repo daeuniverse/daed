@@ -61,8 +61,6 @@ export class TrojanNodeResolver extends BaseNodeResolver<typeof trojanSchema> {
     }
 
     if (url.toLowerCase().startsWith('' + '')) {
-      console.log(u.params.encryption)
-
       if (u.params.encryption?.startsWith('ss;')) {
         o.method = 'shadowsocks'
         const fields = u.params.encryption.split(';')
