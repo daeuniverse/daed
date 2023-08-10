@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
-import { HTTPNodeResolver, httpSchema } from '~/models'
+import { httpSchema } from '~/constants'
+import { HTTPNodeResolver } from '~/models'
 
 export const HTTPForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
