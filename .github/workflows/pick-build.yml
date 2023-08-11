@@ -93,7 +93,7 @@ jobs:
     strategy:
       matrix:
         goos: [linux]
-        goarch: [386, riscv64]
+        goarch: [386]
 
         include:
           # BEGIN Linux ARM 5 6 7 64
@@ -101,7 +101,16 @@ jobs:
             goarch: arm64
           - goos: linux
             goarch: arm
+            goarm: 5
+          - goos: linux
+            goarch: arm
+            goarm: 6
+          - goos: linux
+            goarch: arm
             goarm: 7
+          # END Linux ARM 5 6 7
+
+          # BEGIN Linux AMD64 v1 v2 v3
           - goos: linux
             goarch: amd64
             goamd64: v1
@@ -113,6 +122,25 @@ jobs:
             goamd64: v3
           # END Linux AMD64 v1 v2 v3
 
+          # BEGIN Linux mips
+          - goos: linux
+            goarch: mips64
+            cgo_enabled: 1
+            cc: mips64-linux-gnuabi64-gcc
+          - goos: linux
+            goarch: mips64le
+            cgo_enabled: 1
+            cc: mips64el-linux-gnuabi64-gcc
+          - goos: linux
+            goarch: mipsle
+            cgo_enabled: 1
+            cc: mipsel-linux-gnu-gcc
+          - goos: linux
+            goarch: mips
+            cgo_enabled: 1
+            cc: mips-linux-gnu-gcc
+          # END Linux mips
+
       fail-fast: false
 
     env:
@@ -122,7 +150,6 @@ jobs:
       GOAMD64: ${{ matrix.goamd64 }}
       CGO_ENABLED: ${{ matrix.cgo_enabled || 0 }}
       CC: ${{ matrix.cc }}
-      BUILD_ARGS: ${{ matrix.buildargs }}
 
     steps:
       - uses: actions/checkout@v3
@@ -155,6 +182,12 @@ jobs:
           echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
           echo "BUNDLE_NAME=daed-$_NAME" >> $GITHUB_OUTPUT
 
+      - name: Install mips build dependencies
+        if: ${{ startsWith(matrix.goarch, 'mips') }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
+
       - name: Download artifact - web
         uses: actions/download-artifact@v3
         with:
@@ -168,7 +201,7 @@ jobs:
           cd dae-core && git reset --hard remotes/origin/${{ github.event.inputs.dae-core }} && cd ../..
 
       - name: Change Makefile
-        if: ${{ !endsWith(matrix.goarch, '64') }}
+        if: ${{ !endsWith(matrix.goarch, '64') || startsWith(matrix.goarch, 'mips') }}
         run: |
           sed -i 's/buildmode=pie -//g' Makefile
         working-directory: wing
