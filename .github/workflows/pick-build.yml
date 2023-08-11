@@ -23,17 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          ref: ${{ github.event.inputs.daed }}
           submodules: 'recursive'
-
-      - name: Pick daed
-        run: |
-          git remote update
-          git checkout ${{ github.event.inputs.daed }}
+          fetch-depth: 0
 
       - name: Download wing vendor
         run: |
-          git remote update
-          git submodule update --init --recursive
           git checkout ${{ github.event.inputs.wing }}
           export GOMODCACHE="${PWD}"/go-mod
           go mod download -modcacherw
@@ -64,7 +59,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.daed }}
-          fetch-depth: 0
 
       - uses: pnpm/action-setup@v2
         with:
@@ -153,22 +147,33 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.daed }}
+          fetch-depth: 0
+
+      - name: Pick wing and dae-core
+        run: |
+          git submodule update --init --recursive
+          cd wing && git reset --hard remotes/origin/${{ github.event.inputs.wing }}
+          cd dae-core && git reset --hard remotes/origin/${{ github.event.inputs.dae-core }} && cd ../..
 
       - name: Get the version
         id: get_version
         env:
-          REF: ${{ github.ref }}
+          DAED_REF: ${{ github.event.inputs.daed }}
+          WING_REF: ${{ github.event.inputs.wing }}
+          DAE_CORE_REF: ${{ github.event.inputs.dae-core }}
         run: |
-          if [[ "$REF" == "refs/tags/v"* ]]; then
-            tag=${REF##*/}
-            version=${tag}
-            package_version="${tag:1}"
+          date=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+          if [[ "$DAED_REF" == "main" && "$WING_REF" == "main" && "$DAE_CORE_REF" == "main" ]]; then
+            version="Ultimate-${date}"
+            package_version="Ultimate"
           else
-            date=$(git log -1 --format="%cd" --date=short | sed s/-//g)
-            count=$(git rev-list --count HEAD)
-            commit=$(git rev-parse --short HEAD)
-            version="unstable-$date.r${count}.$commit"
-            package_version="$date.r${count}.$commit"
+            daed_commit=$(git rev-parse --short HEAD) && cd wing
+            wing_commit=$(git rev-parse --short HEAD) && cd dae-core
+            dae_core_commit=$(git rev-parse --short HEAD)
+            version="$frontier-$daed_commit.$wing_commit.$dae_core_commit"
+            package_version="$frontier-$daed_commit.$wing_commit.$dae_core_commit"
           fi
           echo "VERSION=$version" >> $GITHUB_OUTPUT
           echo "VERSION=$version" >> $GITHUB_ENV
@@ -193,12 +198,6 @@ jobs:
         with:
           name: web
           path: dist/
-
-      - name: Pick wing and dae-core
-        run: |
-          git submodule update --init --recursive
-          cd wing && git reset --hard remotes/origin/${{ github.event.inputs.wing }}
-          cd dae-core && git reset --hard remotes/origin/${{ github.event.inputs.dae-core }} && cd ../..
 
       - name: Change Makefile
         if: ${{ !endsWith(matrix.goarch, '64') || startsWith(matrix.goarch, 'mips') }}
