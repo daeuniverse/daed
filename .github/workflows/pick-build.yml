@@ -1,0 +1,239 @@
+name: Pick Build (Preview)
+run-name: 'Build to ${{ github.event.inputs.daed }}-${{ github.event.inputs.wing }}-${{ github.event.inputs.dae-core }}'
+
+on:
+  workflow_dispatch:
+    inputs:
+      daed:
+        description: 'Commit ID or branch name for daed'
+        required: false
+        default: 'main'
+      wing:
+        description: 'Commit ID or branch name for wing'
+        required: false
+        default: 'main'
+      dae-core:
+        description: 'Commit ID or branch name for dae-core'
+        required: false
+        default: 'main'
+
+jobs:
+  checkout-full-src:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.daed }}
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      - name: Download wing vendor
+        run: |
+          git checkout ${{ github.event.inputs.wing }}
+          export GOMODCACHE="${PWD}"/go-mod
+          go mod download -modcacherw
+          cd dae-core && git checkout ${{ github.event.inputs.dae-core }} && go mod download -modcacherw && cd ..
+          find "$GOMODCACHE" -maxdepth 1 ! -name "cache" ! -name "go-mod" -exec rm -rf {} \;
+          sed -i 's/#export GOMODCACHE=$(PWD)\/go-mod/export GOMODCACHE=$(PWD)\/go-mod/' Makefile
+        working-directory: wing
+
+      - name: Create full source ZIP archive and Signature
+        run: |
+          zip -9vr daed-full-src.zip .
+          FILE=./daed-full-src.zip
+          DGST=$FILE.dgst
+          md5sum        $FILE >>$DGST
+          shasum -a 1   $FILE >>$DGST
+          shasum -a 256 $FILE >>$DGST
+          shasum -a 512 $FILE >>$DGST
+
+      - name: Upload artifact - full source
+        uses: actions/upload-artifact@v3
+        with:
+          name: daed-full-src.zip
+          path: daed-full-src.zip
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.daed }}
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: latest
+
+      - name: Build
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: Upload artifact - web
+        uses: actions/upload-artifact@v3
+        with:
+          name: web
+          path: dist
+
+  build-bundle:
+    needs: build-web
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux]
+        goarch: [386]
+
+        include:
+          # BEGIN Linux ARM 5 6 7 64
+          - goos: linux
+            goarch: arm64
+          - goos: linux
+            goarch: arm
+            goarm: 5
+          - goos: linux
+            goarch: arm
+            goarm: 6
+          - goos: linux
+            goarch: arm
+            goarm: 7
+          # END Linux ARM 5 6 7
+
+          # BEGIN Linux AMD64 v1 v2 v3
+          - goos: linux
+            goarch: amd64
+            goamd64: v1
+          - goos: linux
+            goarch: amd64
+            goamd64: v2
+          - goos: linux
+            goarch: amd64
+            goamd64: v3
+          # END Linux AMD64 v1 v2 v3
+
+          # BEGIN Linux mips
+          - goos: linux
+            goarch: mips64
+            cgo_enabled: 1
+            cc: mips64-linux-gnuabi64-gcc
+          - goos: linux
+            goarch: mips64le
+            cgo_enabled: 1
+            cc: mips64el-linux-gnuabi64-gcc
+          - goos: linux
+            goarch: mipsle
+            cgo_enabled: 1
+            cc: mipsel-linux-gnu-gcc
+          - goos: linux
+            goarch: mips
+            cgo_enabled: 1
+            cc: mips-linux-gnu-gcc
+          # END Linux mips
+
+      fail-fast: false
+
+    env:
+      GOOS: ${{ matrix.goos }}
+      GOARCH: ${{ matrix.goarch }}
+      GOARM: ${{ matrix.goarm }}
+      GOAMD64: ${{ matrix.goamd64 }}
+      CGO_ENABLED: ${{ matrix.cgo_enabled || 0 }}
+      CC: ${{ matrix.cc }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.daed }}
+          fetch-depth: 0
+
+      - name: Pick wing and dae-core
+        run: |
+          echo "y" | ./hack/checkout.sh core ${{ github.event.inputs.dae-core }} wing ${{ github.event.inputs.wing }}
+
+      - name: Get the version
+        id: get_version
+        env:
+          DAED_REF: ${{ github.event.inputs.daed }}
+          WING_REF: ${{ github.event.inputs.wing }}
+          DAE_CORE_REF: ${{ github.event.inputs.dae-core }}
+        run: |
+          date=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+          if [[ "$DAED_REF" == "main" && "$WING_REF" == "main" && "$DAE_CORE_REF" == "main" ]]; then
+            version="Ultimate-${date}"
+            package_version="Ultimate"
+          else
+            daed_commit=$(git rev-parse --short HEAD) && cd wing
+            wing_commit=$(git rev-parse --short HEAD) && cd dae-core
+            dae_core_commit=$(git rev-parse --short HEAD)
+            version="frontier-$daed_commit.$wing_commit.$dae_core_commit"
+            package_version="frontier-$daed_commit.$wing_commit.$dae_core_commit"
+          fi
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+          echo "VERSION=$version" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$package_version" >> $GITHUB_OUTPUT
+          echo "PACKAGE_VERSION=$package_version" >> $GITHUB_ENV
+
+      - name: Get the filename
+        id: get_filename
+        run: |
+          export _NAME=$(jq ".[\"$GOOS-$GOARCH$GOARM$GOAMD64\"].friendlyName" -r < install/friendly-filenames.json)
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, RELEASE_NAME: $_NAME"
+          echo "BUNDLE_NAME=daed-$_NAME" >> $GITHUB_OUTPUT
+
+      - name: Install mips build dependencies
+        if: ${{ startsWith(matrix.goarch, 'mips') }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
+
+      - name: Download artifact - web
+        uses: actions/download-artifact@v3
+        with:
+          name: web
+          path: dist/
+
+      - name: Change Makefile
+        if: matrix.goarch != 'amd64' && matrix.goarch != 'arm64'
+        run: |
+          sed -i 's/buildmode=pie -//g' Makefile
+        working-directory: wing
+
+      - name: make
+        env:
+          SKIP_SUBMODULES: true
+        run: |
+          mkdir -p ./bundled/
+          export VERSION=${{ steps.get_version.outputs.VERSION }}
+          export GOFLAGS="-trimpath -modcacherw"
+          export OUTPUT=bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }}
+          make
+          cp ./install/daed.service ./bundled/
+          curl -L -o ./bundled/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
+          curl -L -o ./bundled/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
+
+      - name: Smoking test
+        if: matrix.goarch == 'amd64'
+        run: ./bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }} --version
+
+      - name: Create binary ZIP archive and Signature
+        run: |
+          pushd bundled || exit 1
+          zip -9vr ../${{ steps.get_filename.outputs.BUNDLE_NAME }}.zip .
+          popd || exit 1
+          FILE=./${{ steps.get_filename.outputs.BUNDLE_NAME }}.zip
+          DGST=$FILE.dgst
+          md5sum        $FILE >>$DGST
+          shasum -a 1   $FILE >>$DGST
+          shasum -a 256 $FILE >>$DGST
+          shasum -a 512 $FILE >>$DGST
+
+      - name: Upload artifact - bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
+          path: bundled/*

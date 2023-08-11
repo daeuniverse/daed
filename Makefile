@@ -20,8 +20,12 @@ clean:
 -include .gitmodules.d.mk
 
 $(submodule_ready): .gitmodules.d.mk
+ifdef SKIP_SUBMODULES
+	@echo "Skipping submodule update"
+else
 	git submodule update --init --recursive -- "$$(dirname $@)" && \
 	touch $@
+endif
 
 submodule submodules: $(submodule_ready)
 	@if [ -z "$(submodule_ready)" ]; then \
