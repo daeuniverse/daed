@@ -5,15 +5,15 @@ on:
   workflow_dispatch:
     inputs:
       daed:
-        description: 'Commit ID or branch for daed'
+        description: 'Commit ID or branch name for daed'
         required: false
         default: 'main'
       wing:
-        description: 'Commit ID or branch for wing'
+        description: 'Commit ID or branch name for wing'
         required: false
         default: 'main'
       dae-core:
-        description: 'Commit ID or branch for dae-core'
+        description: 'Commit ID or branch name for dae-core'
         required: false
         default: 'main'
 
