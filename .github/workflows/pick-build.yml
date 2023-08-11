@@ -153,9 +153,7 @@ jobs:
 
       - name: Pick wing and dae-core
         run: |
-          git submodule update --init --recursive
-          cd wing && git reset --hard ${{ github.event.inputs.wing }} && go mod download -modcacherw
-          cd dae-core && git reset --hard ${{ github.event.inputs.dae-core }} && cd ../..
+          echo "y" | ./hack/checkout.sh core ${{ github.event.inputs.core }} wing ${{ github.event.inputs.wing }}
 
       - name: Get the version
         id: get_version
@@ -172,8 +170,8 @@ jobs:
             daed_commit=$(git rev-parse --short HEAD) && cd wing
             wing_commit=$(git rev-parse --short HEAD) && cd dae-core
             dae_core_commit=$(git rev-parse --short HEAD)
-            version="$frontier-$daed_commit.$wing_commit.$dae_core_commit"
-            package_version="$frontier-$daed_commit.$wing_commit.$dae_core_commit"
+            version="frontier-$daed_commit.$wing_commit.$dae_core_commit"
+            package_version="frontier-$daed_commit.$wing_commit.$dae_core_commit"
           fi
           echo "VERSION=$version" >> $GITHUB_OUTPUT
           echo "VERSION=$version" >> $GITHUB_ENV
@@ -200,18 +198,19 @@ jobs:
           path: dist/
 
       - name: Change Makefile
-        if: ${{ !endsWith(matrix.goarch, '64') || startsWith(matrix.goarch, 'mips') }}
+        if: matrix.goarch != 'amd64' || matrix.goarch != 'arm64'
         run: |
           sed -i 's/buildmode=pie -//g' Makefile
         working-directory: wing
 
       - name: make
+        env:
+          SKIP_SUBMODULES: true
         run: |
           mkdir -p ./bundled/
           export VERSION=${{ steps.get_version.outputs.VERSION }}
           export GOFLAGS="-trimpath -modcacherw"
           export OUTPUT=bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }}
-          sed -i '/^## Begin Git Submodules$/,/^## End Git Submodules$/d' Makefile
           make
           cp ./install/daed.service ./bundled/
           curl -L -o ./bundled/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
