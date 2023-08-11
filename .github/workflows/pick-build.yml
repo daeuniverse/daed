@@ -153,7 +153,7 @@ jobs:
 
       - name: Pick wing and dae-core
         run: |
-          echo "y" | ./hack/checkout.sh core ${{ github.event.inputs.core }} wing ${{ github.event.inputs.wing }}
+          echo "y" | ./hack/checkout.sh core ${{ github.event.inputs.dae-core }} wing ${{ github.event.inputs.wing }}
 
       - name: Get the version
         id: get_version
@@ -198,7 +198,7 @@ jobs:
           path: dist/
 
       - name: Change Makefile
-        if: matrix.goarch != 'amd64' || matrix.goarch != 'arm64'
+        if: matrix.goarch != 'amd64' && matrix.goarch != 'arm64'
         run: |
           sed -i 's/buildmode=pie -//g' Makefile
         working-directory: wing
