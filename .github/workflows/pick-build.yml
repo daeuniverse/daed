@@ -32,7 +32,7 @@ jobs:
           git checkout ${{ github.event.inputs.wing }}
           export GOMODCACHE="${PWD}"/go-mod
           go mod download -modcacherw
-          cd dae-core && git merge origin/${{ github.event.inputs.dae-core }} && go mod download -modcacherw && cd ..
+          cd dae-core && git checkout ${{ github.event.inputs.dae-core }} && go mod download -modcacherw && cd ..
           find "$GOMODCACHE" -maxdepth 1 ! -name "cache" ! -name "go-mod" -exec rm -rf {} \;
           sed -i 's/#export GOMODCACHE=$(PWD)\/go-mod/export GOMODCACHE=$(PWD)\/go-mod/' Makefile
         working-directory: wing
@@ -154,8 +154,8 @@ jobs:
       - name: Pick wing and dae-core
         run: |
           git submodule update --init --recursive
-          cd wing && git reset --hard remotes/origin/${{ github.event.inputs.wing }}
-          cd dae-core && git reset --hard remotes/origin/${{ github.event.inputs.dae-core }} && cd ../..
+          cd wing && git reset --hard ${{ github.event.inputs.wing }} && go mod download -modcacherw
+          cd dae-core && git reset --hard ${{ github.event.inputs.dae-core }} && cd ../..
 
       - name: Get the version
         id: get_version
