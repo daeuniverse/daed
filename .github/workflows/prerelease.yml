@@ -74,7 +74,6 @@ jobs:
           # BEGIN Linux ARM 5 6 7 64
           - goos: linux
             goarch: arm64
-            buildargs: -buildmode=pie
           - goos: linux
             goarch: arm
             goarm: 7
@@ -90,15 +89,12 @@ jobs:
           - goos: linux
             goarch: amd64
             goamd64: v1
-            buildargs: -buildmode=pie
           - goos: linux
             goarch: amd64
             goamd64: v2
-            buildargs: -buildmode=pie
           - goos: linux
             goarch: amd64
             goamd64: v3
-            buildargs: -buildmode=pie
           # END Linux AMD64 v1 v2 v3
 
           # BEGIN Linux mips
@@ -128,7 +124,6 @@ jobs:
       GOAMD64: ${{ matrix.goamd64 }}
       CGO_ENABLED: ${{ matrix.cgo_enabled || 0 }}
       CC: ${{ matrix.cc }}
-      BUILD_ARGS: ${{ matrix.buildargs }}
 
     steps:
       - uses: actions/checkout@v3
