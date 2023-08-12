@@ -199,12 +199,6 @@ jobs:
           name: web
           path: dist/
 
-      - name: Change Makefile
-        if: matrix.goarch != 'amd64' && matrix.goarch != 'arm64'
-        run: |
-          sed -i 's/buildmode=pie -//g' Makefile
-        working-directory: wing
-
       - name: make
         env:
           SKIP_SUBMODULES: true
