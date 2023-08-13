@@ -14,6 +14,8 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 <!-- BEGIN NEW TOC ENTRY -->
 
+- [v0.3.3 (Latest)](#v033-latest)
+
 - [v0.3.2 (Latest)](#v032-latest)
 - [v0.3.1](#v031)
 - [v0.3.0](#v030)
@@ -22,6 +24,46 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - [v0.1.0](#v010)
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
 <!-- BEGIN NEW CHANGELOGS -->
+
+### v0.3.3 (Latest)
+
+> Release date: 2023/08/13
+
+### Features
+
+- feat: add desktop file and icons in [#221](https://github.com/daeuniverse/daed/pull/221) by (@shenghuang147)
+- feat: add juicity pinned_certchain_sha256 config in [#219](https://github.com/daeuniverse/daed/pull/219) by (@bradfordzhang)
+- feat: change editor font to `Source Code Pro` in [#218](https://github.com/daeuniverse/daed/pull/218) by (@kunish)
+
+### Bug Fixes
+
+- fix: copy to clipboard not working when clipboard permissions not permitted in [#217](https://github.com/daeuniverse/daed/pull/217) by (@kunish)
+
+### Others
+
+- chore(sync): keep upstream source up-to-date in [#236](https://github.com/daeuniverse/daed/pull/236) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#235](https://github.com/daeuniverse/daed/pull/235) by (@daebot)
+- chore: remove BUILD_ARGS in workflows in [#234](https://github.com/daeuniverse/daed/pull/234) by (@mzz2017)
+- chore(sync): keep upstream source up-to-date in [#233](https://github.com/daeuniverse/daed/pull/233) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#232](https://github.com/daeuniverse/daed/pull/232) by (@daebot)
+- ci(pick): fix build error when daed is not main in [#231](https://github.com/daeuniverse/daed/pull/231) by (@wanlce)
+- ci: add pick-build workflow in [#229](https://github.com/daeuniverse/daed/pull/229) by (@wanlce)
+- chore(sync): keep upstream source up-to-date in [#228](https://github.com/daeuniverse/daed/pull/228) by (@daebot)
+- chore: support build_mode=pie in [#227](https://github.com/daeuniverse/daed/pull/227) by (@mzz2017)
+- chore(sync): keep upstream source up-to-date in [#226](https://github.com/daeuniverse/daed/pull/226) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#225](https://github.com/daeuniverse/daed/pull/225) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#224](https://github.com/daeuniverse/daed/pull/224) by (@daebot)
+- chore(pr_template): update section headers in [#223](https://github.com/daeuniverse/daed/pull/223) by (@yqlbu)
+- chore(sync): keep upstream source up-to-date in [#222](https://github.com/daeuniverse/daed/pull/222) by (@daebot)
+- chore/refactor: rework issue_templates in [#220](https://github.com/daeuniverse/daed/pull/220) by (@yqlbu)
+- chore(sync): keep upstream source up-to-date in [#216](https://github.com/daeuniverse/daed/pull/216) by (@daebot)
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.3.2...v0.3.3
+
+### New Contributors
+
+- @bradfordzhang made their first contribution in https://github.com/daeuniverse/daed/pull/219
+- @shenghuang147 made their first contribution in https://github.com/daeuniverse/daed/pull/221
 
 ### v0.3.2 (Latest)
 
