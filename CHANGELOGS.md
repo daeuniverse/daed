@@ -15,8 +15,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 <!-- BEGIN NEW TOC ENTRY -->
 
 - [v0.3.3 (Latest)](#v033-latest)
-
-- [v0.3.2 (Latest)](#v032-latest)
+- [v0.3.2](#v032)
 - [v0.3.1](#v031)
 - [v0.3.0](#v030)
 - [v0.2.0](#v020)
@@ -65,7 +64,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - @bradfordzhang made their first contribution in https://github.com/daeuniverse/daed/pull/219
 - @shenghuang147 made their first contribution in https://github.com/daeuniverse/daed/pull/221
 
-### v0.3.2 (Latest)
+### v0.3.2
 
 > Release date: 2023/08/05
 
