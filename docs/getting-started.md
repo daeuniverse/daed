@@ -42,7 +42,7 @@ rm /tmp/installer-daed-linux-$(arch).deb
 # Start daed
 sudo systemctl start daed
 
-# set up automatically
+# enable daed start automatically
 sudo systemctl enable daed
 ``````
 
@@ -63,7 +63,7 @@ rm /tmp/installer-daed-linux-$(arch).rpm
 # Start daed
 sudo systemctl start daed
 
-# set up automatically
+# enable daed start automatically
 sudo systemctl enable daed
 ``````
 
@@ -84,7 +84,7 @@ rm /tmp/installer-daed-linux-$(arch).rpm
 # Start daed
 sudo systemctl start daed
 
-# set up automatically
+# enable daed start automatically
 sudo systemctl enable daed
 ``````
 
