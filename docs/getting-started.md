@@ -25,8 +25,6 @@ sudo daed [-h,--help]
 
 If everything goes well, open your browser and navigate to `http://localhost:2023`
 
-Happy Hacking!
-
 ## Debian / Ubuntu
 
 Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
@@ -89,3 +87,5 @@ sudo systemctl enable daed
 ``````
 
 If everything goes well, open your browser and navigate to `http://localhost:2023`
+
+Happy Hacking!
