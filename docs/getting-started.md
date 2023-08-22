@@ -44,7 +44,6 @@ sudo systemctl start daed
 sudo systemctl enable daed
 ``````
 
-If everything goes well, open your browser and navigate to `http://localhost:2023`
 
 ## RedHat
 
