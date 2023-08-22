@@ -25,4 +25,64 @@ sudo daed [-h,--help]
 
 If everything goes well, open your browser and navigate to `http://localhost:2023`
 
+## Debian / Ubuntu
+
+Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
+
+``````shell
+# Download
+wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).deb
+
+# install
+sudo dpkg -i /tmp/installer-daed-linux-$(arch).deb
+rm /tmp/installer-daed-linux-$(arch).deb
+
+# Start daed
+sudo systemctl start daed
+
+# enable daed start automatically
+sudo systemctl enable daed
+``````
+
+
+## RedHat
+
+Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
+
+``````shell
+# Download
+wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).rpm
+
+# install
+sudo rpm -ivh /tmp/installer-daed-linux-$(arch).rpm
+rm /tmp/installer-daed-linux-$(arch).rpm
+
+# Start daed
+sudo systemctl start daed
+
+# enable daed start automatically
+sudo systemctl enable daed
+``````
+
+
+## openSUSE
+
+Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
+
+``````shell
+# Download
+wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).rpm
+
+# install
+sudo zypper install /tmp/installer-daed-linux-$(arch).rpm
+rm /tmp/installer-daed-linux-$(arch).rpm
+
+# Start daed
+sudo systemctl start daed
+
+# enable daed start automatically
+sudo systemctl enable daed
+``````
+
+
 Happy Hacking!
