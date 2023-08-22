@@ -26,7 +26,21 @@ export class TuicNodeResolver extends BaseNodeResolver<typeof tuicSchema> {
       },
     })
 
-  resolve(_url: string) {
-    return {} as z.infer<typeof tuicSchema>
+  resolve(url: string) {
+    const u = this.parseURL(url)
+
+    return {
+      name: decodeURIComponent(u.hash),
+      uuid: decodeURIComponent(u.username),
+      password: decodeURIComponent(u.password),
+      server: u.host,
+      port: u.port,
+      sni: u.params.sni || '',
+      allowInsecure: u.params.allow_insecure === true || u.params.allow_insecure === '1',
+      disable_sni: u.params.disable_sni === true || u.params.disable_sni === '1',
+      alpn: u.params.alpn,
+      congestion_control: u.params.congestion_control || 'bbr',
+      udp_relay_mode: u.params.udp_relay_mode || 'native',
+    }
   }
 }

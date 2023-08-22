@@ -23,7 +23,19 @@ export class JuicityNodeResolver extends BaseNodeResolver<typeof juicitySchema> 
       },
     })
 
-  resolve(_url: string) {
-    return {} as z.infer<typeof juicitySchema>
+  resolve(url: string) {
+    const u = this.parseURL(url)
+
+    return {
+      name: decodeURIComponent(u.hash),
+      uuid: decodeURIComponent(u.username),
+      password: decodeURIComponent(u.password),
+      server: u.host,
+      port: u.port,
+      sni: u.params.sni || '',
+      allowInsecure: u.params.allow_insecure === true || u.params.allow_insecure === '1',
+      pinnedCertchainSha256: u.params.pinned_certchain_sha256 || '',
+      congestion_control: u.params.congestion_control || 'bbr',
+    }
   }
 }
