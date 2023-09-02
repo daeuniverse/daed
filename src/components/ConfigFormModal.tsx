@@ -32,6 +32,7 @@ import {
   DEFAULT_DIAL_MODE,
   DEFAULT_DISABLE_WAITING_NETWORK,
   DEFAULT_SNIFFING_TIMEOUT_MS,
+  DEFAULT_SO_MARK_FROM_DAE,
   DEFAULT_TCP_CHECK_HTTP_METHOD,
   DEFAULT_TCP_CHECK_URL,
   DEFAULT_TLS_IMPLEMENTATION,
@@ -139,7 +140,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
     validate: zodResolver(schema),
     initialValues: {
       name: '',
-      soMarkFromDae: 0,
+      soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
       logLevelNumber: 2,
       tproxyPort: DEFAULT_TPROXY_PORT,
       tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
