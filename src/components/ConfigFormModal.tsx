@@ -69,6 +69,7 @@ const schema = z.object({
   tlsImplementation: z.string(),
   utlsImitate: z.string(),
   tproxyPortProtect: z.boolean(),
+  soMarkFromDae: z.number(),
 })
 
 const InputList = <T extends z.infer<typeof schema>>({
@@ -138,6 +139,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
     validate: zodResolver(schema),
     initialValues: {
       name: '',
+      soMarkFromDae: 0,
       logLevelNumber: 2,
       tproxyPort: DEFAULT_TPROXY_PORT,
       tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
@@ -291,6 +293,15 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                     {...form.getInputProps('tproxyPortProtect', {
                       type: 'checkbox',
                     })}
+                  />
+
+                  <NumberInput
+                    label={t('soMarkFromDae')}
+                    description={t('descriptions.config.soMarkFromDae')}
+                    withAsterisk
+                    min={0}
+                    max={Math.pow(2, 32) - 1}
+                    {...form.getInputProps('soMarkFromDae')}
                   />
 
                   <Stack>

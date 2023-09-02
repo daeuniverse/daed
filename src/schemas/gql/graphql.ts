@@ -232,6 +232,8 @@ export type Mutation = {
   updateDns: Dns
   /** updateName update name for current user. Remove name if name is null. */
   updateName: Scalars['Int']['output']
+  /** updateNode is to update a node with no subscription ID. */
+  updateNode: Node
   /** updatePassword update password for current user. currentPassword is needed to authenticate. Return new token. */
   updatePassword: Scalars['String']['output']
   /** updateRouting is to update routing config with given id. */
@@ -399,6 +401,11 @@ export type MutationUpdateDnsArgs = {
 
 export type MutationUpdateNameArgs = {
   name?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MutationUpdateNodeArgs = {
+  id: Scalars['ID']['input']
+  newLink: Scalars['String']['input']
 }
 
 export type MutationUpdatePasswordArgs = {
