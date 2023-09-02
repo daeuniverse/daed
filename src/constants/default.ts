@@ -60,7 +60,7 @@ export const DEFAULT_CONFIG_WITH_LAN_INTERFACEs = (interfaces: string[] = []): G
 export const DEFAULT_GROUP_POLICY = Policy.MinMovingAvg
 
 export const DEFAULT_ROUTING = `
-pname(NetworkManager, systemd-resolved) -> direct
+pname(NetworkManager, systemd-resolved, dnsmasq) -> must_direct
 dip(geoip:private) -> direct
 dip(geoip:cn) -> direct
 domain(geosite:cn) -> direct
