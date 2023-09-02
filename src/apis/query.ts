@@ -235,6 +235,7 @@ export const useConfigsQuery = () => {
                 tlsImplementation
                 utlsImitate
                 tproxyPortProtect
+                soMarkFromDae
               }
             }
           }

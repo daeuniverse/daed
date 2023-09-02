@@ -19,6 +19,7 @@ export const DEFAULT_ENDPOINT_URL = `${location.protocol}//${location.hostname}:
 export const DEFAULT_LOG_LEVEL = LogLevel.info
 export const DEFAULT_TPROXY_PORT = 12345
 export const DEFAULT_TPROXY_PORT_PROTECT = true
+export const DEFAULT_SO_MARK_FROM_DAE = 0
 export const DEFAULT_ALLOW_INSECURE = false
 export const DEFAULT_CHECK_INTERVAL_SECONDS = 30
 export const DEFAULT_CHECK_TOLERANCE_MS = 0
@@ -41,6 +42,7 @@ export const DEFAULT_CONFIG_WITH_LAN_INTERFACEs = (interfaces: string[] = []): G
   logLevel: DEFAULT_LOG_LEVEL,
   tproxyPort: DEFAULT_TPROXY_PORT,
   tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
+  soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
   allowInsecure: DEFAULT_ALLOW_INSECURE,
   checkInterval: `${DEFAULT_CHECK_INTERVAL_SECONDS}s`,
   checkTolerance: `${DEFAULT_CHECK_TOLERANCE_MS}ms`,

@@ -32,6 +32,7 @@ import {
   DEFAULT_DIAL_MODE,
   DEFAULT_DISABLE_WAITING_NETWORK,
   DEFAULT_SNIFFING_TIMEOUT_MS,
+  DEFAULT_SO_MARK_FROM_DAE,
   DEFAULT_TCP_CHECK_HTTP_METHOD,
   DEFAULT_TCP_CHECK_URL,
   DEFAULT_TLS_IMPLEMENTATION,
@@ -69,6 +70,7 @@ const schema = z.object({
   tlsImplementation: z.string(),
   utlsImitate: z.string(),
   tproxyPortProtect: z.boolean(),
+  soMarkFromDae: z.number(),
 })
 
 const InputList = <T extends z.infer<typeof schema>>({
@@ -138,6 +140,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
     validate: zodResolver(schema),
     initialValues: {
       name: '',
+      soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
       logLevelNumber: 2,
       tproxyPort: DEFAULT_TPROXY_PORT,
       tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
@@ -291,6 +294,15 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                     {...form.getInputProps('tproxyPortProtect', {
                       type: 'checkbox',
                     })}
+                  />
+
+                  <NumberInput
+                    label={t('soMarkFromDae')}
+                    description={t('descriptions.config.soMarkFromDae')}
+                    withAsterisk
+                    min={0}
+                    max={Math.pow(2, 32) - 1}
+                    {...form.getInputProps('soMarkFromDae')}
                   />
 
                   <Stack>
