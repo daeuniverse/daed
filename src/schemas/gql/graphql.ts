@@ -994,6 +994,7 @@ export type ConfigsQuery = {
       tlsImplementation: string
       utlsImitate: string
       tproxyPortProtect: boolean
+      soMarkFromDae: number
     }
   }>
 }
@@ -2951,6 +2952,7 @@ export const ConfigsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'tlsImplementation' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'utlsImitate' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'tproxyPortProtect' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'soMarkFromDae' } },
                     ],
                   },
                 },
