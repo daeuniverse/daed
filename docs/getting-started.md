@@ -100,9 +100,6 @@ sudo docker run -d \
 > You may also build from source:
 
 ```shell
-# select a working directory, in my case, home directory
-cd ~
-
 # clone the repository
 git clone https://github.com/daeuniverse/daed --recursive
 
