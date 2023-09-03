@@ -9,8 +9,24 @@ RUN corepack prepare pnpm@latest --activate
 RUN pnpm install
 RUN pnpm build
 
+
+
 FROM golang:1.20-bullseye as build-bundle
 
+# install git and make
+# then install LLVM and clang from nightly package repository apt.llvm.org
+ARG LLVM_VERSION=15
+
+RUN \
+    apt-get update; \
+    apt-get install -y git make lsb-release wget software-properties-common gnupg; \
+    wget https://apt.llvm.org/llvm.sh; \
+    chmod +x llvm.sh; \
+    ./llvm.sh ${LLVM_VERSION} all; \
+    find /usr/bin/ -name clang* | sed -E 's@^(/usr/bin/.*)(\-[0-9]*)$@ln -s -v \1\2 \1@' | xargs -d '\n' -n 1 bash -c; \
+    rm llvm.sh && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+# build bundle process
 ENV CGO_ENABLED=0
 
 WORKDIR /build
@@ -18,9 +34,9 @@ WORKDIR /build
 COPY --from=build-web /build/dist web
 COPY --from=build-web /build/wing wing
 
-RUN apt-get update && apt-get install -y llvm clang git make
 RUN cd wing && make OUTPUT=daed WEB_DIST=/build/web/ bundle
-RUN apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+
 
 FROM alpine
 
