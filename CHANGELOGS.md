@@ -285,7 +285,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/06/19
 
-##### Features
+#### Features
 
 - feat(rules): hide remove button if selected by @kunish in https://github.com/daeuniverse/daed/pull/39
 - feat: add switch language button by @kecrily in https://github.com/daeuniverse/daed/pull/1
@@ -295,7 +295,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - feat: rename default config (global) and group (proxy) by @kunish in https://github.com/daeuniverse/daed/pull/38
 - feat: set `DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER` to true by @kunish in https://github.com/daeuniverse/daed/pull/28
 
-##### Bug Fixes
+#### Bug Fixes
 
 - fix bunch of issues, add bunch of missing functionalities, collected from our community by @kunish in https://github.com/daeuniverse/daed/pull/58
 - fix(config): add missing form modal fields and data inconsistency by @kunish in https://github.com/daeuniverse/daed/pull/13
