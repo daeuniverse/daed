@@ -42,14 +42,12 @@ FROM alpine
 
 LABEL org.opencontainers.image.source=https://github.com/daeuniverse/daed
 
-RUN mkdir -p /usr/local/share/daed/
+RUN mkdir -p /usr/local/share/dae-wing/
 RUN mkdir -p /etc/daed/
-RUN wget -O /usr/local/share/daed/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
-RUN wget -O /usr/local/share/daed/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
-
+RUN wget -O /usr/local/share/dae-wing/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat; \
+    wget -O /usr/local/share/dae-wing/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
 COPY --from=build-bundle /build/wing/daed /usr/local/bin
 
 EXPOSE 2023
 
-CMD ["daed"]
-ENTRYPOINT ["daed", "run", "-c", "/etc/daed"]
+CMD ["daed", "run", "-c", "/etc/daed"]
