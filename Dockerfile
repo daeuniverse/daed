@@ -29,11 +29,11 @@ FROM golang:1.21-bookworm as build-bundle
 
 RUN \
     apt-get update; apt-get install -y git make llvm-15 clang-15; \
-    find /usr/bin/ -name clang* | sed -E 's@^(/usr/bin/.*)(\-[0-9]*)$@ln -s -v \1\2 \1@' | xargs -d '\n' -n 1 bash -c; \
     apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 # build bundle process
 ENV CGO_ENABLED=0
+ENV CLANG=clang-15
 
 WORKDIR /build
 
