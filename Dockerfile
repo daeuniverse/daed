@@ -13,20 +13,6 @@ RUN pnpm build
 
 FROM golang:1.21-bookworm as build-bundle
 
-# # before uncomment these, please comment next RUN!
-# # install git and make
-# # then install LLVM and clang from nightly package repository apt.llvm.org
-# ARG LLVM_VERSION=15
-#
-# RUN \
-#     apt-get update; \
-#     apt-get install -y git make lsb-release wget software-properties-common gnupg; \
-#     wget https://apt.llvm.org/llvm.sh; \
-#     chmod +x llvm.sh; \
-#     ./llvm.sh ${LLVM_VERSION} all; \
-#     find /usr/bin/ -name clang* | sed -E 's@^(/usr/bin/.*)(\-[0-9]*)$@ln -s -v \1\2 \1@' | xargs -d '\n' -n 1 bash -c; \
-#     rm llvm.sh && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
-
 RUN \
     apt-get update; apt-get install -y git make llvm-15 clang-15; \
     apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/{apt,dpkg,cache,log}/
