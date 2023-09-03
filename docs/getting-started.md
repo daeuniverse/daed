@@ -96,7 +96,8 @@ sudo docker run -d \
     ghcr.io/daeuniverse/daed:latest
 ```
 
-If not working, follow the command below to build from source and run
+> **Note**
+> You may also build from source:
 
 ```shell
 # select a working directory, in my case, home directory
