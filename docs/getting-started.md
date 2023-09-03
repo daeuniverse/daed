@@ -80,6 +80,46 @@ sudo systemctl start daed
 sudo systemctl enable daed
 ``````
 
+### Docker (Experimental)
+
+Pre-built Docker images are available in `ghcr.io/daeuniverse/daed`. The command below pulls and runs the latest image
+
+```shell
+sudo docker run -d \
+    --privileged \
+    --network=host \
+    --pid=host \
+    --restart=unless-stopped \
+    -v /sys:/sys \
+    -v /etc/daed:/etc/daed \
+    --name=daed \
+    ghcr.io/daeuniverse/daed:latest
+```
+
+> **Note**
+> You may also build from source:
+
+```shell
+# clone the repository
+git clone https://github.com/daeuniverse/daed --recursive
+
+# build the image
+docker build -t daed .
+
+# run the container
+sudo docker run -d \
+    --privileged \
+    --network=host \
+    --pid=host \
+    --restart=unless-stopped \
+    -v /sys:/sys \
+    -v /etc/daed:/etc/daed \
+    --name=daed \
+    daed
+```
+
+## Access Panel
+
 If everything goes well, open your browser and navigate to `http://localhost:2023`
 
 Happy Hacking!
