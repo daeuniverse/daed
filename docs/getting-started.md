@@ -80,7 +80,7 @@ sudo systemctl start daed
 sudo systemctl enable daed
 ``````
 
-### Docker (Testing required)
+### Docker (Experimental)
 
 Pre-built Docker images are available in `ghcr.io/daeuniverse/daed`. The command below pulls and runs the latest image
 
