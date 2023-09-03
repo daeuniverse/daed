@@ -13,6 +13,8 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 ## Releases
 
 <!-- BEGIN NEW TOC ENTRY -->
+
+- [v0.4.0rc1 (Pre-release)](#v040rc1-pre-release)
 - [v0.3.3.p1 (Latest)](#v033p1-latest)
 - [v0.3.3](#v033)
 - [v0.3.2](#v032)
@@ -21,14 +23,36 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - [v0.2.0](#v020)
 - [v0.1.1](#v011)
 - [v0.1.0](#v010)
-- [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
+- [v0.1.0rc1](#v010rc1)
 <!-- BEGIN NEW CHANGELOGS -->
+
+### v0.4.0rc1 (Pre-release)
+
+> Release date: 2023/09/03
+
+##### Features
+
+- feat(routing): add dnsmasq to must_direct default routing in [#258](https://github.com/daeuniverse/daed/pull/258) by (@kunish)
+- feat(config): add form field `soMarkFromDae` in [#251](https://github.com/daeuniverse/daed/pull/251) by (@kunish)
+
+##### Others
+
+- chore(sync): keep upstream source up-to-date in [#259](https://github.com/daeuniverse/daed/pull/259) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#257](https://github.com/daeuniverse/daed/pull/257) by (@daebot)
+- ci(pick): fix build failure due to go mod not being updated in [#248](https://github.com/daeuniverse/daed/pull/248) by (@wanlce)
+- docs(getting-started): make subtle changes in [#247](https://github.com/daeuniverse/daed/pull/247) by (@yqlbu)
+- docs: Added Debian, RedHat, openSUSE, installation instructions in [#246](https://github.com/daeuniverse/daed/pull/246) by (@shenghuang147)
+- chore(sync): keep upstream source up-to-date in [#245](https://github.com/daeuniverse/daed/pull/245) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#244](https://github.com/daeuniverse/daed/pull/244) by (@daebot)
+- ci(release): draft release v0.3.3.p1 in [#243](https://github.com/daeuniverse/daed/pull/243) by (@daebot)
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.3.3.p1...v0.4.0rc1
 
 ### v0.3.3.p1 (Latest)
 
 > Release date: 2023/08/14
 
-### Others
+#### Others
 
 - chore(sync): keep upstream source up-to-date in [#241](https://github.com/daeuniverse/daed/pull/241) by (@daebot)
 - chore(sync): keep upstream source up-to-date in [#240](https://github.com/daeuniverse/daed/pull/240) by (@daebot)
@@ -40,17 +64,17 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/08/13
 
-### Features
+#### Features
 
 - feat: add desktop file and icons in [#221](https://github.com/daeuniverse/daed/pull/221) by (@shenghuang147)
 - feat: add juicity pinned_certchain_sha256 config in [#219](https://github.com/daeuniverse/daed/pull/219) by (@bradfordzhang)
 - feat: change editor font to `Source Code Pro` in [#218](https://github.com/daeuniverse/daed/pull/218) by (@kunish)
 
-### Bug Fixes
+#### Bug Fixes
 
 - fix: copy to clipboard not working when clipboard permissions not permitted in [#217](https://github.com/daeuniverse/daed/pull/217) by (@kunish)
 
-### Others
+#### Others
 
 - chore(sync): keep upstream source up-to-date in [#236](https://github.com/daeuniverse/daed/pull/236) by (@daebot)
 - chore(sync): keep upstream source up-to-date in [#235](https://github.com/daeuniverse/daed/pull/235) by (@daebot)
@@ -80,12 +104,12 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/08/05
 
-### Features
+#### Features
 
 - feat: disable rollbackError, fixes #207 in [#208](https://github.com/daeuniverse/daed/pull/208) by (@kunish)
 - feat: set color scheme based on system preference in [#205](https://github.com/daeuniverse/daed/pull/205) by (@kunish)
 
-### Others
+#### Others
 
 - chore(sync): keep upstream source up-to-date in [#210](https://github.com/daeuniverse/daed/pull/210) by (@daebot)
 - chore(sync): keep upstream source up-to-date in [#209](https://github.com/daeuniverse/daed/pull/209) by (@daebot)
@@ -100,7 +124,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/07/29
 
-### Others
+#### Others
 
 - chore(sync): keep upstream source up-to-date in [#199](https://github.com/daeuniverse/daed/pull/199) by (@daebot)
 
@@ -110,17 +134,17 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/07/29
 
-### Features
+#### Features
 
 - feat: add configure juicity modal in [#191](https://github.com/daeuniverse/daed/pull/191) by (@wanlce)
 
-### Bug Fixes
+#### Bug Fixes
 
 - fix: rename modal not closing after changing rule names in [#188](https://github.com/daeuniverse/daed/pull/188) by (@kunish)
 - fix: reload icon not showing on small size screens in [#187](https://github.com/daeuniverse/daed/pull/187) by (@kunish)
 - fix: avoid to install husky when not in a git repo in [#185](https://github.com/daeuniverse/daed/pull/185) by (@douglarek)
 
-### Others
+#### Others
 
 - chore(sync): keep upstream source up-to-date in [#194](https://github.com/daeuniverse/daed/pull/194) by (@daebot)
 - ci/fix(generate-changelogs): fix dry_run input description in [#193](https://github.com/daeuniverse/daed/pull/193) by (@yqlbu)
@@ -147,19 +171,19 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/07/17
 
-### Features
+#### Features
 
 - feat: add configure tuic modal in [#157](https://github.com/daeuniverse/daed/pull/157) by (@kunish)
 - feat: modal reworks in [#149](https://github.com/daeuniverse/daed/pull/149) by (@kunish)
 - feat: change icons in [#147](https://github.com/daeuniverse/daed/pull/147) by (@kunish)
 
-### Bug Fixes
+#### Bug Fixes
 
 - fix: time parsing is wrong in [#171](https://github.com/daeuniverse/daed/pull/171) by (@kunish)
 - fix(v2ray): add missing websocket path field in [#159](https://github.com/daeuniverse/daed/pull/159) by (@kunish)
 - fix: wan interface should be optional in [#156](https://github.com/daeuniverse/daed/pull/156) by (@kunish)
 
-### Others
+#### Others
 
 - ci(pr-build): add ready_for_review trigger in [#175](https://github.com/daeuniverse/daed/pull/175) by (@yqlbu)
 - chore(sync): keep upstream source up-to-date in [#174](https://github.com/daeuniverse/daed/pull/174) by (@daebot)
@@ -184,7 +208,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/07/09
 
-### Features
+#### Features
 
 - feat(tuic): upgrade dae-wing to support tuic v5 in [#135](https://github.com/daeuniverse/daed/pull/135) by (@kunish)
 - feat: wan interface auto detect in [#133](https://github.com/daeuniverse/daed/pull/133) by (@kunish)
@@ -192,13 +216,13 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - feat: add a configure node modal in [#125](https://github.com/daeuniverse/daed/pull/125) by (@kunish)
 - feat: disable zooming and panning on mobile in [#113](https://github.com/daeuniverse/daed/pull/113) by (@kunish)
 
-### Bug Fixes
+#### Bug Fixes
 
 - fix: import missing packages and clean up unreference files in [#128](https://github.com/daeuniverse/daed/pull/128) by (@earrmouth)
 - fix: try fixing caret misplacement in [#124](https://github.com/daeuniverse/daed/pull/124) by (@kunish)
 - fix: footer is floating above modal overlay in [#121](https://github.com/daeuniverse/daed/pull/121) by (@kunish)
 
-### Others
+#### Others
 
 - chore(sync): keep upstream source up-to-date in [#141](https://github.com/daeuniverse/daed/pull/141) by (@dae-bot[bot])
 - ci: refine pr-build workflow in [#138](https://github.com/daeuniverse/daed/pull/138) by (@yqlbu)
@@ -216,7 +240,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 > Release date: 2023/06/24
 
-### Features
+#### Features
 
 - feat: responsive header in [#111](https://github.com/daeuniverse/daed/pull/111) by (@kunish)
 - feat: support small screen devices in [#110](https://github.com/daeuniverse/daed/pull/110) by (@kunish)
@@ -237,7 +261,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - feat: add description text for group policies in [#71](https://github.com/daeuniverse/daed/pull/71) by (@kunish)
 - feat: add loading state indicators in [#70](https://github.com/daeuniverse/daed/pull/70) by (@kunish)
 
-### Bug Fixes
+#### Bug Fixes
 
 - fix(group): refresh after remove nodes/subs in [#96](https://github.com/daeuniverse/daed/pull/96) by (@kunish)
 - fix: default googledns add tcp in [#92](https://github.com/daeuniverse/daed/pull/92) by (@kunish)
@@ -257,7 +281,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 **Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.1.0rc...v0.1.0
 
-### v0.1.0rc1 (Pre-release)
+### v0.1.0rc1
 
 > Release date: 2023/06/19
 
