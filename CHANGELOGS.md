@@ -13,6 +13,8 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 ## Releases
 
 <!-- BEGIN NEW TOC ENTRY -->
+
+- [v0.4.0rc1 (Pre-release)](#v040rc1-pre-release)
 - [v0.3.3.p1 (Latest)](#v033p1-latest)
 - [v0.3.3](#v033)
 - [v0.3.2](#v032)
@@ -23,6 +25,28 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - [v0.1.0](#v010)
 - [v0.1.0rc1 (Pre-release)](#v010rc1-pre-release)
 <!-- BEGIN NEW CHANGELOGS -->
+
+### v0.4.0rc1 (Pre-release)
+
+> Release date: 2023/09/03
+
+#### Features
+
+- feat(routing): add dnsmasq to must_direct default routing in [#258](https://github.com/daeuniverse/daed/pull/258) by (@kunish)
+- feat(config): add form field `soMarkFromDae` in [#251](https://github.com/daeuniverse/daed/pull/251) by (@kunish)
+
+#### Others
+
+- chore(sync): keep upstream source up-to-date in [#259](https://github.com/daeuniverse/daed/pull/259) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#257](https://github.com/daeuniverse/daed/pull/257) by (@daebot)
+- ci(pick): fix build failure due to go mod not being updated in [#248](https://github.com/daeuniverse/daed/pull/248) by (@wanlce)
+- docs(getting-started): make subtle changes in [#247](https://github.com/daeuniverse/daed/pull/247) by (@yqlbu)
+- docs: Added Debian, RedHat, openSUSE, installation instructions in [#246](https://github.com/daeuniverse/daed/pull/246) by (@shenghuang147)
+- chore(sync): keep upstream source up-to-date in [#245](https://github.com/daeuniverse/daed/pull/245) by (@daebot)
+- chore(sync): keep upstream source up-to-date in [#244](https://github.com/daeuniverse/daed/pull/244) by (@daebot)
+- ci(release): draft release v0.3.3.p1 in [#243](https://github.com/daeuniverse/daed/pull/243) by (@daebot)
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.3.3.p1...v0.4.0rc1
 
 ### v0.3.3.p1 (Latest)
 
