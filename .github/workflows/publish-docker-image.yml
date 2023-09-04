@@ -10,9 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Codebase
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
+
+      - name: Prepare Tag
+        # Borrowed from daeuniverse/dae
+        id: prep
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [[ "$REF" == "refs/tags/v"* ]]; then
+            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+            tag=${tag:1}
+          else
+            tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+          fi
+          echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+          echo "TAG=$tag" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -28,19 +44,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.QUAY_PASS }}
 
-      - name: Build quay.io image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          builder: ${{ steps.buildx.outputs.name }}
-          file: Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            quay.io/${{ github.repository }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
       - name: Login to ghrc.io
         uses: docker/login-action@v2
         with:
@@ -48,7 +51,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build ghcr.io image
+      - name: Build image
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -57,6 +60,9 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
+            quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+            quay.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
