@@ -63,7 +63,7 @@ jobs:
   #         context: .
   #         builder: ${{ steps.buildx.outputs.name }}
   #         file: Dockerfile
-  #         platforms: linux/amd64,linux/arm64,linux/386,linux/arm,linux/ppc64le
+  #         platforms: linux/amd64,linux/arm64,linux/ppc64le
   #         push: true
   #         tags: |
   #           ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
@@ -133,7 +133,7 @@ jobs:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
           file: Dockerfile
-          platforms: linux/amd64,arm64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
@@ -144,141 +144,6 @@ jobs:
           cache-to: type=gha,mode=max
 
 
-
-  publish-docker-image-arm:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Codebase
-        uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-
-      - name: Prepare Tag
-        # Borrowed from daeuniverse/dae
-        id: prep
-        env:
-          REF: ${{ github.ref }}
-        run: |
-          if [[ "$REF" == "refs/tags/v"* ]]; then
-            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-            tag=${tag:1}
-          else
-            tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
-          fi
-          echo "IMAGE=huangqizigailee/daed" >> $GITHUB_OUTPUT
-          echo "TAG=$tag" >> $GITHUB_OUTPUT
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        id: buildx
-
-      - name: Login to dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASS }}
-
-      # - name: Login to quay.io
-      #   uses: docker/login-action@v2
-      #   with:
-      #     registry: quay.io
-      #     username: ${{ github.repository_owner }}
-      #     password: ${{ secrets.QUAY_PASS }}
-
-      - name: Login to ghrc.io
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          builder: ${{ steps.buildx.outputs.name }}
-          file: Dockerfile
-          platforms: linux/arm
-          push: true
-          tags: |
-            ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
-            ${{ steps.prep.outputs.IMAGE }}:latest
-            ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
-            ghcr.io/${{ github.repository }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-
-  publish-docker-image-386:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Codebase
-        uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-
-      - name: Prepare Tag
-        # Borrowed from daeuniverse/dae
-        id: prep
-        env:
-          REF: ${{ github.ref }}
-        run: |
-          if [[ "$REF" == "refs/tags/v"* ]]; then
-            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-            tag=${tag:1}
-          else
-            tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
-          fi
-          echo "IMAGE=huangqizigailee/daed" >> $GITHUB_OUTPUT
-          echo "TAG=$tag" >> $GITHUB_OUTPUT
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        id: buildx
-
-      - name: Login to dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASS }}
-
-      # - name: Login to quay.io
-      #   uses: docker/login-action@v2
-      #   with:
-      #     registry: quay.io
-      #     username: ${{ github.repository_owner }}
-      #     password: ${{ secrets.QUAY_PASS }}
-
-      - name: Login to ghrc.io
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          builder: ${{ steps.buildx.outputs.name }}
-          file: Dockerfile
-          platforms: linux/386
-          push: true
-          tags: |
-            ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
-            ${{ steps.prep.outputs.IMAGE }}:latest
-            ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
-            ghcr.io/${{ github.repository }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
 
   publish-docker-image-ppc64le:
