@@ -66,8 +66,10 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
-            quay.io/${{ github.repository }}:latest
+            ${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+            ${{ github.repository }}:latest
+            # quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+            # quay.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
