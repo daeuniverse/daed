@@ -241,8 +241,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64,linux/arm64,linux/ppc64le
+          # builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64
+          #,linux/arm64,linux/ppc64le
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
