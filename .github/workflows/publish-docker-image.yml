@@ -63,7 +63,7 @@ jobs:
   #         context: .
   #         builder: ${{ steps.buildx.outputs.name }}
   #         file: Dockerfile
-  #         platforms: linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64
+  #         platforms: linux/amd64, linux/arm64, linux/386, linux/arm, linux/ppc64le
   #         push: true
   #         tags: |
   #           ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
@@ -76,7 +76,7 @@ jobs:
   #         cache-to: type=gha,mode=max
 
 
-  publish-docker-image-amd64:
+  publish-docker-image-amd64-arm64:
     runs-on: ubuntu-latest
 
     steps:
@@ -145,7 +145,7 @@ jobs:
 
 
 
-  publish-docker-image-arm64:
+  publish-docker-image-arm:
     runs-on: ubuntu-latest
 
     steps:
@@ -202,7 +202,7 @@ jobs:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
           file: Dockerfile
-          platforms: linux/arm64
+          platforms: linux/arm
           push: true
           tags: |
             ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
@@ -213,7 +213,7 @@ jobs:
           cache-to: type=gha,mode=max
 
 
-  publish-docker-image-armv7:
+  publish-docker-image-386:
     runs-on: ubuntu-latest
 
     steps:
@@ -270,7 +270,7 @@ jobs:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
           file: Dockerfile
-          platforms: linux/arm/v7
+          platforms: linux/386
           push: true
           tags: |
             ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
@@ -281,7 +281,7 @@ jobs:
           cache-to: type=gha,mode=max
 
 
-  publish-docker-image-armv6:
+  publish-docker-image-ppc64le:
     runs-on: ubuntu-latest
 
     steps:
@@ -338,7 +338,7 @@ jobs:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
           file: Dockerfile
-          platforms: linux/arm/v6
+          platforms: linux/ppc64le
           push: true
           tags: |
             ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
