@@ -43,12 +43,12 @@ jobs:
   #         username: ${{ secrets.DOCKERHUB_USERNAME }}
   #         password: ${{ secrets.DOCKERHUB_PASS }}
   #
-  #     # - name: Login to quay.io
-  #     #   uses: docker/login-action@v2
-  #     #   with:
-  #     #     registry: quay.io
-  #     #     username: ${{ github.repository_owner }}
-  #     #     password: ${{ secrets.QUAY_PASS }}
+  #     - name: Login to quay.io
+  #       uses: docker/login-action@v2
+  #       with:
+  #         registry: quay.io
+  #         username: ${{ github.repository_owner }}
+  #         password: ${{ secrets.QUAY_PASS }}
   #
   #     - name: Login to ghrc.io
   #       uses: docker/login-action@v2
@@ -66,8 +66,10 @@ jobs:
   #         platforms: linux/arm/v6,linux/arm/v7,linux/arm64,linux/amd64
   #         push: true
   #         tags: |
-  #           ${{ secrets.DOCKERHUB_USERNAME }}:${{ steps.prep.outputs.TAG }}
-  #           ${{ secrets.DOCKERHUB_USERNAME }}:latest
+  #           ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
+  #           ${{ steps.prep.outputs.IMAGE }}:latest
+  #           quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+  #           quay.io/${{ github.repository }}:latest
   #           ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
   #           ghcr.io/${{ github.repository }}:latest
   #         cache-from: type=gha
@@ -95,7 +97,7 @@ jobs:
           else
             tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
           fi
-          echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+          echo "IMAGE=huangqizigailee/daed" >> $GITHUB_OUTPUT
           echo "TAG=$tag" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
@@ -134,8 +136,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}:${{ steps.prep.outputs.TAG }}
-            ${{ secrets.DOCKERHUB_USERNAME }}:latest
+            ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
+            ${{ steps.prep.outputs.IMAGE }}:latest
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
@@ -164,7 +166,7 @@ jobs:
           else
             tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
           fi
-          echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+          echo "IMAGE=huangqizigailee/daed" >> $GITHUB_OUTPUT
           echo "TAG=$tag" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
@@ -203,8 +205,8 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}:${{ steps.prep.outputs.TAG }}
-            ${{ secrets.DOCKERHUB_USERNAME }}:latest
+            ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
+            ${{ steps.prep.outputs.IMAGE }}:latest
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
@@ -232,7 +234,7 @@ jobs:
           else
             tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
           fi
-          echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+          echo "IMAGE=huangqizigailee/daed" >> $GITHUB_OUTPUT
           echo "TAG=$tag" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
@@ -271,8 +273,8 @@ jobs:
           platforms: linux/arm/v7
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}:${{ steps.prep.outputs.TAG }}
-            ${{ secrets.DOCKERHUB_USERNAME }}:latest
+            ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
+            ${{ steps.prep.outputs.IMAGE }}:latest
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
@@ -300,7 +302,7 @@ jobs:
           else
             tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
           fi
-          echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+          echo "IMAGE=huangqizigailee/daed" >> $GITHUB_OUTPUT
           echo "TAG=$tag" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
@@ -339,8 +341,8 @@ jobs:
           platforms: linux/arm/v6
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}:${{ steps.prep.outputs.TAG }}
-            ${{ secrets.DOCKERHUB_USERNAME }}:latest
+            ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG }}
+            ${{ steps.prep.outputs.IMAGE }}:latest
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
