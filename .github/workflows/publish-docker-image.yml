@@ -68,8 +68,6 @@ jobs:
           tags: |
             ${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             ${{ github.repository }}:latest
-            # quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
-            # quay.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
