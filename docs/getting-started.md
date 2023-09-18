@@ -80,6 +80,33 @@ sudo systemctl start daed
 sudo systemctl enable daed
 ``````
 
+### Arch Linux
+
+Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command installs the latest version of the precompiled installation package consistent with your current system architecture
+
+#### AUR
+##### Latest Release
+``````shell
+[yay/paru] -S daed
+``````
+##### Latest Git Version
+``````shell
+[yay/paru] -S daed-git
+``````
+
+#### archlinuxcn
+##### Latest Release (Optimized for x86-64 v3)
+``````shell
+sudo pacman -S daed-bin-x64-v3
+``````
+##### Latest Release (General x86-64 or aarch64)
+``````shell
+sudo pacman -S daed
+``````
+##### Latest Git Version
+``````shell
+sudo pacman -S daed-git
+``````
 ### Docker (Experimental)
 
 Pre-built Docker images are available in `ghcr.io/daeuniverse/daed`. The command below pulls and runs the latest image
