@@ -20,13 +20,14 @@ RUN \
 # build bundle process
 ENV CGO_ENABLED=0
 ENV CLANG=clang-15
+ARG DAED_VERSION=self-build
 
 COPY --from=build-web /build/dist /build/web
 COPY --from=build-web /build/wing /build/wing
 
 WORKDIR /build/wing
 
-RUN make APPNAME=daed OUTPUT=daed WEB_DIST=/build/web/ bundle
+RUN make APPNAME=daed VERSION=$DAED_VERSION OUTPUT=daed WEB_DIST=/build/web/ bundle
 
 
 

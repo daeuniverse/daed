@@ -4,16 +4,16 @@
 #   workflow_dispatch:
 #   release:
 #     types: [prereleased, released]
-#   # schedule:
-#   #   - cron: "0 10 * * *"
-#   # push:
-#   #   branches:
-#   #     - "**"
-#   #   tags:
-#   #     - "v*.*.*"
-#   # pull_request:
-#   #   branches:
-#   #     - "main"
+#   schedule:
+#     - cron: "0 16 * * *"
+#   push:
+#     branches:
+#       - "**"
+#     tags:
+#       - "v*.*.*"
+#   pull_request:
+#     branches:
+#       - "main"
 #
 # jobs:
 #   publish-docker-image:
@@ -23,6 +23,21 @@
 #         uses: actions/checkout@v4
 #         with:
 #           submodules: 'recursive'
+#
+#       - name: Prepare Tag
+#         # Borrowed from daeuniverse/dae
+#         id: prep
+#         env:
+#           REF: ${{ github.ref }}
+#         run: |
+#           if [[ "$REF" == "refs/tags/v"* ]]; then
+#             tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+#             tag=${tag:1}
+#           else
+#             tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+#           fi
+#           echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+#           echo "TAG=$tag" >> $GITHUB_OUTPUT
 #
 #       - name: Docker meta
 #         id: meta
@@ -36,12 +51,10 @@
 #           # generate Docker tags based on the following events/attributes
 #           tags: |
 #             type=schedule
+#             type=schedule,pattern={{date 'YYYYMMDD'}}
 #             type=ref,event=branch
 #             type=ref,event=pr
 #             type=semver,pattern={{version}}
-#             type=semver,pattern={{major}}.{{minor}}
-#             type=semver,pattern={{major}}
-#             type=sha
 #           flavor: |
 #             latest=auto
 #             prefix=
@@ -81,6 +94,7 @@
 #         uses: docker/build-push-action@v5
 #         with:
 #           context: .
+#           build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
 #           # builder: ${{ steps.buildx.outputs.name }}
 #           platforms: linux/amd64,linux/arm64,linux/ppc64le
 #           push: ${{ github.event_name != 'pull_request' }}
@@ -116,14 +130,29 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: Prepare Tag
+        # Borrowed from daeuniverse/dae
+        id: prep
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [[ "$REF" == "refs/tags/v"* ]]; then
+            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+            tag=${tag:1}
+          else
+            tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+          fi
+          echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+          echo "TAG=$tag" >> $GITHUB_OUTPUT
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           # list of Docker images to use as base name for tags
           images: |
-            huangqizigailee/daed-test
-            ghcr.io/${{ github.repository }}
+            huangqizigailee/daed-test-test
+#             ghcr.io/${{ github.repository }}
 #             quay.io/${{ github.repository }}
           # generate Docker tags based on the following events/attributes
           tags: |
@@ -153,13 +182,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASS }}
 
-      - name: Login to ghcr.io
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Login to ghcr.io
+      #   if: github.event_name != 'pull_request'
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Login to quay.io
       #   if: github.event_name != 'pull_request'
@@ -173,6 +202,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
           # builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64,linux/arm64,linux/ppc64le
           push: ${{ github.event_name != 'pull_request' }}
