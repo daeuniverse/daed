@@ -42,14 +42,21 @@
 #           path: dist
 #
 #
-#
 #   publish-docker-image:
 #     runs-on: ubuntu-latest
+#     needs:
+#       - build-web
 #
 #     steps:
 #       - uses: actions/checkout@v4
 #         with:
 #           submodules: 'recursive'
+#
+#       - name: Download artifact - web
+#         uses: actions/download-artifact@v3
+#         with:
+#           name: web
+#           path: dist/
 #
 #       - name: Prepare Tag
 #         # Borrowed from daeuniverse/dae
@@ -182,11 +189,19 @@ jobs:
 
   publish-docker-image:
     runs-on: ubuntu-latest
+    needs:
+      - build-web
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+
+      - name: Download artifact - web
+        uses: actions/download-artifact@v3
+        with:
+          name: web
+          path: dist/
 
       - name: Prepare Tag
         # Borrowed from daeuniverse/dae
