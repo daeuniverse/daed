@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   release:
     types: [prereleased, released]
-  # schedule:
-  #   - cron: "0 10 * * *"
+  schedule:
+    - cron: "0 16 * * *"
   # push:
   #   branches:
   #     - "**"
@@ -47,6 +47,28 @@ jobs:
             prefix=
             suffix=
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ${{ github.repository }}
+            ghcr.io/${{ github.repository }}
+            quay.io/${{ github.repository }}
+          # generate Docker tags based on the following events/attributes
+          # nightly, YYYYMMDD, on:push:branch, pr-NO., *.*.*
+          tags: |
+            type=schedule
+            type=schedule,pattern={{date 'YYYYMMDD'}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+          flavor: |
+            latest=auto
+            prefix=
+            suffix=
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -55,14 +77,14 @@ jobs:
         # id: buildx
 
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
+        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to ghcr.io
-        if: github.event_name != 'pull_request'
+        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -70,7 +92,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to quay.io
-        if: github.event_name != 'pull_request'
+        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: quay.io
@@ -81,11 +103,15 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
           # builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64,linux/arm64,linux/ppc64le
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
+          # push: ${{ github.event_name != 'pull_request' }}
+
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
 
