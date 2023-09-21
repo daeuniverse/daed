@@ -1,0 +1,215 @@
+name: Docker CI
+
+on:
+  workflow_dispatch:
+  # release:
+  #   types: [prereleased, released]
+  schedule:
+    - cron: "0 16 * * *"
+  push:
+    branches:
+      - "**"
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Prepare Tag
+        # Borrowed from daeuniverse/dae
+        id: prep
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [[ "$REF" == "refs/tags/v"* ]]; then
+            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+            tag=${tag:1}
+          else
+            tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+          fi
+          echo "IMAGE=daeuniverse/daed-test" >> $GITHUB_OUTPUT
+          echo "TAG=$tag" >> $GITHUB_OUTPUT
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: ${{ steps.prep.outputs.IMAGE }} # |
+#             ${{ github.repository }}-test
+#             ghcr.io/${{ github.repository }}
+#             quay.io/${{ github.repository }}
+          # generate Docker tags based on the following events/attributes
+          # nightly, YYYYMMDD, on:push:branch, pr-NO., *.*.*
+          tags: |
+            type=schedule
+            type=schedule,pattern={{date 'YYYYMMDD'}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+          flavor: |
+            latest=auto
+            prefix=
+            suffix=
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        # id: buildx
+
+      - name: Login to Docker Hub
+        # if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # - name: Login to ghcr.io
+      #   # if: github.event_name != 'pull_request'
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      #
+      # - name: Login to quay.io
+      #   # if: github.event_name != 'pull_request'
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: quay.io
+      #     username: ${{ github.repository_owner }}
+      #     password: ${{ secrets.QUAY_PASS }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
+          # builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64,linux/arm64 #,linux/ppc64le
+          push: true
+          # push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+
+# name: Docker CI
+#
+# on:
+#   workflow_dispatch:
+#   release:
+#     types: [prereleased, released]
+#   # schedule:
+#   #   - cron: "0 10 * * *"
+#   # push:
+#   #   branches:
+#   #     - "**"
+#   #   tags:
+#   #     - "v*.*.*"
+#   # pull_request:
+#   #   branches:
+#   #     - "main"
+#
+# jobs:
+#   publish-docker-image:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#         with:
+#           submodules: 'recursive'
+#
+#       - name: Prepare Tag
+#         # Borrowed from daeuniverse/dae
+#         id: prep
+#         env:
+#           REF: ${{ github.ref }}
+#         run: |
+#           if [[ "$REF" == "refs/tags/v"* ]]; then
+#             tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+#             tag=${tag:1}
+#           else
+#             tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+#           fi
+#           echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+#           echo "TAG=$tag" >> $GITHUB_OUTPUT
+#
+#       - name: Docker meta
+#         id: meta
+#         uses: docker/metadata-action@v5
+#         with:
+#           # list of Docker images to use as base name for tags
+#           images: |
+#             huangqizigailee/daed-test-test
+# #             ghcr.io/${{ github.repository }}
+# #             quay.io/${{ github.repository }}
+#           # generate Docker tags based on the following events/attributes
+#           tags: |
+#             type=schedule
+#             type=ref,event=branch
+#             type=ref,event=pr
+#             type=semver,pattern={{version}}
+#             type=semver,pattern={{major}}.{{minor}}
+#             type=semver,pattern={{major}}
+#             type=sha
+#           flavor: |
+#             latest=auto
+#             prefix=
+#             suffix=
+#
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v3
+#
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+#         # id: buildx
+#
+#       - name: Login to Docker Hub
+#         # if: github.event_name != 'pull_request'
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_PASS }}
+#
+#       # - name: Login to ghcr.io
+#       #   # if: github.event_name != 'pull_request'
+#       #   uses: docker/login-action@v3
+#       #   with:
+#       #     registry: ghcr.io
+#       #     username: ${{ github.actor }}
+#       #     password: ${{ secrets.GITHUB_TOKEN }}
+#
+#       # - name: Login to quay.io
+#       #   # if: github.event_name != 'pull_request'
+#       #   uses: docker/login-action@v3
+#       #   with:
+#       #     registry: quay.io
+#       #     username: ${{ github.repository_owner }}
+#       #     password: ${{ secrets.QUAY_PASS }}
+#
+#       - name: Build and push
+#         uses: docker/build-push-action@v5
+#         with:
+#           context: .
+#           build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
+#           # builder: ${{ steps.buildx.outputs.name }}
+#           platforms: linux/amd64,linux/arm64,linux/ppc64le
+#           push: true
+#           # push: ${{ github.event_name != 'pull_request' }}
+#           tags: ${{ steps.meta.outputs.tags }}
+#           labels: ${{ steps.meta.outputs.labels }}
+#           cache-from: type=gha
+#           cache-to: type=gha,mode=max
