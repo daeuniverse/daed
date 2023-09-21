@@ -21,12 +21,12 @@ RUN \
 ENV CGO_ENABLED=0
 ENV CLANG=clang-15
 
-WORKDIR /build
+COPY --from=build-web /build/dist /build/web
+COPY --from=build-web /build/wing /build/wing
 
-COPY --from=build-web /build/dist web
-COPY --from=build-web /build/wing wing
+WORKDIR /build/wing
 
-RUN cd wing && make APPNAME=daed OUTPUT=daed WEB_DIST=/build/web/ bundle
+RUN make APPNAME=daed OUTPUT=daed WEB_DIST=/build/web/ bundle
 
 
 
