@@ -1,14 +1,22 @@
 # Quick Start Guide
 
-> **Note**: `daed` (UI component) is bundled with [dae-wing](https://github.com/daeuniverse/dae-wing) (backend API server) and [dae](https://github.com/daeuniverse/dae) (core).
+> **Note**
+> `daed` (UI component) is bundled with [dae-wing](https://github.com/daeuniverse/dae-wing) (backend API server) and [dae](https://github.com/daeuniverse/dae) (core).
 
 ## How to run
+
+> **Note**
+> - NEVER LET YOUR COMPUTER SLEEP OR HIBIRNATE WHILE PROXY IS STILL ON!
+> - NEVER SWITCH NETWORK WHILE PROXY IS STILL ON!
+> - TURN IT OFF BEFORE YOU MOVE OR LEAVE YOUR COMPUTER!
+> - OR YOU WILL HAVE POSSIBILITY TO NEED A REBOOT TO RECOVER YOUR NETWORK CONNECTIVITY!
 
 ### Download pre-compiled binaries
 
 Releases are available in <https://github.com/daeuniverse/daed/releases>
 
-> **Note**: If you would like to get a taste of new features, there are `PR Builds` available. Most of the time, newly proposed changes will be included in `PRs` and will be exported as cross-platform executable binaries in builds (GitHub Action Workflow Build). Noted that newly introduced features are sometimes buggy, do it at your own risk. However, we still highly encourage you to check out our latest builds as it may help us further analyze features stability and resolve potential bugs accordingly.
+> **Note**
+> If you would like to get a taste of new features, there are `PR Builds` available. Most of the time, newly proposed changes will be included in `PRs` and will be exported as cross-platform executable binaries in builds (GitHub Action Workflow Build). Noted that newly introduced features are sometimes buggy, do it at your own risk. However, we still highly encourage you to check out our latest builds as it may help us further analyze features stability and resolve potential bugs accordingly.
 
 PR-builds are available in <https://github.com/daeuniverse/daed/actions/workflows/pr-build.yml>
 
@@ -109,7 +117,9 @@ sudo pacman -S daed-git
 ``````
 ### Docker (Experimental)
 
-Pre-built Docker images are available in `ghcr.io/daeuniverse/daed`. The command below pulls and runs the latest image
+Pre-built Docker images are available in `ghcr.io/daeuniverse/daed`, `quay.io/daeuniverse/daed` and `daeuniverse/daed`. 
+
+#### Take `ghcr.io` for example, the command below pulls and runs the latest image
 
 ```shell
 sudo docker run -d \
@@ -123,8 +133,7 @@ sudo docker run -d \
     ghcr.io/daeuniverse/daed:latest
 ```
 
-> **Note**
-> You may also build from source:
+#### You may also build from source:
 
 ```shell
 # clone the repository
@@ -144,6 +153,15 @@ sudo docker run -d \
     --name=daed \
     daed
 ```
+
+
+> **NOTE**
+> - Docker currently supports only i386(x86-32), amd64(x86-64), armv7 and arm64(armv8). (Alpha)
+> - Only amd64 is tested working as expected, but not fully tested yet. (Beta)
+> - For self build from source, only amd64 and arm64 will run.
+> - Please refer to https://github.com/daeuniverse/daed/discussions/291 and relevant PRs and Issues for details
+> - Volunteers are welcomed.
+
 
 ## Access Panel
 
