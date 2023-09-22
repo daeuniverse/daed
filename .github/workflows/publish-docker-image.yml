@@ -110,6 +110,7 @@ jobs:
           password: ${{ secrets.QUAY_PASS }}
 
       - name: Build image
+        if: github.event_name == 'release'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -126,5 +127,26 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
             quay.io/${{ github.repository }}:latest
             quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Build
+        if: github.event_name != 'release'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
+          builder: ${{ steps.buildx.outputs.name }}
+          file: publish.Dockerfile
+          target: this-image-is-built-for-final-publish-with-support-of-multiple-platforms
+          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8 #,linux/mips64le,linux/ppc64e,linux/s390x
+          push: true
+          tags: |
+            ${{ github.repository }}:test
+            ${{ github.repository }}:${{ steps.prep.outputs.TAG }}-test
+            ghcr.io/${{ github.repository }}:test
+            ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}-test
+            quay.io/${{ github.repository }}:test
+            quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}-test
           cache-from: type=gha
           cache-to: type=gha,mode=max
