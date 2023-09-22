@@ -2,89 +2,100 @@ name: Publish Docker Image
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - "main"
   release:
-    types: [prereleased, released]
-  schedule:
-    - cron: "0 16 * * *"
-  # push:
-  #   branches:
-  #     - "**"
-  #   tags:
-  #     - "v*.*.*"
-  # pull_request:
-  #   branches:
-  #     - "main"
+    types: [prereleased,released]
+
+env:
+  REGISTRY_IMAGE: daeuniverse/daed
+
 
 jobs:
-  publish-docker-image:
+
+  build-web:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+        # with:
+        #   submodules: 'recursive'
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: latest
+
+      - name: Build
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: Upload artifact - web
+        uses: actions/upload-artifact@v3
+        with:
+          name: web
+          path: dist
+
+
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    needs:
+      - build-web
+
+    steps:
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
+      - name: Download artifact - web
+        uses: actions/download-artifact@v3
         with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ${{ github.repository }}
-            ghcr.io/${{ github.repository }}
-            quay.io/${{ github.repository }}
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-          flavor: |
-            latest=auto
-            prefix=
-            suffix=
+          name: web
+          path: dist/
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ${{ github.repository }}
-            ghcr.io/${{ github.repository }}
-            quay.io/${{ github.repository }}
-          # generate Docker tags based on the following events/attributes
-          # nightly, YYYYMMDD, on:push:branch, pr-NO., *.*.*
-          tags: |
-            type=schedule
-            type=schedule,pattern={{date 'YYYYMMDD'}}
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-          flavor: |
-            latest=auto
-            prefix=
-            suffix=
+      - name: Prepare Tag
+        # Borrowed from daeuniverse/dae
+        id: prep
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          DIR="$(pwd)/dist/"
+          if [ -d "$DIR" ]; then
+            ### Take action if $DIR exists ###
+            echo "Installing config files in ${DIR}..."
+          else
+            ###  Control will jump here if $DIR does NOT exists ###
+            echo "Error: ${DIR} not found. Can not continue."
+            exit 1
+          fi
+          if [[ "$REF" == "refs/tags/v"* ]]; then
+            tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+            tag=${tag:1}
+          else
+            tag=$(git log -1 --format="%cd" --date=short | sed s/-//g)
+          fi
+          echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+          echo "TAG=$tag" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        # id: buildx
+        id: buildx
 
       - name: Login to Docker Hub
-        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to ghcr.io
-        # if: github.event_name != 'pull_request'
+      - name: Login to ghrc.io
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -92,26 +103,28 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to quay.io
-        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: quay.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.QUAY_PASS }}
 
-      - name: Build and push
+      - name: Build image
         uses: docker/build-push-action@v5
         with:
           context: .
           build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
-          # builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64,linux/arm64,linux/ppc64le
+          builder: ${{ steps.buildx.outputs.name }}
+          file: publish.Dockerfile
+          target: this-image-is-built-for-final-publish-with-support-of-multiple-platforms
+          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8 #,linux/mips64le,linux/ppc64e,linux/s390x
           push: true
-          # push: ${{ github.event_name != 'pull_request' }}
-
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ${{ github.repository }}:latest
+            ${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+            quay.io/${{ github.repository }}:latest
+            quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-
