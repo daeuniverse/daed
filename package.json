@@ -87,7 +87,7 @@
     "immer": "^10.0.2",
     "js-base64": "^3.7.5",
     "lint-staged": "^14.0.1",
-    "mantine-datatable": "^2.9.12",
+    "mantine-datatable": "^6.0.0",
     "monaco-editor": "^0.41.0",
     "monaco-themes": "^0.4.4",
     "nanostores": "^0.9.3",
