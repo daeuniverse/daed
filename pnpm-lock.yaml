@@ -237,8 +237,8 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   react-i18next:
-    specifier: ^13.2.1
-    version: 13.2.1(i18next@23.4.6)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^13.3.0
+    version: 13.3.0(i18next@23.4.6)(react-dom@18.2.0)(react@18.2.0)
   react-router:
     specifier: ^6.15.0
     version: 6.15.0(react@18.2.0)
@@ -8082,8 +8082,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-i18next@13.2.1(i18next@23.4.6)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-XhMsnGgJnytWfi2Q70HMYfm+zysPUu1Pz+It6I87WwaeclGY+W8W1c11uENEMNg+Xb+mNrGuo8GEDuQDOgO+oQ==}
+  /react-i18next@13.3.0(i18next@23.4.6)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-FlR9xjYHSPIJfQspEmkN0yOlxgRyNuiJKJ8gCaZH08UJ7SZHG+VrptEPcpEMEchjNoCOZdKcvJ3PnmHEZhkeXg==}
     peerDependencies:
       i18next: '>= 23.2.3'
       react: '>= 16.8.0'
