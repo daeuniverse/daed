@@ -79,7 +79,7 @@
     "execa": "^8.0.1",
     "framer-motion": "^10.16.2",
     "graphiql": "^3.0.5",
-    "graphql": "^16.8.0",
+    "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "husky": "^8.0.3",
     "i18next": "^23.4.6",
