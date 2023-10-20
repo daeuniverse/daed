@@ -117,8 +117,8 @@ jobs:
           build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
           builder: ${{ steps.buildx.outputs.name }}
           file: publish.Dockerfile
-          target: this-image-is-built-for-final-publish-with-support-of-multiple-platforms
-          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8 #,linux/mips64le,linux/ppc64e,linux/s390x
+          target: prod
+          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
             ${{ github.repository }}:latest
@@ -138,8 +138,8 @@ jobs:
           build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
           builder: ${{ steps.buildx.outputs.name }}
           file: publish.Dockerfile
-          target: this-image-is-built-for-final-publish-with-support-of-multiple-platforms
-          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8 #,linux/mips64le,linux/ppc64e,linux/s390x
+          target: prod
+          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
             ${{ github.repository }}:test
