@@ -210,8 +210,8 @@ dependencies:
     specifier: ^14.0.1
     version: 14.0.1
   mantine-datatable:
-    specifier: ^2.9.12
-    version: 2.9.12(@mantine/core@6.0.19)(@mantine/hooks@6.0.19)(react@18.2.0)
+    specifier: ^6.0.2
+    version: 6.0.2(@mantine/core@6.0.19)(@mantine/hooks@6.0.19)(react@18.2.0)
   monaco-editor:
     specifier: ^0.41.0
     version: 0.41.0
@@ -7224,11 +7224,11 @@ packages:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
     dev: false
 
-  /mantine-datatable@2.9.12(@mantine/core@6.0.19)(@mantine/hooks@6.0.19)(react@18.2.0):
-    resolution: {integrity: sha512-DCBwqPkUa7R7+DGTABMJ6DQoc0rKb1eanUoOsBWgVYwpwwNrOSAX1lKGF/bQOFdyvxWaPt1ZcgOosKDdAWbUaA==}
+  /mantine-datatable@6.0.2(@mantine/core@6.0.19)(@mantine/hooks@6.0.19)(react@18.2.0):
+    resolution: {integrity: sha512-EM/OXfdxEC7t37KAgXuRU5LsC8Gf8BkKED8rXpiZtkyumubXqq9H8WSlrtP5FjuHGifUkDPaJeEJMiMMYfIghQ==}
     peerDependencies:
-      '@mantine/core': '>=6 <=6.0.17 || >=6.0.19'
-      '@mantine/hooks': '>=6 <=6.0.17 || >=6.0.19'
+      '@mantine/core': '>=6 <=6.0.17 || >=6.0.19 < 7'
+      '@mantine/hooks': '>=6 <=6.0.17 || >=6.0.19 < 7'
       react: '>=18'
     dependencies:
       '@mantine/core': 6.0.19(@emotion/react@11.11.1)(@mantine/hooks@6.0.19)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
