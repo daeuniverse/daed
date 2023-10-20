@@ -1,17 +1,8 @@
-FROM node:alpine as build-web
+# ATTENTION This part below is for publishing purpose only
 
-WORKDIR /build
+ARG DAED_VERSION
 
-COPY . .
-
-RUN corepack enable
-RUN corepack prepare pnpm@latest --activate
-RUN pnpm install
-RUN pnpm build
-
-
-
-FROM golang:1.21-bookworm as build-bundle
+FROM golang:1.21-bookworm as build
 
 RUN \
     apt-get update; apt-get install -y git make llvm-15 clang-15; \
@@ -20,19 +11,19 @@ RUN \
 # build bundle process
 ENV CGO_ENABLED=0
 ENV CLANG=clang-15
-ARG DAED_VERSION=self-build
+ARG DAED_VERSION
 
-COPY --from=build-web /build/dist /build/web
-COPY --from=build-web /build/wing /build/wing
+WORKDIR /build
+
+COPY ./dist/ ./web/
+COPY ./wing/ ./wing/
 
 WORKDIR /build/wing
 
 RUN make APPNAME=daed VERSION=$DAED_VERSION OUTPUT=daed WEB_DIST=/build/web/ bundle
 
 
-
-
-FROM alpine
+FROM alpine as prod
 
 LABEL org.opencontainers.image.source=https://github.com/daeuniverse/daed
 
@@ -40,7 +31,7 @@ RUN mkdir -p /usr/local/share/daed/
 RUN mkdir -p /etc/daed/
 RUN wget -O /usr/local/share/daed/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat; \
     wget -O /usr/local/share/daed/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
-COPY --from=build-bundle /build/wing/daed /usr/local/bin
+COPY --from=build /build/wing/daed /usr/local/bin
 
 EXPOSE 2023
 
