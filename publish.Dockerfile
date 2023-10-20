@@ -11,7 +11,7 @@ RUN \
 # build bundle process
 ENV CGO_ENABLED=0
 ENV CLANG=clang-15
-ARG DAED_VERSION=self-build
+ARG DAED_VERSION
 
 WORKDIR /build
 
