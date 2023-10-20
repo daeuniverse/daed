@@ -112,10 +112,10 @@ dependencies:
     version: 4.33.0(@tanstack/react-query@4.33.0)(react-dom@18.2.0)(react@18.2.0)
   '@tiptap/extension-link':
     specifier: ^2.1.7
-    version: 2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)
+    version: 2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7)
   '@tiptap/react':
     specifier: ^2.1.7
-    version: 2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)(react-dom@18.2.0)(react@18.2.0)
+    version: 2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7)(react-dom@18.2.0)(react@18.2.0)
   '@tiptap/starter-kit':
     specifier: ^2.1.12
     version: 2.1.12(@tiptap/pm@2.1.7)
@@ -180,8 +180,8 @@ dependencies:
     specifier: ^8.0.1
     version: 8.0.1
   framer-motion:
-    specifier: ^10.16.2
-    version: 10.16.2(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^10.16.4
+    version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
   graphiql:
     specifier: ^3.0.5
     version: 3.0.5(@codemirror/language@6.0.0)(@types/node@20.8.7)(@types/react-dom@18.2.7)(@types/react@18.2.21)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
@@ -1931,7 +1931,7 @@ packages:
     dependencies:
       graphql: 16.8.1
       lodash.sortby: 4.7.0
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@graphql-tools/executor-graphql-ws@1.1.0(graphql@16.8.1):
@@ -2126,7 +2126,7 @@ packages:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       graphql: 16.8.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /@graphql-tools/prisma-loader@8.0.1(@types/node@20.8.7)(graphql@16.8.1):
@@ -2171,7 +2171,7 @@ packages:
       '@ardatan/relay-compiler': 12.0.0(graphql@16.8.1)
       '@graphql-tools/utils': 10.0.6(graphql@16.8.1)
       graphql: 16.8.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -2545,8 +2545,8 @@ packages:
       '@mantine/hooks': 6.0.19(react@18.2.0)
       '@mantine/utils': 6.0.19(react@18.2.0)
       '@tabler/icons-react': 2.32.0(react@18.2.0)
-      '@tiptap/extension-link': 2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)
-      '@tiptap/react': 2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)(react-dom@18.2.0)(react@18.2.0)
+      '@tiptap/extension-link': 2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7)
+      '@tiptap/react': 2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
     dev: false
 
@@ -3749,14 +3749,6 @@ packages:
       '@tiptap/pm': 2.1.7
     dev: false
 
-  /@tiptap/core@2.1.7(@tiptap/pm@2.1.7):
-    resolution: {integrity: sha512-1pqTwlTnwTKQSNQmmTWhs2lwdvd+hFFNFZnrRAfvZhQZA6qPmPmKMNTcYmK38Tn4axKth6mhBamzTJgMZFI7ng==}
-    peerDependencies:
-      '@tiptap/pm': ^2.0.0
-    dependencies:
-      '@tiptap/pm': 2.1.7
-    dev: false
-
   /@tiptap/extension-blockquote@2.1.12(@tiptap/core@2.1.12):
     resolution: {integrity: sha512-Qb3YRlCfugx9pw7VgLTb+jY37OY4aBJeZnqHzx4QThSm13edNYjasokbX0nTwL1Up4NPTcY19JUeHt6fVaVVGg==}
     peerDependencies:
@@ -3773,13 +3765,13 @@ packages:
       '@tiptap/core': 2.1.12(@tiptap/pm@2.1.7)
     dev: false
 
-  /@tiptap/extension-bubble-menu@2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7):
+  /@tiptap/extension-bubble-menu@2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7):
     resolution: {integrity: sha512-VcwwUgiG17TEDZda1JBbyKCHLIBTu8B2OAzYrnd4ZqeRs5KTVAB279o/TVjsLVgEfC+c7IWwhhaPPMoXn/lJ3g==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
     dependencies:
-      '@tiptap/core': 2.1.7(@tiptap/pm@2.1.7)
+      '@tiptap/core': 2.1.12(@tiptap/pm@2.1.7)
       '@tiptap/pm': 2.1.7
       tippy.js: 6.3.7
     dev: false
@@ -3828,13 +3820,13 @@ packages:
       '@tiptap/pm': 2.1.7
     dev: false
 
-  /@tiptap/extension-floating-menu@2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7):
+  /@tiptap/extension-floating-menu@2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7):
     resolution: {integrity: sha512-K0bO7JKHAvgLM5MkhNgoYcD6SB0Z2tNIFhZHs5SCTuhg7dwduMSM3pC6QBrJGUk99DGsKuMPYQn3c2oG7MLbyQ==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
     dependencies:
-      '@tiptap/core': 2.1.7(@tiptap/pm@2.1.7)
+      '@tiptap/core': 2.1.12(@tiptap/pm@2.1.7)
       '@tiptap/pm': 2.1.7
       tippy.js: 6.3.7
     dev: false
@@ -3893,13 +3885,13 @@ packages:
       '@tiptap/core': 2.1.12(@tiptap/pm@2.1.7)
     dev: false
 
-  /@tiptap/extension-link@2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7):
+  /@tiptap/extension-link@2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7):
     resolution: {integrity: sha512-NDfoMCkThng1B530pMg5y69+eWoghZXK2uCntrJH7Rs8jNeGMyt9wGIOd7N8ZYz0oJ2ZYKzZjS0RANdBDS17DA==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
     dependencies:
-      '@tiptap/core': 2.1.7(@tiptap/pm@2.1.7)
+      '@tiptap/core': 2.1.12(@tiptap/pm@2.1.7)
       '@tiptap/pm': 2.1.7
       linkifyjs: 4.1.1
     dev: false
@@ -3967,7 +3959,7 @@ packages:
       prosemirror-view: 1.31.7
     dev: false
 
-  /@tiptap/react@2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)(react-dom@18.2.0)(react@18.2.0):
+  /@tiptap/react@2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-jCs5z/rXZ7mEOTPcJ+r/OSTtLOGBahS7D3xDu3pRX4P0wtWHlprsdptxxlWjkBHLav01XXJ+OtGZTfhWBio1QQ==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
@@ -3975,9 +3967,9 @@ packages:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
     dependencies:
-      '@tiptap/core': 2.1.7(@tiptap/pm@2.1.7)
-      '@tiptap/extension-bubble-menu': 2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)
-      '@tiptap/extension-floating-menu': 2.1.7(@tiptap/core@2.1.7)(@tiptap/pm@2.1.7)
+      '@tiptap/core': 2.1.12(@tiptap/pm@2.1.7)
+      '@tiptap/extension-bubble-menu': 2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7)
+      '@tiptap/extension-floating-menu': 2.1.7(@tiptap/core@2.1.12)(@tiptap/pm@2.1.7)
       '@tiptap/pm': 2.1.7
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -6025,8 +6017,8 @@ packages:
       is-callable: 1.2.7
     dev: false
 
-  /framer-motion@10.16.2(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-aY6L9YMvqMWtfOQptaUvvr8dp97jskXY5UYLQM0vOPxKeERrG/Z034EIQZ/52u7MeCT0HlCQy3/l0HdUZCB9Tw==}
+  /framer-motion@10.16.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-p9V9nGomS3m6/CALXqv6nFGMuFOxbWsmaOrdmhyQimMIlLl3LC7h7l86wge/Js/8cRu5ktutS/zlzgR7eBOtFA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
@@ -6348,7 +6340,7 @@ packages:
       graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
       graphql: 16.8.1
-      tslib: 2.5.3
+      tslib: 2.6.2
     dev: false
 
   /graphql-ws@5.14.0(graphql@16.8.1):
