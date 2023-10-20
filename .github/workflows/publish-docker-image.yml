@@ -8,9 +8,6 @@ on:
   release:
     types: [prereleased,released]
 
-env:
-  REGISTRY_IMAGE: daeuniverse/daed
-
 
 jobs:
 
@@ -18,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        # with:
-        #   submodules: 'recursive'
+        with:
+          submodules: 'recursive'
 
       - uses: pnpm/action-setup@v2
         with:
