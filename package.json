@@ -46,7 +46,7 @@
     "@mantine/prism": "^6.0.19",
     "@mantine/spotlight": "^6.0.19",
     "@mantine/tiptap": "^6.0.19",
-    "@monaco-editor/react": "^4.5.2",
+    "@monaco-editor/react": "^4.6.0",
     "@nanostores/persistent": "^0.9.1",
     "@nanostores/react": "^0.7.1",
     "@parcel/watcher": "^2.3.0",
