@@ -91,10 +91,10 @@ dependencies:
     version: 4.6.0(monaco-editor@0.41.0)(react-dom@18.2.0)(react@18.2.0)
   '@nanostores/persistent':
     specifier: ^0.9.1
-    version: 0.9.1(nanostores@0.9.3)
+    version: 0.9.1(nanostores@0.9.4)
   '@nanostores/react':
     specifier: ^0.7.1
-    version: 0.7.1(nanostores@0.9.3)(react@18.2.0)
+    version: 0.7.1(nanostores@0.9.4)(react@18.2.0)
   '@parcel/watcher':
     specifier: ^2.3.0
     version: 2.3.0
@@ -219,8 +219,8 @@ dependencies:
     specifier: ^0.4.4
     version: 0.4.4
   nanostores:
-    specifier: ^0.9.3
-    version: 0.9.3
+    specifier: ^0.9.4
+    version: 0.9.4
   prettier:
     specifier: ^3.0.3
     version: 3.0.3
@@ -2632,23 +2632,23 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /@nanostores/persistent@0.9.1(nanostores@0.9.3):
+  /@nanostores/persistent@0.9.1(nanostores@0.9.4):
     resolution: {integrity: sha512-ow57Hxm5VMaI5GHET/cVk8hX/iKMmbhcGrB9owfN8p8OHiiJgUlYxe1giacwlAALJXAh2t8bxXh42hHb64BCEA==}
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     peerDependencies:
       nanostores: ^0.9.0
     dependencies:
-      nanostores: 0.9.3
+      nanostores: 0.9.4
     dev: false
 
-  /@nanostores/react@0.7.1(nanostores@0.9.3)(react@18.2.0):
+  /@nanostores/react@0.7.1(nanostores@0.9.4)(react@18.2.0):
     resolution: {integrity: sha512-EXQg9N4MdI4eJQz/AZLIx3hxQ6BuBmV4Q55bCd5YCSgEOAW7tGTsIZxpRXxvxLXzflNvHTBvfrDNY38TlSVBkQ==}
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     peerDependencies:
       nanostores: ^0.9.0
       react: '>=18.0.0'
     dependencies:
-      nanostores: 0.9.3
+      nanostores: 0.9.4
       react: 18.2.0
     dev: false
 
@@ -7471,8 +7471,8 @@ packages:
     hasBin: true
     dev: false
 
-  /nanostores@0.9.3:
-    resolution: {integrity: sha512-KobZjcVyNndNrb5DAjfs0WG0lRcZu5Q1BOrfTOxokFLi25zFrWPjg+joXC6kuDqNfSt9fQwppyjUBkRPtsL+8w==}
+  /nanostores@0.9.4:
+    resolution: {integrity: sha512-BVFzKt6K5P8tYQLL7MItqcev7jpspA5pIjv+Ck3k6wBnUlwCJcpkGTIinj4APvx8SvdP9fXDGoMRCTY6DO/9QA==}
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     dev: false
 

@@ -90,7 +90,7 @@
     "mantine-datatable": "^6.0.2",
     "monaco-editor": "^0.41.0",
     "monaco-themes": "^0.4.4",
-    "nanostores": "^0.9.3",
+    "nanostores": "^0.9.4",
     "prettier": "^3.0.3",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
