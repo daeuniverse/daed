@@ -33,8 +33,8 @@ dependencies:
     specifier: ^5.0.11
     version: 5.0.11
   '@fontsource/source-code-pro':
-    specifier: ^5.0.8
-    version: 5.0.8
+    specifier: ^5.0.15
+    version: 5.0.15
   '@graphiql/toolkit':
     specifier: ^0.9.1
     version: 0.9.1(@types/node@20.8.7)(graphql@16.8.1)
@@ -1585,8 +1585,8 @@ packages:
     resolution: {integrity: sha512-ozUqZgGSPnc9r7TLL+6VR4Pe0EzgD+MagzF8NJhqHU9y3g0+/QpO1/m55E8UxGo8yoAIHMFQH0EDORFvUI0jtQ==}
     dev: false
 
-  /@fontsource/source-code-pro@5.0.8:
-    resolution: {integrity: sha512-2RtauxYX8gMBZr3kO97M/M0jNeE2pItqTLofpJWxsIiZKY+ir8xXmxz0Bxg3XttHadjJu9lP8gQpmBKRSn0dXQ==}
+  /@fontsource/source-code-pro@5.0.15:
+    resolution: {integrity: sha512-G+kD+5Ba2mgqsOpwZQetQi5aAOaMw0SiY73VpmycSeL17WKl2GmyTP6mIc95d+r+HJJazmg9yYYBp3qeHNNG1w==}
     dev: false
 
   /@graphiql/react@0.19.3(@codemirror/language@6.0.0)(@types/node@20.8.7)(@types/react-dom@18.2.7)(@types/react@18.2.21)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0):
