@@ -51,7 +51,7 @@
     "@nanostores/react": "^0.7.1",
     "@parcel/watcher": "^2.3.0",
     "@tabler/icons-react": "^2.39.0",
-    "@tanstack/eslint-plugin-query": "^4.34.1",
+    "@tanstack/eslint-plugin-query": "^5.0.5",
     "@tanstack/react-query": "^4.33.0",
     "@tanstack/react-query-devtools": "^4.33.0",
     "@tiptap/extension-link": "^2.1.7",
