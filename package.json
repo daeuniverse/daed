@@ -100,7 +100,7 @@
     "react-router": "^6.15.0",
     "react-router-dom": "^6.17.0",
     "simple-git": "^3.19.1",
-    "sort-package-json": "^2.5.1",
+    "sort-package-json": "^2.6.0",
     "typescript": "^5.2.2",
     "urijs": "^1.19.11",
     "vite": "^4.5.0",
