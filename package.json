@@ -97,7 +97,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.3.0",
-    "react-router": "^6.15.0",
+    "react-router": "^6.17.0",
     "react-router-dom": "^6.17.0",
     "simple-git": "^3.19.1",
     "sort-package-json": "^2.6.0",
