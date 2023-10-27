@@ -84,7 +84,7 @@
     "husky": "^8.0.3",
     "i18next": "^23.6.0",
     "i18next-browser-languagedetector": "^7.1.0",
-    "immer": "^10.0.2",
+    "immer": "^10.0.3",
     "js-base64": "^3.7.5",
     "lint-staged": "^15.0.2",
     "mantine-datatable": "^6.0.2",
