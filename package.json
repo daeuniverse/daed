@@ -67,7 +67,7 @@
     "@typescript-eslint/parser": "^6.9.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
     "@vitest/ui": "^0.34.6",
-    "dayjs": "^1.11.9",
+    "dayjs": "^1.11.10",
     "embla-carousel-react": "8.0.0-rc14",
     "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
