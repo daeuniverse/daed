@@ -30,8 +30,8 @@ dependencies:
     specifier: ^8.0.2
     version: 8.0.2
   '@fontsource/fira-sans':
-    specifier: ^5.0.11
-    version: 5.0.11
+    specifier: ^5.0.17
+    version: 5.0.17
   '@fontsource/source-code-pro':
     specifier: ^5.0.15
     version: 5.0.15
@@ -1581,8 +1581,8 @@ packages:
     resolution: {integrity: sha512-m0G6wlnhm/AX0H12IOWtK8gASEMffnX08RtKkCgTdHb9JpHKGloI7icFfLg9ZmQeavcvR0PKmzxClyuFPSjKWw==}
     dev: false
 
-  /@fontsource/fira-sans@5.0.11:
-    resolution: {integrity: sha512-ozUqZgGSPnc9r7TLL+6VR4Pe0EzgD+MagzF8NJhqHU9y3g0+/QpO1/m55E8UxGo8yoAIHMFQH0EDORFvUI0jtQ==}
+  /@fontsource/fira-sans@5.0.17:
+    resolution: {integrity: sha512-UAXX8YkVhU5OeLPIw3KezI9XgZPSEkf96wpstqWM9U6qFbc3KD+6ANfG1LkPxrsGi+XmbTKZayO5MGnkiiaTyw==}
     dev: false
 
   /@fontsource/source-code-pro@5.0.15:
