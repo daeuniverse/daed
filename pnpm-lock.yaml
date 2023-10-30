@@ -132,8 +132,8 @@ dependencies:
     specifier: ^18.2.14
     version: 18.2.14
   '@types/urijs':
-    specifier: ^1.19.20
-    version: 1.19.20
+    specifier: ^1.19.22
+    version: 1.19.22
   '@types/uuid':
     specifier: ^9.0.6
     version: 9.0.6
@@ -4140,8 +4140,8 @@ packages:
     resolution: {integrity: sha512-5eQEtSCoESnh2FsiLTxE121IiE60hnMqcb435fShf4bpLRjEu1Eoekht23y6zXS9Ts3l+Szu3TARnTsA0GkOkQ==}
     dev: false
 
-  /@types/urijs@1.19.20:
-    resolution: {integrity: sha512-77Mq/2BeHU894J364dUv9tSwxxyCLtcX228Pc8TwZpP5bvOoMns+gZoftp3LYl3FBH8vChpWbuagKGiMki2c1A==}
+  /@types/urijs@1.19.22:
+    resolution: {integrity: sha512-qnYBwfN7O/+i6E1Kr8JaCKsrCLpRCiQ1XxkSxNIYuJ/5Aagt0+HlMX78DJMUrNzDULMz0eu2gcprlxJaDtACOw==}
     dev: false
 
   /@types/uuid@9.0.6:
