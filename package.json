@@ -57,7 +57,7 @@
     "@tiptap/extension-link": "^2.1.12",
     "@tiptap/react": "^2.1.12",
     "@tiptap/starter-kit": "^2.1.12",
-    "@types/node": "^20.8.9",
+    "@types/node": "^20.8.10",
     "@types/react": "^18.2.33",
     "@types/react-copy-to-clipboard": "^5.0.6",
     "@types/react-dom": "^18.2.14",
