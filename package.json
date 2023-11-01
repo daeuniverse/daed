@@ -98,7 +98,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^13.3.1",
     "react-router": "^6.18.0",
-    "react-router-dom": "^6.17.0",
+    "react-router-dom": "^6.18.0",
     "simple-git": "^3.20.0",
     "sort-package-json": "^2.6.0",
     "typescript": "^5.2.2",
