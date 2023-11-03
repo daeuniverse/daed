@@ -78,7 +78,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "execa": "^8.0.1",
     "framer-motion": "^10.16.4",
-    "graphiql": "^3.0.6",
+    "graphiql": "^3.0.9",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "husky": "^8.0.3",
