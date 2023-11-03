@@ -15,10 +15,6 @@
   <img src="https://custom-icon-badges.herokuapp.com/github/last-commit/daeuniverse/daed?logo=history&logoColor=white" alt="lastcommit" />
 </p>
 
-## Preview
-
-![preview](docs/preview.webp)
-
 ## Features
 
 - [x] Easy to use, with keyboard navigation / shortcuts builtin
