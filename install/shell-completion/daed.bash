@@ -59,7 +59,7 @@ _daed() {
             # run cmd multi option completetion
             case "${COMP_WORDS[1]}" in 
                 run)
-                    COMPREPLY=( $(compgen -W "$run_opts -h --help" -- "${cur}") )
+                    COMPREPLY=( $(compgen -W "$run_opts" -- "${cur}") )
                     return 0
                     ;;
             esac
@@ -67,7 +67,7 @@ _daed() {
             return 0
             ;;
 
-		-h|--help|-v|--version)
+		-h|--help)
 			return 0
 			;;
 		*)
@@ -96,10 +96,5 @@ _daed() {
 	esac
 
 }
-
-if [[ -n ${ZSH_VERSION} ]]; then
-	autoload -U bashcompinit
-	bashcompinit
-fi
 
 complete -F _daed daed
