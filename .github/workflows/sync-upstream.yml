@@ -13,8 +13,6 @@ name: Synchronize Upstream
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 14 */15 * *"
 
 jobs:
   sync-dae-core:
