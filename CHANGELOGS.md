@@ -14,8 +14,9 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 <!-- BEGIN NEW TOC ENTRY -->
 
-- [v0.4.0rc1 (Pre-release)](#v040rc1-pre-release)
-- [v0.3.3.p1 (Latest)](#v033p1-latest)
+- [v0.4.1 (Latest)](#v041-latest)
+- [v0.4.0rc1](#v040rc1)
+- [v0.3.3.p1](#v033p1)
 - [v0.3.3](#v033)
 - [v0.3.2](#v032)
 - [v0.3.1](#v031)
@@ -26,7 +27,85 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - [v0.1.0rc1](#v010rc1)
 <!-- BEGIN NEW CHANGELOGS -->
 
-### v0.4.0rc1 (Pre-release)
+### v0.4.1 (Latest)
+
+> Release date: 2024/04/22
+
+##### Others
+
+- chore(sync): keep upstream source up-to-date in [#428](https://github.com/daeuniverse/daed/pull/428) by (@dae-prow[bot])
+- chore(sync): keep upstream source up-to-date in [#385](https://github.com/daeuniverse/daed/pull/385) by (@dae-prow[bot])
+- ci: update Go version to 1.21 in [#423](https://github.com/daeuniverse/daed/pull/423) by (@wano)
+- docs: update README.md by (@kunish)
+- build(deps): bump @typescript-eslint/parser from 6.9.0 to 6.9.1 in [#371](https://github.com/daeuniverse/daed/pull/371) by (@dependabot[bot])
+- build(deps): bump @types/node from 20.8.9 to 20.8.10 in [#370](https://github.com/daeuniverse/daed/pull/370) by (@dependabot[bot])
+- build(deps): bump react-router from 6.17.0 to 6.18.0 in [#368](https://github.com/daeuniverse/daed/pull/368) by (@dependabot[bot])
+- build(deps): bump @commitlint/cli from 17.7.1 to 18.2.0 in [#364](https://github.com/daeuniverse/daed/pull/364) by (@dependabot[bot])
+- build(deps): bump @vitejs/plugin-react-swc from 3.4.0 to 3.4.1 in [#365](https://github.com/daeuniverse/daed/pull/365) by (@dependabot[bot])
+- build(deps): bump @tiptap/extension-link from 2.1.7 to 2.1.12 in [#366](https://github.com/daeuniverse/daed/pull/366) by (@dependabot[bot])
+- build(deps): bump @typescript-eslint/eslint-plugin from 6.9.0 to 6.9.1 in [#367](https://github.com/daeuniverse/daed/pull/367) by (@dependabot[bot])
+- build(deps): bump @types/urijs from 1.19.20 to 1.19.22 in [#360](https://github.com/daeuniverse/daed/pull/360) by (@dependabot[bot])
+- build(deps): bump mantine-datatable from 6.0.2 to 6.0.3 in [#361](https://github.com/daeuniverse/daed/pull/361) by (@dependabot[bot])
+- build(deps): bump react-i18next from 13.3.0 to 13.3.1 in [#362](https://github.com/daeuniverse/daed/pull/362) by (@dependabot[bot])
+- build(deps): bump @vitejs/plugin-react-swc from 3.3.2 to 3.4.0 in [#363](https://github.com/daeuniverse/daed/pull/363) by (@dependabot[bot])
+- build(deps): bump @types/react-dom from 18.2.7 to 18.2.14 in [#357](https://github.com/daeuniverse/daed/pull/357) by (@dependabot[bot])
+- build(deps): bump @types/node from 20.8.7 to 20.8.9 in [#356](https://github.com/daeuniverse/daed/pull/356) by (@dependabot[bot])
+- build(deps): bump @faker-js/faker from 8.0.2 to 8.2.0 in [#355](https://github.com/daeuniverse/daed/pull/355) by (@dependabot[bot])
+- build(deps): bump eslint-plugin-import from 2.28.1 to 2.29.0 in [#350](https://github.com/daeuniverse/daed/pull/350) by (@dependabot[bot])
+- build(deps): bump @fontsource/fira-sans from 5.0.11 to 5.0.17 in [#351](https://github.com/daeuniverse/daed/pull/351) by (@dependabot[bot])
+- build(deps): bump @commitlint/config-conventional from 18.0.0 to 18.1.0 in [#352](https://github.com/daeuniverse/daed/pull/352) by (@dependabot[bot])
+- build(deps): bump simple-git from 3.19.1 to 3.20.0 in [#353](https://github.com/daeuniverse/daed/pull/353) by (@dependabot[bot])
+- build(deps): bump @types/react from 18.2.21 to 18.2.33 in [#346](https://github.com/daeuniverse/daed/pull/346) by (@dependabot[bot])
+- build(deps): bump immer from 10.0.2 to 10.0.3 in [#347](https://github.com/daeuniverse/daed/pull/347) by (@dependabot[bot])
+- build(deps): bump @tabler/icons-react from 2.39.0 to 2.40.0 in [#348](https://github.com/daeuniverse/daed/pull/348) by (@dependabot[bot])
+- build(deps): bump dayjs from 1.11.9 to 1.11.10 in [#349](https://github.com/daeuniverse/daed/pull/349) by (@dependabot[bot])
+- build(deps): bump monaco-editor from 0.41.0 to 0.44.0 in [#342](https://github.com/daeuniverse/daed/pull/342) by (@dependabot[bot])
+- build(deps): bump react-router from 6.15.0 to 6.17.0 in [#343](https://github.com/daeuniverse/daed/pull/343) by (@dependabot[bot])
+- build(deps): bump @vitest/ui from 0.34.3 to 0.34.6 in [#344](https://github.com/daeuniverse/daed/pull/344) by (@dependabot[bot])
+- build(deps): bump @types/uuid from 9.0.3 to 9.0.6 in [#345](https://github.com/daeuniverse/daed/pull/345) by (@dependabot[bot])
+- build(deps): bump sort-package-json from 2.5.1 to 2.6.0 in [#338](https://github.com/daeuniverse/daed/pull/338) by (@dependabot[bot])
+- build(deps): bump eslint-import-resolver-typescript from 3.6.0 to 3.6.1 in [#339](https://github.com/daeuniverse/daed/pull/339) by (@dependabot[bot])
+- build(deps): bump graphiql from 3.0.5 to 3.0.6 in [#340](https://github.com/daeuniverse/daed/pull/340) by (@dependabot[bot])
+- build(deps): bump @typescript-eslint/eslint-plugin from 6.5.0 to 6.9.0 in [#341](https://github.com/daeuniverse/daed/pull/341) by (@dependabot[bot])
+- build(deps): bump @typescript-eslint/parser from 6.5.0 to 6.9.0 in [#336](https://github.com/daeuniverse/daed/pull/336) by (@dependabot[bot])
+- build(deps): bump eslint-plugin-prettier from 5.0.0 to 5.0.1 in [#337](https://github.com/daeuniverse/daed/pull/337) by (@dependabot[bot])
+- build(deps): bump i18next from 23.4.6 to 23.6.0 in [#334](https://github.com/daeuniverse/daed/pull/334) by (@dependabot[bot])
+- build(deps): bump react-router-dom from 6.15.0 to 6.17.0 in [#335](https://github.com/daeuniverse/daed/pull/335) by (@dependabot[bot])
+- build(deps): bump @tanstack/eslint-plugin-query from 4.34.1 to 5.0.5 in [#332](https://github.com/daeuniverse/daed/pull/332) by (@dependabot[bot])
+- build(deps): bump vite from 4.4.9 to 4.5.0 in [#329](https://github.com/daeuniverse/daed/pull/329) by (@dependabot[bot])
+- build(deps): bump @fontsource/source-code-pro from 5.0.8 to 5.0.15 in [#331](https://github.com/daeuniverse/daed/pull/331) by (@dependabot[bot])
+- build(deps): bump zod from 3.22.3 to 3.22.4 in [#326](https://github.com/daeuniverse/daed/pull/326) by (@dependabot[bot])
+- build(deps): bump @tabler/icons-react from 2.32.0 to 2.39.0 in [#330](https://github.com/daeuniverse/daed/pull/330) by (@dependabot[bot])
+- build(deps): bump nanostores from 0.9.3 to 0.9.4 in [#327](https://github.com/daeuniverse/daed/pull/327) by (@dependabot[bot])
+- build(deps): bump eslint from 8.48.0 to 8.52.0 in [#328](https://github.com/daeuniverse/daed/pull/328) by (@dependabot[bot])
+- build(deps): bump vitest from 0.34.3 to 0.34.6 in [#324](https://github.com/daeuniverse/daed/pull/324) by (@dependabot[bot])
+- build(deps): bump @monaco-editor/react from 4.5.2 to 4.6.0 in [#325](https://github.com/daeuniverse/daed/pull/325) by (@dependabot[bot])
+- build(deps): bump @tiptap/react from 2.1.7 to 2.1.12 in [#319](https://github.com/daeuniverse/daed/pull/319) by (@dependabot[bot])
+- build(deps): bump lint-staged from 14.0.1 to 15.0.2 in [#323](https://github.com/daeuniverse/daed/pull/323) by (@dependabot[bot])
+- build(deps): bump @commitlint/config-conventional from 17.7.0 to 18.0.0 in [#322](https://github.com/daeuniverse/daed/pull/322) by (@dependabot[bot])
+- build(deps): bump embla-carousel-react from 8.0.0-rc12 to 8.0.0-rc14 in [#321](https://github.com/daeuniverse/daed/pull/321) by (@dependabot[bot])
+- build(deps): bump @types/react-copy-to-clipboard from 5.0.4 to 5.0.6 in [#320](https://github.com/daeuniverse/daed/pull/320) by (@dependabot[bot])
+- chore(sync): keep upstream source up-to-date in [#318](https://github.com/daeuniverse/daed/pull/318) by (@dae-bot[bot])
+- chore(sync): keep upstream source up-to-date in [#317](https://github.com/daeuniverse/daed/pull/317) by (@dae-bot[bot])
+- ci(docker): rework workflow (3rd time) in [#289](https://github.com/daeuniverse/daed/pull/289) by (@hero-intelligent)
+- build(deps): bump framer-motion from 10.16.2 to 10.16.4 in [#273](https://github.com/daeuniverse/daed/pull/273) by (@dependabot[bot])
+- build(deps): bump @tiptap/starter-kit from 2.1.7 to 2.1.12 in [#306](https://github.com/daeuniverse/daed/pull/306) by (@dependabot[bot])
+- build(deps): bump zod from 3.22.2 to 3.22.3 in [#316](https://github.com/daeuniverse/daed/pull/316) by (@dependabot[bot])
+- build(deps): bump graphql from 16.8.0 to 16.8.1 in [#290](https://github.com/daeuniverse/daed/pull/290) by (@dependabot[bot])
+- build(deps): bump postcss from 8.4.29 to 8.4.31 in [#302](https://github.com/daeuniverse/daed/pull/302) by (@dependabot[bot])
+- build(deps): bump get-func-name from 2.0.0 to 2.0.2 in [#296](https://github.com/daeuniverse/daed/pull/296) by (@dependabot[bot])
+- build(deps): bump react-i18next from 13.2.1 to 13.3.0 in [#309](https://github.com/daeuniverse/daed/pull/309) by (@dependabot[bot])
+- build(deps): bump @types/node from 20.5.8 to 20.8.7 in [#312](https://github.com/daeuniverse/daed/pull/312) by (@dependabot[bot])
+- build(deps): bump @babel/traverse from 7.22.11 to 7.23.2 in [#313](https://github.com/daeuniverse/daed/pull/313) by (@dependabot[bot])
+- build(deps): bump mantine-datatable from 2.9.12 to 6.0.2 in [#315](https://github.com/daeuniverse/daed/pull/315) by (@dependabot[bot])
+- chore(sync): keep upstream source up-to-date in [#314](https://github.com/daeuniverse/daed/pull/314) by (@dae-bot[bot])
+- docs/getting-started.md: add archlinux installation guide in [#283](https://github.com/daeuniverse/daed/pull/283) by (@Integral)
+- ci(generate-changelogs): update default assignees list in [#261](https://github.com/daeuniverse/daed/pull/261) by (@kev)
+- ci(Dockerfile): Dockerfile working out of box in [#265](https://github.com/daeuniverse/daed/pull/265) by (@hero-intelligent)
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.4.0rc1...v0.4.1
+
+### v0.4.0rc1
 
 > Release date: 2023/09/03
 
@@ -48,7 +127,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 **Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.3.3.p1...v0.4.0rc1
 
-### v0.3.3.p1 (Latest)
+### v0.3.3.p1
 
 > Release date: 2023/08/14
 
