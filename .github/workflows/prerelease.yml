@@ -255,7 +255,7 @@ jobs:
             if [ "$ARCH_PACMAN" == 'pacman' ];then
               cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.pacman ./output_packages/installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
             fi
-            ls | grep -E ".deb|.rpm|.pkg.tar.zst"
+            ls ./output_packages/ | grep -E ".deb|.rpm|.pkg.tar.zst"
           fi
 
       - name: Upload Linux packages
