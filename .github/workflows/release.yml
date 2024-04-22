@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: '^1.21'
       - run: go version
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
           ref: ${{ inputs.tag }}
@@ -37,7 +37,7 @@ jobs:
           zip -9vr daed-full-src.zip . -x .git/\*
 
       - name: Upload artifact - full source
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: daed-full-src.zip
           path: daed-full-src.zip
@@ -45,15 +45,15 @@ jobs:
   build-web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.tag }}
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3.0.0
         with:
           version: latest
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: pnpm
           node-version: latest
@@ -64,7 +64,7 @@ jobs:
           pnpm build
 
       - name: Upload artifact - web
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: web
           path: dist
@@ -135,11 +135,11 @@ jobs:
 
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: '^1.21'
       - run: go version
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.tag }}
           fetch-depth: 0
@@ -171,7 +171,7 @@ jobs:
           sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
 
       - name: Download artifact - web
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: web
           path: dist/
@@ -188,7 +188,7 @@ jobs:
           curl -L -o ./bundled/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
 
       - name: Upload artifact - bundle
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
@@ -200,6 +200,7 @@ jobs:
       - name: Build Linux packages
         if: ${{ env.GOARM != '5' && env.GOARM != '6' }}
         run: |
+          mkdir -p ./output_packages/
           if [ "$GOARM" != '5' ] && [ "$GOARM" != '6' ];then
             sudo apt install -y libarchive-tools rpm
             sudo gem install fpm -v 1.15.1
@@ -245,37 +246,27 @@ jobs:
                 ./${{ steps.get_filename.outputs.BUNDLE_NAME }}=/usr/bin/daed
             done
             popd || exit 1
-            cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.deb installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
-            cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.rpm installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
+            cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.deb ./output_packages/installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
+            cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.rpm ./output_packages/installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
             if [ "$ARCH_PACMAN" == 'pacman' ];then
-              cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.pacman installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
+              cp bundled/daed-linux-$GOARCH$GOAMD64$GOARM.pacman ./output_packages/installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
             fi
             ls | grep -E ".deb|.rpm|.pkg.tar.zst"
           fi
 
       - name: Upload Linux packages
         if: ${{ env.GOARM != '5' && env.GOARM != '6' && env.GOARCH != 'mips' && env.GOARCH != 'mipsle' && env.GOARCH != 'mips64' && env.GOARCH != 'mips64le' }}
-        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v2.0
         with:
           path: |
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.pkg.tar.zst
-
-      - name: Upload Linux packages without Arch Linux package
-        if: ${{  env.GOARCH == 'mips' || env.GOARCH == 'mipsle' || env.GOARCH == 'mips64' || env.GOARCH == 'mips64le' }}
-        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
-        with:
-          path: |
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
-            installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.rpm
+            output_packages/*
 
   upload-release:
     needs: [checkout-full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: release/
 
@@ -303,7 +294,7 @@ jobs:
           ls -lh | grep -E ".deb|.pkg.tar.zst|.rpm|.zip"
 
       - name: Upload Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag }}
           files: |
