@@ -265,6 +265,9 @@ jobs:
     needs: [checkout-full-src, build-bundle]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
