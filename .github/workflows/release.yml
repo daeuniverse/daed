@@ -294,12 +294,14 @@ jobs:
           ls -lh | grep -E ".deb|.pkg.tar.zst|.rpm|.zip"
 
       - name: Upload Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ inputs.tag }}
-          files: |
-            *zip
-            *pkg.tar.zst
-            *deb
-            *rpm
-            *dgst
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          Latest_Releases=$(curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/daeuniverse/daed/releases/latest | jq -r '.tag_name')
+          Latest_tag=${{ inputs.tag }}
+          if [ "$Latest_Releases" != "$Latest_tag" ]; then
+            gh release create ${{ inputs.tag }} -t ${{ inputs.tag }} --generate-notes
+          fi
+          files=$(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip")
+          gh release upload ${{ inputs.tag }} $files
