@@ -14,15 +14,15 @@ jobs:
   build-web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3.0.0
         with:
           version: latest
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: pnpm
           node-version: latest
@@ -33,7 +33,7 @@ jobs:
           pnpm build
 
       - name: Upload artifact - web
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: web
           path: dist
@@ -50,7 +50,7 @@ jobs:
           submodules: 'recursive'
 
       - name: Download artifact - web
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: web
           path: dist/

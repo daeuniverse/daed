@@ -22,11 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: '^1.21'
       - run: go version
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
@@ -45,7 +45,7 @@ jobs:
           zip -9vr daed-full-src.zip . -x .git/\*
 
       - name: Upload artifact - full source
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: daed-full-src.zip
           path: daed-full-src.zip
@@ -53,13 +53,13 @@ jobs:
   build-web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3.0.0
         with:
           version: latest
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: pnpm
           node-version: latest
@@ -70,7 +70,7 @@ jobs:
           pnpm build
 
       - name: Upload artifact - web
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: web
           path: dist
@@ -141,11 +141,11 @@ jobs:
 
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: '^1.21'
       - run: go version
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -184,7 +184,7 @@ jobs:
           sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
 
       - name: Download artifact - web
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: web
           path: dist/
@@ -201,7 +201,7 @@ jobs:
           curl -L -o ./bundled/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
 
       - name: Upload artifact - bundle
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
@@ -268,7 +268,7 @@ jobs:
 
       - name: Upload Linux packages
         if: ${{ env.GOARM != '5' && env.GOARM != '6' && env.GOARCH != 'mips' && env.GOARCH != 'mipsle' && env.GOARCH != 'mips64' && env.GOARCH != 'mips64le' }}
-        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v2.0
         with:
           path: |
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
@@ -277,7 +277,7 @@ jobs:
 
       - name: Upload Linux packages without Arch Linux package
         if: ${{  env.GOARCH == 'mips' || env.GOARCH == 'mipsle' || env.GOARCH == 'mips64' || env.GOARCH == 'mips64le' }}
-        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.5
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v2.0
         with:
           path: |
             installer-${{ steps.get_filename.outputs.BUNDLE_NAME }}.deb
