@@ -14,7 +14,8 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 <!-- BEGIN NEW TOC ENTRY -->
 
-- [v0.4.1 (Latest)](#v041-latest)
+- [v0.6.0 (Latest)](#v060-latest)
+- [v0.4.1](#v041)
 - [v0.4.0rc1](#v040rc1)
 - [v0.3.3.p1](#v033p1)
 - [v0.3.3](#v033)
@@ -27,7 +28,29 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - [v0.1.0rc1](#v010rc1)
 <!-- BEGIN NEW CHANGELOGS -->
 
-### v0.4.1 (Latest)
+### v0.6.0 (Latest)
+
+> Release date: 2024/06/14
+
+##### Significant Changes
+
+The version of daed will follow dae
+
+##### Others
+
+- build(deps): bump braces from 3.0.2 to 3.0.3 [#438](https://github.com/daeuniverse/daed/pull/438) by (@dependabot[bot])
+- build(deps): bump vite from 4.5.0 to 4.5.3 [#437](https://github.com/daeuniverse/daed/pull/437) by (@dependabot[bot])
+- build(deps): bump jose from 4.14.4 to 4.15.5 [#436](https://github.com/daeuniverse/daed/pull/436) by (@dependabot[bot])
+- build(deps): bump @mantine/form from 6.0.19 to 7.5.0 [#422](https://github.com/daeuniverse/daed/pull/422) by (@dependabot[bot])
+- build(deps): bump react-router-dom from 6.17.0 to 6.21.3 [#419](https://github.com/daeuniverse/daed/pull/419) by (@dependabot[bot])
+- build(deps): bump graphiql from 3.0.6 to 3.1.0 [#413](https://github.com/daeuniverse/daed/pull/413) by (@dependabot[bot])
+- build(deps): bump eslint from 8.52.0 to 8.56.0 [#407](https://github.com/daeuniverse/daed/pull/407) by (@dependabot[bot])
+- ci: update ci modules to the latest version [#432](https://github.com/daeuniverse/daed/pull/432) by (@MarksonHon)
+- chore(sync): keep upstream source up-to-date [#435](https://github.com/daeuniverse/daed/pull/435) by (@dae-prow[bot])
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.4.1...v0.6.0
+
+### v0.4.1
 
 > Release date: 2024/04/22
 
