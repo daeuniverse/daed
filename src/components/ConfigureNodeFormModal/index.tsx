@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { useImportNodesMutation } from '~/apis'
 
 import { HTTPForm } from './HTTPForm'
+import { Hysteria2Form } from './Hysteria2Form'
 import { JuicityForm } from './JuicityForm'
 import { SSForm } from './SSForm'
 import { SSRForm } from './SSRForm'
@@ -64,6 +65,7 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
             <Tabs.Tab value="ssr">SSR</Tabs.Tab>
             <Tabs.Tab value="trojan">Trojan</Tabs.Tab>
             <Tabs.Tab value="juicity">Juicity</Tabs.Tab>
+            <Tabs.Tab value="hysteria2">Hysteria2</Tabs.Tab>
             <Tabs.Tab value="tuic">Tuic</Tabs.Tab>
             <Tabs.Tab value="http">HTTP</Tabs.Tab>
             <Tabs.Tab value="socks5">SOCKS5</Tabs.Tab>
@@ -96,6 +98,12 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
           <Tabs.Panel value="juicity">
             <Stack>
               <JuicityForm onLinkGeneration={onLinkGeneration} />
+            </Stack>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="hysteria2">
+            <Stack>
+              <Hysteria2Form onLinkGeneration={onLinkGeneration} />
             </Stack>
           </Tabs.Panel>
 

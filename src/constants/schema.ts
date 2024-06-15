@@ -118,6 +118,18 @@ export const juicitySchema = z.object({
   congestion_control: z.string(),
 })
 
+export const hysteria2Schema = z.object({
+  name: z.string(),
+  server: z.string().nonempty(),
+  port: z.number().min(0).max(65535),
+  auth: z.string(),
+  obfs: z.string(),
+  obfsPassword: z.string(),
+  sni: z.string(),
+  allowInsecure: z.boolean(),
+  pinSHA256: z.string(),
+})
+
 export const httpSchema = z.object({
   username: z.string(),
   password: z.string(),
