@@ -7,7 +7,7 @@ on:
       daed:
         description: 'Commit ID or branch name for daed'
         required: false
-        default: 'remotes/origin/main'
+        default: 'main'
       wing:
         description: 'Commit ID or branch name for wing'
         required: false
