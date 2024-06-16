@@ -43,7 +43,10 @@ export const generateHysteria2URL = ({
   port: number
   params: Record<string, string | number | boolean>
 }) => {
-  const uri = new URL(`${protocol}://${auth}@${host}:${port}/`)
+  // Encode the auth field to handle special characters like '@'
+  const encodedAuth = encodeURIComponent(auth)
+  const uri = new URL(`${protocol}://${encodedAuth}@${host}:${port}/`)
+
   Object.entries(params).forEach(([key, value]) => {
     if (value !== null && value !== undefined && value !== '') {
       uri.searchParams.append(key, String(value))
