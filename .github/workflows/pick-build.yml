@@ -16,6 +16,10 @@ on:
         description: 'Commit ID or branch name for dae-core'
         required: false
         default: 'main'
+      dae-core-remote:
+        description: 'Remote address of dae-core'
+        required: false
+        default: 'https://github.com/daeuniverse/dae.git'
 
 jobs:
   checkout-full-src:
@@ -37,7 +41,7 @@ jobs:
           git checkout ${{ github.event.inputs.wing }}
           export GOMODCACHE="${PWD}"/go-mod
           go mod download -modcacherw
-          cd dae-core && git checkout ${{ github.event.inputs.dae-core }} && go mod download -modcacherw && cd ..
+          cd dae-core && git remote set-url origin ${{ github.event.inputs.dae-core-remote }} && git fetch origin && git checkout ${{ github.event.inputs.dae-core }} && go mod download -modcacherw && cd ..
           find "$GOMODCACHE" -maxdepth 1 ! -name "cache" ! -name "go-mod" -exec rm -rf {} \;
           sed -i 's/#export GOMODCACHE=$(PWD)\/go-mod/export GOMODCACHE=$(PWD)\/go-mod/' Makefile
         working-directory: wing
