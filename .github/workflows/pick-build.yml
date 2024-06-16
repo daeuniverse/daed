@@ -169,7 +169,7 @@ jobs:
         run: |
           git submodule update --init --recursive
           cd wing && git reset --hard ${{ github.event.inputs.wing }} && go mod download -modcacherw
-          cd dae-core && git reset --hard ${{ github.event.inputs.dae-core }} && cd .. && go mod tidy && cd ..
+          cd dae-core && git remote set-url origin ${{ github.event.inputs.dae-core-remote }} && git fetch origin && git reset --hard ${{ github.event.inputs.dae-core }} && cd .. && go mod tidy && cd ..
 
       - name: Get the version
         id: get_version
