@@ -53,6 +53,7 @@
     "noObfuscation": "不伪装",
     "obfs": "混淆",
     "obfsParam": "混淆参数",
+    "obfsPassword": "混淆密码",
     "origin": "原版",
     "password": "密码",
     "path": "路径",

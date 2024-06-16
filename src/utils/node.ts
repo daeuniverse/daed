@@ -29,3 +29,29 @@ export const generateURL = ({ username, password, protocol, host, port, params, 
 
   return uri.toString()
 }
+
+export const generateHysteria2URL = ({
+  protocol,
+  auth,
+  host,
+  port,
+  params,
+}: {
+  protocol: string
+  auth: string
+  host: string
+  port: number
+  params: Record<string, string | number | boolean>
+}) => {
+  // Encode the auth field to handle special characters like '@'
+  const encodedAuth = encodeURIComponent(auth)
+  const uri = new URL(`${protocol}://${encodedAuth}@${host}:${port}/`)
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== null && value !== undefined && value !== '') {
+      uri.searchParams.append(key, String(value))
+    }
+  })
+
+  return uri.toString()
+}

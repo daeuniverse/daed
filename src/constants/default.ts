@@ -5,6 +5,7 @@ import { GlobalInput, Policy } from '~/schemas/gql/graphql'
 import { DialMode, LogLevel, TLSImplementation, TcpCheckHttpMethod, UTLSImitate } from './misc'
 import {
   httpSchema,
+  hysteria2Schema,
   juicitySchema,
   socks5Schema,
   ssSchema,
@@ -167,6 +168,18 @@ export const DEFAULT_JUICITY_FORM_VALUES: z.infer<typeof juicitySchema> = {
   password: '',
   pinned_certchain_sha256: '',
   sni: '',
+}
+
+export const DEFAULT_HYSTERIA2_FORM_VALUES: z.infer<typeof hysteria2Schema> = {
+  name: '',
+  port: 443,
+  server: '',
+  auth: '',
+  obfs: '',
+  obfsPassword: '',
+  sni: '',
+  allowInsecure: false,
+  pinSHA256: '',
 }
 
 export const DEFAULT_HTTP_FORM_VALUES: z.infer<typeof httpSchema> = {

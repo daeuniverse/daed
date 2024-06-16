@@ -53,6 +53,7 @@
     "noObfuscation": "No obfuscation",
     "obfs": "Obfuscation",
     "obfsParam": "Obfs Param",
+    "obfsPassword": "Obfs Password",
     "origin": "origin",
     "password": "Password",
     "path": "Path",
