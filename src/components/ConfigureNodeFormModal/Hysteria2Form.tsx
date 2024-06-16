@@ -1,4 +1,4 @@
-import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
+import { Checkbox, NumberInput, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -40,13 +40,15 @@ export const Hysteria2Form = ({ onLinkGeneration }: { onLinkGeneration: (link: s
       <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
       <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('server')} />
       <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
-      <TextInput label="AUTH" withAsterisk {...getInputProps('auth')} />
+      <TextInput label="Auth" withAsterisk {...getInputProps('auth')} />
+      {/* The obfuscation feature has not been implemented yet
       <Select
         label={t('configureNode.obfs')}
         data={[{ label: 'salamander', value: 'salamander' }]}
         {...getInputProps('obfs')}
       />
       <TextInput label={t('configureNode.obfsPassword')} {...getInputProps('obfsPassword')} />
+      */}
       <TextInput label="SNI" {...getInputProps('sni')} />
       <TextInput label="Pin SHA256" {...getInputProps('pinSHA256')} />
       <Checkbox label={t('allowInsecure')} {...getInputProps('allowInsecure', { type: 'checkbox' })} />
