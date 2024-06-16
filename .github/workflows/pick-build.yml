@@ -1,5 +1,5 @@
 name: Pick Build (Preview)
-run-name: 'Build to ${{ github.event.inputs.daed }}-${{ github.event.inputs.wing }}-${{ github.event.inputs.dae-core }}'
+run-name: 'Build to ${{ github.event.inputs.daed }}-${{ github.event.inputs.wing }}-${{ github.event.inputs.dae-core }}(${{ github.event.inputs.dae-core-remote }})'
 
 on:
   workflow_dispatch:
