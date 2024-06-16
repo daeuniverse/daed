@@ -7,15 +7,15 @@ on:
       daed:
         description: 'Commit ID or branch name for daed'
         required: false
-        default: 'main'
+        default: 'remotes/origin/main'
       wing:
         description: 'Commit ID or branch name for wing'
         required: false
-        default: 'main'
+        default: 'remotes/origin/main'
       dae-core:
         description: 'Commit ID or branch name for dae-core'
         required: false
-        default: 'main'
+        default: 'remotes/origin/main'
       dae-core-remote:
         description: 'Remote address of dae-core'
         required: false
