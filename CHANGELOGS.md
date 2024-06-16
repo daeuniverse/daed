@@ -14,6 +14,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 <!-- BEGIN NEW TOC ENTRY -->
 
+- [v0.7.0rc2 (Pre-Latest)](#v070rc1-pre-release)
 - [v0.6.0 (Latest)](#v060-latest)
 - [v0.4.1](#v041)
 - [v0.4.0rc1](#v040rc1)
@@ -27,6 +28,21 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - [v0.1.0](#v010)
 - [v0.1.0rc1](#v010rc1)
 <!-- BEGIN NEW CHANGELOGS -->
+
+### v0.7.0rc1 (Pre-release)
+
+> Release date: 2024/06/16
+
+#### Features
+
+- feat: add configure hysteria2 modal [#440](https://github.com/daeuniverse/daed/pull/440) by (@wanlce)
+- ci/feat: support customized git remote for Pick Build [#441](https://github.com/daeuniverse/daed/pull/441) by (@mzz2017)
+
+#### Others
+
+- chore(sync): keep upstream source up-to-date [#442](https://github.com/daeuniverse/daed/pull/442) by (@dae-prow[bot])
+
+**Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.6.0...v0.7.0rc1
 
 ### v0.6.0 (Latest)
 
