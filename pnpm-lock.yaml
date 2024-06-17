@@ -201,8 +201,8 @@ dependencies:
     specifier: ^7.1.0
     version: 7.1.0
   immer:
-    specifier: ^10.0.3
-    version: 10.0.3
+    specifier: ^10.1.1
+    version: 10.1.1
   js-base64:
     specifier: ^3.7.5
     version: 3.7.5
@@ -6604,8 +6604,8 @@ packages:
     engines: {node: '>= 4'}
     dev: false
 
-  /immer@10.0.3:
-    resolution: {integrity: sha512-pwupu3eWfouuaowscykeckFmVTpqbzW+rXFCX8rQLkZzM9ftBmU/++Ra+o+L27mz03zJTlyV4UUr+fdKNffo4A==}
+  /immer@10.1.1:
+    resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
     dev: false
 
   /immutable@3.7.6:
