@@ -54,7 +54,7 @@
     "@tanstack/eslint-plugin-query": "^5.0.5",
     "@tanstack/react-query": "^4.33.0",
     "@tanstack/react-query-devtools": "^4.33.0",
-    "@tiptap/extension-link": "^2.1.12",
+    "@tiptap/extension-link": "^2.4.0",
     "@tiptap/react": "^2.1.12",
     "@tiptap/starter-kit": "^2.1.12",
     "@types/node": "^20.8.10",
