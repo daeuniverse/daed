@@ -1,7 +1,7 @@
 [Unit]
 Description=daed is a integration solution of dae, API and UI.
 Documentation=https://github.com/daeuniverse/daed
-After=network-online.target docker.service systemd-sysctl.service
+After=network-online.target docker.service systemd-sysctl.service dae.service
 Wants=network-online.target
 
 [Service]
