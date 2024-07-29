@@ -69,23 +69,30 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
       value: Policy.Random,
       description: t('descriptions.group.Random'),
     },
+    {
+      label: Policy.Fixed,
+      value: Policy.Fixed,
+      description: t('descriptions.group.Fixed'),
+    },
   ]
 
   return (
     <Modal title={t('group')} opened={opened} onClose={onClose}>
       <form
         onSubmit={form.onSubmit(async (values) => {
+          const policyParams = values.policy === Policy.Fixed ? [{ key: '', val: '0' }] : []
+
           if (editingID) {
             await groupSetPolicyMutation.mutateAsync({
               id: editingID,
               policy: values.policy,
-              policyParams: [],
+              policyParams: policyParams,
             })
           } else {
             await createGroupMutation.mutateAsync({
               name: values.name,
               policy: values.policy,
-              policyParams: [],
+              policyParams: policyParams,
             })
           }
 
