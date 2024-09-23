@@ -184,6 +184,8 @@ jobs:
           export OUTPUT=bundled/${{ steps.get_filename.outputs.BUNDLE_NAME }}
           make
           cp ./install/daed.service ./bundled/
+          cp ./install/daed.desktop ./bundled/
+          cp -r ./install/icons/ ./bundled/
           curl -L -o ./bundled/geoip.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geoip.dat
           curl -L -o ./bundled/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
 
@@ -243,6 +245,14 @@ jobs:
                 --after-remove ../install/package_after_remove.sh \
                 ./geoip.dat=/usr/share/daed/geoip.dat ./geosite.dat=/usr/share/daed/geosite.dat \
                 ./daed.service=/usr/lib/systemd/system/daed.service \
+                ./daed.desktop=/usr/share/applications/daed.desktop \
+                ./icons/16x16.png=/usr/share/icons/hicolor/16x16/apps/daed.png \
+                ./icons/32x32.png=/usr/share/icons/hicolor/32x32/apps/daed.png \
+                ./icons/64x64.png=/usr/share/icons/hicolor/64x64/apps/daed.png \
+                ./icons/128x128.png=/usr/share/icons/hicolor/128x128/apps/daed.png \
+                ./icons/256x256.png=/usr/share/icons/hicolor/256x256/apps/daed.png \
+                ./icons/512x512.png=/usr/share/icons/hicolor/512x512/apps/daed.png \
+                ./icons/1024x1024.png=/usr/share/icons/hicolor/1024x1024/apps/daed.png \
                 ./${{ steps.get_filename.outputs.BUNDLE_NAME }}=/usr/bin/daed
             done
             popd || exit 1
