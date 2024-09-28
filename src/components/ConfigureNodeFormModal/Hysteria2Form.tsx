@@ -20,7 +20,7 @@ export const Hysteria2Form = ({ onLinkGeneration }: { onLinkGeneration: (link: s
       obfs: values.obfs,
       obfsPassword: values.obfsPassword,
       sni: values.sni,
-      insecure: values.allowInsecure,
+      insecure: values.allowInsecure ? 1 : 0,
       pinSHA256: values.pinSHA256,
     }
 
