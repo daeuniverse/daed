@@ -236,6 +236,11 @@ export const useConfigsQuery = () => {
                 utlsImitate
                 tproxyPortProtect
                 soMarkFromDae
+                pprofPort
+                enableLocalTcpFastRedirect
+                mptcp
+                bandwidthMaxTx
+                bandwidthMaxRx
               }
             }
           }

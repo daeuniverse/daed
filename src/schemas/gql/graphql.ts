@@ -46,7 +46,6 @@ export type ConfigFlatDesc = {
 
 export type Dae = {
   __typename?: 'Dae'
-  /** modified indicates whether the running config has been modified. */
   modified: Scalars['Boolean']['output']
   running: Scalars['Boolean']['output']
   version: Scalars['String']['output']
@@ -110,13 +109,19 @@ export type GeneralInterfacesArgs = {
 export type Global = {
   __typename?: 'Global'
   allowInsecure: Scalars['Boolean']['output']
+  autoConfigFirewallRule: Scalars['Boolean']['output']
   autoConfigKernelParameter: Scalars['Boolean']['output']
+  bandwidthMaxRx: Scalars['String']['output']
+  bandwidthMaxTx: Scalars['String']['output']
   checkInterval: Scalars['Duration']['output']
   checkTolerance: Scalars['Duration']['output']
   dialMode: Scalars['String']['output']
   disableWaitingNetwork: Scalars['Boolean']['output']
+  enableLocalTcpFastRedirect: Scalars['Boolean']['output']
   lanInterface: Array<Scalars['String']['output']>
   logLevel: Scalars['String']['output']
+  mptcp: Scalars['Boolean']['output']
+  pprofPort: Scalars['Int']['output']
   sniffingTimeout: Scalars['Duration']['output']
   soMarkFromDae: Scalars['Int']['output']
   tcpCheckHttpMethod: Scalars['String']['output']
@@ -164,83 +169,44 @@ export type InterfaceFlag = {
 
 export type Mutation = {
   __typename?: 'Mutation'
-  /** createConfig creates a global config. Null arguments will be converted to default value. */
   createConfig: Config
-  /** createConfig creates a dns config. Null arguments will be converted to default value. */
   createDns: Dns
-  /** createGroup is to create a group. */
   createGroup: Group
-  /** createConfig creates a routing config. Null arguments will be converted to default value. */
   createRouting: Routing
-  /** createUser creates a user if there is no user. */
   createUser: Scalars['String']['output']
-  /** groupAddNodes is to add nodes to the group. Nodes will not be removed from its subscription when subscription update. */
   groupAddNodes: Scalars['Int']['output']
-  /** groupAddSubscriptions is to add subscriptions to the group. */
   groupAddSubscriptions: Scalars['Int']['output']
-  /** groupDelNodes is to remove nodes from the group. */
   groupDelNodes: Scalars['Int']['output']
-  /** groupDelSubscriptions is to remove subscriptions from the group. */
   groupDelSubscriptions: Scalars['Int']['output']
-  /** groupSetPolicy is to set the group a new policy. */
   groupSetPolicy: Scalars['Int']['output']
-  /** importNodes is to import nodes with no subscription ID. rollbackError means abort the import on error. */
   importNodes: Array<NodeImportResult>
-  /** importSubscription is to fetch and resolve the subscription into nodes. */
   importSubscription: SubscriptionImportResult
-  /** removeConfig is to remove a config with given config ID. */
   removeConfig: Scalars['Int']['output']
-  /** removeDns is to remove a dns config with given dns ID. */
   removeDns: Scalars['Int']['output']
-  /** removeGroup is to remove a group. */
   removeGroup: Scalars['Int']['output']
-  /** removeJsonStorage remove given paths from user related json storage. Empty paths is to clear json storage. Refer to https://github.com/tidwall/sjson */
   removeJsonStorage: Scalars['Int']['output']
-  /** removeNodes is to remove nodes that have no subscription ID. */
   removeNodes: Scalars['Int']['output']
-  /** removeRouting is to remove a routing config with given routing ID. */
   removeRouting: Scalars['Int']['output']
-  /** removeSubscriptions is to remove subscriptions with given ID list. */
   removeSubscriptions: Scalars['Int']['output']
-  /** renameConfig is to give the config a new name. */
   renameConfig: Scalars['Int']['output']
-  /** renameDns is to give the dns config a new name. */
   renameDns: Scalars['Int']['output']
-  /** renameGroup is to rename a group. */
   renameGroup: Scalars['Int']['output']
-  /** renameRouting is to give the routing config a new name. */
   renameRouting: Scalars['Int']['output']
-  /** run proxy with selected config+dns+routing. Dry-run can be used to stop the proxy. */
   run: Scalars['Int']['output']
-  /** selectConfig is to select a config as the current config. */
   selectConfig: Scalars['Int']['output']
-  /** selectConfig is to select a dns config as the current dns. */
   selectDns: Scalars['Int']['output']
-  /** selectConfig is to select a routing config as the current routing. */
   selectRouting: Scalars['Int']['output']
-  /** setJsonStorage set given paths to values in user related json storage. Refer to https://github.com/tidwall/sjson */
   setJsonStorage: Scalars['Int']['output']
-  /** tagNode is to give the node a new tag. */
   tagNode: Scalars['Int']['output']
-  /** tagSubscription is to give the subscription a new tag. */
   tagSubscription: Scalars['Int']['output']
-  /** updateAvatar update avatar for current user. Remove avatar if avatar is null. Blob base64 encoded image is recommended. */
   updateAvatar: Scalars['Int']['output']
-  /** updateConfig allows to partially update global config with given id. */
   updateConfig: Config
-  /** updateDns is to update dns config with given id. */
   updateDns: Dns
-  /** updateName update name for current user. Remove name if name is null. */
   updateName: Scalars['Int']['output']
-  /** updateNode is to update a node with no subscription ID. */
   updateNode: Node
-  /** updatePassword update password for current user. currentPassword is needed to authenticate. Return new token. */
   updatePassword: Scalars['String']['output']
-  /** updateRouting is to update routing config with given id. */
   updateRouting: Routing
-  /** updateSubscription is to re-fetch subscription and resolve subscription into nodes. Old nodes that independently belong to any groups will not be removed. */
   updateSubscription: Subscription
-  /** updateUsername update username for current user. */
   updateUsername: Scalars['Int']['output']
 }
 
@@ -491,7 +457,6 @@ export type Query = {
   group: Group
   groups: Array<Group>
   healthCheck: Scalars['Int']['output']
-  /** jsonStorage get given paths from user related json storage. Empty paths is to get all. Refer to https://github.com/tidwall/gjson */
   jsonStorage: Array<Scalars['String']['output']>
   nodes: NodesConnection
   numberUsers: Scalars['Int']['output']
@@ -555,7 +520,7 @@ export type QueryTokenArgs = {
 }
 
 export enum Role {
-  Admin = 'admin',
+  Admin = 'ADMIN',
 }
 
 export type Routing = {
@@ -603,20 +568,21 @@ export type User = {
   username: Scalars['String']['output']
 }
 
-export type _Service = {
-  __typename?: '_Service'
-  sdl: Scalars['String']['output']
-}
-
 export type GlobalInput = {
   allowInsecure?: InputMaybe<Scalars['Boolean']['input']>
+  autoConfigFirewallRule?: InputMaybe<Scalars['Boolean']['input']>
   autoConfigKernelParameter?: InputMaybe<Scalars['Boolean']['input']>
+  bandwidthMaxRx?: InputMaybe<Scalars['String']['input']>
+  bandwidthMaxTx?: InputMaybe<Scalars['String']['input']>
   checkInterval?: InputMaybe<Scalars['Duration']['input']>
   checkTolerance?: InputMaybe<Scalars['Duration']['input']>
   dialMode?: InputMaybe<Scalars['String']['input']>
   disableWaitingNetwork?: InputMaybe<Scalars['Boolean']['input']>
+  enableLocalTcpFastRedirect?: InputMaybe<Scalars['Boolean']['input']>
   lanInterface?: InputMaybe<Array<Scalars['String']['input']>>
   logLevel?: InputMaybe<Scalars['String']['input']>
+  mptcp?: InputMaybe<Scalars['Boolean']['input']>
+  pprofPort?: InputMaybe<Scalars['Int']['input']>
   sniffingTimeout?: InputMaybe<Scalars['Duration']['input']>
   soMarkFromDae?: InputMaybe<Scalars['Int']['input']>
   tcpCheckHttpMethod?: InputMaybe<Scalars['String']['input']>
@@ -995,6 +961,11 @@ export type ConfigsQuery = {
       utlsImitate: string
       tproxyPortProtect: boolean
       soMarkFromDae: number
+      pprofPort: number
+      enableLocalTcpFastRedirect: boolean
+      mptcp: boolean
+      bandwidthMaxTx: string
+      bandwidthMaxRx: string
     }
   }>
 }
@@ -2953,6 +2924,11 @@ export const ConfigsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'utlsImitate' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'tproxyPortProtect' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'soMarkFromDae' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'pprofPort' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'enableLocalTcpFastRedirect' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'mptcp' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'bandwidthMaxTx' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'bandwidthMaxRx' } },
                     ],
                   },
                 },

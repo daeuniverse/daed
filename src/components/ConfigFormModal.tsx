@@ -27,10 +27,15 @@ import { useCreateConfigMutation, useGeneralQuery, useUpdateConfigMutation } fro
 import {
   DEFAULT_ALLOW_INSECURE,
   DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
+  DEFAULT_BANDWIDTH_MAX_RX,
+  DEFAULT_BANDWIDTH_MAX_TX,
   DEFAULT_CHECK_INTERVAL_SECONDS,
   DEFAULT_CHECK_TOLERANCE_MS,
   DEFAULT_DIAL_MODE,
   DEFAULT_DISABLE_WAITING_NETWORK,
+  DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
+  DEFAULT_MPTCP,
+  DEFAULT_PPROF_PORT,
   DEFAULT_SNIFFING_TIMEOUT_MS,
   DEFAULT_SO_MARK_FROM_DAE,
   DEFAULT_TCP_CHECK_HTTP_METHOD,
@@ -55,6 +60,7 @@ const schema = z.object({
   name: z.string().nonempty(),
   logLevelNumber: z.number().min(0).max(4),
   tproxyPort: z.number(),
+  pprofPort: z.number(),
   allowInsecure: z.boolean(),
   checkIntervalSeconds: z.number(),
   checkToleranceMS: z.number(),
@@ -71,6 +77,10 @@ const schema = z.object({
   utlsImitate: z.string(),
   tproxyPortProtect: z.boolean(),
   soMarkFromDae: z.number(),
+  mptcp: z.boolean(),
+  enableLocalTcpFastRedirect: z.boolean(),
+  bandwidthMaxTx: z.string(),
+  bandwidthMaxRx: z.string(),
 })
 
 const InputList = <T extends z.infer<typeof schema>>({
@@ -140,6 +150,11 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
     validate: zodResolver(schema),
     initialValues: {
       name: '',
+      pprofPort: DEFAULT_PPROF_PORT,
+      mptcp: DEFAULT_MPTCP,
+      enableLocalTcpFastRedirect: DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
+      bandwidthMaxTx: DEFAULT_BANDWIDTH_MAX_TX,
+      bandwidthMaxRx: DEFAULT_BANDWIDTH_MAX_RX,
       soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
       logLevelNumber: 2,
       tproxyPort: DEFAULT_TPROXY_PORT,
@@ -297,6 +312,15 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   />
 
                   <NumberInput
+                    label={t('pprofPort')}
+                    description={t('descriptions.config.pprofPort')}
+                    withAsterisk
+                    min={0}
+                    max={65535}
+                    {...form.getInputProps('pprofPort')}
+                  />
+
+                  <NumberInput
                     label={t('soMarkFromDae')}
                     description={t('descriptions.config.soMarkFromDae')}
                     withAsterisk
@@ -324,6 +348,20 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                     label={t('disableWaitingNetwork')}
                     description={t('descriptions.config.disableWaitingNetwork')}
                     {...form.getInputProps('disableWaitingNetwork', {
+                      type: 'checkbox',
+                    })}
+                  />
+
+                  <Checkbox
+                    label={t('enableLocalTcpFastRedirect')}
+                    {...form.getInputProps('enableLocalTcpFastRedirect', {
+                      type: 'checkbox',
+                    })}
+                  />
+
+                  <Checkbox
+                    label={t('mptcp')}
+                    {...form.getInputProps('mptcp', {
                       type: 'checkbox',
                     })}
                   />
@@ -483,6 +521,18 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       {...form.getInputProps('utlsImitate')}
                     />
                   )}
+
+                  <TextInput
+                    label={`${t('bandwidthMaxTx')}`}
+                    description={t('descriptions.config.bandwidthMaxTx')}
+                    {...form.getInputProps('bandwidthMaxTx')}
+                  />
+
+                  <TextInput
+                    label={`${t('bandwidthMaxRx')}`}
+                    description={t('descriptions.config.bandwidthMaxRx')}
+                    {...form.getInputProps('bandwidthMaxRx')}
+                  />
                 </Stack>
               </Accordion.Panel>
             </Accordion.Item>

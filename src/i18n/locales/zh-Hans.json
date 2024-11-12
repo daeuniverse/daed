@@ -108,7 +108,11 @@
       "tproxyPortProtect": "将其设置为 true 可保护透明代理端口免受未经请求的流量的影响。将其设置为 false 以允许用户使用自我管理的 iptables 透明代理规则。",
       "udpCheckDns": "此 DNS 将用于检查节点的 UDP 连接。如果下面的 DNS 上游包含 TCP，它也可以用于检查节点的 TCP DNS 连接。第一个是 URL，其他是 IP地址（如果给定的话）。如果您在本地有 dual stack（双协议栈），则此 DNS 应该同时具有 IPv4 和 IPv6。",
       "utlsImitate": "要模仿的 uTLS 的客户端 Hello ID。只有当 TLS 实现 为 utls 时，此操作才会生效。",
-      "wanInterface": "要绑定的 WAN 接口。如果您想代理本机，请使用它。"
+      "wanInterface": "要绑定的 WAN 接口。如果您想代理本机，请使用它。",
+      "pprofPort": "pprof 端口",
+      "mptcp": "启用 MPTCP。",
+      "bandwidthMaxRx": "最大接收带宽。'200 mbps' # uplink, or '200 m' or '200 mb' or '200 mbps' or 25000000 (which is 200/8*1000*1000)",
+      "bandwidthMaxTx": "最大发送带宽。'1 gbps' # downlink, or '1 g' or '1 gb' or '1 gbps' or 125000000 (which is 1000/8*1000*1000)"
     },
     "group": {
       "Min": "从组中为每个连接选择最后延迟最小的节点",
@@ -174,6 +178,11 @@
   "tlsImplementation": "TLS 实现",
   "tproxyPort": "透明代理端口",
   "tproxyPortProtect": "透明代理端口保护",
+  "pprofPort": "pprof 端口",
+  "enableLocalTcpFastRedirect": "启用本地 TCP 快速重定向",
+  "mptcp": "MPTCP",
+  "bandwidthMaxTx": "最大发送带宽",
+  "bandwidthMaxRx": "最大接收带宽",
   "trace": "跟踪",
   "udpCheckDns": "UDP 检测 DNS",
   "updatedAt": "更新时间",

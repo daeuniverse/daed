@@ -108,7 +108,11 @@
       "tproxyPortProtect": "Set it true to protect tproxy port from unsolicited traffic. Set it false to allow users to use self-managed iptables tproxy rules.",
       "udpCheckDns": "This DNS will be used to check UDP connectivity of nodes. And if dns_upstream below contains tcp, it also be used to check TCP DNS connectivity of nodes. First is URL, others are IP addresses if given. This DNS should have both IPv4 and IPv6 if you have double stack in local.",
       "utlsImitate": "The Client Hello ID for uTLS to imitate. This takes effect only if tls_implementation is utls.",
-      "wanInterface": "The WAN interface to bind. Use it if you want to proxy localhost."
+      "wanInterface": "The WAN interface to bind. Use it if you want to proxy localhost.",
+      "PprofPort": "Pprof Port",
+      "mptcp": "Enable MPTCP",
+      "bandwidthMaxRx": "Max Receive Bandwidth. '200 mbps' # uplink, or '200 m' or '200 mb' or '200 mbps' or 25000000 (which is 200/8*1000*1000)",
+      "bandwidthMaxTx": "Max Transmit Bandwidth. '200 mbps' # uplink, or '200 m' or '200 mb' or '200 mbps' or 25000000 (which is 200/8*1000*1000)"
     },
     "group": {
       "Min": "Select the node with min last latency from the group for every connection",
@@ -174,6 +178,11 @@
   "tlsImplementation": "TLS Implementation",
   "tproxyPort": "Transparent Proxy Port",
   "tproxyPortProtect": "Tproxy Port Protect",
+  "PprofPort": "pprof Port",
+  "EnableLocalTcpFastRedirect": "Enable Local TCP Fast Redirect",
+  "Mptcp": "MPTCP",
+  "BandwidthMaxTx": "Max Transmit Bandwidth",
+  "BandwidthMaxRx": "Max Receive Bandwidth",
   "trace": "trace",
   "udpCheckDns": "UDP Check DNS",
   "updatedAt": "updatedAt",
