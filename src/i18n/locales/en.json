@@ -111,8 +111,8 @@
       "wanInterface": "The WAN interface to bind. Use it if you want to proxy localhost.",
       "PprofPort": "Pprof Port",
       "mptcp": "Enable MPTCP",
-      "bandwidthMaxRx": "Max Receive Bandwidth. '200 mbps' # uplink, or '200 m' or '200 mb' or '200 mbps' or 25000000 (which is 200/8*1000*1000)",
-      "bandwidthMaxTx": "Max Transmit Bandwidth. '200 mbps' # uplink, or '200 m' or '200 mb' or '200 mbps' or 25000000 (which is 200/8*1000*1000)"
+      "bandwidthMaxTx": "The maximum bandwidth for accessing the Internet. It is useful for some specific protocols (e.g., Hysteria2). '200 mbps' # uplink, or '200 m' or '200 mb' or '200 mbps' or 25000000 (which is 200/8*1000*1000)",
+      "bandwidthMaxRx": "The maximum bandwidth for accessing the Internet. It is useful for some specific protocols (e.g., Hysteria2). '200 mbps' # downlink, or '200 m' or '200 mb' or '200 mbps' or 25000000 (which is 200/8*1000*1000)"
     },
     "group": {
       "Min": "Select the node with min last latency from the group for every connection",

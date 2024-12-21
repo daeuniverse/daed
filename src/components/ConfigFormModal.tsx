@@ -35,7 +35,6 @@ import {
   DEFAULT_DISABLE_WAITING_NETWORK,
   DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
   DEFAULT_MPTCP,
-  DEFAULT_PPROF_PORT,
   DEFAULT_SNIFFING_TIMEOUT_MS,
   DEFAULT_SO_MARK_FROM_DAE,
   DEFAULT_TCP_CHECK_HTTP_METHOD,
@@ -60,7 +59,6 @@ const schema = z.object({
   name: z.string().nonempty(),
   logLevelNumber: z.number().min(0).max(4),
   tproxyPort: z.number(),
-  pprofPort: z.number(),
   allowInsecure: z.boolean(),
   checkIntervalSeconds: z.number(),
   checkToleranceMS: z.number(),
@@ -150,7 +148,6 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
     validate: zodResolver(schema),
     initialValues: {
       name: '',
-      pprofPort: DEFAULT_PPROF_PORT,
       mptcp: DEFAULT_MPTCP,
       enableLocalTcpFastRedirect: DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
       bandwidthMaxTx: DEFAULT_BANDWIDTH_MAX_TX,
@@ -309,15 +306,6 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                     {...form.getInputProps('tproxyPortProtect', {
                       type: 'checkbox',
                     })}
-                  />
-
-                  <NumberInput
-                    label={t('pprofPort')}
-                    description={t('descriptions.config.pprofPort')}
-                    withAsterisk
-                    min={0}
-                    max={65535}
-                    {...form.getInputProps('pprofPort')}
                   />
 
                   <NumberInput
@@ -523,13 +511,13 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                   )}
 
                   <TextInput
-                    label={`${t('bandwidthMaxTx')}`}
+                    label={t('bandwidthMaxTx')}
                     description={t('descriptions.config.bandwidthMaxTx')}
                     {...form.getInputProps('bandwidthMaxTx')}
                   />
 
                   <TextInput
-                    label={`${t('bandwidthMaxRx')}`}
+                    label={t('bandwidthMaxRx')}
                     description={t('descriptions.config.bandwidthMaxRx')}
                     {...form.getInputProps('bandwidthMaxRx')}
                   />
