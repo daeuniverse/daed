@@ -14,8 +14,9 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 <!-- BEGIN NEW TOC ENTRY -->
 
-- [v0.7.0rc1.1 (Pre-Latest)](#v070rc1.1-pre-release)
-- [v0.6.0 (Latest)](#v060-latest)
+- [v0.7.4](#Latest)
+- [v0.7.0](#v070)
+- [v0.6.0](#v060)
 - [v0.4.1](#v041)
 - [v0.4.0rc1](#v040rc1)
 - [v0.3.3.p1](#v033p1)
@@ -29,9 +30,23 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 - [v0.1.0rc1](#v010rc1)
 <!-- BEGIN NEW CHANGELOGS -->
 
-### v0.7.0rc1 (Pre-release)
+### v0.7.4
 
-> Release date: 2024/06/16
+> Release date: 2024/09/28
+
+#### Bug Fixes
+
+- fix(hy2): insecure parameter not work [#493](https://github.com/daeuniverse/daed/pull/493) by (@wanlce)
+
+#### Others
+
+- chore(release): sync dae v0.7.4 by (@wanlce)
+- ci: build desktop entry and icon into installer [#492](https://github.com/daeuniverse/daed/pull/492) by (@XingLiAl)
+- chore(daed.service): conflict with dae.service [#471](https://github.com/daeuniverse/daed/pull/471) by (@cubercsl)
+
+### v0.7.0
+
+> Release date: 2024/07/29
 
 #### Features
 
@@ -45,7 +60,7 @@ curl --silent "https://api.github.com/repos/daeuniverse/daed/releases" | jq -r '
 
 **Full Changelog**: https://github.com/daeuniverse/daed/compare/v0.6.0...v0.7.0rc1
 
-### v0.6.0 (Latest)
+### v0.6.0
 
 > Release date: 2024/06/14
 
