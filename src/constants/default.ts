@@ -33,6 +33,11 @@ export const DEFAULT_DISABLE_WAITING_NETWORK = false
 export const DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER = true
 export const DEFAULT_TLS_IMPLEMENTATION = TLSImplementation.tls
 export const DEFAULT_UTLS_IMITATE = UTLSImitate.chrome_auto
+export const DEFAULT_MPTCP = false
+export const DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT = false
+export const DEFAULT_PPROF_PORT = 0
+export const DEFAULT_BANDWIDTH_MAX_TX = '200 mbps'
+export const DEFAULT_BANDWIDTH_MAX_RX = '1 gbps'
 
 export const DEFAULT_CONFIG_NAME = 'global'
 export const DEFAULT_DNS_NAME = 'default'
@@ -43,6 +48,7 @@ export const DEFAULT_CONFIG_WITH_LAN_INTERFACEs = (interfaces: string[] = []): G
   logLevel: DEFAULT_LOG_LEVEL,
   tproxyPort: DEFAULT_TPROXY_PORT,
   tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
+  pprofPort: DEFAULT_PPROF_PORT,
   soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
   allowInsecure: DEFAULT_ALLOW_INSECURE,
   checkInterval: `${DEFAULT_CHECK_INTERVAL_SECONDS}s`,
@@ -58,6 +64,10 @@ export const DEFAULT_CONFIG_WITH_LAN_INTERFACEs = (interfaces: string[] = []): G
   tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
   utlsImitate: DEFAULT_UTLS_IMITATE,
   disableWaitingNetwork: DEFAULT_DISABLE_WAITING_NETWORK,
+  enableLocalTcpFastRedirect: DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
+  mptcp: DEFAULT_MPTCP,
+  bandwidthMaxTx: DEFAULT_BANDWIDTH_MAX_TX,
+  bandwidthMaxRx: DEFAULT_BANDWIDTH_MAX_RX,
 })
 
 export const DEFAULT_GROUP_POLICY = Policy.MinMovingAvg
