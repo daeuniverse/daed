@@ -12,8 +12,8 @@ const schema = z.object({
     .array(
       z.object({
         id: z.string(),
-        link: z.string().url().nonempty(),
-        tag: z.string().nonempty(),
+        link: z.string(),
+        tag: z.string().min(1),
       }),
     )
     .nonempty(),
