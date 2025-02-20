@@ -50,7 +50,18 @@ sudo systemctl start daed
 sudo systemctl enable daed
 ``````
 
-### RedHat
+### Red Hat / Fedora
+
+#### Fedora Copr
+
+daed has been released on [Fedora Copr](https://copr.fedorainfracloud.org/coprs/zhullyb/v2rayA/package/daed).
+
+```shell
+sudo dnf copr enable zhullyb/v2rayA
+sudo dnf install daed
+```
+
+#### RPM Installation
 
 Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
 
@@ -69,7 +80,7 @@ sudo systemctl start daed
 sudo systemctl enable daed
 ``````
 
-### OpenSUSE
+### openSUSE
 
 Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
 
