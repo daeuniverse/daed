@@ -62,6 +62,8 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
 
       switch (body.net) {
         case 'ws':
+          // 不做任何操作，直接跳过
+          break;
         case 'h2':
         case 'grpc':
         case 'kcp':
