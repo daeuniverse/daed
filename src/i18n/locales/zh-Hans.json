@@ -98,6 +98,7 @@
         "ip": "直接使用来自 DNS 的 IP 拨号代理。这允许您的 ipv4、ipv6 分别选择最佳路径，并使应用程序请求的 IP 版本符合预期。例如，如果您使用 curl -4 ip.sb，您将通过代理请求 IPv4 并获得 IPv4 回显。curl -6 ip.sb 将请求 IPv6。如果你是你的节点支持的话，这可能会解决一些怪异的全锥形问题。在此模式下将禁用嗅探。"
       },
       "disableWaitingNetwork": "禁用在拉取订阅之前等待网络。",
+      "fallbackResolver": "指定一个备用 DNS 解析器，当系统 resolv.conf 中的 DNS 服务器无法正常工作时使用。这确保了即使系统默认 DNS 服务器不可用或响应异常时，DNS 解析功能仍能正常工作。",
       "lanInterface": "要绑定的 LAN 接口。如果您想代理局域网，请使用它。",
       "sniffingTimeout": "等待第一次发送数据以进行嗅探时超时。如果拨号模式为 ip，则始终为 0。将其设置得更高在高延迟局域网网络中很有用。",
       "soMarkFromDae": "如果不是 0，则从 dae 发送的流量将被设置套接字标记（SO_MARK）。这对于使用 iptables/nftables 透明代理规则避免流量循环非常有用。",
@@ -183,6 +184,7 @@
   "mptcp": "MPTCP",
   "bandwidthMaxTx": "最大上行带宽",
   "bandwidthMaxRx": "最大下行带宽",
+  "fallbackResolver": "备用解析器",
   "trace": "跟踪",
   "udpCheckDns": "UDP 检测 DNS",
   "updatedAt": "更新时间",

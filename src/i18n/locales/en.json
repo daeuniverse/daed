@@ -98,6 +98,7 @@
         "ip": "Dial proxy using the IP from DNS directly. This allows your IPv4, IPv6 to choose the optimal path respectively, and makes the IP version requested by the application meet expectations. For example, if you use curl -4 ip.sb, you will request IPv4 via proxy and get an IPv4 echo. And curl -6 ip.sb will request IPv6. This may solve some weird full-cone problems if your node supports that. Sniffing will be disabled in this mode."
       },
       "disableWaitingNetwork": "Disable waiting for network before pulling subscriptions.",
+      "fallbackResolver": "Specify a fallback DNS resolver to be used when DNS resolution using resolv.conf fails. This ensures DNS resolution continues to work even when the system's default DNS servers are unavailable or not responding properly.",
       "lanInterface": "The LAN interface to bind. Use it if you want to proxy LAN.",
       "sniffingTimeout": "This parameter sets the wait time for the first data transmission during sniffing. It is always 0 if dial mode set to 'ip'. Increasing this value can be helpful in high-latency LAN environments.",
       "soMarkFromDae": "If not zero, traffic sent from dae will be marked (SO_MARK). It is useful to avoid traffic loop with iptables/nftables tproxy rules.",
@@ -183,6 +184,7 @@
   "mptcp": "MPTCP",
   "bandwidthMaxTx": "Max Transmit Bandwidth",
   "bandwidthMaxRx": "Max Receive Bandwidth",
+  "fallbackResolver": "Fallback Resolver",
   "trace": "trace",
   "udpCheckDns": "DNS for UDP Check",
   "updatedAt": "Updated at",

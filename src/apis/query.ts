@@ -227,6 +227,7 @@ export const useConfigsQuery = () => {
                 wanInterface
                 udpCheckDns
                 tcpCheckUrl
+                fallbackResolver
                 dialMode
                 tcpCheckHttpMethod
                 disableWaitingNetwork

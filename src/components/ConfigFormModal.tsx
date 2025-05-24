@@ -34,6 +34,7 @@ import {
   DEFAULT_DIAL_MODE,
   DEFAULT_DISABLE_WAITING_NETWORK,
   DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
+  DEFAULT_FALLBACK_RESOLVER,
   DEFAULT_MPTCP,
   DEFAULT_SNIFFING_TIMEOUT_MS,
   DEFAULT_SO_MARK_FROM_DAE,
@@ -79,6 +80,7 @@ const schema = z.object({
   enableLocalTcpFastRedirect: z.boolean(),
   bandwidthMaxTx: z.string(),
   bandwidthMaxRx: z.string(),
+  fallbackResolver: z.string(),
 })
 
 const InputList = <T extends z.infer<typeof schema>>({
@@ -170,6 +172,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
       autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
       tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
       utlsImitate: DEFAULT_UTLS_IMITATE,
+      fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
     },
   })
 
@@ -422,6 +425,12 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                     description={t('descriptions.config.udpCheckDns')}
                     fieldName="udpCheckDns"
                     values={form.values.udpCheckDns}
+                  />
+
+                  <TextInput
+                    label={t('fallbackResolver')}
+                    description={t('descriptions.config.fallbackResolver')}
+                    {...form.getInputProps('fallbackResolver')}
                   />
 
                   <NumberInput
