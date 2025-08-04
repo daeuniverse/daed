@@ -67,6 +67,8 @@ const documents = {
     types.ImportNodesDocument,
   '\n          mutation RemoveNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ':
     types.RemoveNodesDocument,
+  '\n          mutation UpdateNode($id: ID!, $newLink: String!) {\n            updateNode(id: $id, newLink: $newLink) {\n              id\n              name\n              tag\n              link\n            }\n          }\n        ':
+    types.UpdateNodeDocument,
   '\n              mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {\n                importSubscription(rollbackError: $rollbackError, arg: $arg) {\n                  link\n                  sub {\n                    id\n                  }\n                  nodeImportResult {\n                    node {\n                      id\n                    }\n                  }\n                }\n              }\n            ':
     types.ImportSubscriptionDocument,
   '\n              mutation UpdateSubscription($id: ID!) {\n                updateSubscription(id: $id) {\n                  id\n                }\n              }\n            ':
@@ -285,6 +287,12 @@ export function graphql(
 export function graphql(
   source: '\n          mutation RemoveNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ',
 ): (typeof documents)['\n          mutation RemoveNodes($ids: [ID!]!) {\n            removeNodes(ids: $ids)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation UpdateNode($id: ID!, $newLink: String!) {\n            updateNode(id: $id, newLink: $newLink) {\n              id\n              name\n              tag\n              link\n            }\n          }\n        ',
+): (typeof documents)['\n          mutation UpdateNode($id: ID!, $newLink: String!) {\n            updateNode(id: $id, newLink: $newLink) {\n              id\n              name\n              tag\n              link\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

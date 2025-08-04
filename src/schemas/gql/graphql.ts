@@ -127,10 +127,14 @@ export type Global = {
   soMarkFromDae: Scalars['Int']['output']
   tcpCheckHttpMethod: Scalars['String']['output']
   tcpCheckUrl: Array<Scalars['String']['output']>
+  tlsFragment: Scalars['Boolean']['output']
+  tlsFragmentInterval: Scalars['String']['output']
+  tlsFragmentLength: Scalars['String']['output']
   tlsImplementation: Scalars['String']['output']
   tproxyPort: Scalars['Int']['output']
   tproxyPortProtect: Scalars['Boolean']['output']
   udpCheckDns: Array<Scalars['String']['output']>
+  udphopInterval: Scalars['Duration']['output']
   utlsImitate: Scalars['String']['output']
   wanInterface: Array<Scalars['String']['output']>
 }
@@ -589,10 +593,14 @@ export type GlobalInput = {
   soMarkFromDae?: InputMaybe<Scalars['Int']['input']>
   tcpCheckHttpMethod?: InputMaybe<Scalars['String']['input']>
   tcpCheckUrl?: InputMaybe<Array<Scalars['String']['input']>>
+  tlsFragment?: InputMaybe<Scalars['Boolean']['input']>
+  tlsFragmentInterval?: InputMaybe<Scalars['String']['input']>
+  tlsFragmentLength?: InputMaybe<Scalars['String']['input']>
   tlsImplementation?: InputMaybe<Scalars['String']['input']>
   tproxyPort?: InputMaybe<Scalars['Int']['input']>
   tproxyPortProtect?: InputMaybe<Scalars['Boolean']['input']>
   udpCheckDns?: InputMaybe<Array<Scalars['String']['input']>>
+  udphopInterval?: InputMaybe<Scalars['Duration']['input']>
   utlsImitate?: InputMaybe<Scalars['String']['input']>
   wanInterface?: InputMaybe<Array<Scalars['String']['input']>>
 }
@@ -787,6 +795,16 @@ export type RemoveNodesMutationVariables = Exact<{
 }>
 
 export type RemoveNodesMutation = { __typename?: 'Mutation'; removeNodes: number }
+
+export type UpdateNodeMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  newLink: Scalars['String']['input']
+}>
+
+export type UpdateNodeMutation = {
+  __typename?: 'Mutation'
+  updateNode: { __typename?: 'Node'; id: string; name: string; tag?: string | null; link: string }
+}
 
 export type ImportSubscriptionMutationVariables = Exact<{
   rollbackError: Scalars['Boolean']['input']
@@ -2290,6 +2308,58 @@ export const RemoveNodesDocument = {
     },
   ],
 } as unknown as DocumentNode<RemoveNodesMutation, RemoveNodesMutationVariables>
+export const UpdateNodeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateNode' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'newLink' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateNode' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'newLink' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'newLink' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateNodeMutation, UpdateNodeMutationVariables>
 export const ImportSubscriptionDocument = {
   kind: 'Document',
   definitions: [
