@@ -185,6 +185,7 @@
   "step": "步骤",
   "subscription": "订阅",
   "editNode": "编辑节点",
+  "editSubscription": "编辑订阅",
   "success": "成功",
   "tag": "标签",
   "tcpCheckHttpMethod": "TCP 检测 HTTP 方式",
