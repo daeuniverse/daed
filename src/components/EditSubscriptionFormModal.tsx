@@ -1,5 +1,6 @@
 import { Modal, TextInput, Stack } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -32,18 +33,20 @@ export const EditSubscriptionFormModal = ({
   const form = useForm<z.infer<typeof schema>>({
     validate: zodResolver(schema),
     initialValues: {
-      link: subscription?.link || '',
-      tag: subscription?.tag || '',
+      link: '',
+      tag: '',
     },
   })
 
-  // Update form values when subscription changes
-  if (subscription && (form.values.link !== subscription.link || form.values.tag !== subscription.tag)) {
-    form.setValues({
-      link: subscription.link,
-      tag: subscription.tag,
-    })
-  }
+  // Update form values when subscription changes or modal opens
+  useEffect(() => {
+    if (subscription && opened) {
+      form.setValues({
+        link: subscription.link,
+        tag: subscription.tag,
+      })
+    }
+  }, [subscription, opened])
 
   return (
     <Modal title={t('editSubscription')} opened={opened} onClose={onClose}>
