@@ -1,4 +1,3 @@
-import { Anchor, AppShell, Center, Container, Footer, Text } from '@mantine/core'
 import { useStore } from '@nanostores/react'
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -25,24 +24,26 @@ export const MainLayout = () => {
   }, [endpointURL, navigate, token])
 
   return (
-    <AppShell
-      header={<HeaderWithActions />}
-      footer={
-        <Footer height={50}>
-          <Center h="100%">
-            <Text fw="lighter" fz="xs" color="dimmed">
-              Made with passion 🔥 by{' '}
-              <Anchor href="https://github.com/daeuniverse" target="_blank">
-                @daeuniverse
-              </Anchor>
-            </Text>
-          </Center>
-        </Footer>
-      }
-    >
-      <Container size="lg" p="sm">
-        <Outlet />
-      </Container>
-    </AppShell>
+    <div className="flex min-h-screen flex-col">
+      <HeaderWithActions />
+      <main className="flex-1">
+        <div className="container max-w-5xl p-4">
+          <Outlet />
+        </div>
+      </main>
+      <footer className="h-[50px] border-t flex items-center justify-center">
+        <p className="text-xs text-muted-foreground font-light">
+          Made with passion 🔥 by{' '}
+          <a
+            href="https://github.com/daeuniverse"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            @daeuniverse
+          </a>
+        </p>
+      </footer>
+    </div>
   )
 }

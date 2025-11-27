@@ -1,28 +1,39 @@
-import {
-  Box,
-  ColorScheme,
-  ColorSchemeProvider,
-  createEmotionCache,
-  MantineProvider,
-  MantineThemeOverride,
-  ScrollArea,
-} from '@mantine/core'
-import { useColorScheme } from '@mantine/hooks'
-import { ModalsProvider } from '@mantine/modals'
-import { Notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect, useState } from 'react'
 
+import { Toaster } from '~/components/ui/toaster'
+import { TooltipProvider } from '~/components/ui/tooltip'
 import { QueryProvider } from '~/contexts'
 import { Router } from '~/Router'
 import { appStateAtom, colorSchemeAtom } from '~/store'
 
-const emotionCache = createEmotionCache({ key: 'mantine' })
+type ColorScheme = 'dark' | 'light'
+
+const useColorScheme = (): ColorScheme => {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+
+    return 'light'
+  })
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (e: MediaQueryListEvent) => setColorScheme(e.matches ? 'dark' : 'light')
+    mediaQuery.addEventListener('change', handler)
+
+    return () => mediaQuery.removeEventListener('change', handler)
+  }, [])
+
+  return colorScheme
+}
 
 export const App = () => {
   const appState = useStore(appStateAtom)
   const preferredColorScheme = useColorScheme()
   const [colorScheme, setColorScheme] = useState<ColorScheme>(preferredColorScheme)
+
   const toggleColorScheme = useCallback(
     (value?: ColorScheme) => {
       const toScheme = value || (colorScheme === 'dark' ? 'light' : 'dark')
@@ -49,78 +60,23 @@ export const App = () => {
     colorSchemeAtom.set(colorScheme)
   }, [colorScheme])
 
-  const themeObject: MantineThemeOverride = {
-    colorScheme,
-    fontFamily: 'Fira Sans, Monaco, Consolas, sans-serif',
-    fontFamilyMonospace: 'Source Code Pro, Monaco, Consolas, monospace',
-    primaryColor: 'violet',
-    cursorType: 'pointer',
-    components: {
-      Stack: { defaultProps: { spacing: 'sm' } },
-      Group: { defaultProps: { spacing: 'sm' } },
-      Button: { defaultProps: { uppercase: true } },
-      ActionIcon: { defaultProps: { size: 'sm' } },
-      Tooltip: { defaultProps: { withArrow: true } },
-      HoverCard: { defaultProps: { withArrow: true } },
-      Modal: {
-        defaultProps: {
-          size: 'lg',
-          radius: 'md',
-          centered: true,
-          scrollAreaComponent: ScrollArea.Autosize,
-        },
-      },
-      ModalHeader: {
-        defaultProps: (theme) => ({
-          bg: colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4],
-        }),
-      },
-      ModalTitle: {
-        defaultProps: {
-          color: 'white',
-        },
-      },
-      Drawer: {
-        defaultProps: {
-          size: 'lg',
-          scrollAreaComponent: ScrollArea.Autosize,
-        },
-      },
-      Menu: {
-        styles: {
-          label: {
-            textTransform: 'uppercase',
-          },
-        },
-      },
-      Select: {
-        defaultProps: {
-          withinPortal: true,
-          size: 'xs',
-        },
-      },
-      MultiSelect: { defaultProps: { size: 'xs' } },
-      Switch: { defaultProps: { size: 'xs' } },
-      Checkbox: { defaultProps: { size: 'xs' } },
-      Radio: { defaultProps: { size: 'xs' } },
-      RadioGroup: { defaultProps: { size: 'xs' } },
-      TextInput: { defaultProps: { size: 'xs' } },
-      NumberInput: { defaultProps: { size: 'xs' } },
-    },
-  }
+  // Apply dark mode class to document
+  useEffect(() => {
+    if (colorScheme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [colorScheme])
 
   return (
-    <QueryProvider>
-      <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider theme={themeObject} emotionCache={emotionCache} withGlobalStyles withNormalizeCSS>
-          <ModalsProvider>
-            <Box sx={{ height: '100dvh' }}>
-              <Notifications limit={5} />
-              <Router />
-            </Box>
-          </ModalsProvider>
-        </MantineProvider>
-      </ColorSchemeProvider>
+    <QueryProvider toggleColorScheme={toggleColorScheme} colorScheme={colorScheme}>
+      <TooltipProvider>
+        <div className="h-[100dvh]">
+          <Toaster />
+          <Router />
+        </div>
+      </TooltipProvider>
     </QueryProvider>
   )
 }

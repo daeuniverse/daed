@@ -1,16 +1,16 @@
-import { Modal, SimpleGrid, Stack, TextInput, Title } from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { useRenameConfigMutation, useRenameDNSMutation, useRenameGroupMutation, useRenameRoutingMutation } from '~/apis'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Input } from '~/components/ui/input'
 import { RuleType } from '~/constants'
 
 import { FormActions } from './FormActions'
 
 const schema = z.object({
-  name: z.string().nonempty(),
+  name: z.string().min(1),
 })
 
 type Props = {
@@ -39,6 +39,8 @@ export const RenameFormModal = forwardRef(
 
     const [props, setProps] = useState<Props>({})
     const { type, id } = props
+    const [formData, setFormData] = useState({ name: '' })
+    const [formErrors, setFormErrors] = useState<{ name?: string }>({})
 
     const ruleName = useMemo(() => {
       if (type === RuleType.config) {
@@ -52,6 +54,8 @@ export const RenameFormModal = forwardRef(
       if (type === RuleType.routing) {
         return t('routing')
       }
+
+      return ''
     }, [type, t])
 
     useImperativeHandle(ref, () => ({
@@ -59,60 +63,72 @@ export const RenameFormModal = forwardRef(
       setProps,
     }))
 
-    const form = useForm<z.infer<typeof schema>>({
-      validate: zodResolver(schema),
-      initialValues: {
-        name: '',
-      },
-    })
-
     const renameConfigMutation = useRenameConfigMutation()
     const renameDNSMutation = useRenameDNSMutation()
     const renameRoutingMutation = useRenameRoutingMutation()
     const renameGroupMutation = useRenameGroupMutation()
 
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault()
+
+      const result = schema.safeParse(formData)
+
+      if (!result.success) {
+        setFormErrors({ name: result.error.errors[0]?.message })
+
+        return
+      }
+
+      const { name } = formData
+
+      if (!type || !id) {
+        return
+      }
+
+      if (type === RuleType.config) {
+        renameConfigMutation.mutate({ id, name })
+      }
+
+      if (type === RuleType.dns) {
+        renameDNSMutation.mutate({ id, name })
+      }
+
+      if (type === RuleType.routing) {
+        renameRoutingMutation.mutate({ id, name })
+      }
+
+      if (type === RuleType.group) {
+        renameGroupMutation.mutate({ id, name })
+      }
+
+      onClose()
+    }
+
     return (
-      <Modal title={t('actions.rename')} opened={opened} onClose={onClose}>
-        <form
-          onSubmit={form.onSubmit((values) => {
-            const { name } = values
+      <Dialog open={opened} onOpenChange={onClose}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('actions.rename')}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <h4 className="font-semibold">{ruleName}</h4>
 
-            if (!type || !id) {
-              return
-            }
+              <div className="grid grid-cols-2 gap-4">
+                <Input disabled value={props.oldName} />
 
-            if (type === RuleType.config) {
-              renameConfigMutation.mutate({ id, name })
-            }
+                <Input
+                  value={formData.name}
+                  onChange={(e) => setFormData({ name: e.target.value })}
+                  error={formErrors.name}
+                />
+              </div>
 
-            if (type === RuleType.dns) {
-              renameDNSMutation.mutate({ id, name })
-            }
-
-            if (type === RuleType.routing) {
-              renameRoutingMutation.mutate({ id, name })
-            }
-
-            if (type === RuleType.group) {
-              renameGroupMutation.mutate({ id, name })
-            }
-
-            onClose()
-          })}
-        >
-          <Stack>
-            <Title order={4}>{ruleName}</Title>
-
-            <SimpleGrid cols={2}>
-              <TextInput disabled value={props.oldName} />
-
-              <TextInput {...form.getInputProps('name')} />
-            </SimpleGrid>
-
-            <FormActions reset={form.reset} />
-          </Stack>
-        </form>
-      </Modal>
+              <FormActions reset={() => setFormData({ name: '' })} />
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     )
   },
 )

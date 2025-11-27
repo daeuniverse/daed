@@ -1,19 +1,20 @@
-import { Divider, Group, Stack, Text } from '@mantine/core'
 import { Fragment } from 'react'
 
+import { Separator } from '~/components/ui/separator'
+
 export const ExpandedTableRow = ({ data }: { data: { name: string; value: string }[] }) => (
-  <Stack spacing="md" p="md">
+  <div className="flex flex-col gap-3 p-4">
     {data.map(({ name, value }, i) => {
       return (
         <Fragment key={i}>
-          <Group spacing="md">
-            <Text tt="uppercase">{name}: </Text>
-            <Text variant="gradient">{value}</Text>
-          </Group>
+          <div className="flex items-center gap-3">
+            <span className="uppercase text-sm font-medium">{name}: </span>
+            <span className="text-primary bg-gradient-to-r from-primary to-purple-500 bg-clip-text">{value}</span>
+          </div>
 
-          {i !== data.length - 1 && <Divider />}
+          {i !== data.length - 1 && <Separator />}
         </Fragment>
       )
     })}
-  </Stack>
+  </div>
 )

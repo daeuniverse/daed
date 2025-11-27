@@ -1,16 +1,22 @@
-import { Box, Button, Group, Modal, createStyles } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { DataTable, DataTableColumn, DataTableRowExpansionProps } from 'mantine-datatable'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-const useStyles = createStyles(() => ({
-  header: {
-    '&& th': {
-      textTransform: 'uppercase',
-    },
-  },
-}))
+import { Button } from '~/components/ui/button'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { cn } from '~/lib/utils'
+
+export type DataTableColumn<T> = {
+  accessor: string
+  title?: string
+  width?: number | string
+  render?: (record: T, index: number) => React.ReactNode
+  textAlignment?: 'left' | 'center' | 'right'
+}
+
+export type DataTableRowExpansionProps<T> = {
+  content: (args: { record: T; collapse: () => void }) => React.ReactNode
+}
 
 type Props<T> = {
   fetching: boolean
@@ -33,27 +39,66 @@ export const Table = <Data extends Record<string, unknown>>({
   createModalTitle,
   createModalContent,
 }: Props<Data>) => {
-  const { classes } = useStyles()
   const { t } = useTranslation()
-  const [selectedRecords, onSelectedRecordsChange] = useState<Data[]>([])
-  const [opened, { open, close }] = useDisclosure(false)
+  const [selectedRecords, setSelectedRecords] = useState<Data[]>([])
+  const [opened, setOpened] = useState(false)
   const [removing, setRemoving] = useState(false)
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set())
+
+  const toggleRowSelection = (record: Data, index: number) => {
+    if (isRecordSelectable && !isRecordSelectable(record, index)) return
+
+    setSelectedRecords((prev) => {
+      const isSelected = prev.includes(record)
+
+      if (isSelected) {
+        return prev.filter((r) => r !== record)
+      }
+
+      return [...prev, record]
+    })
+  }
+
+  const toggleRowExpansion = (index: number) => {
+    setExpandedRows((prev) => {
+      const newSet = new Set(prev)
+
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        newSet.add(index)
+      }
+
+      return newSet
+    })
+  }
+
+  const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => {
+    return path.split('.').reduce((acc: unknown, part: string) => {
+      if (acc && typeof acc === 'object') {
+        return (acc as Record<string, unknown>)[part]
+      }
+
+      return undefined
+    }, obj)
+  }
 
   return (
-    <Box p={2}>
-      <Group py={4}>
-        <Button onClick={open}>{t('actions.add')}</Button>
+    <div className="p-2">
+      <div className="flex gap-2 py-2">
+        <Button onClick={() => setOpened(true)} uppercase>
+          {t('actions.add')}
+        </Button>
 
         <Button
-          color="red"
+          variant="destructive"
           disabled={selectedRecords.length === 0}
           loading={removing}
+          uppercase
           onClick={async () => {
-            if (!onRemove) {
-              return
-            }
+            if (!onRemove) return
 
-            onSelectedRecordsChange([])
+            setSelectedRecords([])
             setRemoving(true)
             await onRemove(selectedRecords)
             setRemoving(false)
@@ -61,29 +106,121 @@ export const Table = <Data extends Record<string, unknown>>({
         >
           {t('actions.remove')} ({selectedRecords.length})
         </Button>
-      </Group>
+      </div>
 
-      <DataTable
-        classNames={classes}
-        fetching={fetching}
-        withBorder
-        borderRadius={4}
-        withColumnBorders
-        striped
-        highlightOnHover
-        verticalSpacing="sm"
-        height={768}
-        columns={columns}
-        records={records}
-        selectedRecords={selectedRecords}
-        onSelectedRecordsChange={onSelectedRecordsChange}
-        isRecordSelectable={isRecordSelectable}
-        rowExpansion={rowExpansion}
-      />
+      <div className="border rounded overflow-hidden">
+        <div className="overflow-x-auto max-h-[768px] overflow-y-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-muted sticky top-0">
+              <tr>
+                <th className="p-3 text-left uppercase w-10">
+                  <Checkbox
+                    checked={selectedRecords.length === records.length && records.length > 0}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedRecords(records.filter((r, i) => !isRecordSelectable || isRecordSelectable(r, i)))
+                      } else {
+                        setSelectedRecords([])
+                      }
+                    }}
+                  />
+                </th>
+                {columns.map((col, idx) => (
+                  <th
+                    key={idx}
+                    className={cn(
+                      'p-3 uppercase font-medium border-l',
+                      col.textAlignment === 'center' && 'text-center',
+                      col.textAlignment === 'right' && 'text-right',
+                      !col.textAlignment && 'text-left',
+                    )}
+                    style={{ width: col.width }}
+                  >
+                    {col.title || col.accessor}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {fetching ? (
+                <tr>
+                  <td colSpan={columns.length + 1} className="p-8 text-center text-muted-foreground">
+                    Loading...
+                  </td>
+                </tr>
+              ) : records.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length + 1} className="p-8 text-center text-muted-foreground">
+                    No records found
+                  </td>
+                </tr>
+              ) : (
+                records.map((record, index) => {
+                  const isSelectable = !isRecordSelectable || isRecordSelectable(record, index)
+                  const isSelected = selectedRecords.includes(record)
+                  const isExpanded = expandedRows.has(index)
 
-      <Modal opened={opened} onClose={close} title={createModalTitle}>
-        {createModalContent && createModalContent(close)}
-      </Modal>
-    </Box>
+                  return (
+                    <>
+                      <tr
+                        key={index}
+                        className={cn(
+                          'border-t hover:bg-accent/50 transition-colors',
+                          index % 2 === 1 && 'bg-muted/30',
+                          isSelected && 'bg-primary/10',
+                          rowExpansion && 'cursor-pointer',
+                        )}
+                        onClick={() => rowExpansion && toggleRowExpansion(index)}
+                      >
+                        <td className="p-3" onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={isSelected}
+                            disabled={!isSelectable}
+                            onCheckedChange={() => toggleRowSelection(record, index)}
+                          />
+                        </td>
+                        {columns.map((col, colIdx) => (
+                          <td
+                            key={colIdx}
+                            className={cn(
+                              'p-3 border-l',
+                              col.textAlignment === 'center' && 'text-center',
+                              col.textAlignment === 'right' && 'text-right',
+                            )}
+                          >
+                            {col.render
+                              ? col.render(record, index)
+                              : String(getNestedValue(record, col.accessor) ?? '')}
+                          </td>
+                        ))}
+                      </tr>
+                      {rowExpansion && isExpanded && (
+                        <tr key={`${index}-expansion`}>
+                          <td colSpan={columns.length + 1} className="p-0 border-t bg-muted/20">
+                            {rowExpansion.content({
+                              record,
+                              collapse: () => toggleRowExpansion(index),
+                            })}
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <Dialog open={opened} onOpenChange={setOpened}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{createModalTitle}</DialogTitle>
+          </DialogHeader>
+          {createModalContent && createModalContent(() => setOpened(false))}
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }

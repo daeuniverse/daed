@@ -1,18 +1,19 @@
-import { Button, Group } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
+
+import { Button } from '~/components/ui/button'
 
 export const FormActions = ({ loading, reset }: { loading?: boolean; reset?: () => void }) => {
   const { t } = useTranslation()
 
   return (
-    <Group position="right" spacing="xs">
-      <Button type="reset" color="red" onClick={() => reset && reset()}>
+    <div className="flex justify-end gap-2">
+      <Button type="reset" variant="destructive" onClick={() => reset && reset()} uppercase>
         {t('actions.reset')}
       </Button>
 
-      <Button type="submit" loading={loading}>
+      <Button type="submit" loading={loading} uppercase>
         {t('actions.submit')}
       </Button>
-    </Group>
+    </div>
   )
 }

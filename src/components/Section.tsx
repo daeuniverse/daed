@@ -1,15 +1,7 @@
-import { ActionIcon, Group, Stack, Title, createStyles } from '@mantine/core'
-import { IconPlus } from '@tabler/icons-react'
+import { Plus } from 'lucide-react'
 
-const useStyles = createStyles((theme) => ({
-  section: {
-    border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.gray[8] : theme.colors.gray[2]}`,
-    borderRadius: theme.radius.sm,
-    padding: theme.spacing.xs,
-    boxShadow: theme.shadows.md,
-    transition: 'background 300ms ease-in-out',
-  },
-}))
+import { Button } from '~/components/ui/button'
+import { cn } from '~/lib/utils'
 
 export const Section = ({
   title,
@@ -30,30 +22,29 @@ export const Section = ({
   highlight?: boolean
   children: React.ReactNode
 }) => {
-  const { classes, theme, cx } = useStyles()
-
   return (
-    <Stack
-      className={cx({ [classes.section]: bordered })}
-      bg={highlight ? theme.fn.lighten(theme.fn.primaryColor(), 0.5) : undefined}
+    <div
+      className={cn(
+        'flex flex-col gap-2',
+        bordered && 'border rounded-sm p-2 shadow-md transition-colors',
+        highlight && 'bg-primary/20',
+      )}
     >
-      <Group position="apart">
-        <Group spacing="xs">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
           {icon}
+          <h4 className="text-lg font-semibold text-primary">{title}</h4>
+        </div>
 
-          <Title order={4} color={theme.primaryColor}>
-            {title}
-          </Title>
-        </Group>
-
-        <Group>
+        <div className="flex items-center gap-2">
           {actions}
+          <Button variant="ghost" size="icon" onClick={onCreate}>
+            {iconPlus || <Plus className="h-4 w-4" />}
+          </Button>
+        </div>
+      </div>
 
-          <ActionIcon onClick={onCreate}>{iconPlus || <IconPlus />}</ActionIcon>
-        </Group>
-      </Group>
-
-      <Stack>{children}</Stack>
-    </Stack>
+      <div className="flex flex-col gap-2">{children}</div>
+    </div>
   )
 }
