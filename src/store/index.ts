@@ -1,9 +1,10 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { ColorScheme } from '@mantine/core'
 import { persistentAtom, persistentMap } from '@nanostores/persistent'
 import { atom, map } from 'nanostores'
 
 import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL, MODE } from '~/constants'
+
+export type ColorScheme = 'light' | 'dark'
 
 export type PersistentSortableKeys = {
   nodeSortableKeys: UniqueIdentifier[]

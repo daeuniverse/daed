@@ -1,8 +1,5 @@
-import { ActionIcon } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { IconEdit, IconForms, IconMap } from '@tabler/icons-react'
+import { Map, Pencil, Type } from 'lucide-react'
 import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -17,7 +14,10 @@ import { PlainTextFormModal, PlainTextgFormModalRef } from '~/components/PlainTe
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
+import { Button } from '~/components/ui/button'
+import { Code } from '~/components/ui/code'
 import { RuleType } from '~/constants'
+import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
 export const Routing = () => {
@@ -38,14 +38,15 @@ export const Routing = () => {
     useDisclosure(false)
 
   return (
-    <Section title={t('routing')} icon={<IconMap />} onCreate={openCreateRoutingFormModal} bordered>
+    <Section title={t('routing')} icon={<Map className="h-5 w-5" />} onCreate={openCreateRoutingFormModal} bordered>
       {routingsQuery?.routings.map((routing) => (
         <SimpleCard
           key={routing.id}
           name={routing.name}
           actions={
             <Fragment>
-              <ActionIcon
+              <Button
+                variant="ghost"
                 size="xs"
                 onClick={() => {
                   if (renameFormModalRef.current) {
@@ -59,10 +60,11 @@ export const Routing = () => {
                   openRenameFormModal()
                 }}
               >
-                <IconForms />
-              </ActionIcon>
+                <Type className="h-4 w-4" />
+              </Button>
 
-              <ActionIcon
+              <Button
+                variant="ghost"
                 size="xs"
                 onClick={() => {
                   updateRoutingFormModalRef.current?.setEditingID(routing.id)
@@ -75,15 +77,15 @@ export const Routing = () => {
                   openUpdateRoutingFormModal()
                 }}
               >
-                <IconEdit />
-              </ActionIcon>
+                <Pencil className="h-4 w-4" />
+              </Button>
             </Fragment>
           }
           selected={routing.selected}
           onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
           onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}
         >
-          <Prism language="bash">{routing.routing.string}</Prism>
+          <Code block>{routing.routing.string}</Code>
         </SimpleCard>
       ))}
 

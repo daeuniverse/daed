@@ -1,8 +1,5 @@
-import { ActionIcon } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { IconEdit, IconForms, IconSettings } from '@tabler/icons-react'
+import { Pencil, Settings, Type } from 'lucide-react'
 import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -11,7 +8,10 @@ import { ConfigFormDrawer, ConfigFormModalRef } from '~/components/ConfigFormMod
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
+import { Button } from '~/components/ui/button'
+import { Code } from '~/components/ui/code'
 import { GET_LOG_LEVEL_STEPS, RuleType } from '~/constants'
+import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 import { deriveTime } from '~/utils'
 
@@ -34,14 +34,15 @@ export const Config = () => {
     useDisclosure(false)
 
   return (
-    <Section title={t('config')} icon={<IconSettings />} onCreate={openCreateConfigFormDrawer} bordered>
+    <Section title={t('config')} icon={<Settings className="h-5 w-5" />} onCreate={openCreateConfigFormDrawer} bordered>
       {configsQuery?.configs.map((config) => (
         <SimpleCard
           key={config.id}
           name={config.name}
           actions={
             <Fragment>
-              <ActionIcon
+              <Button
+                variant="ghost"
                 size="xs"
                 onClick={() => {
                   if (renameFormModalRef.current) {
@@ -55,10 +56,11 @@ export const Config = () => {
                   openRenameFormModal()
                 }}
               >
-                <IconForms />
-              </ActionIcon>
+                <Type className="h-4 w-4" />
+              </Button>
 
-              <ActionIcon
+              <Button
+                variant="ghost"
                 size="xs"
                 onClick={() => {
                   updateConfigFormModalRef.current?.setEditingID(config.id)
@@ -80,15 +82,15 @@ export const Config = () => {
                   openUpdateConfigFormDrawer()
                 }}
               >
-                <IconEdit />
-              </ActionIcon>
+                <Pencil className="h-4 w-4" />
+              </Button>
             </Fragment>
           }
           selected={config.selected}
           onSelect={() => selectConfigMutation.mutate({ id: config.id })}
           onRemove={config.id !== defaultConfigID ? () => removeConfigMutation.mutate(config.id) : undefined}
         >
-          <Prism language="json">{JSON.stringify(config, null, 2)}</Prism>
+          <Code block>{JSON.stringify(config, null, 2)}</Code>
         </SimpleCard>
       ))}
 

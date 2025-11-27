@@ -1,9 +1,11 @@
-import { MantineProvider, Modal, Stack, Tabs, TextInput } from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { useImportNodesMutation } from '~/apis'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Input } from '~/components/ui/input'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 
 import { HTTPForm } from './HTTPForm'
 import { Hysteria2Form } from './Hysteria2Form'
@@ -15,25 +17,27 @@ import { TrojanForm } from './TrojanForm'
 import { TuicForm } from './TuicForm'
 import { V2rayForm } from './V2rayForm'
 
-const schema = z.object({ tag: z.string().nonempty() })
+const schema = z.object({ tag: z.string().min(1) })
 
 export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
   const { t } = useTranslation()
   const importNodesMutation = useImportNodesMutation()
-  const form = useForm<z.infer<typeof schema>>({
-    initialValues: { tag: '' },
-    validate: zodResolver(schema),
-  })
+  const [formData, setFormData] = useState({ tag: '' })
+  const [errors, setErrors] = useState<{ tag?: string }>({})
 
   const onLinkGeneration = async (link: string) => {
-    const { hasErrors } = form.validate()
+    const result = schema.safeParse(formData)
 
-    if (hasErrors) return
+    if (!result.success) {
+      setErrors({ tag: result.error.errors[0]?.message })
+
+      return
+    }
 
     await importNodesMutation.mutateAsync([
       {
         link,
-        tag: form.values.tag,
+        tag: formData.tag,
       },
     ])
 
@@ -41,91 +45,71 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
   }
 
   return (
-    <Modal opened={opened} onClose={onClose} title={t('configureNode.title')} size="auto">
-      <TextInput size="xs" label={t('tag')} withAsterisk {...form.getInputProps('tag')} />
+    <Dialog open={opened} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{t('configureNode.title')}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Input
+            label={t('tag')}
+            withAsterisk
+            value={formData.tag}
+            onChange={(e) => setFormData({ tag: e.target.value })}
+            error={errors.tag}
+          />
 
-      <MantineProvider
-        theme={{
-          components: {
-            Tabs: { defaultProps: { variant: 'outline' } },
-            TabsPanel: { defaultProps: { pt: 'xs' } },
-            TextInput: { defaultProps: { size: 'xs' } },
-            Select: { defaultProps: { size: 'xs' } },
-            NumberInput: { defaultProps: { size: 'xs' } },
-            Checkbox: { defaultProps: { size: 'xs' } },
-            Stack: { defaultProps: { spacing: 'xs' } },
-          },
-        }}
-        inherit
-      >
-        <Tabs defaultValue="v2ray" pt="xs">
-          <Tabs.List position="center">
-            <Tabs.Tab value="v2ray">V2RAY</Tabs.Tab>
-            <Tabs.Tab value="ss">SS</Tabs.Tab>
-            <Tabs.Tab value="ssr">SSR</Tabs.Tab>
-            <Tabs.Tab value="trojan">Trojan</Tabs.Tab>
-            <Tabs.Tab value="juicity">Juicity</Tabs.Tab>
-            <Tabs.Tab value="hysteria2">Hysteria2</Tabs.Tab>
-            <Tabs.Tab value="tuic">Tuic</Tabs.Tab>
-            <Tabs.Tab value="http">HTTP</Tabs.Tab>
-            <Tabs.Tab value="socks5">SOCKS5</Tabs.Tab>
-          </Tabs.List>
+          <Tabs defaultValue="v2ray" className="w-full">
+            <TabsList className="grid w-full grid-cols-9">
+              <TabsTrigger value="v2ray">V2RAY</TabsTrigger>
+              <TabsTrigger value="ss">SS</TabsTrigger>
+              <TabsTrigger value="ssr">SSR</TabsTrigger>
+              <TabsTrigger value="trojan">Trojan</TabsTrigger>
+              <TabsTrigger value="juicity">Juicity</TabsTrigger>
+              <TabsTrigger value="hysteria2">Hysteria2</TabsTrigger>
+              <TabsTrigger value="tuic">Tuic</TabsTrigger>
+              <TabsTrigger value="http">HTTP</TabsTrigger>
+              <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
+            </TabsList>
 
-          <Tabs.Panel value="v2ray">
-            <Stack>
+            <TabsContent value="v2ray" className="space-y-2 pt-2">
               <V2rayForm onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
+            </TabsContent>
 
-          <Tabs.Panel value="ss">
-            <Stack>
+            <TabsContent value="ss" className="space-y-2 pt-2">
               <SSForm onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
+            </TabsContent>
 
-          <Tabs.Panel value="ssr">
-            <Stack>
+            <TabsContent value="ssr" className="space-y-2 pt-2">
               <SSRForm onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
+            </TabsContent>
 
-          <Tabs.Panel value="trojan">
-            <Stack>
+            <TabsContent value="trojan" className="space-y-2 pt-2">
               <TrojanForm onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
+            </TabsContent>
 
-          <Tabs.Panel value="juicity">
-            <Stack>
+            <TabsContent value="juicity" className="space-y-2 pt-2">
               <JuicityForm onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
+            </TabsContent>
 
-          <Tabs.Panel value="hysteria2">
-            <Stack>
+            <TabsContent value="hysteria2" className="space-y-2 pt-2">
               <Hysteria2Form onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
+            </TabsContent>
 
-          <Tabs.Panel value="tuic">
-            <Stack>
+            <TabsContent value="tuic" className="space-y-2 pt-2">
               <TuicForm onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
+            </TabsContent>
 
-          <Tabs.Panel value="http">
-            <Stack>
+            <TabsContent value="http" className="space-y-2 pt-2">
               <HTTPForm onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
+            </TabsContent>
 
-          <Tabs.Panel value="socks5">
-            <Stack>
+            <TabsContent value="socks5" className="space-y-2 pt-2">
               <Socks5Form onLinkGeneration={onLinkGeneration} />
-            </Stack>
-          </Tabs.Panel>
-        </Tabs>
-      </MantineProvider>
-    </Modal>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -1,8 +1,6 @@
-import { Accordion, ActionIcon, Group, Spoiler, Text } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { IconCloudComputing, IconCloudPlus, IconDownload, IconEye } from '@tabler/icons-react'
+import { CloudCog, CloudUpload, Download, Eye } from 'lucide-react'
 import dayjs from 'dayjs'
-import { Fragment, useRef } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -17,7 +15,10 @@ import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { QRCodeModal, QRCodeModalRef } from '~/components/QRCodeModal'
 import { Section } from '~/components/Section'
 import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
+import { Button } from '~/components/ui/button'
 import { DraggableResourceType } from '~/constants'
+import { useDisclosure } from '~/hooks'
 
 export const SubscriptionResource = () => {
   const { t } = useTranslation()
@@ -36,21 +37,23 @@ export const SubscriptionResource = () => {
   return (
     <Section
       title={t('subscription')}
-      icon={<IconCloudComputing />}
-      iconPlus={<IconCloudPlus />}
+      icon={<CloudCog className="h-5 w-5" />}
+      iconPlus={<CloudUpload className="h-4 w-4" />}
       onCreate={openImportSubscriptionFormModal}
       bordered
       actions={
         subscriptionsQuery?.subscriptions &&
         subscriptionsQuery.subscriptions.length > 2 && (
-          <ActionIcon
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => {
               updateSubscriptionsMutation.mutate(subscriptionsQuery?.subscriptions.map(({ id }) => id) || [])
             }}
             loading={updateSubscriptionsMutation.isLoading}
           >
-            <IconDownload />
-          </ActionIcon>
+            <Download className="h-4 w-4" />
+          </Button>
         )
       }
     >
@@ -63,7 +66,8 @@ export const SubscriptionResource = () => {
           name={tag || link}
           actions={
             <Fragment>
-              <ActionIcon
+              <Button
+                variant="ghost"
                 size="xs"
                 onClick={() => {
                   qrCodeModalRef.current?.setProps({
@@ -73,37 +77,24 @@ export const SubscriptionResource = () => {
                   openQRCodeModal()
                 }}
               >
-                <IconEye />
-              </ActionIcon>
+                <Eye className="h-4 w-4" />
+              </Button>
               <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isLoading} />
             </Fragment>
           }
           onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
         >
-          <Text fw={600}>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</Text>
+          <p className="font-semibold">{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
 
-          <Spoiler
-            maxHeight={0}
-            showLabel={<Text fz="xs">{t('actions.show content')}</Text>}
-            hideLabel={<Text fz="xs">{t('actions.hide')}</Text>}
-          >
-            <Text
-              fz="sm"
-              style={{
-                wordBreak: 'break-all',
-              }}
-            >
-              {link}
-            </Text>
-          </Spoiler>
+          <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
 
-          <Accordion variant="filled">
-            <Accordion.Item value="node">
-              <Accordion.Control fz="xs" px="xs">
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="node">
+              <AccordionTrigger className="text-xs px-2 py-2">
                 {t('node')} ({nodes.edges.length})
-              </Accordion.Control>
-              <Accordion.Panel>
-                <Group spacing="sm">
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-wrap gap-2">
                   {nodes.edges.map(({ id, name }) => (
                     <DraggableResourceBadge
                       key={id}
@@ -116,9 +107,9 @@ export const SubscriptionResource = () => {
                       {name}
                     </DraggableResourceBadge>
                   ))}
-                </Group>
-              </Accordion.Panel>
-            </Accordion.Item>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           </Accordion>
         </DraggableResourceCard>
       ))}
@@ -134,5 +125,18 @@ export const SubscriptionResource = () => {
         }}
       />
     </Section>
+  )
+}
+
+const Spoiler = ({ label, showLabel, hideLabel }: { label: string; showLabel: string; hideLabel: string }) => {
+  const [show, setShow] = useState(false)
+
+  return (
+    <div>
+      {show && <p className="text-sm break-all">{label}</p>}
+      <button type="button" className="text-xs text-primary hover:underline" onClick={() => setShow(!show)}>
+        {show ? hideLabel : showLabel}
+      </button>
+    </div>
   )
 }

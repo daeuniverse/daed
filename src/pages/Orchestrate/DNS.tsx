@@ -1,8 +1,5 @@
-import { ActionIcon } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { Prism } from '@mantine/prism'
 import { useStore } from '@nanostores/react'
-import { IconEdit, IconForms, IconRoute } from '@tabler/icons-react'
+import { Pencil, Route, Type } from 'lucide-react'
 import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -17,7 +14,10 @@ import { PlainTextFormModal, PlainTextgFormModalRef } from '~/components/PlainTe
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
+import { Button } from '~/components/ui/button'
+import { Code } from '~/components/ui/code'
 import { RuleType } from '~/constants'
+import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
 export const DNS = () => {
@@ -39,14 +39,15 @@ export const DNS = () => {
     useDisclosure(false)
 
   return (
-    <Section title={t('dns')} icon={<IconRoute />} onCreate={openCreateDNSFormModal} bordered>
+    <Section title={t('dns')} icon={<Route className="h-5 w-5" />} onCreate={openCreateDNSFormModal} bordered>
       {dnssQuery?.dnss.map((dns) => (
         <SimpleCard
           key={dns.id}
           name={dns.name}
           actions={
             <Fragment>
-              <ActionIcon
+              <Button
+                variant="ghost"
                 size="xs"
                 onClick={() => {
                   if (renameFormModalRef.current) {
@@ -60,10 +61,11 @@ export const DNS = () => {
                   openRenameFormModal()
                 }}
               >
-                <IconForms />
-              </ActionIcon>
+                <Type className="h-4 w-4" />
+              </Button>
 
-              <ActionIcon
+              <Button
+                variant="ghost"
                 size="xs"
                 onClick={() => {
                   updateDNSFormModalRef.current?.setEditingID(dns.id)
@@ -76,15 +78,15 @@ export const DNS = () => {
                   openUpdateDNSFormModal()
                 }}
               >
-                <IconEdit />
-              </ActionIcon>
+                <Pencil className="h-4 w-4" />
+              </Button>
             </Fragment>
           }
           selected={dns.selected}
           onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
           onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}
         >
-          <Prism language="bash">{dns.dns.string}</Prism>
+          <Code block>{dns.dns.string}</Code>
         </SimpleCard>
       ))}
 

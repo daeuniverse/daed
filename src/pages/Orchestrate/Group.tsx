@@ -1,8 +1,6 @@
-import { Accordion, ActionIcon, SimpleGrid, Space, Text } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
 import { useStore } from '@nanostores/react'
-import { IconEdit, IconForms, IconTable } from '@tabler/icons-react'
-import { Fragment, useRef, useState } from 'react'
+import { Pencil, Table2, Type } from 'lucide-react'
+import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -17,7 +15,10 @@ import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { GroupFormModal, GroupFormModalRef } from '~/components/GroupFormModal'
 import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
+import { Button } from '~/components/ui/button'
 import { DraggableResourceType, RuleType } from '~/constants'
+import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
 export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
@@ -32,13 +33,18 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
   const removeGroupMutation = useRemoveGroupMutation()
   const groupDelNodesMutation = useGroupDelNodesMutation()
   const groupDelSubscriptionsMutation = useGroupDelSubscriptionsMutation()
-  const [droppableGroupCardAccordionValues, setDroppableGroupCardAccordionValues] = useState<string[]>([])
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
   const updateGroupFormModalRef = useRef<GroupFormModalRef>(null)
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
 
   return (
-    <Section title={t('group')} icon={<IconTable />} onCreate={openCreateGroupFormModal} highlight={highlight} bordered>
+    <Section
+      title={t('group')}
+      icon={<Table2 className="h-5 w-5" />}
+      onCreate={openCreateGroupFormModal}
+      highlight={highlight}
+      bordered
+    >
       {groupsQuery?.groups.map(
         ({ id: groupId, name, policy, nodes: groupNodes, subscriptions: groupSubscriptions }) => (
           <DroppableGroupCard
@@ -48,7 +54,8 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
             onRemove={defaultGroupID !== groupId ? () => removeGroupMutation.mutate(groupId) : undefined}
             actions={
               <Fragment>
-                <ActionIcon
+                <Button
+                  variant="ghost"
                   size="xs"
                   onClick={() => {
                     if (renameFormModalRef.current) {
@@ -62,10 +69,11 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
                     openRenameFormModal()
                   }}
                 >
-                  <IconForms />
-                </ActionIcon>
+                  <Type className="h-4 w-4" />
+                </Button>
 
-                <ActionIcon
+                <Button
+                  variant="ghost"
                   size="xs"
                   onClick={() => {
                     updateGroupFormModalRef.current?.setEditingID(groupId)
@@ -78,31 +86,24 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
                     openUpdateGroupFormModal()
                   }}
                 >
-                  <IconEdit />
-                </ActionIcon>
+                  <Pencil className="h-4 w-4" />
+                </Button>
               </Fragment>
             }
           >
-            <Text fz="sm" fw={600}>
-              {policy}
-            </Text>
+            <p className="text-sm font-semibold">{policy}</p>
 
-            <Space h={10} />
+            <div className="h-2.5" />
 
-            <Accordion
-              variant="filled"
-              value={droppableGroupCardAccordionValues}
-              onChange={setDroppableGroupCardAccordionValues}
-              multiple
-            >
+            <Accordion type="multiple" className="w-full">
               {groupNodes.length > 0 && (
-                <Accordion.Item value="node">
-                  <Accordion.Control fz="xs" px="xs">
+                <AccordionItem value="node">
+                  <AccordionTrigger className="text-xs px-2 py-2">
                     {t('node')} ({groupNodes.length})
-                  </Accordion.Control>
+                  </AccordionTrigger>
 
-                  <Accordion.Panel>
-                    <SimpleGrid cols={2}>
+                  <AccordionContent>
+                    <div className="grid grid-cols-2 gap-2">
                       {groupNodes.map(({ id: nodeId, tag, name, subscriptionID }) => (
                         <DraggableResourceBadge
                           key={nodeId}
@@ -122,19 +123,19 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
                             subscriptionsQuery?.subscriptions.find((s) => s.id === subscriptionID)?.tag}
                         </DraggableResourceBadge>
                       ))}
-                    </SimpleGrid>
-                  </Accordion.Panel>
-                </Accordion.Item>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               )}
 
               {groupSubscriptions.length > 0 && (
-                <Accordion.Item value="subscription">
-                  <Accordion.Control fz="xs" px="xs">
+                <AccordionItem value="subscription">
+                  <AccordionTrigger className="text-xs px-2 py-2">
                     {t('subscription')} ({groupSubscriptions.length})
-                  </Accordion.Control>
+                  </AccordionTrigger>
 
-                  <Accordion.Panel>
-                    <SimpleGrid cols={2}>
+                  <AccordionContent>
+                    <div className="grid grid-cols-2 gap-2">
                       {groupSubscriptions.map(({ id: subscriptionId, tag, link }) => (
                         <DraggableResourceBadge
                           key={subscriptionId}
@@ -151,9 +152,9 @@ export const GroupResource = ({ highlight }: { highlight?: boolean }) => {
                           }
                         />
                       ))}
-                    </SimpleGrid>
-                  </Accordion.Panel>
-                </Accordion.Item>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               )}
             </Accordion>
           </DroppableGroupCard>

@@ -1,7 +1,5 @@
-import { ActionIcon, Spoiler, Text, useMantineTheme } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { IconCloud, IconCloudPlus, IconEye, IconFileImport } from '@tabler/icons-react'
-import { useRef } from 'react'
+import { Cloud, CloudUpload, Eye, FileInput } from 'lucide-react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '~/apis'
@@ -10,11 +8,12 @@ import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { QRCodeModal, QRCodeModalRef } from '~/components/QRCodeModal'
 import { Section } from '~/components/Section'
+import { Button } from '~/components/ui/button'
 import { DraggableResourceType } from '~/constants'
+import { useDisclosure } from '~/hooks'
 
 export const NodeResource = () => {
   const { t } = useTranslation()
-  const theme = useMantineTheme()
 
   const [openedQRCodeModal, { open: openQRCodeModal, close: closeQRCodeModal }] = useDisclosure(false)
   const [openedImportNodeFormModal, { open: openImportNodeFormModal, close: closeImportNodeFormModal }] =
@@ -29,13 +28,13 @@ export const NodeResource = () => {
   return (
     <Section
       title={t('node')}
-      icon={<IconCloud />}
-      iconPlus={<IconCloudPlus />}
+      icon={<Cloud className="h-5 w-5" />}
+      iconPlus={<CloudUpload className="h-4 w-4" />}
       onCreate={openImportNodeFormModal}
       actions={
-        <ActionIcon onClick={openConfigureNodeFormModal}>
-          <IconFileImport />
-        </ActionIcon>
+        <Button variant="ghost" size="icon" onClick={openConfigureNodeFormModal}>
+          <FileInput className="h-4 w-4" />
+        </Button>
       }
       bordered
     >
@@ -46,13 +45,10 @@ export const NodeResource = () => {
           nodeID={id}
           type={DraggableResourceType.node}
           name={tag}
-          leftSection={
-            <Text fz="xs" fw={600}>
-              {protocol}
-            </Text>
-          }
+          leftSection={<span className="text-xs font-semibold">{protocol}</span>}
           actions={
-            <ActionIcon
+            <Button
+              variant="ghost"
               size="xs"
               onClick={() => {
                 qrCodeModalRef.current?.setProps({
@@ -62,29 +58,14 @@ export const NodeResource = () => {
                 openQRCodeModal()
               }}
             >
-              <IconEye />
-            </ActionIcon>
+              <Eye className="h-4 w-4" />
+            </Button>
           }
           onRemove={() => removeNodesMutation.mutate([id])}
         >
-          <Text fw={600} color={theme.primaryColor} sx={{ wordBreak: 'break-all' }}>
-            {name}
-          </Text>
+          <p className="font-semibold text-primary break-all">{name}</p>
 
-          <Spoiler
-            maxHeight={0}
-            showLabel={<Text fz="xs">{t('actions.show content')}</Text>}
-            hideLabel={<Text fz="xs">{t('actions.hide')}</Text>}
-          >
-            <Text
-              fz="sm"
-              style={{
-                wordBreak: 'break-all',
-              }}
-            >
-              {link}
-            </Text>
-          </Spoiler>
+          <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
         </DraggableResourceCard>
       ))}
 
@@ -101,5 +82,18 @@ export const NodeResource = () => {
 
       <ConfigureNodeFormModal opened={openedConfigureNodeFormModal} onClose={closeConfigureNodeFormModal} />
     </Section>
+  )
+}
+
+const Spoiler = ({ label, showLabel, hideLabel }: { label: string; showLabel: string; hideLabel: string }) => {
+  const [show, setShow] = useState(false)
+
+  return (
+    <div>
+      {show && <p className="text-sm break-all">{label}</p>}
+      <button type="button" className="text-xs text-primary hover:underline" onClick={() => setShow(!show)}>
+        {show ? hideLabel : showLabel}
+      </button>
+    </div>
   )
 }
