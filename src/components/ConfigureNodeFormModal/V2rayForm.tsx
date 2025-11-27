@@ -1,24 +1,30 @@
-import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
 import { Base64 } from 'js-base64'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Input } from '~/components/ui/input'
+import { NumberInput } from '~/components/ui/number-input'
+import { Select } from '~/components/ui/select'
 import { DEFAULT_V2RAY_FORM_VALUES, v2raySchema } from '~/constants'
 import { generateURL } from '~/utils'
 
 export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { values, onSubmit, getInputProps, reset } = useForm<
-    z.infer<typeof v2raySchema> & { protocol: 'vless' | 'vmess' }
-  >({
-    initialValues: { protocol: 'vmess', ...DEFAULT_V2RAY_FORM_VALUES },
-    validate: zodResolver(v2raySchema),
+  const [formData, setFormData] = useState<typeof DEFAULT_V2RAY_FORM_VALUES & { protocol: 'vless' | 'vmess' }>({
+    protocol: 'vmess',
+    ...DEFAULT_V2RAY_FORM_VALUES,
   })
 
-  const handleSubmit = onSubmit((values) => {
-    const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = values
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = v2raySchema.safeParse(formData)
+
+    if (!result.success) return
+
+    const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = formData
 
     if (protocol === 'vless') {
       const params: Record<string, unknown> = {
@@ -51,7 +57,7 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
     }
 
     if (protocol === 'vmess') {
-      const body: Record<string, unknown> = structuredClone(values)
+      const body: Record<string, unknown> = structuredClone(formData)
 
       switch (net) {
         case 'kcp':
@@ -62,8 +68,8 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
 
       switch (body.net) {
         case 'ws':
-          // 不做任何操作，直接跳过
-          break;
+          // No operation, skip
+          break
         case 'h2':
         case 'grpc':
         case 'kcp':
@@ -81,30 +87,55 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
 
       return onLinkGeneration('vmess://' + Base64.encode(JSON.stringify(body)))
     }
-  })
+  }
+
+  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-2">
       <Select
         label={t('configureNode.protocol')}
         data={[
           { label: 'VMESS', value: 'vmess' },
           { label: 'VLESS', value: 'vless' },
         ]}
-        {...getInputProps('protocol')}
+        value={formData.protocol}
+        onChange={(val) => updateField('protocol', (val || 'vmess') as 'vless' | 'vmess')}
       />
 
-      <TextInput label={t('configureNode.name')} {...getInputProps('ps')} />
+      <Input label={t('configureNode.name')} value={formData.ps} onChange={(e) => updateField('ps', e.target.value)} />
 
-      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('add')} />
+      <Input
+        label={t('configureNode.host')}
+        withAsterisk
+        value={formData.add}
+        onChange={(e) => updateField('add', e.target.value)}
+      />
 
-      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput
+        label={t('configureNode.port')}
+        withAsterisk
+        min={0}
+        max={65535}
+        value={formData.port}
+        onChange={(val) => updateField('port', Number(val))}
+      />
 
-      <TextInput label="ID" withAsterisk {...getInputProps('id')} />
+      <Input label="ID" withAsterisk value={formData.id} onChange={(e) => updateField('id', e.target.value)} />
 
-      {values.protocol === 'vmess' && <NumberInput label="AlterID" min={0} max={65535} {...getInputProps('aid')} />}
+      {formData.protocol === 'vmess' && (
+        <NumberInput
+          label="AlterID"
+          min={0}
+          max={65535}
+          value={formData.aid}
+          onChange={(val) => updateField('aid', Number(val))}
+        />
+      )}
 
-      {values.protocol === 'vmess' && (
+      {formData.protocol === 'vmess' && (
         <Select
           label={t('configureNode.security')}
           data={[
@@ -114,11 +145,12 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: 'none', value: 'none' },
             { label: 'zero', value: 'zero' },
           ]}
-          {...getInputProps('scy')}
+          value={formData.scy}
+          onChange={(val) => updateField('scy', val || '')}
         />
       )}
 
-      {values.type !== 'dtls' && (
+      {formData.type !== 'dtls' && (
         <Select
           label="TLS"
           data={[
@@ -126,11 +158,14 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: 'tls', value: 'tls' },
             { label: 'xtls', value: 'xtls' },
           ]}
-          {...getInputProps('tls')}
+          value={formData.tls}
+          onChange={(val) => updateField('tls', val || '')}
         />
       )}
 
-      {values.tls !== 'none' && <TextInput label="SNI" {...getInputProps('sni')} />}
+      {formData.tls !== 'none' && (
+        <Input label="SNI" value={formData.sni} onChange={(e) => updateField('sni', e.target.value)} />
+      )}
 
       <Select
         label="Flow"
@@ -140,11 +175,16 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
           { label: 'xtls-rprx-origin-udp443', value: 'xtls-rprx-origin-udp443' },
           { label: 'xtls-rprx-vision', value: 'xtls-rprx-vision-udp443' },
         ]}
-        {...getInputProps('flow')}
+        value={formData.flow}
+        onChange={(val) => updateField('flow', val || '')}
       />
 
-      {values.tls !== 'none' && (
-        <Checkbox label="AllowInsecure" {...getInputProps('allowInsecure', { type: 'checkbox' })} />
+      {formData.tls !== 'none' && (
+        <Checkbox
+          label="AllowInsecure"
+          checked={formData.allowInsecure}
+          onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
+        />
       )}
 
       <Select
@@ -156,21 +196,23 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
           { label: 'HTTP/2', value: 'h2' },
           { label: 'gRPC', value: 'grpc' },
         ]}
-        {...getInputProps('net')}
+        value={formData.net}
+        onChange={(val) => updateField('net', val || '')}
       />
 
-      {values.net === 'tcp' && (
+      {formData.net === 'tcp' && (
         <Select
           label={t('configureNode.type')}
           data={[
             { label: t('configureNode.noObfuscation'), value: 'none' },
             { label: t('configureNode.httpObfuscation'), value: 'srtp' },
           ]}
-          {...getInputProps('type')}
+          value={formData.type}
+          onChange={(val) => updateField('type', val || '')}
         />
       )}
 
-      {values.net === 'kcp' && (
+      {formData.net === 'kcp' && (
         <Select
           label={t('configureNode.type')}
           data={[
@@ -181,28 +223,43 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: t('configureNode.dtlsObfuscation'), value: 'dtls' },
             { label: t('configureNode.wireguardObfuscation'), value: 'wireguard' },
           ]}
-          {...getInputProps('type')}
+          value={formData.type}
+          onChange={(val) => updateField('type', val || '')}
         />
       )}
 
-      {(values.net === 'ws' ||
-        values.net === 'h2' ||
-        values.tls === 'tls' ||
-        (values.net === 'tcp' && values.type === 'http')) && (
-        <TextInput label={t('configureNode.host')} {...getInputProps('host')} />
+      {(formData.net === 'ws' ||
+        formData.net === 'h2' ||
+        formData.tls === 'tls' ||
+        (formData.net === 'tcp' && formData.type === 'http')) && (
+        <Input
+          label={t('configureNode.host')}
+          value={formData.host}
+          onChange={(e) => updateField('host', e.target.value)}
+        />
       )}
 
-      {values.tls === 'tls' && <TextInput label="Alpn" {...getInputProps('alpn')} />}
-
-      {(values.net === 'ws' || values.net === 'h2' || (values.net === 'tcp' && values.type === 'http')) && (
-        <TextInput label={t('configureNode.path')} {...getInputProps('path')} />
+      {formData.tls === 'tls' && (
+        <Input label="Alpn" value={formData.alpn} onChange={(e) => updateField('alpn', e.target.value)} />
       )}
 
-      {values.net === 'kcp' && <TextInput label="Seed" {...getInputProps('path')} />}
+      {(formData.net === 'ws' || formData.net === 'h2' || (formData.net === 'tcp' && formData.type === 'http')) && (
+        <Input
+          label={t('configureNode.path')}
+          value={formData.path}
+          onChange={(e) => updateField('path', e.target.value)}
+        />
+      )}
 
-      {values.net === 'grpc' && <TextInput label="ServiceName" {...getInputProps('path')} />}
+      {formData.net === 'kcp' && (
+        <Input label="Seed" value={formData.path} onChange={(e) => updateField('path', e.target.value)} />
+      )}
 
-      <FormActions reset={reset} />
+      {formData.net === 'grpc' && (
+        <Input label="ServiceName" value={formData.path} onChange={(e) => updateField('path', e.target.value)} />
+      )}
+
+      <FormActions reset={() => setFormData({ protocol: 'vmess', ...DEFAULT_V2RAY_FORM_VALUES })} />
     </form>
   )
 }

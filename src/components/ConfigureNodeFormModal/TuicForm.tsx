@@ -1,53 +1,83 @@
-import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Input } from '~/components/ui/input'
+import { NumberInput } from '~/components/ui/number-input'
+import { Select } from '~/components/ui/select'
 import { DEFAULT_TUIC_FORM_VALUES, tuicSchema } from '~/constants'
 import { generateURL } from '~/utils'
 
 export const TuicForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof tuicSchema>>({
-    initialValues: DEFAULT_TUIC_FORM_VALUES,
-    validate: zodResolver(tuicSchema),
-  })
+  const [formData, setFormData] = useState(DEFAULT_TUIC_FORM_VALUES)
 
-  const handleSubmit = onSubmit((values) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = tuicSchema.safeParse(formData)
+
+    if (!result.success) return
+
     const query = {
-      congestion_control: values.congestion_control,
-      alpn: values.alpn,
-      sni: values.sni,
-      allow_insecure: values.allowInsecure,
-      disable_sni: values.disable_sni,
-      udp_relay_mode: values.udp_relay_mode,
+      congestion_control: formData.congestion_control,
+      alpn: formData.alpn,
+      sni: formData.sni,
+      allow_insecure: formData.allowInsecure,
+      disable_sni: formData.disable_sni,
+      udp_relay_mode: formData.udp_relay_mode,
     }
 
     return onLinkGeneration(
       generateURL({
         protocol: 'tuic',
-        username: values.uuid,
-        password: values.password,
-        host: values.server,
-        port: values.port,
-        hash: values.name,
+        username: formData.uuid,
+        password: formData.password,
+        host: formData.server,
+        port: formData.port,
+        hash: formData.name,
         params: query,
       }),
     )
-  })
+  }
+
+  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <Input
+        label={t('configureNode.name')}
+        value={formData.name}
+        onChange={(e) => updateField('name', e.target.value)}
+      />
 
-      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('server')} />
+      <Input
+        label={t('configureNode.host')}
+        withAsterisk
+        value={formData.server}
+        onChange={(e) => updateField('server', e.target.value)}
+      />
 
-      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput
+        label={t('configureNode.port')}
+        withAsterisk
+        min={0}
+        max={65535}
+        value={formData.port}
+        onChange={(val) => updateField('port', Number(val))}
+      />
 
-      <TextInput label="UUID" withAsterisk {...getInputProps('uuid')} />
+      <Input label="UUID" withAsterisk value={formData.uuid} onChange={(e) => updateField('uuid', e.target.value)} />
 
-      <TextInput label={t('configureNode.password')} withAsterisk {...getInputProps('password')} />
+      <Input
+        label={t('configureNode.password')}
+        withAsterisk
+        value={formData.password}
+        onChange={(e) => updateField('password', e.target.value)}
+      />
 
       <Select
         label={t('configureNode.congestionControl')}
@@ -55,14 +85,19 @@ export const TuicForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string
           { label: 'bbr', value: 'bbr' },
           { label: 'cubic', value: 'cubic' },
         ]}
-        {...getInputProps('congestion_control')}
+        value={formData.congestion_control}
+        onChange={(val) => updateField('congestion_control', val || '')}
       />
 
-      <TextInput label="Alpn" {...getInputProps('alpn')} />
+      <Input label="Alpn" value={formData.alpn} onChange={(e) => updateField('alpn', e.target.value)} />
 
-      <TextInput label="SNI" {...getInputProps('sni')} />
+      <Input label="SNI" value={formData.sni} onChange={(e) => updateField('sni', e.target.value)} />
 
-      <Checkbox label={t('configureNode.disableSNI')} {...getInputProps('disable_sni', { type: 'checkbox' })} />
+      <Checkbox
+        label={t('configureNode.disableSNI')}
+        checked={formData.disable_sni}
+        onCheckedChange={(checked) => updateField('disable_sni', !!checked)}
+      />
 
       <Select
         label={t('configureNode.udpRelayMode')}
@@ -70,12 +105,17 @@ export const TuicForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string
           { label: 'native', value: 'native' },
           { label: 'quic', value: 'quic' },
         ]}
-        {...getInputProps('udp_relay_mode')}
+        value={formData.udp_relay_mode}
+        onChange={(val) => updateField('udp_relay_mode', val || '')}
       />
 
-      <Checkbox label={t('allowInsecure')} {...getInputProps('allowInsecure', { type: 'checkbox' })} />
+      <Checkbox
+        label={t('allowInsecure')}
+        checked={formData.allowInsecure}
+        onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
+      />
 
-      <FormActions reset={reset} />
+      <FormActions reset={() => setFormData(DEFAULT_TUIC_FORM_VALUES)} />
     </form>
   )
 }
