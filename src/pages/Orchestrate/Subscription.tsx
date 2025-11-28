@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { CloudCog, CloudUpload, Download, Eye } from 'lucide-react'
+import { CloudCog, CloudUpload, Download, Eye, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -11,6 +11,7 @@ import {
 } from '~/apis'
 import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
+import { EditSubscriptionFormModal } from '~/components/EditSubscriptionFormModal'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { QRCodeModal, QRCodeModalRef } from '~/components/QRCodeModal'
 import { Section } from '~/components/Section'
@@ -28,8 +29,17 @@ export const SubscriptionResource = () => {
     openedImportSubscriptionFormModal,
     { open: openImportSubscriptionFormModal, close: closeImportSubscriptionFormModal },
   ] = useDisclosure(false)
+  const [
+    openedEditSubscriptionFormModal,
+    { open: openEditSubscriptionFormModal, close: closeEditSubscriptionFormModal },
+  ] = useDisclosure(false)
+  const [editingSubscription, setEditingSubscription] = useState<{
+    id: string
+    link: string
+    tag: string
+  }>()
   const qrCodeModalRef = useRef<QRCodeModalRef>(null)
-  const { data: subscriptionsQuery } = useSubscriptionsQuery()
+  const { data: subscriptionsQuery, refetch: refetchSubscriptions } = useSubscriptionsQuery()
   const removeSubscriptionsMutation = useRemoveSubscriptionsMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
@@ -69,6 +79,22 @@ export const SubscriptionResource = () => {
               <Button
                 variant="ghost"
                 size="xs"
+                className="h-6 w-6 p-0"
+                onClick={() => {
+                  setEditingSubscription({
+                    id: subscriptionID,
+                    link,
+                    tag: tag || '',
+                  })
+                  openEditSubscriptionFormModal()
+                }}
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="xs"
+                className="h-6 w-6 p-0"
                 onClick={() => {
                   qrCodeModalRef.current?.setProps({
                     name: tag!,
@@ -77,7 +103,7 @@ export const SubscriptionResource = () => {
                   openQRCodeModal()
                 }}
               >
-                <Eye className="h-4 w-4" />
+                <Eye className="h-3 w-3" />
               </Button>
               <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
             </Fragment>
@@ -122,6 +148,19 @@ export const SubscriptionResource = () => {
         onClose={closeImportSubscriptionFormModal}
         handleSubmit={async (values) => {
           await importSubscriptionsMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
+        }}
+      />
+
+      <EditSubscriptionFormModal
+        opened={openedEditSubscriptionFormModal}
+        onClose={closeEditSubscriptionFormModal}
+        subscription={editingSubscription}
+        onSubmit={async (values) => {
+          // Remove the old subscription and re-import with new URL
+          await removeSubscriptionsMutation.mutateAsync([values.id])
+          await importSubscriptionsMutation.mutateAsync([{ link: values.link, tag: values.tag }])
+          await refetchSubscriptions()
+          closeEditSubscriptionFormModal()
         }}
       />
     </Section>

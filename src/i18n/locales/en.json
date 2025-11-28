@@ -185,6 +185,7 @@
   "step": "Step",
   "subscription": "Subscription",
   "editNode": "Edit Node",
+  "editSubscription": "Edit Subscription",
   "success": "Success",
   "tag": "Tag",
   "tcpCheckHttpMethod": "TCP Check HTTP Method",
