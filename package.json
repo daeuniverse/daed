@@ -123,9 +123,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.22",
+    "@tailwindcss/postcss": "^4.1.17",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.18",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss": "^4.1.17"
   }
 }
