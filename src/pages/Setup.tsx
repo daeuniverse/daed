@@ -203,10 +203,10 @@ export const SetupPage = () => {
         <div className="h-5" />
 
         {/* Stepper */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center items-start mb-8">
           {steps.map((step, index) => (
-            <div key={index} className="flex items-center">
-              <div className="flex flex-col items-center">
+            <div key={index} className="flex items-start">
+              <div className="flex flex-col items-center min-w-[120px]">
                 <div
                   className={cn(
                     'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2',
@@ -217,13 +217,13 @@ export const SetupPage = () => {
                 >
                   {index + 1}
                 </div>
-                <div className="mt-2 text-center">
+                <div className="mt-2 text-center min-h-[40px]">
                   <div className="text-xs font-medium">{step.label}</div>
-                  <div className="text-xs text-muted-foreground">{step.description}</div>
+                  {step.description && <div className="text-xs text-muted-foreground">{step.description}</div>}
                 </div>
               </div>
               {index < steps.length - 1 && (
-                <div className={cn('w-20 h-0.5 mx-4 mt-[-20px]', index < active ? 'bg-primary' : 'bg-muted')} />
+                <div className={cn('w-16 h-0.5 mt-5 -mx-4', index < active ? 'bg-primary' : 'bg-muted')} />
               )}
             </div>
           ))}
@@ -233,18 +233,15 @@ export const SetupPage = () => {
         {active === 0 && (
           <form onSubmit={handleEndpointURLSubmit}>
             <div className="max-w-md mx-auto space-y-4">
-              <div className="relative">
-                <Link2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  className="pl-10"
-                  label={t('endpointURL')}
-                  placeholder={DEFAULT_ENDPOINT_URL}
-                  withAsterisk
-                  value={endpointFormData.endpointURL}
-                  onChange={(e) => setEndpointFormData({ endpointURL: e.target.value })}
-                  error={endpointFormErrors.endpointURL}
-                />
-              </div>
+              <Input
+                label={t('endpointURL')}
+                placeholder={DEFAULT_ENDPOINT_URL}
+                withAsterisk
+                value={endpointFormData.endpointURL}
+                onChange={(e) => setEndpointFormData({ endpointURL: e.target.value })}
+                error={endpointFormErrors.endpointURL}
+                icon={<Link2 className="h-4 w-4" />}
+              />
 
               <Button type="submit" className="w-full" uppercase>
                 {t('actions.continue')}
@@ -256,31 +253,25 @@ export const SetupPage = () => {
         {active === 1 && numberUsers === 0 && (
           <form onSubmit={handleSignupSubmit}>
             <div className="max-w-md mx-auto space-y-4">
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  className="pl-10"
-                  label={t('username')}
-                  placeholder="admin"
-                  withAsterisk
-                  value={signupFormData.username}
-                  onChange={(e) => setSignupFormData({ ...signupFormData, username: e.target.value })}
-                  error={signupFormErrors.username}
-                />
-              </div>
-              <div className="relative">
-                <LockKeyhole className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  className="pl-10"
-                  type="password"
-                  label={t('password')}
-                  placeholder="password"
-                  withAsterisk
-                  value={signupFormData.password}
-                  onChange={(e) => setSignupFormData({ ...signupFormData, password: e.target.value })}
-                  error={signupFormErrors.password}
-                />
-              </div>
+              <Input
+                label={t('username')}
+                placeholder="admin"
+                withAsterisk
+                value={signupFormData.username}
+                onChange={(e) => setSignupFormData({ ...signupFormData, username: e.target.value })}
+                error={signupFormErrors.username}
+                icon={<User className="h-4 w-4" />}
+              />
+              <Input
+                type="password"
+                label={t('password')}
+                placeholder="password"
+                withAsterisk
+                value={signupFormData.password}
+                onChange={(e) => setSignupFormData({ ...signupFormData, password: e.target.value })}
+                error={signupFormErrors.password}
+                icon={<LockKeyhole className="h-4 w-4" />}
+              />
               <Button type="submit" className="w-full" uppercase>
                 {t('actions.create account')}
               </Button>
@@ -291,31 +282,25 @@ export const SetupPage = () => {
         {active === 1 && numberUsers > 0 && (
           <form onSubmit={handleLoginSubmit}>
             <div className="max-w-md mx-auto space-y-4">
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  className="pl-10"
-                  label={t('username')}
-                  placeholder="admin"
-                  withAsterisk
-                  value={loginFormData.username}
-                  onChange={(e) => setLoginFormData({ ...loginFormData, username: e.target.value })}
-                  error={loginFormErrors.username}
-                />
-              </div>
-              <div className="relative">
-                <LockKeyhole className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  className="pl-10"
-                  type="password"
-                  label={t('password')}
-                  placeholder="password"
-                  withAsterisk
-                  value={loginFormData.password}
-                  onChange={(e) => setLoginFormData({ ...loginFormData, password: e.target.value })}
-                  error={loginFormErrors.password}
-                />
-              </div>
+              <Input
+                label={t('username')}
+                placeholder="admin"
+                withAsterisk
+                value={loginFormData.username}
+                onChange={(e) => setLoginFormData({ ...loginFormData, username: e.target.value })}
+                error={loginFormErrors.username}
+                icon={<User className="h-4 w-4" />}
+              />
+              <Input
+                type="password"
+                label={t('password')}
+                placeholder="password"
+                withAsterisk
+                value={loginFormData.password}
+                onChange={(e) => setLoginFormData({ ...loginFormData, password: e.target.value })}
+                error={loginFormErrors.password}
+                icon={<LockKeyhole className="h-4 w-4" />}
+              />
               <Button type="submit" className="w-full" uppercase>
                 {t('actions.login')}
               </Button>
