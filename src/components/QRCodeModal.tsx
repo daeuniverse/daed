@@ -1,8 +1,11 @@
-import { ActionIcon, Badge, Flex, Group, Modal } from '@mantine/core'
-import { IconCheck, IconCopy } from '@tabler/icons-react'
+import { Check, Copy } from 'lucide-react'
 import { QRCodeCanvas } from 'qrcode.react'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+
+import { Badge } from '~/components/ui/badge'
+import { Button } from '~/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 
 type Props = {
   name: string
@@ -36,28 +39,27 @@ export const QRCodeModal = forwardRef(({ opened, onClose }: { opened: boolean; o
   }))
 
   return (
-    <Modal opened={opened} onClose={onClose} title={props.name} keepMounted={false}>
-      <Flex mx="auto" py="md" direction="column" align="center" justify="center" gap="md">
-        <QRCodeCanvas size={240} value={props.link} />
+    <Dialog open={opened} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{props.name}</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center justify-center gap-4 py-4 mx-auto">
+          <QRCodeCanvas size={240} value={props.link} />
 
-        <Group position="apart" spacing="xs">
-          <Badge
-            sx={{
-              width: 240,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-            size="lg"
-          >
-            {props.link}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge className="max-w-[240px] truncate" size="lg">
+              {props.link}
+            </Badge>
 
-          <CopyToClipboard text={props.link} onCopy={() => setCopied(true)}>
-            <ActionIcon>{copied ? <IconCheck /> : <IconCopy />}</ActionIcon>
-          </CopyToClipboard>
-        </Group>
-      </Flex>
-    </Modal>
+            <CopyToClipboard text={props.link} onCopy={() => setCopied(true)}>
+              <Button variant="ghost" size="icon">
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              </Button>
+            </CopyToClipboard>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 })

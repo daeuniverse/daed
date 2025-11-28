@@ -1,6 +1,4 @@
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core'
-import { Badge, SimpleGrid, Stack, useMantineTheme } from '@mantine/core'
-import { useMediaQuery } from '@mantine/hooks'
 import { useMemo, useRef, useState } from 'react'
 
 import {
@@ -10,7 +8,9 @@ import {
   useNodesQuery,
   useSubscriptionsQuery,
 } from '~/apis'
+import { Badge } from '~/components/ui/badge'
 import { DraggableResourceType, DraggingResource } from '~/constants'
+import { useMediaQuery } from '~/hooks'
 import { restrictToElement } from '~/utils'
 
 import { Config } from './Config'
@@ -119,28 +119,27 @@ export const OrchestratePage = () => {
   }
 
   const dndAreaRef = useRef<HTMLDivElement>(null)
-  const theme = useMantineTheme()
-  const matchSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
+  const matchSmallScreen = useMediaQuery('(max-width: 640px)')
 
   return (
-    <Stack spacing="lg">
-      <SimpleGrid cols={matchSmallScreen ? 1 : 3}>
+    <div className="flex flex-col gap-6">
+      <div className={`grid gap-4 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
         <Config />
         <DNS />
         <Routing />
-      </SimpleGrid>
+      </div>
 
-      <SimpleGrid ref={dndAreaRef} cols={matchSmallScreen ? 1 : 3}>
+      <div ref={dndAreaRef} className={`grid gap-4 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
         <DndContext modifiers={[restrictToElement(dndAreaRef.current)]} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <GroupResource highlight={!!draggingResource} />
           <NodeResource />
           <SubscriptionResource />
 
           <DragOverlay dropAnimation={null}>
-            {draggingResource && <Badge sx={{ cursor: 'grabbing' }}>{draggingResourceDisplayName}</Badge>}
+            {draggingResource && <Badge className="cursor-grabbing">{draggingResourceDisplayName}</Badge>}
           </DragOverlay>
         </DndContext>
-      </SimpleGrid>
-    </Stack>
+      </div>
+    </div>
   )
 }

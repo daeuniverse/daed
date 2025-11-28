@@ -1,42 +1,31 @@
-import {
-  Anchor,
-  Button,
-  Center,
-  Container,
-  PasswordInput,
-  Space,
-  Stack,
-  Stepper,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
-import { notifications } from '@mantine/notifications'
 import { useStore } from '@nanostores/react'
-import { IconLink, IconPassword, IconUser } from '@tabler/icons-react'
+import { Link2, LockKeyhole, User } from 'lucide-react'
 import request from 'graphql-request'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { notifications } from '~/components/ui/use-toast'
 import { DEFAULT_ENDPOINT_URL } from '~/constants'
+import { cn } from '~/lib/utils'
 import { graphql } from '~/schemas/gql'
 import { endpointURLAtom, tokenAtom } from '~/store'
 
 const endpointURLSchema = z.object({
-  endpointURL: z.string().url().nonempty(),
+  endpointURL: z.string().url().min(1),
 })
 
 const signupSchema = z.object({
-  username: z.string().min(4).max(20).nonempty(),
-  password: z.string().min(6).max(20).nonempty(),
+  username: z.string().min(4).max(20),
+  password: z.string().min(6).max(20),
 })
 
 const loginSchema = z.object({
-  username: z.string().min(4).max(20).nonempty(),
-  password: z.string().min(6).max(20).nonempty(),
+  username: z.string().min(4).max(20),
+  password: z.string().min(6).max(20),
 })
 
 const getNumberUsers = async (endpointURL: string) => {
@@ -61,16 +50,34 @@ export const SetupPage = () => {
 
   const defaultEndpointURL = useStore(endpointURLAtom)
 
-  const endpointURLForm = useForm<z.infer<typeof endpointURLSchema>>({
-    validate: zodResolver(endpointURLSchema),
-    initialValues: { endpointURL: defaultEndpointURL },
-  })
+  const [endpointFormData, setEndpointFormData] = useState({ endpointURL: defaultEndpointURL })
+  const [endpointFormErrors, setEndpointFormErrors] = useState<{ endpointURL?: string }>({})
 
-  const handleEndpointURLSubmit = async (values: z.infer<typeof endpointURLSchema>) => {
-    endpointURLAtom.set(values.endpointURL)
+  const [signupFormData, setSignupFormData] = useState({ username: '', password: '' })
+  const [signupFormErrors, setSignupFormErrors] = useState<{ username?: string; password?: string }>({})
+
+  const [loginFormData, setLoginFormData] = useState({ username: '', password: '' })
+  const [loginFormErrors, setLoginFormErrors] = useState<{ username?: string; password?: string }>({})
+
+  const handleEndpointURLSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = endpointURLSchema.safeParse(endpointFormData)
+
+    if (!result.success) {
+      const errors: { endpointURL?: string } = {}
+      result.error.errors.forEach((err) => {
+        errors[err.path[0] as 'endpointURL'] = err.message
+      })
+      setEndpointFormErrors(errors)
+
+      return
+    }
+
+    endpointURLAtom.set(endpointFormData.endpointURL)
 
     try {
-      const numberUsers = await getNumberUsers(values.endpointURL)
+      const numberUsers = await getNumberUsers(endpointFormData.endpointURL)
 
       setNumberUsers(numberUsers)
 
@@ -83,29 +90,26 @@ export const SetupPage = () => {
     }
   }
 
-  const signupForm = useForm<z.infer<typeof signupSchema>>({
-    validate: zodResolver(signupSchema),
-    initialValues: {
-      username: '',
-      password: '',
-    },
-  })
+  const handleSignupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-  const loginForm = useForm<z.infer<typeof loginSchema>>({
-    validate: zodResolver(loginSchema),
-    initialValues: {
-      username: '',
-      password: '',
-    },
-  })
+    const result = signupSchema.safeParse(signupFormData)
 
-  const handleSignupSubmit = async (values: z.infer<typeof signupSchema>) => {
-    const endpointURL = endpointURLForm.values.endpointURL
-    const { username, password } = values
+    if (!result.success) {
+      const errors: { username?: string; password?: string } = {}
+      result.error.errors.forEach((err) => {
+        errors[err.path[0] as 'username' | 'password'] = err.message
+      })
+      setSignupFormErrors(errors)
+
+      return
+    }
+
+    const { username, password } = signupFormData
 
     try {
       await request(
-        endpointURL,
+        endpointFormData.endpointURL,
         graphql(`
           mutation CreateUser($username: String!, $password: String!) {
             createUser(username: $username, password: $password)
@@ -117,7 +121,7 @@ export const SetupPage = () => {
         },
       )
 
-      const numberUsers = await getNumberUsers(endpointURLForm.values.endpointURL)
+      const numberUsers = await getNumberUsers(endpointFormData.endpointURL)
 
       setNumberUsers(numberUsers)
     } catch (err) {
@@ -128,13 +132,26 @@ export const SetupPage = () => {
     }
   }
 
-  const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
-    const endpointURL = endpointURLForm.values.endpointURL
-    const { username, password } = values
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = loginSchema.safeParse(loginFormData)
+
+    if (!result.success) {
+      const errors: { username?: string; password?: string } = {}
+      result.error.errors.forEach((err) => {
+        errors[err.path[0] as 'username' | 'password'] = err.message
+      })
+      setLoginFormErrors(errors)
+
+      return
+    }
+
+    const { username, password } = loginFormData
 
     try {
       const { token } = await request(
-        endpointURL,
+        endpointFormData.endpointURL,
         graphql(`
           query Token($username: String!, $password: String!) {
             token(username: $username, password: $password)
@@ -161,91 +178,150 @@ export const SetupPage = () => {
     }
   }
 
+  const steps = [
+    { label: `${t('step')} 1`, description: t('setup endpoint') },
+    { label: `${t('step')} 2`, description: t('login account') },
+    { label: t('completed'), description: '' },
+  ]
+
   return (
-    <Container h="100%">
-      <Stack pt="20vh">
-        <Title ta="center">{t('welcome to', { name: 'daed' })} </Title>
-        <Text ta="center">
+    <div className="container h-full">
+      <div className="flex flex-col gap-4 pt-[20vh]">
+        <h1 className="text-3xl font-bold text-center">{t('welcome to', { name: 'daed' })}</h1>
+        <p className="text-center text-muted-foreground">
           {t('what for')}{' '}
-          <Anchor target="_blank" href="https://github.com/daeuniverse/dae">
+          <a
+            target="_blank"
+            href="https://github.com/daeuniverse/dae"
+            className="text-primary hover:underline"
+            rel="noreferrer"
+          >
             dae
-          </Anchor>
-        </Text>
+          </a>
+        </p>
 
-        <Space h={20} />
+        <div className="h-5" />
 
-        <Stepper active={active} onStepClick={setActive} allowNextStepsSelect={false}>
-          <Stepper.Step label={`${t('step')} 1`} description={t('setup endpoint')}>
-            <form onSubmit={endpointURLForm.onSubmit(handleEndpointURLSubmit)}>
-              <Stack maw={480} mx="auto">
-                <TextInput
-                  icon={<IconLink />}
-                  label={t('endpointURL')}
-                  placeholder={DEFAULT_ENDPOINT_URL}
-                  withAsterisk
-                  {...endpointURLForm.getInputProps('endpointURL')}
-                />
+        {/* Stepper */}
+        <div className="flex justify-center items-start mb-8">
+          {steps.map((step, index) => (
+            <div key={index} className="flex items-start">
+              <div className="flex flex-col items-center min-w-[120px]">
+                <div
+                  className={cn(
+                    'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2',
+                    index < active && 'bg-primary border-primary text-primary-foreground',
+                    index === active && 'border-primary text-primary',
+                    index > active && 'border-muted text-muted-foreground',
+                  )}
+                >
+                  {index + 1}
+                </div>
+                <div className="mt-2 text-center min-h-[40px]">
+                  <div className="text-xs font-medium">{step.label}</div>
+                  {step.description && <div className="text-xs text-muted-foreground">{step.description}</div>}
+                </div>
+              </div>
+              {index < steps.length - 1 && (
+                <div className={cn('w-16 h-0.5 mt-5 -mx-4', index < active ? 'bg-primary' : 'bg-muted')} />
+              )}
+            </div>
+          ))}
+        </div>
 
-                <Button type="submit">{t('actions.continue')}</Button>
-              </Stack>
-            </form>
-          </Stepper.Step>
+        {/* Step content */}
+        {active === 0 && (
+          <form onSubmit={handleEndpointURLSubmit}>
+            <div className="max-w-md mx-auto space-y-4">
+              <Input
+                label={t('endpointURL')}
+                placeholder={DEFAULT_ENDPOINT_URL}
+                withAsterisk
+                value={endpointFormData.endpointURL}
+                onChange={(e) => setEndpointFormData({ endpointURL: e.target.value })}
+                error={endpointFormErrors.endpointURL}
+                icon={<Link2 className="h-4 w-4" />}
+              />
 
-          <Stepper.Step label={`${t('step')} 2`} description={t('login account')}>
-            {numberUsers === 0 ? (
-              <form onSubmit={signupForm.onSubmit(handleSignupSubmit)}>
-                <Stack maw={480} mx="auto">
-                  <TextInput
-                    icon={<IconUser />}
-                    label={t('username')}
-                    placeholder="admin"
-                    withAsterisk
-                    {...signupForm.getInputProps('username')}
-                  />
-                  <PasswordInput
-                    icon={<IconPassword />}
-                    label={t('password')}
-                    placeholder="password"
-                    withAsterisk
-                    {...signupForm.getInputProps('password')}
-                  />
-                  <Button type="submit">{t('actions.create account')}</Button>
-                </Stack>
-              </form>
-            ) : (
-              <form onSubmit={loginForm.onSubmit(handleLoginSubmit)}>
-                <Stack maw={480} mx="auto">
-                  <TextInput
-                    icon={<IconUser />}
-                    label={t('username')}
-                    placeholder="admin"
-                    withAsterisk
-                    {...loginForm.getInputProps('username')}
-                  />
-                  <PasswordInput
-                    icon={<IconPassword />}
-                    label={t('password')}
-                    placeholder="password"
-                    withAsterisk
-                    {...loginForm.getInputProps('password')}
-                  />
-                  <Button type="submit">{t('actions.login')}</Button>
-                </Stack>
-              </form>
-            )}
-          </Stepper.Step>
-
-          <Stepper.Completed>
-            <Space h={20} />
-
-            <Center>
-              <Button component={Link} to="/">
-                <Title order={3}>{t('actions.start your journey')}</Title>
+              <Button type="submit" className="w-full" uppercase>
+                {t('actions.continue')}
               </Button>
-            </Center>
-          </Stepper.Completed>
-        </Stepper>
-      </Stack>
-    </Container>
+            </div>
+          </form>
+        )}
+
+        {active === 1 && numberUsers === 0 && (
+          <form onSubmit={handleSignupSubmit}>
+            <div className="max-w-md mx-auto space-y-4">
+              <Input
+                label={t('username')}
+                placeholder="admin"
+                withAsterisk
+                value={signupFormData.username}
+                onChange={(e) => setSignupFormData({ ...signupFormData, username: e.target.value })}
+                error={signupFormErrors.username}
+                icon={<User className="h-4 w-4" />}
+              />
+              <Input
+                type="password"
+                label={t('password')}
+                placeholder="password"
+                withAsterisk
+                value={signupFormData.password}
+                onChange={(e) => setSignupFormData({ ...signupFormData, password: e.target.value })}
+                error={signupFormErrors.password}
+                icon={<LockKeyhole className="h-4 w-4" />}
+              />
+              <Button type="submit" className="w-full" uppercase>
+                {t('actions.create account')}
+              </Button>
+            </div>
+          </form>
+        )}
+
+        {active === 1 && numberUsers > 0 && (
+          <form onSubmit={handleLoginSubmit}>
+            <div className="max-w-md mx-auto space-y-4">
+              <Input
+                label={t('username')}
+                placeholder="admin"
+                withAsterisk
+                value={loginFormData.username}
+                onChange={(e) => setLoginFormData({ ...loginFormData, username: e.target.value })}
+                error={loginFormErrors.username}
+                icon={<User className="h-4 w-4" />}
+              />
+              <Input
+                type="password"
+                label={t('password')}
+                placeholder="password"
+                withAsterisk
+                value={loginFormData.password}
+                onChange={(e) => setLoginFormData({ ...loginFormData, password: e.target.value })}
+                error={loginFormErrors.password}
+                icon={<LockKeyhole className="h-4 w-4" />}
+              />
+              <Button type="submit" className="w-full" uppercase>
+                {t('actions.login')}
+              </Button>
+            </div>
+          </form>
+        )}
+
+        {active === 2 && (
+          <>
+            <div className="h-5" />
+
+            <div className="flex justify-center">
+              <Button asChild>
+                <Link to="/">
+                  <h3 className="text-lg font-semibold">{t('actions.start your journey')}</h3>
+                </Link>
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   )
 }

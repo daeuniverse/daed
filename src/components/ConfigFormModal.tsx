@@ -1,29 +1,18 @@
-import {
-  Accordion,
-  ActionIcon,
-  Box,
-  Checkbox,
-  Flex,
-  Group,
-  Input,
-  Modal,
-  MultiSelect,
-  NumberInput,
-  Radio,
-  Select,
-  Slider,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core'
-import { UseFormReturnType, useForm, zodResolver } from '@mantine/form'
-import { IconMinus, IconPlus } from '@tabler/icons-react'
+import { Minus, Plus } from 'lucide-react'
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { useCreateConfigMutation, useGeneralQuery, useUpdateConfigMutation } from '~/apis'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
+import { Button } from '~/components/ui/button'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
+import { NumberInput } from '~/components/ui/number-input'
+import { Radio, RadioGroup } from '~/components/ui/radio-group'
+import { Select } from '~/components/ui/select'
 import {
   DEFAULT_ALLOW_INSECURE,
   DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
@@ -54,17 +43,16 @@ import {
 import { GlobalInput } from '~/schemas/gql/graphql'
 
 import { FormActions } from './FormActions'
-import { SelectItemWithDescription } from './SelectItemWithDescription'
 
 const schema = z.object({
-  name: z.string().nonempty(),
+  name: z.string().min(1),
   logLevelNumber: z.number().min(0).max(4),
   tproxyPort: z.number(),
   allowInsecure: z.boolean(),
   checkIntervalSeconds: z.number(),
   checkToleranceMS: z.number(),
   sniffingTimeoutMS: z.number(),
-  lanInterface: z.array(z.string().nonempty()),
+  lanInterface: z.array(z.string()),
   wanInterface: z.array(z.string()),
   udpCheckDns: z.array(z.string()).min(1),
   tcpCheckUrl: z.array(z.string()).min(1),
@@ -83,106 +71,121 @@ const schema = z.object({
   fallbackResolver: z.string(),
 })
 
-const InputList = <T extends z.infer<typeof schema>>({
-  form,
+type FormValues = z.infer<typeof schema>
+
+const defaultValues: FormValues = {
+  name: '',
+  mptcp: DEFAULT_MPTCP,
+  enableLocalTcpFastRedirect: DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
+  bandwidthMaxTx: DEFAULT_BANDWIDTH_MAX_TX,
+  bandwidthMaxRx: DEFAULT_BANDWIDTH_MAX_RX,
+  soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
+  logLevelNumber: 2,
+  tproxyPort: DEFAULT_TPROXY_PORT,
+  tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
+  allowInsecure: DEFAULT_ALLOW_INSECURE,
+  checkIntervalSeconds: DEFAULT_CHECK_INTERVAL_SECONDS,
+  checkToleranceMS: DEFAULT_CHECK_TOLERANCE_MS,
+  sniffingTimeoutMS: DEFAULT_SNIFFING_TIMEOUT_MS,
+  lanInterface: [],
+  wanInterface: ['auto'],
+  udpCheckDns: DEFAULT_UDP_CHECK_DNS,
+  tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
+  dialMode: DEFAULT_DIAL_MODE,
+  tcpCheckHttpMethod: DEFAULT_TCP_CHECK_HTTP_METHOD,
+  disableWaitingNetwork: DEFAULT_DISABLE_WAITING_NETWORK,
+  autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
+  tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
+  utlsImitate: DEFAULT_UTLS_IMITATE,
+  fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
+}
+
+const InputList = ({
   label,
   description,
-  fieldName,
   values,
+  onChange,
 }: {
   label: string
   description?: string
-  fieldName: string
   values: string[]
-  form: UseFormReturnType<T>
+  onChange: (values: string[]) => void
 }) => {
   return (
-    <Flex direction="column" gap={10}>
-      <Group position="apart">
-        <Input.Label required>{label}</Input.Label>
-        <ActionIcon
-          size={20}
-          variant="filled"
-          color="green"
-          onClick={() => {
-            form.insertListItem(fieldName, '')
-          }}
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <Label className="text-sm font-medium">
+          {label} <span className="text-destructive">*</span>
+        </Label>
+        <Button
+          type="button"
+          variant="default"
+          size="icon"
+          className="h-5 w-5 bg-green-600 hover:bg-green-700"
+          onClick={() => onChange([...values, ''])}
         >
-          <IconPlus />
-        </ActionIcon>
-      </Group>
+          <Plus className="h-3 w-3" />
+        </Button>
+      </div>
 
-      {description && <Input.Description>{description}</Input.Description>}
+      {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
-      {values.map((_, i) => (
-        <Flex key={i} align="start" gap={6}>
-          <TextInput w="100%" {...form.getInputProps(`${fieldName}.${i}`)} />
-
-          <ActionIcon
-            variant="filled"
-            color="red"
-            mt={8}
-            size={20}
-            onClick={() => {
-              form.removeListItem(fieldName, i)
+      {values.map((value, i) => (
+        <div key={i} className="flex items-start gap-2">
+          <Input
+            className="flex-1"
+            value={value}
+            onChange={(e) => {
+              const newValues = [...values]
+              newValues[i] = e.target.value
+              onChange(newValues)
             }}
+          />
+
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon"
+            className="h-8 w-8 mt-0.5"
+            onClick={() => onChange(values.filter((_, idx) => idx !== i))}
           >
-            <IconMinus />
-          </ActionIcon>
-        </Flex>
+            <Minus className="h-3 w-3" />
+          </Button>
+        </div>
       ))}
-    </Flex>
+    </div>
   )
 }
 
 export type ConfigFormModalRef = {
-  form: UseFormReturnType<z.infer<typeof schema>>
+  form: {
+    setValues: (values: FormValues) => void
+    reset: () => void
+  }
   setEditingID: (id: string) => void
-  initOrigins: (origins: z.infer<typeof schema>) => void
+  initOrigins: (origins: FormValues) => void
 }
 
 export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boolean; onClose: () => void }, ref) => {
   const { t } = useTranslation()
-  const [editingID, setEditingID] = useState()
-  const [origins, setOrigins] = useState<z.infer<typeof schema>>()
+  const [editingID, setEditingID] = useState<string>()
+  const [origins, setOrigins] = useState<FormValues>()
+  const [formData, setFormData] = useState<FormValues>(defaultValues)
 
-  const form = useForm<z.infer<typeof schema>>({
-    validate: zodResolver(schema),
-    initialValues: {
-      name: '',
-      mptcp: DEFAULT_MPTCP,
-      enableLocalTcpFastRedirect: DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
-      bandwidthMaxTx: DEFAULT_BANDWIDTH_MAX_TX,
-      bandwidthMaxRx: DEFAULT_BANDWIDTH_MAX_RX,
-      soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
-      logLevelNumber: 2,
-      tproxyPort: DEFAULT_TPROXY_PORT,
-      tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
-      allowInsecure: DEFAULT_ALLOW_INSECURE,
-      checkIntervalSeconds: DEFAULT_CHECK_INTERVAL_SECONDS,
-      checkToleranceMS: DEFAULT_CHECK_TOLERANCE_MS,
-      sniffingTimeoutMS: DEFAULT_SNIFFING_TIMEOUT_MS,
-      lanInterface: [],
-      wanInterface: ['auto'],
-      udpCheckDns: DEFAULT_UDP_CHECK_DNS,
-      tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
-      dialMode: DEFAULT_DIAL_MODE,
-      tcpCheckHttpMethod: DEFAULT_TCP_CHECK_HTTP_METHOD,
-      disableWaitingNetwork: DEFAULT_DISABLE_WAITING_NETWORK,
-      autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
-      tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
-      utlsImitate: DEFAULT_UTLS_IMITATE,
-      fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
-    },
-  })
-
-  const initOrigins = (origins: z.infer<typeof schema>) => {
-    form.setValues(origins)
+  const initOrigins = (origins: FormValues) => {
+    setFormData(origins)
     setOrigins(origins)
   }
 
+  const resetForm = () => {
+    setFormData(defaultValues)
+  }
+
   useImperativeHandle(ref, () => ({
-    form,
+    form: {
+      setValues: setFormData,
+      reset: resetForm,
+    },
     setEditingID,
     initOrigins,
   }))
@@ -194,44 +197,19 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
     if (interfaces) {
       return [
-        {
-          label: t('autoDetect'),
-          value: 'auto',
-        },
-        ...interfaces
-          .filter(({ flag }) => !!flag.default)
-          .map(({ name, ip }) => ({
-            label: name,
-            value: name,
-            description: (
-              <Stack spacing="xs">
-                {ip.map((addr, i) => (
-                  <Text key={i}>{addr}</Text>
-                ))}
-              </Stack>
-            ),
-          })),
+        { label: t('autoDetect'), value: 'auto' },
+        ...interfaces.filter(({ flag }) => !!flag.default).map(({ name }) => ({ label: name, value: name })),
       ]
     }
 
     return []
   }, [generalQuery?.general.interfaces, t])
 
-  const lanInterfacesData: { value: string; label: string }[] = useMemo(() => {
+  const lanInterfacesData = useMemo(() => {
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
-      return interfaces.map(({ name, ip }) => ({
-        label: name,
-        value: name,
-        description: (
-          <Stack spacing="xs">
-            {ip.map((addr, i) => (
-              <Text key={i}>{addr}</Text>
-            ))}
-          </Stack>
-        ),
-      }))
+      return interfaces.map(({ name }) => ({ label: name, value: name }))
     }
 
     return []
@@ -239,226 +217,229 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
 
   const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
 
-  const logLevelMarks = useMemo(() => logLevelSteps.map(([label], value) => ({ value, label })), [logLevelSteps])
-
   const createConfigMutation = useCreateConfigMutation()
   const updateConfigMutation = useUpdateConfigMutation()
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const logLevel = logLevelSteps[formData.logLevelNumber][1]
+
+    const global: GlobalInput = {
+      logLevel,
+      checkInterval: `${formData.checkIntervalSeconds}s`,
+      checkTolerance: `${formData.checkToleranceMS}ms`,
+      sniffingTimeout: `${formData.sniffingTimeoutMS}ms`,
+      ...formData,
+    }
+
+    if (editingID) {
+      await updateConfigMutation.mutateAsync({
+        id: editingID,
+        global,
+      })
+    } else {
+      await createConfigMutation.mutateAsync({
+        name: formData.name,
+        global,
+      })
+    }
+
+    onClose()
+    resetForm()
+  }
+
+  const updateField = <K extends keyof FormValues>(field: K, value: FormValues[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
   return (
-    <Modal title={t('config')} opened={opened} onClose={onClose}>
-      <form
-        onSubmit={form.onSubmit(async (values) => {
-          const logLevel = logLevelSteps[values.logLevelNumber][1]
+    <Dialog open={opened} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{t('config')}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <Input
+              label={t('name')}
+              withAsterisk
+              value={formData.name}
+              onChange={(e) => updateField('name', e.target.value)}
+              disabled={!!editingID}
+            />
 
-          const global: GlobalInput = {
-            logLevel,
-            checkInterval: `${values.checkIntervalSeconds}s`,
-            checkTolerance: `${values.checkToleranceMS}ms`,
-            sniffingTimeout: `${values.sniffingTimeoutMS}ms`,
-            ...values,
-          }
+            <Accordion
+              type="multiple"
+              defaultValue={[
+                'software-options',
+                'interface-and-kernel-options',
+                'node-connectivity-check',
+                'connecting-options',
+              ]}
+              className="w-full"
+            >
+              <AccordionItem value="software-options">
+                <AccordionTrigger>
+                  <h4 className="text-sm font-semibold">{t('software options')}</h4>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4 pt-2">
+                    <NumberInput
+                      label={t('tproxyPort')}
+                      description={t('descriptions.config.tproxyPort')}
+                      withAsterisk
+                      min={0}
+                      max={65535}
+                      value={formData.tproxyPort}
+                      onChange={(val) => updateField('tproxyPort', Number(val))}
+                    />
 
-          if (editingID) {
-            await updateConfigMutation.mutateAsync({
-              id: editingID,
-              global,
-            })
-          } else {
-            await createConfigMutation.mutateAsync({
-              name: values.name,
-              global,
-            })
-          }
+                    <Checkbox
+                      label={t('tproxyPortProtect')}
+                      description={t('descriptions.config.tproxyPortProtect')}
+                      checked={formData.tproxyPortProtect}
+                      onCheckedChange={(checked) => updateField('tproxyPortProtect', !!checked)}
+                    />
 
-          onClose()
-          form.reset()
-        })}
-      >
-        <Stack>
-          <TextInput label={t('name')} withAsterisk {...form.getInputProps('name')} disabled={!!editingID} />
+                    <NumberInput
+                      label={t('soMarkFromDae')}
+                      description={t('descriptions.config.soMarkFromDae')}
+                      withAsterisk
+                      min={0}
+                      max={Math.pow(2, 32) - 1}
+                      value={formData.soMarkFromDae}
+                      onChange={(val) => updateField('soMarkFromDae', Number(val))}
+                    />
 
-          <Accordion
-            variant="separated"
-            multiple
-            defaultValue={[
-              'software-options',
-              'interface-and-kernel-options',
-              'node-connectivity-check',
-              'connecting-options',
-            ]}
-          >
-            <Accordion.Item value="software-options">
-              <Accordion.Control>
-                <Title order={4}>{t('software options')}</Title>
-              </Accordion.Control>
-
-              <Accordion.Panel>
-                <Stack>
-                  <NumberInput
-                    label={t('tproxyPort')}
-                    description={t('descriptions.config.tproxyPort')}
-                    withAsterisk
-                    min={0}
-                    max={65535}
-                    {...form.getInputProps('tproxyPort')}
-                  />
-
-                  <Checkbox
-                    label={t('tproxyPortProtect')}
-                    description={t('descriptions.config.tproxyPortProtect')}
-                    {...form.getInputProps('tproxyPortProtect', {
-                      type: 'checkbox',
-                    })}
-                  />
-
-                  <NumberInput
-                    label={t('soMarkFromDae')}
-                    description={t('descriptions.config.soMarkFromDae')}
-                    withAsterisk
-                    min={0}
-                    max={Math.pow(2, 32) - 1}
-                    {...form.getInputProps('soMarkFromDae')}
-                  />
-
-                  <Stack>
-                    <Input.Label>{t('logLevel')}</Input.Label>
-
-                    <Box px="sm" pb="lg">
-                      <Slider
-                        min={0}
-                        max={4}
-                        step={1}
-                        label={null}
-                        marks={logLevelMarks}
-                        {...form.getInputProps('logLevelNumber')}
+                    <div className="space-y-2">
+                      <Label>{t('logLevel')}</Label>
+                      <Select
+                        data={logLevelSteps.map(([label], value) => ({ label, value: String(value) }))}
+                        value={String(formData.logLevelNumber)}
+                        onChange={(val) => updateField('logLevelNumber', Number(val))}
                       />
-                    </Box>
-                  </Stack>
+                    </div>
 
-                  <Checkbox
-                    label={t('disableWaitingNetwork')}
-                    description={t('descriptions.config.disableWaitingNetwork')}
-                    {...form.getInputProps('disableWaitingNetwork', {
-                      type: 'checkbox',
-                    })}
-                  />
+                    <Checkbox
+                      label={t('disableWaitingNetwork')}
+                      description={t('descriptions.config.disableWaitingNetwork')}
+                      checked={formData.disableWaitingNetwork}
+                      onCheckedChange={(checked) => updateField('disableWaitingNetwork', !!checked)}
+                    />
 
-                  <Checkbox
-                    label={t('enableLocalTcpFastRedirect')}
-                    {...form.getInputProps('enableLocalTcpFastRedirect', {
-                      type: 'checkbox',
-                    })}
-                  />
+                    <Checkbox
+                      label={t('enableLocalTcpFastRedirect')}
+                      checked={formData.enableLocalTcpFastRedirect}
+                      onCheckedChange={(checked) => updateField('enableLocalTcpFastRedirect', !!checked)}
+                    />
 
-                  <Checkbox
-                    label={t('mptcp')}
-                    {...form.getInputProps('mptcp', {
-                      type: 'checkbox',
-                    })}
-                  />
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
+                    <Checkbox
+                      label={t('mptcp')}
+                      checked={formData.mptcp}
+                      onCheckedChange={(checked) => updateField('mptcp', !!checked)}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-            <Accordion.Item value="interface-and-kernel-options">
-              <Accordion.Control>
-                <Title order={4}>{t('interface and kernel options')}</Title>
-              </Accordion.Control>
+              <AccordionItem value="interface-and-kernel-options">
+                <AccordionTrigger>
+                  <h4 className="text-sm font-semibold">{t('interface and kernel options')}</h4>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4 pt-2">
+                    <Select
+                      label={t('lanInterface')}
+                      description={t('descriptions.config.lanInterface')}
+                      data={lanInterfacesData}
+                      value={formData.lanInterface[0] || ''}
+                      onChange={(val) => updateField('lanInterface', val ? [val] : [])}
+                    />
 
-              <Accordion.Panel>
-                <Stack>
-                  <MultiSelect
-                    label={t('lanInterface')}
-                    description={t('descriptions.config.lanInterface')}
-                    itemComponent={SelectItemWithDescription}
-                    data={lanInterfacesData}
-                    {...form.getInputProps('lanInterface')}
-                  />
+                    <Select
+                      label={t('wanInterface')}
+                      description={t('descriptions.config.wanInterface')}
+                      data={wanInterfacesData}
+                      value={formData.wanInterface[0] || ''}
+                      onChange={(val) => updateField('wanInterface', val ? [val] : [])}
+                    />
 
-                  <MultiSelect
-                    label={t('wanInterface')}
-                    description={t('descriptions.config.wanInterface')}
-                    itemComponent={SelectItemWithDescription}
-                    data={wanInterfacesData}
-                    {...form.getInputProps('wanInterface')}
-                  />
+                    <Checkbox
+                      label={t('autoConfigKernelParameter')}
+                      description={t('descriptions.config.autoConfigKernelParameter')}
+                      checked={formData.autoConfigKernelParameter}
+                      onCheckedChange={(checked) => updateField('autoConfigKernelParameter', !!checked)}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-                  <Checkbox
-                    label={t('autoConfigKernelParameter')}
-                    description={t('descriptions.config.autoConfigKernelParameter')}
-                    {...form.getInputProps('autoConfigKernelParameter', {
-                      type: 'checkbox',
-                    })}
-                  />
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
+              <AccordionItem value="node-connectivity-check">
+                <AccordionTrigger>
+                  <h4 className="text-sm font-semibold">{t('node connectivity check')}</h4>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4 pt-2">
+                    <InputList
+                      label={t('tcpCheckUrl')}
+                      description={t('descriptions.config.tcpCheckUrl')}
+                      values={formData.tcpCheckUrl}
+                      onChange={(vals) => updateField('tcpCheckUrl', vals)}
+                    />
 
-            <Accordion.Item value="node-connectivity-check">
-              <Accordion.Control>
-                <Title order={4}>{t('node connectivity check')}</Title>
-              </Accordion.Control>
+                    <Select
+                      label={t('tcpCheckHttpMethod')}
+                      description={t('descriptions.config.tcpCheckHttpMethod')}
+                      data={Object.values(TcpCheckHttpMethod).map((method) => ({ label: method, value: method }))}
+                      value={formData.tcpCheckHttpMethod}
+                      onChange={(val) => updateField('tcpCheckHttpMethod', val || '')}
+                    />
 
-              <Accordion.Panel>
-                <Stack>
-                  <InputList
-                    form={form}
-                    label={t('tcpCheckUrl')}
-                    description={t('descriptions.config.tcpCheckUrl')}
-                    fieldName="tcpCheckUrl"
-                    values={form.values.tcpCheckUrl}
-                  />
+                    <InputList
+                      label={t('udpCheckDns')}
+                      description={t('descriptions.config.udpCheckDns')}
+                      values={formData.udpCheckDns}
+                      onChange={(vals) => updateField('udpCheckDns', vals)}
+                    />
 
-                  <Select
-                    label={t('tcpCheckHttpMethod')}
-                    description={t('descriptions.config.tcpCheckHttpMethod')}
-                    data={Object.values(TcpCheckHttpMethod).map((tcpCheckHttpMethod) => ({
-                      label: tcpCheckHttpMethod,
-                      value: tcpCheckHttpMethod,
-                    }))}
-                    {...form.getInputProps('tcpCheckHttpMethod')}
-                  />
+                    <Input
+                      label={t('fallbackResolver')}
+                      description={t('descriptions.config.fallbackResolver')}
+                      value={formData.fallbackResolver}
+                      onChange={(e) => updateField('fallbackResolver', e.target.value)}
+                    />
 
-                  <InputList
-                    form={form}
-                    label={t('udpCheckDns')}
-                    description={t('descriptions.config.udpCheckDns')}
-                    fieldName="udpCheckDns"
-                    values={form.values.udpCheckDns}
-                  />
+                    <NumberInput
+                      label={`${t('checkInterval')} (s)`}
+                      withAsterisk
+                      value={formData.checkIntervalSeconds}
+                      onChange={(val) => updateField('checkIntervalSeconds', Number(val))}
+                    />
 
-                  <TextInput
-                    label={t('fallbackResolver')}
-                    description={t('descriptions.config.fallbackResolver')}
-                    {...form.getInputProps('fallbackResolver')}
-                  />
+                    <NumberInput
+                      label={`${t('checkTolerance')} (ms)`}
+                      description={t('descriptions.config.checkTolerance')}
+                      withAsterisk
+                      step={500}
+                      value={formData.checkToleranceMS}
+                      onChange={(val) => updateField('checkToleranceMS', Number(val))}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
 
-                  <NumberInput
-                    label={`${t('checkInterval')} (s)`}
-                    withAsterisk
-                    {...form.getInputProps('checkIntervalSeconds')}
-                  />
-
-                  <NumberInput
-                    label={`${t('checkTolerance')} (ms)`}
-                    description={t('descriptions.config.checkTolerance')}
-                    withAsterisk
-                    step={500}
-                    {...form.getInputProps('checkToleranceMS')}
-                  />
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-
-            <Accordion.Item value="connecting-options">
-              <Accordion.Control>
-                <Title order={4}>{t('connecting options')}</Title>
-              </Accordion.Control>
-
-              <Accordion.Panel>
-                <Stack>
-                  <Radio.Group label={t('dialMode')} {...form.getInputProps('dialMode')}>
-                    <Group mt="xs">
+              <AccordionItem value="connecting-options">
+                <AccordionTrigger>
+                  <h4 className="text-sm font-semibold">{t('connecting options')}</h4>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4 pt-2">
+                    <RadioGroup
+                      label={t('dialMode')}
+                      value={formData.dialMode}
+                      onChange={(val) => updateField('dialMode', val)}
+                    >
                       <Radio
                         value={DialMode.ip}
                         label={DialMode.ip}
@@ -479,73 +460,71 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                         label={DialMode.domainPP}
                         description={t('descriptions.config.dialMode.domain++')}
                       />
-                    </Group>
-                  </Radio.Group>
+                    </RadioGroup>
 
-                  <Checkbox
-                    label={t('allowInsecure')}
-                    description={t('descriptions.config.allowInsecure')}
-                    {...form.getInputProps('allowInsecure', {
-                      type: 'checkbox',
-                    })}
-                  />
-
-                  <NumberInput
-                    label={`${t('sniffingTimeout')} (ms)`}
-                    description={t('descriptions.config.sniffingTimeout')}
-                    step={500}
-                    {...form.getInputProps('sniffingTimeoutMS')}
-                  />
-
-                  <Select
-                    label={t('tlsImplementation')}
-                    description={t('descriptions.config.tlsImplementation')}
-                    data={Object.values(TLSImplementation).map((tlsImplementation) => ({
-                      label: tlsImplementation,
-                      value: tlsImplementation,
-                    }))}
-                    {...form.getInputProps('tlsImplementation')}
-                  />
-
-                  {form.values.tlsImplementation === TLSImplementation.utls && (
-                    <Select
-                      label={t('utlsImitate')}
-                      description={t('descriptions.config.utlsImitate')}
-                      data={Object.values(UTLSImitate).map((utlsImitate) => ({
-                        label: utlsImitate,
-                        value: utlsImitate,
-                      }))}
-                      {...form.getInputProps('utlsImitate')}
+                    <Checkbox
+                      label={t('allowInsecure')}
+                      description={t('descriptions.config.allowInsecure')}
+                      checked={formData.allowInsecure}
+                      onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
                     />
-                  )}
 
-                  <TextInput
-                    label={t('bandwidthMaxTx')}
-                    description={t('descriptions.config.bandwidthMaxTx')}
-                    {...form.getInputProps('bandwidthMaxTx')}
-                  />
+                    <NumberInput
+                      label={`${t('sniffingTimeout')} (ms)`}
+                      description={t('descriptions.config.sniffingTimeout')}
+                      step={500}
+                      value={formData.sniffingTimeoutMS}
+                      onChange={(val) => updateField('sniffingTimeoutMS', Number(val))}
+                    />
 
-                  <TextInput
-                    label={t('bandwidthMaxRx')}
-                    description={t('descriptions.config.bandwidthMaxRx')}
-                    {...form.getInputProps('bandwidthMaxRx')}
-                  />
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
+                    <Select
+                      label={t('tlsImplementation')}
+                      description={t('descriptions.config.tlsImplementation')}
+                      data={Object.values(TLSImplementation).map((impl) => ({ label: impl, value: impl }))}
+                      value={formData.tlsImplementation}
+                      onChange={(val) => updateField('tlsImplementation', val || '')}
+                    />
 
-          <FormActions
-            reset={() => {
-              if (editingID && origins) {
-                form.setValues(origins)
-              } else {
-                form.reset()
-              }
-            }}
-          />
-        </Stack>
-      </form>
-    </Modal>
+                    {formData.tlsImplementation === TLSImplementation.utls && (
+                      <Select
+                        label={t('utlsImitate')}
+                        description={t('descriptions.config.utlsImitate')}
+                        data={Object.values(UTLSImitate).map((impl) => ({ label: impl, value: impl }))}
+                        value={formData.utlsImitate}
+                        onChange={(val) => updateField('utlsImitate', val || '')}
+                      />
+                    )}
+
+                    <Input
+                      label={t('bandwidthMaxTx')}
+                      description={t('descriptions.config.bandwidthMaxTx')}
+                      value={formData.bandwidthMaxTx}
+                      onChange={(e) => updateField('bandwidthMaxTx', e.target.value)}
+                    />
+
+                    <Input
+                      label={t('bandwidthMaxRx')}
+                      description={t('descriptions.config.bandwidthMaxRx')}
+                      value={formData.bandwidthMaxRx}
+                      onChange={(e) => updateField('bandwidthMaxRx', e.target.value)}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
+            <FormActions
+              reset={() => {
+                if (editingID && origins) {
+                  setFormData(origins)
+                } else {
+                  resetForm()
+                }
+              }}
+            />
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 })

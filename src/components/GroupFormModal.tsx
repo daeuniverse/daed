@@ -1,46 +1,56 @@
-import { Modal, Select, Stack, TextInput } from '@mantine/core'
-import { UseFormReturnType, useForm, zodResolver } from '@mantine/form'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { useCreateGroupMutation, useGroupSetPolicyMutation } from '~/apis'
 import { FormActions } from '~/components/FormActions'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Input } from '~/components/ui/input'
+import { Select } from '~/components/ui/select'
 import { DEFAULT_GROUP_POLICY } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
-import { SelectItemWithDescription } from './SelectItemWithDescription'
-
 const schema = z.object({
-  name: z.string().nonempty(),
+  name: z.string().min(1),
   policy: z.nativeEnum(Policy),
 })
 
+type FormValues = z.infer<typeof schema>
+
 export type GroupFormModalRef = {
-  form: UseFormReturnType<z.infer<typeof schema>>
+  form: {
+    setValues: (values: FormValues) => void
+    reset: () => void
+  }
   setEditingID: (id: string) => void
-  initOrigins: (origins: z.infer<typeof schema>) => void
+  initOrigins: (origins: FormValues) => void
 }
 
 export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean; onClose: () => void }, ref) => {
   const { t } = useTranslation()
-  const [editingID, setEditingID] = useState()
-  const [origins, setOrigins] = useState<z.infer<typeof schema>>()
-  const form = useForm<z.infer<typeof schema>>({
-    validate: zodResolver(schema),
-    initialValues: {
-      name: '',
-      policy: DEFAULT_GROUP_POLICY,
-    },
+  const [editingID, setEditingID] = useState<string>()
+  const [origins, setOrigins] = useState<FormValues>()
+  const [formData, setFormData] = useState<FormValues>({
+    name: '',
+    policy: DEFAULT_GROUP_POLICY,
   })
+  const [errors, setErrors] = useState<{ name?: string }>({})
 
-  const initOrigins = (origins: z.infer<typeof schema>) => {
-    form.setValues(origins)
+  const initOrigins = (origins: FormValues) => {
+    setFormData(origins)
     setOrigins(origins)
   }
 
+  const resetForm = () => {
+    setFormData({ name: '', policy: DEFAULT_GROUP_POLICY })
+    setErrors({})
+  }
+
   useImperativeHandle(ref, () => ({
-    form,
+    form: {
+      setValues: setFormData,
+      reset: resetForm,
+    },
     setEditingID,
     initOrigins,
   }))
@@ -76,52 +86,73 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
     },
   ]
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = schema.safeParse(formData)
+
+    if (!result.success) {
+      setErrors({ name: result.error.errors[0]?.message })
+
+      return
+    }
+
+    const policyParams = formData.policy === Policy.Fixed ? [{ key: '', val: '0' }] : []
+
+    if (editingID) {
+      await groupSetPolicyMutation.mutateAsync({
+        id: editingID,
+        policy: formData.policy,
+        policyParams: policyParams,
+      })
+    } else {
+      await createGroupMutation.mutateAsync({
+        name: formData.name,
+        policy: formData.policy,
+        policyParams: policyParams,
+      })
+    }
+
+    onClose()
+    resetForm()
+  }
+
   return (
-    <Modal title={t('group')} opened={opened} onClose={onClose}>
-      <form
-        onSubmit={form.onSubmit(async (values) => {
-          const policyParams = values.policy === Policy.Fixed ? [{ key: '', val: '0' }] : []
+    <Dialog open={opened} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('group')}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <Input
+              withAsterisk
+              label={t('name')}
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              error={errors.name}
+              disabled={!!editingID}
+            />
 
-          if (editingID) {
-            await groupSetPolicyMutation.mutateAsync({
-              id: editingID,
-              policy: values.policy,
-              policyParams: policyParams,
-            })
-          } else {
-            await createGroupMutation.mutateAsync({
-              name: values.name,
-              policy: values.policy,
-              policyParams: policyParams,
-            })
-          }
+            <Select
+              label={t('policy')}
+              data={policyData}
+              value={formData.policy}
+              onChange={(value) => setFormData({ ...formData, policy: value as Policy })}
+            />
 
-          onClose()
-          form.reset()
-        })}
-      >
-        <Stack>
-          <TextInput withAsterisk label={t('name')} {...form.getInputProps('name')} disabled={!!editingID} />
-
-          <Select
-            label={t('policy')}
-            dropdownPosition="bottom"
-            itemComponent={SelectItemWithDescription}
-            data={policyData}
-            {...form.getInputProps('policy')}
-          />
-
-          <FormActions
-            reset={() => {
-              if (editingID && origins) {
-                form.setValues(origins)
-              } else {
-                form.reset()
-              }
-            }}
-          />
-        </Stack>
-      </form>
-    </Modal>
+            <FormActions
+              reset={() => {
+                if (editingID && origins) {
+                  setFormData(origins)
+                } else {
+                  resetForm()
+                }
+              }}
+            />
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 })

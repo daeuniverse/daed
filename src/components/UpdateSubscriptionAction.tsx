@@ -1,18 +1,19 @@
-import { ActionIcon } from '@mantine/core'
-import { IconRefresh } from '@tabler/icons-react'
+import { RefreshCw } from 'lucide-react'
 
 import { useUpdateSubscriptionsMutation } from '~/apis'
+import { Button } from '~/components/ui/button'
 
 export const UpdateSubscriptionAction = ({ id, loading }: { id: string; loading?: boolean }) => {
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
 
   return (
-    <ActionIcon
-      loading={loading || updateSubscriptionsMutation.isLoading}
+    <Button
+      variant="ghost"
       size="xs"
+      loading={loading || updateSubscriptionsMutation.isLoading}
       onClick={() => updateSubscriptionsMutation.mutate([id])}
     >
-      <IconRefresh />
-    </ActionIcon>
+      <RefreshCw className="h-4 w-4" />
+    </Button>
   )
 }

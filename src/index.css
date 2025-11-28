@@ -1,6 +1,101 @@
 @import '@fontsource/fira-sans';
 @import '@fontsource/source-code-pro';
 @import 'graphiql/graphiql.css';
+@import 'tailwindcss';
+
+@theme {
+  /* Container */
+  --container-2xl: 1400px;
+
+  /* Border Radius */
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+
+  /* Fonts */
+  --font-sans: 'Fira Sans', Monaco, Consolas, sans-serif;
+  --font-mono: 'Source Code Pro', Monaco, Consolas, monospace;
+
+  /* Colors - Light Mode */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(240 10% 3.9%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(240 10% 3.9%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(240 10% 3.9%);
+  --color-primary: hsl(262.1 83.3% 57.8%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-secondary: hsl(240 4.8% 95.9%);
+  --color-secondary-foreground: hsl(240 5.9% 10%);
+  --color-muted: hsl(240 4.8% 95.9%);
+  --color-muted-foreground: hsl(240 3.8% 46.1%);
+  --color-accent: hsl(240 4.8% 95.9%);
+  --color-accent-foreground: hsl(240 5.9% 10%);
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(240 5.9% 90%);
+  --color-input: hsl(240 5.9% 90%);
+  --color-ring: hsl(262.1 83.3% 57.8%);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --color-background: hsl(240 10% 3.9%);
+    --color-foreground: hsl(0 0% 98%);
+    --color-card: hsl(240 10% 3.9%);
+    --color-card-foreground: hsl(0 0% 98%);
+    --color-popover: hsl(240 10% 3.9%);
+    --color-popover-foreground: hsl(0 0% 98%);
+    --color-primary: hsl(263.4 70% 50.4%);
+    --color-primary-foreground: hsl(0 0% 98%);
+    --color-secondary: hsl(240 3.7% 15.9%);
+    --color-secondary-foreground: hsl(0 0% 98%);
+    --color-muted: hsl(240 3.7% 15.9%);
+    --color-muted-foreground: hsl(240 5% 64.9%);
+    --color-accent: hsl(240 3.7% 15.9%);
+    --color-accent-foreground: hsl(0 0% 98%);
+    --color-destructive: hsl(0 62.8% 30.6%);
+    --color-destructive-foreground: hsl(0 0% 98%);
+    --color-border: hsl(240 3.7% 15.9%);
+    --color-input: hsl(240 3.7% 15.9%);
+    --color-ring: hsl(263.4 70% 50.4%);
+  }
+
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
 
 #root {
   display: contents;

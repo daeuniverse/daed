@@ -1,8 +1,12 @@
 import { useDroppable } from '@dnd-kit/core'
-import { ActionIcon, Card, Group, Title } from '@mantine/core'
-import { modals } from '@mantine/modals'
-import { IconTrash } from '@tabler/icons-react'
+import { Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { Button } from '~/components/ui/button'
+import { Card } from '~/components/ui/card'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { cn } from '~/lib/utils'
 
 export const DroppableGroupCard = ({
   id,
@@ -19,52 +23,57 @@ export const DroppableGroupCard = ({
 }) => {
   const { t } = useTranslation()
   const { isOver, setNodeRef } = useDroppable({ id })
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   return (
-    <Card
-      ref={setNodeRef}
-      withBorder
-      shadow="sm"
-      p="sm"
-      style={{
-        opacity: isOver ? 0.5 : undefined,
-      }}
-    >
-      <Card.Section withBorder inheritPadding py="sm">
-        <Group position="apart">
-          <Title order={5}>{name}</Title>
+    <>
+      <Card ref={setNodeRef} withBorder shadow="sm" padding="sm" className={cn(isOver && 'opacity-50')}>
+        <div className="border-b pb-2">
+          <div className="flex items-center justify-between">
+            <h5 className="font-semibold">{name}</h5>
 
-          <Group>
-            {actions}
+            <div className="flex items-center gap-2">
+              {actions}
 
-            {onRemove && (
-              <ActionIcon
-                color="red"
-                size="xs"
-                onClick={() => {
-                  modals.openConfirmModal({
-                    title: t('actions.remove'),
-                    labels: {
-                      cancel: t('confirmModal.cancel'),
-                      confirm: t('confirmModal.confirm'),
-                    },
-                    children: t('confirmModal.removeConfirmDescription'),
-                    onConfirm: onRemove,
-                  })
-                }}
-              >
-                <IconTrash />
-              </ActionIcon>
-            )}
-          </Group>
-        </Group>
-      </Card.Section>
+              {onRemove && (
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => setConfirmOpen(true)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
 
-      {children && (
-        <Card.Section inheritPadding py="sm">
-          {children}
-        </Card.Section>
-      )}
-    </Card>
+        {children && <div className="pt-2">{children}</div>}
+      </Card>
+
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('actions.remove')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{t('confirmModal.removeConfirmDescription')}</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>
+              {t('confirmModal.cancel')}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                onRemove?.()
+                setConfirmOpen(false)
+              }}
+            >
+              {t('confirmModal.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

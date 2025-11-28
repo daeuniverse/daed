@@ -1,11 +1,12 @@
-import { ActionIcon, Flex, Group, Modal, TextInput } from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
-import { randomId } from '@mantine/hooks'
-import { IconMinus, IconPlus } from '@tabler/icons-react'
+import { Minus, Plus } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
+import { Button } from '~/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Input } from '~/components/ui/input'
 
 const schema = z.object({
   resources: z
@@ -16,8 +17,10 @@ const schema = z.object({
         tag: z.string().min(1),
       }),
     )
-    .nonempty(),
+    .min(1),
 })
+
+const randomId = () => Math.random().toString(36).substring(2, 15)
 
 export const ImportResourceFormModal = ({
   title,
@@ -31,75 +34,101 @@ export const ImportResourceFormModal = ({
   handleSubmit: (values: z.infer<typeof schema>) => Promise<void>
 }) => {
   const { t } = useTranslation()
-  const form = useForm<z.infer<typeof schema>>({
-    validate: zodResolver(schema),
-    initialValues: {
-      resources: [
-        {
-          id: randomId(),
-          link: '',
-          tag: '',
-        },
-      ],
-    },
-  })
+  const [resources, setResources] = useState([{ id: randomId(), link: '', tag: '' }])
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = schema.safeParse({ resources })
+
+    if (!result.success) {
+      const newErrors: Record<string, string> = {}
+      result.error.errors.forEach((err) => {
+        const path = err.path.join('.')
+        newErrors[path] = err.message
+      })
+      setErrors(newErrors)
+
+      return
+    }
+
+    await handleSubmit({ resources })
+    onClose()
+    setResources([{ id: randomId(), link: '', tag: '' }])
+  }
+
+  const addResource = () => {
+    setResources([...resources, { id: randomId(), link: '', tag: '' }])
+  }
+
+  const removeResource = (index: number) => {
+    setResources(resources.filter((_, i) => i !== index))
+  }
+
+  const updateResource = (index: number, field: 'link' | 'tag', value: string) => {
+    const newResources = [...resources]
+    newResources[index] = { ...newResources[index], [field]: value }
+    setResources(newResources)
+  }
 
   return (
-    <Modal title={title} opened={opened} onClose={onClose}>
-      <form
-        onSubmit={form.onSubmit((values) =>
-          handleSubmit(values).then(() => {
-            onClose()
-            form.reset()
-          }),
-        )}
-      >
-        <Flex gap={20} direction="column">
-          {form.values.resources.map(({ id }, i) => (
-            <Flex key={id} gap={10}>
-              <Flex w="100%" align="start" gap={10}>
-                <TextInput
-                  sx={{ flex: 1 }}
-                  withAsterisk
-                  label={t('link')}
-                  {...form.getInputProps(`resources.${i}.link`)}
-                />
-                <TextInput w="6rem" withAsterisk label={t('tag')} {...form.getInputProps(`resources.${i}.tag`)} />
-              </Flex>
+    <Dialog open={opened} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleFormSubmit}>
+          <div className="flex flex-col gap-5">
+            {resources.map(({ id, link, tag }, i) => (
+              <div key={id} className="flex gap-2.5">
+                <div className="flex-1 flex items-start gap-2.5">
+                  <Input
+                    className="flex-1"
+                    withAsterisk
+                    label={t('link')}
+                    value={link}
+                    onChange={(e) => updateResource(i, 'link', e.target.value)}
+                    error={errors[`resources.${i}.link`]}
+                  />
+                  <Input
+                    className="w-24"
+                    withAsterisk
+                    label={t('tag')}
+                    value={tag}
+                    onChange={(e) => updateResource(i, 'tag', e.target.value)}
+                    error={errors[`resources.${i}.tag`]}
+                  />
+                </div>
 
-              <ActionIcon
-                variant="filled"
-                color="red"
-                size="sm"
-                mt={32}
-                onClick={() => {
-                  form.removeListItem('resources', i)
-                }}
-              >
-                <IconMinus />
-              </ActionIcon>
-            </Flex>
-          ))}
-        </Flex>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="mt-8 h-8 w-8"
+                  onClick={() => removeResource(i)}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
 
-        <Group position="apart" mt={20}>
-          <ActionIcon
-            variant="filled"
-            color="green"
-            onClick={() => {
-              form.insertListItem('resources', {
-                id: randomId(),
-                link: '',
-                tag: '',
-              })
-            }}
-          >
-            <IconPlus />
-          </ActionIcon>
+          <div className="flex items-center justify-between mt-5">
+            <Button
+              type="button"
+              variant="default"
+              size="icon"
+              className="bg-green-600 hover:bg-green-700"
+              onClick={addResource}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
 
-          <FormActions reset={form.reset} />
-        </Group>
-      </form>
-    </Modal>
+            <FormActions reset={() => setResources([{ id: randomId(), link: '', tag: '' }])} />
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }

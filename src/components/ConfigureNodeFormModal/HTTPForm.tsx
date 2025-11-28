@@ -1,62 +1,92 @@
-import { NumberInput, Select, TextInput } from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
+import { Input } from '~/components/ui/input'
+import { NumberInput } from '~/components/ui/number-input'
+import { Select } from '~/components/ui/select'
 import { DEFAULT_HTTP_FORM_VALUES, httpSchema } from '~/constants'
 import { GenerateURLParams, generateURL } from '~/utils'
 
 export const HTTPForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof httpSchema> & { protocol: 'http' | 'https' }>({
-    initialValues: {
-      protocol: 'http',
-      ...DEFAULT_HTTP_FORM_VALUES,
-    },
-    validate: zodResolver(httpSchema),
-  })
+  const [formData, setFormData] = useState({ protocol: 'http' as 'http' | 'https', ...DEFAULT_HTTP_FORM_VALUES })
 
-  const handleSubmit = onSubmit((values) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = httpSchema.safeParse(formData)
+
+    if (!result.success) return
+
     const generateURLParams: GenerateURLParams = {
-      protocol: values.protocol,
-      host: values.host,
-      port: values.port,
-      hash: values.name,
+      protocol: formData.protocol,
+      host: formData.host,
+      port: formData.port,
+      hash: formData.name,
     }
 
-    if (values.username && values.password) {
+    if (formData.username && formData.password) {
       Object.assign(generateURLParams, {
-        username: values.username,
-        password: values.password,
+        username: formData.username,
+        password: formData.password,
       })
     }
 
     return onLinkGeneration(generateURL(generateURLParams))
-  })
+  }
+
+  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-2">
       <Select
         label={t('configureNode.protocol')}
         data={[
           { label: 'HTTP', value: 'http' },
           { label: 'HTTPS', value: 'https' },
         ]}
-        {...getInputProps('protocol')}
+        value={formData.protocol}
+        onChange={(val) => updateField('protocol', val as 'http' | 'https')}
       />
 
-      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
+      <Input
+        label={t('configureNode.name')}
+        value={formData.name}
+        onChange={(e) => updateField('name', e.target.value)}
+      />
 
-      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('host')} />
+      <Input
+        label={t('configureNode.host')}
+        withAsterisk
+        value={formData.host}
+        onChange={(e) => updateField('host', e.target.value)}
+      />
 
-      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput
+        label={t('configureNode.port')}
+        withAsterisk
+        min={0}
+        max={65535}
+        value={formData.port}
+        onChange={(val) => updateField('port', Number(val))}
+      />
 
-      <TextInput label={t('configureNode.username')} {...getInputProps('username')} />
+      <Input
+        label={t('configureNode.username')}
+        value={formData.username}
+        onChange={(e) => updateField('username', e.target.value)}
+      />
 
-      <TextInput label={t('configureNode.password')} {...getInputProps('password')} />
+      <Input
+        label={t('configureNode.password')}
+        value={formData.password}
+        onChange={(e) => updateField('password', e.target.value)}
+      />
 
-      <FormActions reset={reset} />
+      <FormActions reset={() => setFormData({ protocol: 'http', ...DEFAULT_HTTP_FORM_VALUES })} />
     </form>
   )
 }

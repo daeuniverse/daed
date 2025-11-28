@@ -1,9 +1,11 @@
-import { ActionIcon, Card, Group, Indicator, Modal, Title, UnstyledButton } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { modals } from '@mantine/modals'
-import { IconEye, IconTrash } from '@tabler/icons-react'
-import { Fragment } from 'react'
+import { Eye, Trash2 } from 'lucide-react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { Button } from '~/components/ui/button'
+import { Card } from '~/components/ui/card'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { cn } from '~/lib/utils'
 
 export const SimpleCard = ({
   name,
@@ -21,54 +23,77 @@ export const SimpleCard = ({
   children: React.ReactNode
 }) => {
   const { t } = useTranslation()
-
-  const [openedDetailsModal, { open: openDetailsModal, close: closeDetailsModal }] = useDisclosure(false)
+  const [openedDetailsModal, setOpenedDetailsModal] = useState(false)
+  const [openedConfirmModal, setOpenedConfirmModal] = useState(false)
 
   return (
     <Fragment>
-      <Indicator position="bottom-center" size={12} disabled={!selected}>
-        <Card withBorder shadow="sm">
-          <Card.Section withBorder>
-            <Group position="apart" spacing={0}>
-              <UnstyledButton p="sm" sx={{ flex: 1 }} onClick={onSelect}>
-                <Title order={4}>{name}</Title>
-              </UnstyledButton>
+      <div className="relative">
+        {selected && (
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 rounded-full bg-primary z-10" />
+        )}
+        <Card withBorder shadow="sm" padding="none">
+          <div className="flex items-center justify-between border-b">
+            <button
+              className={cn('flex-1 p-3 text-left hover:bg-accent transition-colors', selected && 'bg-accent/50')}
+              onClick={onSelect}
+            >
+              <h4 className="font-semibold">{name}</h4>
+            </button>
 
-              <Group spacing="sm" p="sm">
-                {actions}
+            <div className="flex items-center gap-2 p-3">
+              {actions}
 
-                <ActionIcon size="xs" onClick={openDetailsModal}>
-                  <IconEye />
-                </ActionIcon>
+              <Button variant="ghost" size="xs" onClick={() => setOpenedDetailsModal(true)}>
+                <Eye className="h-4 w-4" />
+              </Button>
 
-                {!selected && onRemove && (
-                  <ActionIcon
-                    color="red"
-                    size="xs"
-                    onClick={() => {
-                      modals.openConfirmModal({
-                        title: t('actions.remove'),
-                        labels: {
-                          cancel: t('confirmModal.cancel'),
-                          confirm: t('confirmModal.confirm'),
-                        },
-                        children: t('confirmModal.removeConfirmDescription'),
-                        onConfirm: onRemove,
-                      })
-                    }}
-                  >
-                    <IconTrash />
-                  </ActionIcon>
-                )}
-              </Group>
-            </Group>
-          </Card.Section>
+              {!selected && onRemove && (
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => setOpenedConfirmModal(true)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
         </Card>
-      </Indicator>
+      </div>
 
-      <Modal title={name} opened={openedDetailsModal} onClose={closeDetailsModal}>
-        {children}
-      </Modal>
+      <Dialog open={openedDetailsModal} onOpenChange={setOpenedDetailsModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{name}</DialogTitle>
+          </DialogHeader>
+          {children}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openedConfirmModal} onOpenChange={setOpenedConfirmModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('actions.remove')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{t('confirmModal.removeConfirmDescription')}</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpenedConfirmModal(false)}>
+              {t('confirmModal.cancel')}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                onRemove?.()
+                setOpenedConfirmModal(false)
+              }}
+            >
+              {t('confirmModal.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Fragment>
   )
 }

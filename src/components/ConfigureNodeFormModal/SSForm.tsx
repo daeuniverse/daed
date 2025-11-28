@@ -1,80 +1,111 @@
-import { NumberInput, Select, TextInput } from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
 import { Base64 } from 'js-base64'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
+import { Input } from '~/components/ui/input'
+import { NumberInput } from '~/components/ui/number-input'
+import { Select } from '~/components/ui/select'
 import { DEFAULT_SS_FORM_VALUES, ssSchema } from '~/constants'
 
 export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { values, onSubmit, getInputProps, reset } = useForm<z.infer<typeof ssSchema>>({
-    initialValues: DEFAULT_SS_FORM_VALUES,
-    validate: zodResolver(ssSchema),
-  })
+  const [formData, setFormData] = useState(DEFAULT_SS_FORM_VALUES)
 
-  const handleSubmit = onSubmit((values) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = ssSchema.safeParse(formData)
+
+    if (!result.success) return
+
     /* ss://BASE64(method:password)@server:port#name */
-    let link = `ss://${Base64.encode(`${values.method}:${values.password}`)}@${values.server}:${values.port}/`
+    let link = `ss://${Base64.encode(`${formData.method}:${formData.password}`)}@${formData.server}:${formData.port}/`
 
-    if (values.plugin) {
-      const plugin: string[] = [values.plugin]
+    if (formData.plugin) {
+      const plugin: string[] = [formData.plugin]
 
-      if (values.plugin === 'v2ray-plugin') {
-        if (values.tls) {
+      if (formData.plugin === 'v2ray-plugin') {
+        if (formData.tls) {
           plugin.push('tls')
         }
 
-        if (values.mode !== 'websocket') {
-          plugin.push('mode=' + values.mode)
+        if (formData.mode !== 'websocket') {
+          plugin.push('mode=' + formData.mode)
         }
 
-        if (values.host) {
-          plugin.push('host=' + values.host)
+        if (formData.host) {
+          plugin.push('host=' + formData.host)
         }
 
-        if (values.path) {
-          if (!values.path.startsWith('/')) {
-            values.path = '/' + values.path
+        let path = formData.path
+
+        if (path) {
+          if (!path.startsWith('/')) {
+            path = '/' + path
           }
 
-          plugin.push('path=' + values.path)
+          plugin.push('path=' + path)
         }
 
-        if (values.impl) {
-          plugin.push('impl=' + values.impl)
+        if (formData.impl) {
+          plugin.push('impl=' + formData.impl)
         }
       } else {
-        plugin.push('obfs=' + values.obfs)
-        plugin.push('obfs-host=' + values.host)
+        plugin.push('obfs=' + formData.obfs)
+        plugin.push('obfs-host=' + formData.host)
 
-        if (values.obfs === 'http') {
-          plugin.push('obfs-path=' + values.path)
+        if (formData.obfs === 'http') {
+          plugin.push('obfs-path=' + formData.path)
         }
 
-        if (values.impl) {
-          plugin.push('impl=' + values.impl)
+        if (formData.impl) {
+          plugin.push('impl=' + formData.impl)
         }
       }
 
       link += `?plugin=${encodeURIComponent(plugin.join(';'))}`
     }
 
-    link += values.name.length ? `#${encodeURIComponent(values.name)}` : ''
+    link += formData.name.length ? `#${encodeURIComponent(formData.name)}` : ''
 
     return onLinkGeneration(link)
-  })
+  }
+
+  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <Input
+        label={t('configureNode.name')}
+        value={formData.name}
+        onChange={(e) => updateField('name', e.target.value)}
+      />
 
-      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('server')} />
+      <Input
+        label={t('configureNode.host')}
+        withAsterisk
+        value={formData.server}
+        onChange={(e) => updateField('server', e.target.value)}
+      />
 
-      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput
+        label={t('configureNode.port')}
+        withAsterisk
+        min={0}
+        max={65535}
+        value={formData.port}
+        onChange={(val) => updateField('port', Number(val))}
+      />
 
-      <TextInput label={t('configureNode.password')} withAsterisk {...getInputProps('password')} />
+      <Input
+        label={t('configureNode.password')}
+        withAsterisk
+        value={formData.password}
+        onChange={(e) => updateField('password', e.target.value)}
+      />
 
       <Select
         label="Method"
@@ -87,7 +118,8 @@ export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           { label: 'plain', value: 'plain' },
           { label: 'none', value: 'none' },
         ]}
-        {...getInputProps('method')}
+        value={formData.method}
+        onChange={(val) => updateField('method', val || '')}
       />
 
       <Select
@@ -97,55 +129,66 @@ export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           { label: 'simple-obfs', value: 'simple-obfs' },
           { label: 'v2ray-plugin', value: 'v2ray-plugin' },
         ]}
-        {...getInputProps('plugin')}
+        value={formData.plugin}
+        onChange={(val) => updateField('plugin', val || '')}
       />
 
-      {values.plugin === 'simple-obfs' ||
-        (values.plugin === 'v2ray-plugin' && (
-          <Select
-            label="Impl"
-            data={[
-              { label: 'Keep Default', value: '' },
-              { label: 'chained', value: 'chained' },
-              { label: 'transport', value: 'transport' },
-            ]}
-            {...getInputProps('impl')}
-          />
-        ))}
+      {(formData.plugin === 'simple-obfs' || formData.plugin === 'v2ray-plugin') && (
+        <Select
+          label="Impl"
+          data={[
+            { label: 'Keep Default', value: '' },
+            { label: 'chained', value: 'chained' },
+            { label: 'transport', value: 'transport' },
+          ]}
+          value={formData.impl}
+          onChange={(val) => updateField('impl', val || '')}
+        />
+      )}
 
-      {values.plugin === 'simple-obfs' && (
+      {formData.plugin === 'simple-obfs' && (
         <Select
           label="Obfs"
           data={[
             { label: 'http', value: 'http' },
             { label: 'tls', value: 'tls' },
           ]}
-          {...getInputProps('obfs')}
+          value={formData.obfs}
+          onChange={(val) => updateField('obfs', val || '')}
         />
       )}
 
-      {values.plugin === 'v2ray-plugin' && (
-        <Select label="Mode" data={[{ label: 'websocket', value: 'websocket' }]} {...getInputProps('mode')} />
+      {formData.plugin === 'v2ray-plugin' && (
+        <Select
+          label="Mode"
+          data={[{ label: 'websocket', value: 'websocket' }]}
+          value={formData.mode}
+          onChange={(val) => updateField('mode', val || '')}
+        />
       )}
 
-      {values.plugin === 'v2ray-plugin' && (
+      {formData.plugin === 'v2ray-plugin' && (
         <Select
           label="TLS"
           data={[
             { label: 'off', value: '' },
             { label: 'tls', value: 'tls' },
           ]}
-          {...getInputProps('tls')}
+          value={formData.tls}
+          onChange={(val) => updateField('tls', val || '')}
         />
       )}
 
-      {((values.plugin === 'simple-obfs' && (values.obfs === 'http' || values.obfs === 'tls')) ||
-        values.plugin === 'v2ray-plugin') && <TextInput label="Host" {...getInputProps('host')} />}
+      {((formData.plugin === 'simple-obfs' && (formData.obfs === 'http' || formData.obfs === 'tls')) ||
+        formData.plugin === 'v2ray-plugin') && (
+        <Input label="Host" value={formData.host} onChange={(e) => updateField('host', e.target.value)} />
+      )}
 
-      {(values.plugin === 'simple-obfs' && values.obfs === 'http') ||
-        (values.plugin === 'v2ray-plugin' && <TextInput label="Path" {...getInputProps('path')} />)}
+      {((formData.plugin === 'simple-obfs' && formData.obfs === 'http') || formData.plugin === 'v2ray-plugin') && (
+        <Input label="Path" value={formData.path} onChange={(e) => updateField('path', e.target.value)} />
+      )}
 
-      <FormActions reset={reset} />
+      <FormActions reset={() => setFormData(DEFAULT_SS_FORM_VALUES)} />
     </form>
   )
 }

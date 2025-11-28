@@ -1,5 +1,6 @@
-import { Input, Stack, Text } from '@mantine/core'
 import { forwardRef } from 'react'
+
+import { cn } from '~/lib/utils'
 
 interface SelectItemWithDescriptionProps extends React.ComponentPropsWithoutRef<'div'> {
   label: React.ReactNode
@@ -8,19 +9,15 @@ interface SelectItemWithDescriptionProps extends React.ComponentPropsWithoutRef<
 }
 
 export const SelectItemWithDescription = forwardRef<HTMLDivElement, SelectItemWithDescriptionProps>(
-  ({ label, description, ...props }, ref) => (
-    <Stack ref={ref} spacing={4} {...props}>
-      <Text>{label}</Text>
+  ({ label, description, selected, ...props }, ref) => (
+    <div ref={ref} className="flex flex-col gap-1" {...props}>
+      <span className="text-sm">{label}</span>
 
       {description && (
-        <Input.Description
-          sx={{
-            color: props.selected ? 'white' : undefined,
-          }}
-        >
+        <span className={cn('text-xs text-muted-foreground', selected && 'text-primary-foreground/70')}>
           {description}
-        </Input.Description>
+        </span>
       )}
-    </Stack>
+    </div>
   ),
 )

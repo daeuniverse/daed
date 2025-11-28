@@ -1,51 +1,81 @@
-import { Checkbox, NumberInput, Select, TextInput } from '@mantine/core'
-import { useForm, zodResolver } from '@mantine/form'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Input } from '~/components/ui/input'
+import { NumberInput } from '~/components/ui/number-input'
+import { Select } from '~/components/ui/select'
 import { DEFAULT_JUICITY_FORM_VALUES, juicitySchema } from '~/constants'
 import { generateURL } from '~/utils'
 
 export const JuicityForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
   const { t } = useTranslation()
-  const { onSubmit, getInputProps, reset } = useForm<z.infer<typeof juicitySchema>>({
-    initialValues: DEFAULT_JUICITY_FORM_VALUES,
-    validate: zodResolver(juicitySchema),
-  })
+  const [formData, setFormData] = useState(DEFAULT_JUICITY_FORM_VALUES)
 
-  const handleSubmit = onSubmit((values) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = juicitySchema.safeParse(formData)
+
+    if (!result.success) return
+
     const query = {
-      congestion_control: values.congestion_control,
-      pinned_certchain_sha256: values.pinned_certchain_sha256,
-      sni: values.sni,
-      allow_insecure: values.allowInsecure,
+      congestion_control: formData.congestion_control,
+      pinned_certchain_sha256: formData.pinned_certchain_sha256,
+      sni: formData.sni,
+      allow_insecure: formData.allowInsecure,
     }
 
     return onLinkGeneration(
       generateURL({
         protocol: 'juicity',
-        username: values.uuid,
-        password: values.password,
-        host: values.server,
-        port: values.port,
-        hash: values.name,
+        username: formData.uuid,
+        password: formData.password,
+        host: formData.server,
+        port: formData.port,
+        hash: formData.name,
         params: query,
       }),
     )
-  })
+  }
+
+  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <TextInput label={t('configureNode.name')} {...getInputProps('name')} />
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <Input
+        label={t('configureNode.name')}
+        value={formData.name}
+        onChange={(e) => updateField('name', e.target.value)}
+      />
 
-      <TextInput label={t('configureNode.host')} withAsterisk {...getInputProps('server')} />
+      <Input
+        label={t('configureNode.host')}
+        withAsterisk
+        value={formData.server}
+        onChange={(e) => updateField('server', e.target.value)}
+      />
 
-      <NumberInput label={t('configureNode.port')} withAsterisk min={0} max={65535} {...getInputProps('port')} />
+      <NumberInput
+        label={t('configureNode.port')}
+        withAsterisk
+        min={0}
+        max={65535}
+        value={formData.port}
+        onChange={(val) => updateField('port', Number(val))}
+      />
 
-      <TextInput label="UUID" withAsterisk {...getInputProps('uuid')} />
+      <Input label="UUID" withAsterisk value={formData.uuid} onChange={(e) => updateField('uuid', e.target.value)} />
 
-      <TextInput label={t('configureNode.password')} withAsterisk {...getInputProps('password')} />
+      <Input
+        label={t('configureNode.password')}
+        withAsterisk
+        value={formData.password}
+        onChange={(e) => updateField('password', e.target.value)}
+      />
 
       <Select
         label={t('configureNode.congestionControl')}
@@ -54,16 +84,25 @@ export const JuicityForm = ({ onLinkGeneration }: { onLinkGeneration: (link: str
           { label: 'cubic', value: 'cubic' },
           { label: 'new_reno', value: 'new_reno' },
         ]}
-        {...getInputProps('congestion_control')}
+        value={formData.congestion_control}
+        onChange={(val) => updateField('congestion_control', val || '')}
       />
 
-      <TextInput label={t('configureNode.pinned_certchain_sha256')} {...getInputProps('pinned_certchain_sha256')} />
+      <Input
+        label={t('configureNode.pinned_certchain_sha256')}
+        value={formData.pinned_certchain_sha256}
+        onChange={(e) => updateField('pinned_certchain_sha256', e.target.value)}
+      />
 
-      <TextInput label="SNI" {...getInputProps('sni')} />
+      <Input label="SNI" value={formData.sni} onChange={(e) => updateField('sni', e.target.value)} />
 
-      <Checkbox label={t('allowInsecure')} {...getInputProps('allowInsecure', { type: 'checkbox' })} />
+      <Checkbox
+        label={t('allowInsecure')}
+        checked={formData.allowInsecure}
+        onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
+      />
 
-      <FormActions reset={reset} />
+      <FormActions reset={() => setFormData(DEFAULT_JUICITY_FORM_VALUES)} />
     </form>
   )
 }
