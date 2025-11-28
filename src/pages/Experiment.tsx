@@ -2,26 +2,8 @@ import { DndContext, DragOverlay, UniqueIdentifier, closestCenter } from '@dnd-k
 import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd-kit/modifiers'
 import { SortableContext, arrayMove, rectSwappingStrategy } from '@dnd-kit/sortable'
 import { faker } from '@faker-js/faker'
-import {
-  Accordion,
-  ActionIcon,
-  Anchor,
-  Badge,
-  Code,
-  Divider,
-  Group,
-  HoverCard,
-  SimpleGrid,
-  Space,
-  Stack,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { Prism } from '@mantine/prism'
 import Editor from '@monaco-editor/react'
-import { IconFileImport, IconForms } from '@tabler/icons-react'
+import { FileInput, Pencil } from 'lucide-react'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
 import { useRef, useState } from 'react'
@@ -47,12 +29,25 @@ import {
   Section,
   SimpleCard,
 } from '~/components'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Badge,
+  Button,
+  Code,
+  Separator,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '~/components/ui'
+import { useDisclosure } from '~/hooks'
 import { DialMode, DraggableResourceType, EDITOR_OPTIONS, LogLevel, RuleType } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
 export const ExperimentPage = () => {
   const { t } = useTranslation()
-  const theme = useMantineTheme()
 
   const [fakeConfigs, setFakeConfigs] = useState(
     faker.helpers.multiple(
@@ -205,8 +200,6 @@ export const ExperimentPage = () => {
     ),
   )
 
-  const [droppableGroupCardAccordionValues, setDroppableGroupCardAccordionValues] = useState<string[]>([])
-
   const [draggingResource, setDraggingResource] = useState<{
     id: UniqueIdentifier
     type: DraggableResourceType
@@ -232,20 +225,22 @@ export const ExperimentPage = () => {
   const renameModalRef = useRef<RenameFormModalRef>(null)
 
   return (
-    <Stack>
+    <div className="flex flex-col gap-4">
       <Editor height={500} defaultValue="hello world" theme="vs-dark" options={EDITOR_OPTIONS} />
 
-      <SimpleGrid cols={3}>
+      <div className="grid grid-cols-3 gap-4">
         <Section title={t('config')} onCreate={openCreateConfigModal}>
-          <Stack>
+          <div className="flex flex-col gap-4">
             {fakeConfigs.map((config) => (
               <SimpleCard
                 key={config.id}
                 name={config.name}
                 selected={false}
                 actions={
-                  <ActionIcon
-                    size="xs"
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
                     onClick={() => {
                       if (renameModalRef.current) {
                         renameModalRef.current.setProps({
@@ -258,27 +253,29 @@ export const ExperimentPage = () => {
                       openRenameModal()
                     }}
                   >
-                    <IconForms />
-                  </ActionIcon>
+                    <Pencil className="h-3 w-3" />
+                  </Button>
                 }
                 onRemove={() => setFakeConfigs((configs) => configs.filter((c) => c.id !== config.id))}
               >
-                <Prism language="json">{JSON.stringify(config, null, 2)}</Prism>
+                <Code>{JSON.stringify(config, null, 2)}</Code>
               </SimpleCard>
             ))}
-          </Stack>
+          </div>
         </Section>
 
         <Section title={t('dns')} onCreate={openCreateDnsModal}>
-          <Stack>
+          <div className="flex flex-col gap-4">
             {fakeDnss.map((dns) => (
               <SimpleCard
                 key={dns.id}
                 name={dns.name}
                 selected={false}
                 actions={
-                  <ActionIcon
-                    size="xs"
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
                     onClick={() => {
                       if (renameModalRef.current) {
                         renameModalRef.current.setProps({
@@ -291,27 +288,29 @@ export const ExperimentPage = () => {
                       openRenameModal()
                     }}
                   >
-                    <IconForms />
-                  </ActionIcon>
+                    <Pencil className="h-3 w-3" />
+                  </Button>
                 }
                 onRemove={() => setFakeDnss((dnss) => dnss.filter((c) => c.id !== dns.id))}
               >
-                <Code block>{dns.dns}</Code>
+                <Code>{dns.dns}</Code>
               </SimpleCard>
             ))}
-          </Stack>
+          </div>
         </Section>
 
         <Section title={t('routing')} onCreate={openCreateRoutingModal}>
-          <Stack>
+          <div className="flex flex-col gap-4">
             {fakeRoutings.map((routing) => (
               <SimpleCard
                 key={routing.id}
                 name={routing.name}
                 selected={false}
                 actions={
-                  <ActionIcon
-                    size="xs"
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
                     onClick={() => {
                       if (renameModalRef.current) {
                         renameModalRef.current.setProps({
@@ -324,25 +323,27 @@ export const ExperimentPage = () => {
                       openRenameModal()
                     }}
                   >
-                    <IconForms />
-                  </ActionIcon>
+                    <Pencil className="h-3 w-3" />
+                  </Button>
                 }
                 onRemove={() => setFakeRoutings((routings) => routings.filter((c) => c.id !== routing.id))}
               >
                 <Code>{routing.routing.string}</Code>
               </SimpleCard>
             ))}
-          </Stack>
+          </div>
         </Section>
-      </SimpleGrid>
+      </div>
 
-      <Divider />
+      <Separator />
 
-      <Title id="resource" order={3}>
-        <Anchor href="#resource">{t('resource')}</Anchor>
-      </Title>
+      <h3 id="resource" className="scroll-m-20 text-2xl font-semibold tracking-tight">
+        <a href="#resource" className="text-primary hover:underline">
+          {t('resource')}
+        </a>
+      </h3>
 
-      <SimpleGrid cols={3}>
+      <div className="grid grid-cols-3 gap-4">
         <DndContext
           modifiers={[restrictToFirstScrollableAncestor]}
           onDragStart={(e) => {
@@ -394,7 +395,7 @@ export const ExperimentPage = () => {
           }}
         >
           <Section title={t('group')} onCreate={openCreateGroupModal} bordered>
-            <Stack>
+            <div className="flex flex-col gap-4">
               {fakeGroups.map(({ id: groupId, name, policy, nodes, subscriptions }) => (
                 <DroppableGroupCard
                   key={groupId}
@@ -404,23 +405,16 @@ export const ExperimentPage = () => {
                     setFakeGroups((groups) => groups.filter((group) => group.id !== groupId))
                   }}
                 >
-                  <Text fw={600}>{policy}</Text>
+                  <p className="font-semibold">{policy}</p>
 
-                  <Space h={10} />
+                  <div className="h-2.5" />
 
-                  <Accordion
-                    variant="filled"
-                    value={droppableGroupCardAccordionValues}
-                    onChange={setDroppableGroupCardAccordionValues}
-                    multiple
-                  >
-                    <Accordion.Item value="node">
-                      <Accordion.Control fz="xs" px="xs">
-                        {t('node')}
-                      </Accordion.Control>
+                  <Accordion type="multiple" className="w-full">
+                    <AccordionItem value="node">
+                      <AccordionTrigger className="text-xs px-2">{t('node')}</AccordionTrigger>
 
-                      <Accordion.Panel>
-                        <SimpleGrid cols={2}>
+                      <AccordionContent>
+                        <div className="grid grid-cols-2 gap-2">
                           <DndContext
                             modifiers={[restrictToParentElement]}
                             collisionDetection={closestCenter}
@@ -463,17 +457,15 @@ export const ExperimentPage = () => {
                               ))}
                             </SortableContext>
                           </DndContext>
-                        </SimpleGrid>
-                      </Accordion.Panel>
-                    </Accordion.Item>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                    <Accordion.Item value="subscription">
-                      <Accordion.Control fz="xs" px="xs">
-                        {t('subscription')}
-                      </Accordion.Control>
+                    <AccordionItem value="subscription">
+                      <AccordionTrigger className="text-xs px-2">{t('subscription')}</AccordionTrigger>
 
-                      <Accordion.Panel>
-                        <SimpleGrid cols={2}>
+                      <AccordionContent>
+                        <div className="grid grid-cols-2 gap-2">
                           <DndContext modifiers={[restrictToParentElement]}>
                             <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
                               {subscriptions.map(({ id: subscriptionId, name }) => (
@@ -499,26 +491,26 @@ export const ExperimentPage = () => {
                               ))}
                             </SortableContext>
                           </DndContext>
-                        </SimpleGrid>
-                      </Accordion.Panel>
-                    </Accordion.Item>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
                   </Accordion>
                 </DroppableGroupCard>
               ))}
-            </Stack>
+            </div>
           </Section>
 
           <Section
             title={t('node')}
             onCreate={openConfigureNodeFormModal}
             actions={
-              <ActionIcon onClick={openImportNodeModal}>
-                <IconFileImport />
-              </ActionIcon>
+              <Button variant="ghost" size="icon" onClick={openImportNodeModal}>
+                <FileInput className="h-4 w-4" />
+              </Button>
             }
             bordered
           >
-            <Stack>
+            <div className="flex flex-col gap-4">
               {fakeNodes.map(({ id, name, tag, protocol, link }) => (
                 <DraggableResourceCard
                   key={id}
@@ -529,25 +521,23 @@ export const ExperimentPage = () => {
                     setFakeNodes((nodes) => nodes.filter((node) => node.id !== id))
                   }}
                 >
-                  <Text fw={600} color={theme.primaryColor}>
-                    {tag}
-                  </Text>
-                  <Text fw={600}>{protocol}</Text>
-                  <HoverCard>
-                    <HoverCard.Target>
-                      <Text truncate>{link}</Text>
-                    </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Text>{link}</Text>
-                    </HoverCard.Dropdown>
-                  </HoverCard>
+                  <p className="font-semibold text-primary">{tag}</p>
+                  <p className="font-semibold">{protocol}</p>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p className="truncate">{link}</p>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{link}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </DraggableResourceCard>
               ))}
-            </Stack>
+            </div>
           </Section>
 
           <Section title={t('subscription')} onCreate={openImportSubscriptionModal} bordered>
-            <Stack>
+            <div className="flex flex-col gap-4">
               {fakeSubscriptions.map(({ id, name, tag, link, updatedAt, nodes }) => (
                 <DraggableResourceCard
                   key={id}
@@ -560,29 +550,27 @@ export const ExperimentPage = () => {
                     )
                   }}
                 >
-                  <Text fw={600} color={theme.primaryColor}>
-                    {tag}
-                  </Text>
-                  <Text fw={600}>{updatedAt}</Text>
-                  <HoverCard>
-                    <HoverCard.Target>
-                      <Text truncate>{link}</Text>
-                    </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Text>{link}</Text>
-                    </HoverCard.Dropdown>
-                  </HoverCard>
+                  <p className="font-semibold text-primary">{tag}</p>
+                  <p className="font-semibold">{updatedAt}</p>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p className="truncate">{link}</p>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{link}</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-                  <Space h={10} />
+                  <div className="h-2.5" />
 
-                  <Group spacing="sm">
+                  <div className="flex flex-wrap gap-2">
                     {nodes.map(({ id, name }) => (
                       <Badge key={id}>{name}</Badge>
                     ))}
-                  </Group>
+                  </div>
                 </DraggableResourceCard>
               ))}
-            </Stack>
+            </div>
           </Section>
 
           <DragOverlay dropAnimation={null}>
@@ -595,7 +583,7 @@ export const ExperimentPage = () => {
             ) : null}
           </DragOverlay>
         </DndContext>
-      </SimpleGrid>
+      </div>
 
       <ConfigFormDrawer opened={openedCreateConfigModal} onClose={closeCreateConfigModal} />
 
@@ -648,6 +636,6 @@ export const ExperimentPage = () => {
       <RenameFormModal ref={renameModalRef} opened={openedRenameModal} onClose={closeRenameModal} />
 
       <ConfigureNodeFormModal opened={openedConfigureNodeFormModal} onClose={closeConfigureNodeFormModal} />
-    </Stack>
+    </div>
   )
 }
