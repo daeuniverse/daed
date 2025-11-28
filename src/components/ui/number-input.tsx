@@ -3,8 +3,10 @@ import { ChevronUp, ChevronDown } from 'lucide-react'
 
 import { cn } from '~/lib/utils'
 
-export interface NumberInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'type'> {
+export interface NumberInputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'onChange' | 'value' | 'type'
+> {
   label?: string
   description?: string
   error?: string
