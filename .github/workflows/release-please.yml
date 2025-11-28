@@ -1,15 +1,29 @@
-name: Publish Release
-run-name: Publish release ${{ inputs.tag }} by @${{ github.actor }}
+name: Release Please
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        type: string
-        required: true
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   checkout-full-src:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
@@ -20,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-          ref: ${{ inputs.tag }}
+          ref: ${{ needs.release-please.outputs.tag_name }}
 
       - name: Download wing vendor
         run: |
@@ -43,11 +57,13 @@ jobs:
           path: daed-full-src.zip
 
   build-web:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ needs.release-please.outputs.tag_name }}
 
       - uses: pnpm/action-setup@v3.0.0
         with:
@@ -70,7 +86,8 @@ jobs:
           path: dist
 
   build-bundle:
-    needs: [build-web]
+    needs: [release-please, build-web]
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -141,13 +158,13 @@ jobs:
       - run: go version
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ needs.release-please.outputs.tag_name }}
           fetch-depth: 0
 
       - name: Get the version
         id: get_version
         env:
-          REF: ${{ inputs.tag }}
+          REF: ${{ needs.release-please.outputs.tag_name }}
         run: |
           tag=${REF}
           version=${tag}
@@ -272,12 +289,13 @@ jobs:
             output_packages/*
 
   upload-release:
-    needs: [checkout-full-src, build-bundle]
+    needs: [release-please, checkout-full-src, build-bundle]
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ needs.release-please.outputs.tag_name }}
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -310,11 +328,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ needs.release-please.outputs.tag_name }}
         run: |
-          Latest_Releases=$(curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/daeuniverse/daed/releases/latest | jq -r '.tag_name')
-          Latest_tag=${{ inputs.tag }}
-          if [ "$Latest_Releases" != "$Latest_tag" ]; then
-            gh release create ${{ inputs.tag }} -t ${{ inputs.tag }} --generate-notes
-          fi
           files=$(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip")
-          gh release upload ${{ inputs.tag }} $files
+          gh release upload $TAG_NAME $files
