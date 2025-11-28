@@ -3,6 +3,7 @@ import {
   ChevronDown,
   CloudOff,
   Github,
+  KeyRound,
   Languages,
   LogOut,
   Menu,
@@ -17,7 +18,14 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
 
-import { useGeneralQuery, useRunMutation, useUpdateAvatarMutation, useUpdateNameMutation, useUserQuery } from '~/apis'
+import {
+  useGeneralQuery,
+  useRunMutation,
+  useUpdateAvatarMutation,
+  useUpdateNameMutation,
+  useUpdatePasswordMutation,
+  useUserQuery,
+} from '~/apis'
 import { Avatar } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import { Code } from '~/components/ui/code'
@@ -46,6 +54,17 @@ const accountSettingsSchema = z.object({
   name: z.string().min(1),
 })
 
+const passwordChangeSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: z.string().min(6, 'New password must be at least 6 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
+
 export const HeaderWithActions = () => {
   const { t } = useTranslation()
   const endpointURL = useStore(endpointURLAtom)
@@ -54,15 +73,28 @@ export const HeaderWithActions = () => {
   const [openedBurger, { toggle: toggleBurger, close: closeBurger }] = useDisclosure(false)
   const [openedAccountSettingsFormModal, { open: openAccountSettingsFormModal, close: closeAccountSettingsFormModal }] =
     useDisclosure(false)
+  const [openedPasswordChangeModal, { open: openPasswordChangeModal, close: closePasswordChangeModal }] =
+    useDisclosure(false)
   const { data: userQuery } = useUserQuery()
   const { data: generalQuery } = useGeneralQuery()
   const runMutation = useRunMutation()
   const updateNameMutation = useUpdateNameMutation()
+  const updatePasswordMutation = useUpdatePasswordMutation()
   const updateAvatarMutation = useUpdateAvatarMutation()
   const [uploadingAvatarBase64, setUploadingAvatarBase64] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState({ name: '' })
   const [formErrors, setFormErrors] = useState<{ name?: string }>({})
+  const [passwordFormData, setPasswordFormData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  })
+  const [passwordFormErrors, setPasswordFormErrors] = useState<{
+    currentPassword?: string
+    newPassword?: string
+    confirmPassword?: string
+  }>({})
 
   const matchSmallScreen = useMediaQuery('(max-width: 640px)')
 
@@ -94,6 +126,41 @@ export const HeaderWithActions = () => {
     if (file) {
       const avatarBase64 = await fileToBase64(file)
       setUploadingAvatarBase64(avatarBase64)
+    }
+  }
+
+  const handlePasswordChangeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const result = passwordChangeSchema.safeParse(passwordFormData)
+
+    if (!result.success) {
+      const errors: typeof passwordFormErrors = {}
+      result.error.issues.forEach((issue) => {
+        const path = issue.path[0] as keyof typeof passwordFormErrors
+        errors[path] = issue.message
+      })
+      setPasswordFormErrors(errors)
+      return
+    }
+
+    try {
+      const response = await updatePasswordMutation.mutateAsync({
+        currentPassword: passwordFormData.currentPassword,
+        newPassword: passwordFormData.newPassword,
+      })
+
+      // Update token with the new one
+      if (response && typeof response === 'object' && 'updatePassword' in response) {
+        const token = (response as { updatePassword: string }).updatePassword
+        tokenAtom.set(token)
+      }
+
+      setPasswordFormData({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      setPasswordFormErrors({})
+      closePasswordChangeModal()
+    } catch {
+      setPasswordFormErrors({ currentPassword: t('password.current.incorrect') })
     }
   }
 
@@ -151,6 +218,17 @@ export const HeaderWithActions = () => {
               >
                 <UserPen className="mr-2 h-4 w-4" />
                 {t('account settings')}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  setPasswordFormData({ currentPassword: '', newPassword: '', confirmPassword: '' })
+                  setPasswordFormErrors({})
+                  openPasswordChangeModal()
+                }}
+              >
+                <KeyRound className="mr-2 h-4 w-4" />
+                {t('password.change')}
               </DropdownMenuItem>
 
               <DropdownMenuItem onClick={() => tokenAtom.set('')}>
@@ -292,6 +370,45 @@ export const HeaderWithActions = () => {
                   }
                 }}
               />
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openedPasswordChangeModal} onOpenChange={closePasswordChangeModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('password.change')}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handlePasswordChangeSubmit}>
+            <div className="space-y-4">
+              <Input
+                type="password"
+                label={t('password.current')}
+                placeholder={t('password.current.placeholder')}
+                value={passwordFormData.currentPassword}
+                onChange={(e) => setPasswordFormData({ ...passwordFormData, currentPassword: e.target.value })}
+                error={passwordFormErrors.currentPassword}
+              />
+              <Input
+                type="password"
+                label={t('password.new')}
+                placeholder={t('password.new.placeholder')}
+                value={passwordFormData.newPassword}
+                onChange={(e) => setPasswordFormData({ ...passwordFormData, newPassword: e.target.value })}
+                error={passwordFormErrors.newPassword}
+              />
+              <Input
+                type="password"
+                label={t('password.confirm')}
+                placeholder={t('password.confirm.placeholder')}
+                value={passwordFormData.confirmPassword}
+                onChange={(e) => setPasswordFormData({ ...passwordFormData, confirmPassword: e.target.value })}
+                error={passwordFormErrors.confirmPassword}
+              />
+              <Button type="submit" className="w-full" loading={updatePasswordMutation.isPending}>
+                {t('password.update')}
+              </Button>
             </div>
           </form>
         </DialogContent>

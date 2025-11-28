@@ -877,3 +877,28 @@ export const useUpdateNameMutation = () => {
     },
   })
 }
+
+export const useUpdatePasswordMutation = () => {
+  const gqlClient = useGQLQueryClient()
+
+  return useMutation({
+    mutationFn: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) => {
+      // Use raw GraphQL string instead of graphql template tag
+      const query = `
+        mutation UpdatePassword($currentPassword: String!, $newPassword: String!) {
+          updatePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+        }
+      `
+
+      return gqlClient.request(query, {
+        currentPassword,
+        newPassword,
+      })
+    },
+    onSuccess: (data) => {
+      // The mutation returns a new token, which should be handled by the app
+      // to update the authentication state
+      return data
+    },
+  })
+}
