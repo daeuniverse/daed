@@ -8,6 +8,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  packages: write
+  pages: write
 
 jobs:
   release-please:
@@ -20,6 +22,32 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Publish GitHub Pages on every push to main
+  publish-gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3.0.0
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: pnpm
+          node-version: latest
+
+      - name: Build
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: Publish Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
 
   checkout-full-src:
     needs: release-please
@@ -332,3 +360,83 @@ jobs:
         run: |
           files=$(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip")
           gh release upload $TAG_NAME $files
+
+  # Publish Docker image when release is created
+  publish-docker-image:
+    needs: [release-please, build-web]
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Download artifact - web
+        uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: dist/
+
+      - name: Prepare Tag
+        id: prep
+        env:
+          REF: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          DIR="$(pwd)/dist/"
+          if [ -d "$DIR" ]; then
+            echo "Installing config files in ${DIR}..."
+          else
+            echo "Error: ${DIR} not found. Can not continue."
+            exit 1
+          fi
+          tag=${REF:1}
+          echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
+          echo "TAG=$tag" >> $GITHUB_OUTPUT
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: buildx
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to quay.io
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.QUAY_PASS }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
+          builder: ${{ steps.buildx.outputs.name }}
+          file: publish.Dockerfile
+          target: prod
+          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: |
+            ${{ github.repository }}:latest
+            ${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+            quay.io/${{ github.repository }}:latest
+            quay.io/${{ github.repository }}:${{ steps.prep.outputs.TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
