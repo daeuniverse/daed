@@ -95,7 +95,7 @@ export const SSRForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'none', value: 'none' },
         ]}
         value={formData.method}
-        onChange={(val) => updateField('method', val || '')}
+        onChange={(val) => updateField('method', (val || 'aes-128-cfb') as typeof formData.method)}
       />
 
       <Select
@@ -111,7 +111,7 @@ export const SSRForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'auth_chain_b', value: 'auth_chain_b' },
         ]}
         value={formData.proto}
-        onChange={(val) => updateField('proto', val || '')}
+        onChange={(val) => updateField('proto', (val || 'origin') as typeof formData.proto)}
       />
 
       {formData.proto !== 'origin' && (
@@ -133,7 +133,7 @@ export const SSRForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'tls1.2_ticket_auth', value: 'tls1.2_ticket_auth' },
         ]}
         value={formData.obfs}
-        onChange={(val) => updateField('obfs', val || '')}
+        onChange={(val) => updateField('obfs', (val || 'plain') as typeof formData.obfs)}
       />
 
       {formData.obfs !== 'plain' && (

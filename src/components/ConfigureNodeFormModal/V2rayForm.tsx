@@ -146,7 +146,7 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: 'zero', value: 'zero' },
           ]}
           value={formData.scy}
-          onChange={(val) => updateField('scy', val || '')}
+          onChange={(val) => updateField('scy', (val || 'auto') as typeof formData.scy)}
         />
       )}
 
@@ -159,7 +159,7 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: 'xtls', value: 'xtls' },
           ]}
           value={formData.tls}
-          onChange={(val) => updateField('tls', val || '')}
+          onChange={(val) => updateField('tls', (val || 'none') as typeof formData.tls)}
         />
       )}
 
@@ -176,7 +176,7 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
           { label: 'xtls-rprx-vision', value: 'xtls-rprx-vision-udp443' },
         ]}
         value={formData.flow}
-        onChange={(val) => updateField('flow', val || '')}
+        onChange={(val) => updateField('flow', (val || 'none') as typeof formData.flow)}
       />
 
       {formData.tls !== 'none' && (
@@ -197,7 +197,7 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
           { label: 'gRPC', value: 'grpc' },
         ]}
         value={formData.net}
-        onChange={(val) => updateField('net', val || '')}
+        onChange={(val) => updateField('net', (val || 'tcp') as typeof formData.net)}
       />
 
       {formData.net === 'tcp' && (
@@ -208,7 +208,7 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: t('configureNode.httpObfuscation'), value: 'srtp' },
           ]}
           value={formData.type}
-          onChange={(val) => updateField('type', val || '')}
+          onChange={(val) => updateField('type', (val || 'none') as typeof formData.type)}
         />
       )}
 
@@ -224,7 +224,7 @@ export const V2rayForm = ({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: t('configureNode.wireguardObfuscation'), value: 'wireguard' },
           ]}
           value={formData.type}
-          onChange={(val) => updateField('type', val || '')}
+          onChange={(val) => updateField('type', (val || 'none') as typeof formData.type)}
         />
       )}
 

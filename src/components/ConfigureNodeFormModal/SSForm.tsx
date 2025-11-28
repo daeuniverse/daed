@@ -119,7 +119,7 @@ export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           { label: 'none', value: 'none' },
         ]}
         value={formData.method}
-        onChange={(val) => updateField('method', val || '')}
+        onChange={(val) => updateField('method', (val || 'aes-128-gcm') as typeof formData.method)}
       />
 
       <Select
@@ -130,7 +130,7 @@ export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           { label: 'v2ray-plugin', value: 'v2ray-plugin' },
         ]}
         value={formData.plugin}
-        onChange={(val) => updateField('plugin', val || '')}
+        onChange={(val) => updateField('plugin', (val || '') as typeof formData.plugin)}
       />
 
       {(formData.plugin === 'simple-obfs' || formData.plugin === 'v2ray-plugin') && (
@@ -142,7 +142,7 @@ export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) 
             { label: 'transport', value: 'transport' },
           ]}
           value={formData.impl}
-          onChange={(val) => updateField('impl', val || '')}
+          onChange={(val) => updateField('impl', (val || '') as typeof formData.impl)}
         />
       )}
 
@@ -154,7 +154,7 @@ export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) 
             { label: 'tls', value: 'tls' },
           ]}
           value={formData.obfs}
-          onChange={(val) => updateField('obfs', val || '')}
+          onChange={(val) => updateField('obfs', (val || 'http') as typeof formData.obfs)}
         />
       )}
 
@@ -175,7 +175,7 @@ export const SSForm = ({ onLinkGeneration }: { onLinkGeneration: (link: string) 
             { label: 'tls', value: 'tls' },
           ]}
           value={formData.tls}
-          onChange={(val) => updateField('tls', val || '')}
+          onChange={(val) => updateField('tls', (val || '') as typeof formData.tls)}
         />
       )}
 

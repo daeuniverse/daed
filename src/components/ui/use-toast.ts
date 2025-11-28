@@ -14,6 +14,7 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used for type inference
 const actionTypes = {
   ADD_TOAST: 'ADD_TOAST',
   UPDATE_TOAST: 'UPDATE_TOAST',
@@ -216,4 +217,4 @@ function useToast() {
   }
 }
 
-export { useToast, toast, notifications }
+export { notifications, toast, useToast }

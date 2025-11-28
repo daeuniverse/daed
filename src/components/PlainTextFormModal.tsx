@@ -9,6 +9,7 @@ import { Button } from '~/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants'
+import { handleEditorBeforeMount } from '~/monaco'
 import { colorSchemeAtom } from '~/store'
 
 import { FormActions } from './FormActions'
@@ -88,7 +89,8 @@ export const PlainTextFormModal = forwardRef(
 
       if (!result.success) {
         const newErrors: Record<string, string> = {}
-        result.error.errors.forEach((err) => {
+
+        result.error.issues.forEach((err) => {
           newErrors[err.path[0] as string] = err.message
         })
         setErrors(newErrors)
@@ -104,7 +106,7 @@ export const PlainTextFormModal = forwardRef(
     return (
       <Dialog open={opened} onOpenChange={onClose}>
         <DialogContent className="max-w-none w-screen h-screen max-h-screen rounded-none flex flex-col">
-          <DialogHeader className="flex-shrink-0 flex-row items-center justify-between">
+          <DialogHeader className="shrink-0 flex-row items-center justify-between">
             <DialogTitle>{title}</DialogTitle>
             <Button variant="ghost" size="icon" onClick={() => onClose()}>
               <X className="h-4 w-4" />
@@ -131,6 +133,7 @@ export const PlainTextFormModal = forwardRef(
                     language="routingA"
                     value={formData.text}
                     onChange={(value) => setFormData({ ...formData, text: value || '' })}
+                    beforeMount={handleEditorBeforeMount}
                   />
                 </div>
 

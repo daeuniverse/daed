@@ -1,5 +1,6 @@
 import type { ClientRect, Modifier } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
+import type { RefObject } from 'react'
 
 /**
  * This file is a copy taken from dnd-kits restrictToBoundingRect.ts
@@ -24,8 +25,9 @@ export const restrictToBoundingRect = (transform: Transform, rect: ClientRect, b
   return value
 }
 
-export const restrictToElement = (element: HTMLElement | null): Modifier => {
+export const restrictToElement = (elementRef: RefObject<HTMLElement | null>): Modifier => {
   return ({ draggingNodeRect, transform }) => {
+    const element = elementRef.current
     const parentRect = element ? (element.getBoundingClientRect() as ClientRect) : null
 
     if (!draggingNodeRect || !parentRect) {

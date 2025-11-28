@@ -92,7 +92,7 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
     const result = schema.safeParse(formData)
 
     if (!result.success) {
-      setErrors({ name: result.error.errors[0]?.message })
+      setErrors({ name: result.error.issues[0]?.message })
 
       return
     }

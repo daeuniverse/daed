@@ -3,9 +3,9 @@ import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd
 import { SortableContext, arrayMove, rectSwappingStrategy } from '@dnd-kit/sortable'
 import { faker } from '@faker-js/faker'
 import Editor from '@monaco-editor/react'
-import { FileInput, Pencil } from 'lucide-react'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
+import { FileInput, Pencil } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -42,8 +42,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui'
-import { useDisclosure } from '~/hooks'
 import { DialMode, DraggableResourceType, EDITOR_OPTIONS, LogLevel, RuleType } from '~/constants'
+import { useDisclosure } from '~/hooks'
+import { handleEditorBeforeMount } from '~/monaco'
 import { Policy } from '~/schemas/gql/graphql'
 
 export const ExperimentPage = () => {
@@ -226,7 +227,13 @@ export const ExperimentPage = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Editor height={500} defaultValue="hello world" theme="vs-dark" options={EDITOR_OPTIONS} />
+      <Editor
+        height={500}
+        defaultValue="hello world"
+        theme="vs-dark"
+        options={EDITOR_OPTIONS}
+        beforeMount={handleEditorBeforeMount}
+      />
 
       <div className="grid grid-cols-3 gap-4">
         <Section title={t('config')} onCreate={openCreateConfigModal}>

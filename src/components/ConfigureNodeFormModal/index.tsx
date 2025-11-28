@@ -29,7 +29,7 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
     const result = schema.safeParse(formData)
 
     if (!result.success) {
-      setErrors({ tag: result.error.errors[0]?.message })
+      setErrors({ tag: result.error.issues[0]?.message })
 
       return
     }

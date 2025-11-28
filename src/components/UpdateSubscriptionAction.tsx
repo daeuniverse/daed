@@ -10,7 +10,7 @@ export const UpdateSubscriptionAction = ({ id, loading }: { id: string; loading?
     <Button
       variant="ghost"
       size="xs"
-      loading={loading || updateSubscriptionsMutation.isLoading}
+      loading={loading || updateSubscriptionsMutation.isPending}
       onClick={() => updateSubscriptionsMutation.mutate([id])}
     >
       <RefreshCw className="h-4 w-4" />

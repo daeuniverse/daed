@@ -1,6 +1,6 @@
 import { useStore } from '@nanostores/react'
-import { Link2, LockKeyhole, User } from 'lucide-react'
 import request from 'graphql-request'
+import { Link2, LockKeyhole, User } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -66,7 +66,8 @@ export const SetupPage = () => {
 
     if (!result.success) {
       const errors: { endpointURL?: string } = {}
-      result.error.errors.forEach((err) => {
+
+      result.error.issues.forEach((err) => {
         errors[err.path[0] as 'endpointURL'] = err.message
       })
       setEndpointFormErrors(errors)
@@ -97,7 +98,8 @@ export const SetupPage = () => {
 
     if (!result.success) {
       const errors: { username?: string; password?: string } = {}
-      result.error.errors.forEach((err) => {
+
+      result.error.issues.forEach((err) => {
         errors[err.path[0] as 'username' | 'password'] = err.message
       })
       setSignupFormErrors(errors)
@@ -139,7 +141,8 @@ export const SetupPage = () => {
 
     if (!result.success) {
       const errors: { username?: string; password?: string } = {}
-      result.error.errors.forEach((err) => {
+
+      result.error.issues.forEach((err) => {
         errors[err.path[0] as 'username' | 'password'] = err.message
       })
       setLoginFormErrors(errors)
@@ -178,14 +181,14 @@ export const SetupPage = () => {
     }
   }
 
-  const steps = [
+  const steps: { label: string; description: string }[] = [
     { label: `${t('step')} 1`, description: t('setup endpoint') },
     { label: `${t('step')} 2`, description: t('login account') },
-    { label: t('completed'), description: '' },
+    { label: t('actions.confirm'), description: '' },
   ]
 
   return (
-    <div className="container h-full">
+    <div className="container mx-auto h-full">
       <div className="flex flex-col gap-4 pt-[20vh]">
         <h1 className="text-3xl font-bold text-center">{t('welcome to', { name: 'daed' })}</h1>
         <p className="text-center text-muted-foreground">
@@ -217,7 +220,7 @@ export const SetupPage = () => {
                 >
                   {index + 1}
                 </div>
-                <div className="mt-2 text-center min-h-[40px]">
+                <div className="mt-2 text-center min-h-10">
                   <div className="text-xs font-medium">{step.label}</div>
                   {step.description && <div className="text-xs text-muted-foreground">{step.description}</div>}
                 </div>

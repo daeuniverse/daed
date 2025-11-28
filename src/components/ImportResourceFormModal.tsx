@@ -44,7 +44,8 @@ export const ImportResourceFormModal = ({
 
     if (!result.success) {
       const newErrors: Record<string, string> = {}
-      result.error.errors.forEach((err) => {
+
+      result.error.issues.forEach((err) => {
         const path = err.path.join('.')
         newErrors[path] = err.message
       })

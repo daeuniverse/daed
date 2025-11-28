@@ -120,6 +120,9 @@ export const OrchestratePage = () => {
 
   const dndAreaRef = useRef<HTMLDivElement>(null)
   const matchSmallScreen = useMediaQuery('(max-width: 640px)')
+  // The ref is only accessed when drag events occur, not during render
+  // eslint-disable-next-line react-hooks/refs
+  const dndModifiers = useMemo(() => [restrictToElement(dndAreaRef)], [])
 
   return (
     <div className="flex flex-col gap-6">
@@ -130,7 +133,7 @@ export const OrchestratePage = () => {
       </div>
 
       <div ref={dndAreaRef} className={`grid gap-4 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
-        <DndContext modifiers={[restrictToElement(dndAreaRef.current)]} onDragStart={onDragStart} onDragEnd={onDragEnd}>
+        <DndContext modifiers={dndModifiers} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <GroupResource highlight={!!draggingResource} />
           <NodeResource />
           <SubscriptionResource />

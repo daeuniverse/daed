@@ -59,8 +59,6 @@ export const QueryProvider = ({ children, toggleColorScheme, colorScheme }: Quer
               tokenAtom.set('')
             }
           }
-
-          return response
         },
       }),
     [endpointURL, token],

@@ -74,7 +74,7 @@ export const RenameFormModal = forwardRef(
       const result = schema.safeParse(formData)
 
       if (!result.success) {
-        setFormErrors({ name: result.error.errors[0]?.message })
+        setFormErrors({ name: result.error.issues[0]?.message })
 
         return
       }

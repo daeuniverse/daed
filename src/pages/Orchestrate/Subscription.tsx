@@ -1,5 +1,5 @@
-import { CloudCog, CloudUpload, Download, Eye } from 'lucide-react'
 import dayjs from 'dayjs'
+import { CloudCog, CloudUpload, Download, Eye } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -50,7 +50,7 @@ export const SubscriptionResource = () => {
             onClick={() => {
               updateSubscriptionsMutation.mutate(subscriptionsQuery?.subscriptions.map(({ id }) => id) || [])
             }}
-            loading={updateSubscriptionsMutation.isLoading}
+            loading={updateSubscriptionsMutation.isPending}
           >
             <Download className="h-4 w-4" />
           </Button>
@@ -79,7 +79,7 @@ export const SubscriptionResource = () => {
               >
                 <Eye className="h-4 w-4" />
               </Button>
-              <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isLoading} />
+              <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
             </Fragment>
           }
           onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}

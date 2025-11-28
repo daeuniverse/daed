@@ -44,6 +44,7 @@ import { GlobalInput } from '~/schemas/gql/graphql'
 
 import { FormActions } from './FormActions'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used for type inference
 const schema = z.object({
   name: z.string().min(1),
   logLevelNumber: z.number().min(0).max(4),

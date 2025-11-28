@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export function useDisclosure(initialState = false) {
   const [opened, setOpened] = useState(initialState)
@@ -25,7 +25,13 @@ export function useMediaQuery(query: string): boolean {
     const mediaQuery = window.matchMedia(query)
     const handler = (e: MediaQueryListEvent) => setMatches(e.matches)
 
-    setMatches(mediaQuery.matches)
+    // Sync state when query changes - this is intentional since the query prop may change
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMatches((prev) => {
+      const current = mediaQuery.matches
+
+      return prev !== current ? current : prev
+    })
     mediaQuery.addEventListener('change', handler)
 
     return () => mediaQuery.removeEventListener('change', handler)

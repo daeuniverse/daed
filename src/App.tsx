@@ -32,12 +32,12 @@ const useColorScheme = (): ColorScheme => {
 export const App = () => {
   const appState = useStore(appStateAtom)
   const preferredColorScheme = useColorScheme()
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(preferredColorScheme)
+  // Derive colorScheme directly from appState or system preference
+  const colorScheme = appState.preferredColorScheme || preferredColorScheme
 
   const toggleColorScheme = useCallback(
     (value?: ColorScheme) => {
       const toScheme = value || (colorScheme === 'dark' ? 'light' : 'dark')
-      setColorScheme(toScheme)
       appStateAtom.setKey('preferredColorScheme', toScheme)
     },
     [colorScheme],
@@ -45,16 +45,17 @@ export const App = () => {
 
   useEffect(() => {
     const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
-    const onDarkModeChange = (e: MediaQueryListEvent) => toggleColorScheme(e.matches ? 'dark' : 'light')
+    const onDarkModeChange = (e: MediaQueryListEvent) => {
+      // Only update if no user preference is set
+      if (!appState.preferredColorScheme) {
+        appStateAtom.setKey('preferredColorScheme', e.matches ? 'dark' : 'light')
+      }
+    }
 
     darkModePreference.addEventListener('change', onDarkModeChange)
 
     return () => darkModePreference.removeEventListener('change', onDarkModeChange)
-  }, [toggleColorScheme])
-
-  useEffect(() => {
-    setColorScheme(appState.preferredColorScheme || preferredColorScheme)
-  }, [setColorScheme, preferredColorScheme, appState.preferredColorScheme])
+  }, [appState.preferredColorScheme])
 
   useEffect(() => {
     colorSchemeAtom.set(colorScheme)
@@ -72,7 +73,7 @@ export const App = () => {
   return (
     <QueryProvider toggleColorScheme={toggleColorScheme} colorScheme={colorScheme}>
       <TooltipProvider>
-        <div className="h-[100dvh]">
+        <div className="h-dvh">
           <Toaster />
           <Router />
         </div>

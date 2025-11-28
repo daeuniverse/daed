@@ -27,10 +27,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "explicit"
+    "source.fixAll": "always",
+    "source.organizeImports": "always"
   },
-  "editor.formatOnSave": true,
-  "i18n-ally.localesPaths": ["packages/i18n/locales"],
-  "i18n-ally.keystyle": "nested"
+  "editor.formatOnSave": true
 }

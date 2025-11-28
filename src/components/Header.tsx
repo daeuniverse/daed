@@ -72,7 +72,7 @@ export const HeaderWithActions = () => {
     const result = accountSettingsSchema.safeParse(formData)
 
     if (!result.success) {
-      setFormErrors({ name: result.error.errors[0]?.message })
+      setFormErrors({ name: result.error.issues[0]?.message })
 
       return
     }
@@ -98,7 +98,7 @@ export const HeaderWithActions = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 h-[60px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center shadow-sm">
+    <header className="sticky top-0 z-50 h-[60px] border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 flex items-center shadow-sm">
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80">
@@ -197,7 +197,7 @@ export const HeaderWithActions = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                loading={runMutation.isLoading}
+                loading={runMutation.isPending}
                 onClick={() => runMutation.mutateAsync(false)}
               >
                 <RefreshCw className="h-5 w-5" />
@@ -210,7 +210,7 @@ export const HeaderWithActions = () => {
               size={matchSmallScreen ? 'xs' : 'md'}
               onLabel={<Wifi className="h-3 w-3" />}
               offLabel={<CloudOff className="h-3 w-3" />}
-              disabled={!generalQuery?.general.dae.running && runMutation.isLoading}
+              disabled={!generalQuery?.general.dae.running && runMutation.isPending}
               checked={generalQuery?.general.dae.running}
               onCheckedChange={(checked) => {
                 runMutation.mutateAsync(!checked)

@@ -101,7 +101,7 @@ export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
           { label: 'shadowsocks', value: 'shadowsocks' },
         ]}
         value={formData.method}
-        onChange={(val) => updateField('method', val || '')}
+        onChange={(val) => updateField('method', (val || 'origin') as typeof formData.method)}
       />
 
       {formData.method === 'shadowsocks' && (
@@ -115,7 +115,7 @@ export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
             { label: 'chacha20-ietf-poly1305', value: 'chacha20-ietf-poly1305' },
           ]}
           value={formData.ssCipher}
-          onChange={(val) => updateField('ssCipher', val || '')}
+          onChange={(val) => updateField('ssCipher', (val || 'aes-128-gcm') as typeof formData.ssCipher)}
         />
       )}
 
@@ -144,7 +144,7 @@ export const TrojanForm = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
           { label: 'websocket', value: 'websocket' },
         ]}
         value={formData.obfs}
-        onChange={(val) => updateField('obfs', val || '')}
+        onChange={(val) => updateField('obfs', (val || 'none') as typeof formData.obfs)}
       />
 
       {formData.obfs === 'websocket' && (
