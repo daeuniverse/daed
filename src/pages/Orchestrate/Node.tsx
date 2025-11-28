@@ -1,25 +1,30 @@
-import { Cloud, CloudUpload, Eye, FileInput } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { Cloud, CloudUpload, Eye, FileInput, Pencil } from 'lucide-react'
+import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '~/apis'
-import { ConfigureNodeFormModal } from '~/components'
-import { DraggableResourceCard } from '~/components/DraggableResourceCard'
-import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
-import { QRCodeModal, QRCodeModalRef } from '~/components/QRCodeModal'
-import { Section } from '~/components/Section'
-import { Button } from '~/components/ui/button'
-import { DraggableResourceType } from '~/constants'
-import { useDisclosure } from '~/hooks'
+import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '../../apis/index.ts'
+import { DraggableResourceCard } from '../../components/DraggableResourceCard.tsx'
+import { EditNodeFormModal } from '../../components/EditNodeFormModal.tsx'
+import { ImportResourceFormModal } from '../../components/ImportResourceFormModal.tsx'
+import { ConfigureNodeFormModal } from '../../components/index.ts'
+import { QRCodeModal, QRCodeModalRef } from '../../components/QRCodeModal.tsx'
+import { Section } from '../../components/Section.tsx'
+import { Button } from '../../components/ui/button.tsx'
+import { DraggableResourceType } from '../../constants/index.ts'
 
 export const NodeResource = () => {
   const { t } = useTranslation()
 
-  const [openedQRCodeModal, { open: openQRCodeModal, close: closeQRCodeModal }] = useDisclosure(false)
-  const [openedImportNodeFormModal, { open: openImportNodeFormModal, close: closeImportNodeFormModal }] =
-    useDisclosure(false)
-  const [openedConfigureNodeFormModal, { open: openConfigureNodeFormModal, close: closeConfigureNodeFormModal }] =
-    useDisclosure(false)
+  const [openedQRCodeModal, setOpenedQRCodeModal] = useState(false)
+  const [openedImportNodeFormModal, setOpenedImportNodeFormModal] = useState(false)
+  const [openedConfigureNodeFormModal, setOpenedConfigureNodeFormModal] = useState(false)
+  const [openedEditNodeFormModal, setOpenedEditNodeFormModal] = useState(false)
+  const [editingNode, setEditingNode] = useState<{
+    id: string
+    link: string
+    tag: string
+    name: string
+  }>()
   const qrCodeModalRef = useRef<QRCodeModalRef>(null)
   const { data: nodesQuery } = useNodesQuery()
   const removeNodesMutation = useRemoveNodesMutation()
@@ -30,9 +35,9 @@ export const NodeResource = () => {
       title={t('node')}
       icon={<Cloud className="h-5 w-5" />}
       iconPlus={<CloudUpload className="h-4 w-4" />}
-      onCreate={openImportNodeFormModal}
+      onCreate={() => setOpenedImportNodeFormModal(true)}
       actions={
-        <Button variant="ghost" size="icon" onClick={openConfigureNodeFormModal}>
+        <Button variant="ghost" size="icon" onClick={() => setOpenedConfigureNodeFormModal(true)}>
           <FileInput className="h-4 w-4" />
         </Button>
       }
@@ -47,19 +52,38 @@ export const NodeResource = () => {
           name={tag}
           leftSection={<span className="text-xs font-semibold">{protocol}</span>}
           actions={
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => {
-                qrCodeModalRef.current?.setProps({
-                  name: name || tag!,
-                  link,
-                })
-                openQRCodeModal()
-              }}
-            >
-              <Eye className="h-4 w-4" />
-            </Button>
+            <Fragment>
+              <Button
+                variant="ghost"
+                size="xs"
+                className="h-6 w-6 p-0"
+                onClick={() => {
+                  setEditingNode({
+                    id,
+                    link,
+                    tag: tag || '',
+                    name: name || '',
+                  })
+                  setOpenedEditNodeFormModal(true)
+                }}
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="xs"
+                className="h-6 w-6 p-0"
+                onClick={() => {
+                  qrCodeModalRef.current?.setProps({
+                    name: name || tag!,
+                    link,
+                  })
+                  setOpenedQRCodeModal(true)
+                }}
+              >
+                <Eye className="h-3 w-3" />
+              </Button>
+            </Fragment>
           }
           onRemove={() => removeNodesMutation.mutate([id])}
         >
@@ -69,18 +93,27 @@ export const NodeResource = () => {
         </DraggableResourceCard>
       ))}
 
-      <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={closeQRCodeModal} />
+      <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={() => setOpenedQRCodeModal(false)} />
 
       <ImportResourceFormModal
         title={t('node')}
         opened={openedImportNodeFormModal}
-        onClose={closeImportNodeFormModal}
+        onClose={() => setOpenedImportNodeFormModal(false)}
         handleSubmit={async (values) => {
           await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
         }}
       />
 
-      <ConfigureNodeFormModal opened={openedConfigureNodeFormModal} onClose={closeConfigureNodeFormModal} />
+      <ConfigureNodeFormModal
+        opened={openedConfigureNodeFormModal}
+        onClose={() => setOpenedConfigureNodeFormModal(false)}
+      />
+
+      <EditNodeFormModal
+        opened={openedEditNodeFormModal}
+        onClose={() => setOpenedEditNodeFormModal(false)}
+        node={editingNode}
+      />
     </Section>
   )
 }
