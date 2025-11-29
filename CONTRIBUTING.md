@@ -1,39 +1,200 @@
-# Contribute
+# Contributing to daed
 
-If you want to contribute to a project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on Github, new technologies and and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
+First off, thanks for taking the time to contribute! ❤️
 
-### Bug Reports and Feature Requests
+All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them.
 
-If you have found a `bug` or have a `feature request`, please use the search first in case a similar issue already exists. If not, please create an [issue](https://github.com/daeuniverse/dae-wing/issues/new) in this repository
+## Table of Contents
 
-### Code
+- [Code of Conduct](#code-of-conduct)
+- [Reporting Bugs](#reporting-bugs)
+- [Suggesting Features](#suggesting-features)
+- [Development Setup](#development-setup)
+- [Pull Request Process](#pull-request-process)
+- [Commit Guidelines](#commit-guidelines)
+- [Style Guide](#style-guide)
 
-If you would like to fix a bug or implement a feature, please `fork` the repository and `create a Pull Request`.
+## Code of Conduct
 
-Before you start any Pull Request, `it is recommended that you create an issue` to discuss first if you have any doubts about requirement or implementation. That way you can be sure that the maintainer(s) agree on what to change and how, and you can hopefully get a quick merge afterwards.
+This project and everyone participating in it is governed by our commitment to providing a welcoming and inclusive environment. Please be respectful and constructive in all interactions.
 
-`Pull Requests` can only be merged once all status checks are green.
+## Reporting Bugs
 
-### How to make a clean pull request
+### Before Submitting a Bug Report
 
-- Create a `personal fork` of the project on Github.
-- Clone the fork on your local machine. Your remote repo on Github is called `origin`.
-- Add the original repository as a remote called `upstream`.
-- If you created your fork a while ago be sure to pull upstream changes into your local repository.
-- Create a new branch to work on! Branch from `develop` if it exists, else from `master`.
-- Implement/fix your feature, comment your code.
-- Follow the code style of the project, including indentation.
-- If the project has tests run them!
-- Write or adapt tests as needed.
-- Add or change the documentation as needed.
-- Squash your commits into a single commit with git's [interactive rebase](https://help.github.com/articles/interactive-rebase). Create a new branch if necessary.
-- Push your branch to your fork on Github, the remote `origin`.
-- From your fork open a pull request in the correct branch. Target the project's `develop` branch if there is one, else go for `master`!
-- Once the pull request is approved and merged you can pull the changes from `upstream` to your local repo and delete
-  your extra branch(es).
+- Check the [existing issues](https://github.com/daeuniverse/daed/issues) to see if the problem has already been reported
+- Make sure you are using the latest version
+- Collect relevant information (OS, browser, Node.js version, etc.)
 
-And last but not least: Always write your commit messages in the present tense. Your commit message should describe what the commit, when applied, does to the code – not what you did to the code.
+### How to Submit a Good Bug Report
 
-### Re-requesting a review
+- Use a clear and descriptive title
+- Describe the exact steps to reproduce the problem
+- Describe the behavior you observed and what you expected
+- Include screenshots or recordings if applicable
+- Include any relevant logs or error messages
 
-Please do not ping your reviewer(s) by mentioning them in a new comment. Instead, use the re-request review functionality. Read more about this in the [ GitHub docs, Re-requesting a review ](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/incorporating-feedback-in-your-pull-request#re-requesting-a-review).
+[Open a Bug Report →](https://github.com/daeuniverse/daed/issues/new?template=bug_report.md)
+
+## Suggesting Features
+
+### Before Submitting a Feature Request
+
+- Check if the feature has already been requested or implemented
+- Consider whether your idea fits the scope of the project
+
+### How to Submit a Good Feature Request
+
+- Use a clear and descriptive title
+- Provide a detailed description of the proposed feature
+- Explain why this feature would be useful
+- Include mockups or examples if possible
+
+[Open a Feature Request →](https://github.com/daeuniverse/daed/issues/new?template=feature_request.md)
+
+## Development Setup
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) >= 20
+- [pnpm](https://pnpm.io/) >= 9
+- [Git](https://git-scm.com/)
+
+### Getting Started
+
+1. **Fork the repository** on GitHub
+
+2. **Clone your fork** locally:
+
+   ```bash
+   git clone https://github.com/<your-username>/daed.git
+   cd daed
+   ```
+
+3. **Add upstream remote**:
+
+   ```bash
+   git remote add upstream https://github.com/daeuniverse/daed.git
+   ```
+
+4. **Install dependencies**:
+
+   ```bash
+   pnpm install
+   ```
+
+5. **Start the development server**:
+   ```bash
+   pnpm dev
+   ```
+
+### Keeping Your Fork Updated
+
+```bash
+git fetch upstream
+git checkout main
+git merge upstream/main
+```
+
+## Pull Request Process
+
+1. **Create a branch** from `main`:
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   # or
+   git checkout -b fix/your-bug-fix
+   ```
+
+2. **Make your changes** and ensure:
+   - Code follows the project's style guide
+   - All tests pass (`pnpm test`)
+   - Linting passes (`pnpm lint`)
+
+3. **Commit your changes** following the [commit guidelines](#commit-guidelines)
+
+4. **Push to your fork**:
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+5. **Open a Pull Request** against `main`
+
+6. **Wait for review** — maintainers will review your PR and may request changes
+
+### Tips for a Successful PR
+
+- Keep PRs focused and atomic — one feature or fix per PR
+- Write a clear description of what your PR does
+- Link any related issues
+- Add screenshots for UI changes
+- Be responsive to feedback
+
+## Commit Guidelines
+
+We follow [Conventional Commits](https://www.conventionalcommits.org/) specification.
+
+### Commit Message Format
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+
+| Type       | Description                                               |
+| ---------- | --------------------------------------------------------- |
+| `feat`     | A new feature                                             |
+| `fix`      | A bug fix                                                 |
+| `docs`     | Documentation only changes                                |
+| `style`    | Changes that do not affect the meaning of the code        |
+| `refactor` | A code change that neither fixes a bug nor adds a feature |
+| `perf`     | A code change that improves performance                   |
+| `test`     | Adding missing tests or correcting existing tests         |
+| `chore`    | Changes to the build process or auxiliary tools           |
+
+### Examples
+
+```bash
+feat(ui): add dark mode toggle button
+fix(api): handle null response from server
+docs: update README with new badges
+chore(deps): update dependencies
+```
+
+## Style Guide
+
+### Code Style
+
+- We use [ESLint](https://eslint.org/) with [@antfu/eslint-config](https://github.com/antfu/eslint-config)
+- Run `pnpm lint` to check and auto-fix issues
+- Use TypeScript for all new code
+- Prefer functional components with hooks
+
+### File Naming
+
+- React components: `PascalCase.tsx` (e.g., `UserProfile.tsx`)
+- Utilities/hooks: `camelCase.ts` (e.g., `useAuth.ts`)
+- Test files: `*.test.ts` or `*.test.tsx`
+
+### Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+│   └── ui/         # Base UI components (shadcn/ui)
+├── hooks/          # Custom React hooks
+├── pages/          # Page components
+├── schemas/        # GraphQL schemas and types
+├── contexts/       # React context providers
+└── lib/            # Utility functions
+```
+
+---
+
+Thank you for contributing! 🎉
