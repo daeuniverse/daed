@@ -1,12 +1,14 @@
 import type { DragEndEvent } from '@dnd-kit/core'
 import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { useStore } from '@nanostores/react'
 import { GripVertical } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
 import { DraggableResourceType } from '~/constants'
+import { groupSortOrdersAtom } from '~/store'
 
 interface GroupNode {
   id: string
@@ -45,9 +47,39 @@ export function SortableGroupContent({
 }) {
   const { t } = useTranslation()
 
-  // Local sort order state - maps original index to sorted index
-  const [nodeSortOrder, setNodeSortOrder] = useState<string[]>([])
-  const [subSortOrder, setSubSortOrder] = useState<string[]>([])
+  // Use persistent store for sort order
+  const groupSortOrders = useStore(groupSortOrdersAtom)
+  const groupSortOrder = groupSortOrders[groupId] || { nodes: [], subscriptions: [] }
+  const nodeSortOrder = groupSortOrder.nodes
+  const subSortOrder = groupSortOrder.subscriptions
+
+  const setNodeSortOrder = useCallback(
+    (order: string[]) => {
+      groupSortOrdersAtom.set({
+        ...groupSortOrdersAtom.get(),
+        [groupId]: {
+          ...groupSortOrdersAtom.get()[groupId],
+          nodes: order,
+          subscriptions: groupSortOrdersAtom.get()[groupId]?.subscriptions || [],
+        },
+      })
+    },
+    [groupId],
+  )
+
+  const setSubSortOrder = useCallback(
+    (order: string[]) => {
+      groupSortOrdersAtom.set({
+        ...groupSortOrdersAtom.get(),
+        [groupId]: {
+          nodes: groupSortOrdersAtom.get()[groupId]?.nodes || [],
+          subscriptions: order,
+        },
+      })
+    },
+    [groupId],
+  )
+
   const [draggingItem, setDraggingItem] = useState<{ id: string; name: string } | null>(null)
   const [expandedSections, setExpandedSections] = useState<string[]>([])
 

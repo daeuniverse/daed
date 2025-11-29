@@ -17,6 +17,14 @@ export interface PersistentSortableKeys {
   groupSortableKeys: UniqueIdentifier[]
 }
 
+// Group-specific sort order storage (groupId -> { nodes: string[], subscriptions: string[] })
+export interface GroupSortOrder {
+  nodes: string[]
+  subscriptions: string[]
+}
+
+export type GroupSortOrders = Record<string, GroupSortOrder>
+
 export type AppState = {
   themeMode: ThemeMode
   colsPerRow: number
@@ -58,3 +66,13 @@ export const defaultResourcesAtom = map<DEFAULT_RESOURCES>({
 })
 
 export const colorSchemeAtom = atom<ColorScheme>('dark')
+
+// Persistent storage for group-specific sort orders
+export const groupSortOrdersAtom = persistentAtom<GroupSortOrders>(
+  'GROUP_SORT_ORDERS',
+  {},
+  {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+  },
+)

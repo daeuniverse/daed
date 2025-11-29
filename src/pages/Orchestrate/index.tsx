@@ -3,8 +3,9 @@ import type { DraggingResource } from '~/constants'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { snapCenterToCursor } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
+import { useStore } from '@nanostores/react'
 import { GripVertical } from 'lucide-react'
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import {
   useGroupAddNodesMutation,
   useGroupAddSubscriptionsMutation,
@@ -14,6 +15,7 @@ import {
 } from '~/apis'
 import { DraggableResourceType } from '~/constants'
 import { useMediaQuery } from '~/hooks'
+import { appStateAtom } from '~/store'
 import { Config } from './Config'
 import { DNS } from './DNS'
 import { GroupResource } from './Group'
@@ -30,8 +32,19 @@ export function OrchestratePage() {
   const groupAddSubscriptionsMutation = useGroupAddSubscriptionsMutation()
 
   const [draggingResource, setDraggingResource] = useState<DraggingResource | null>(null)
-  const [nodeSortOrder, setNodeSortOrder] = useState<string[]>([])
-  const [subscriptionSortOrder, setSubscriptionSortOrder] = useState<string[]>([])
+
+  // Use persistent store for sort order
+  const appState = useStore(appStateAtom)
+  const nodeSortOrder = appState.nodeSortableKeys as string[]
+  const subscriptionSortOrder = appState.subscriptionSortableKeys as string[]
+
+  const setNodeSortOrder = useCallback((order: string[]) => {
+    appStateAtom.setKey('nodeSortableKeys', order)
+  }, [])
+
+  const setSubscriptionSortOrder = useCallback((order: string[]) => {
+    appStateAtom.setKey('subscriptionSortableKeys', order)
+  }, [])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
