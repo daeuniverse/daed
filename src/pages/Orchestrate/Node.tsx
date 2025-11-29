@@ -92,7 +92,7 @@ export function NodeResource({ sortedNodes }: { sortedNodes: NodesQuery['nodes']
               onRemove={() => removeNodesMutation.mutate([id])}
             >
               {name && name !== tag && <p className="text-xs opacity-70">{name}</p>}
-              <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
+              <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
             </SortableNodeCard>
           ))}
         </div>

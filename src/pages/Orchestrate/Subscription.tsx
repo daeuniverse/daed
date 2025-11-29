@@ -122,7 +122,7 @@ export function SubscriptionResource({
             >
               <p className="text-xs opacity-70">{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
 
-              <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
+              <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
 
               <Accordion type="single" collapsible className="w-full mt-2">
                 <AccordionItem value="node" className="border-none">
