@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1](https://github.com/daeuniverse/daed/compare/v0.8.0...v0.8.1) (2025-11-29)
+
+
+### Bug Fixes
+
+* standardize Dockerfile stage names to uppercase ([ce42cab](https://github.com/daeuniverse/daed/commit/ce42cabd3e055a59871b221fb03c0311de404bf5))
+* update subproject commit reference in wing ([4a523db](https://github.com/daeuniverse/daed/commit/4a523db8288b5d7f85157ab9a3e210154d6167d8))
+
 ## [0.8.0](https://github.com/daeuniverse/daed/compare/v0.7.0...v0.8.0) (2025-11-29)
 
 
