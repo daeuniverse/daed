@@ -46,11 +46,11 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean, o
 
   return (
     <Dialog open={opened} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden">
         <DialogHeader>
           <DialogTitle>{t('configureNode.title')}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-hidden">
           <Input
             label={t('tag')}
             withAsterisk
@@ -59,18 +59,20 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean, o
             error={errors.tag}
           />
 
-          <Tabs defaultValue="v2ray" className="w-full">
-            <TabsList className="flex w-full flex-wrap gap-1 h-auto">
-              <TabsTrigger value="v2ray">V2RAY</TabsTrigger>
-              <TabsTrigger value="ss">SS</TabsTrigger>
-              <TabsTrigger value="ssr">SSR</TabsTrigger>
-              <TabsTrigger value="trojan">Trojan</TabsTrigger>
-              <TabsTrigger value="juicity">Juicity</TabsTrigger>
-              <TabsTrigger value="hysteria2">Hysteria2</TabsTrigger>
-              <TabsTrigger value="tuic">Tuic</TabsTrigger>
-              <TabsTrigger value="http">HTTP</TabsTrigger>
-              <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="v2ray" className="w-full min-w-0 overflow-hidden">
+            <div className="overflow-x-auto">
+              <TabsList className="inline-flex w-max gap-1">
+                <TabsTrigger value="v2ray">V2RAY</TabsTrigger>
+                <TabsTrigger value="ss">SS</TabsTrigger>
+                <TabsTrigger value="ssr">SSR</TabsTrigger>
+                <TabsTrigger value="trojan">Trojan</TabsTrigger>
+                <TabsTrigger value="juicity">Juicity</TabsTrigger>
+                <TabsTrigger value="hysteria2">Hysteria2</TabsTrigger>
+                <TabsTrigger value="tuic">Tuic</TabsTrigger>
+                <TabsTrigger value="http">HTTP</TabsTrigger>
+                <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="v2ray" className="space-y-2 pt-2">
               <V2rayForm onLinkGeneration={onLinkGeneration} />

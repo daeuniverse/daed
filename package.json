@@ -1,16 +1,16 @@
 {
   "name": "daed",
+  "type": "module",
   "version": "v0.1.0",
   "private": true,
   "description": "A Web Dashboard For dae",
-  "homepage": "https://daeuniverse.github.io/daed",
-  "repository": "https://github.com/daeuniverse/daed",
-  "license": "MIT",
   "author": {
     "name": "daeuniverse",
     "email": "dae@v2raya.org"
   },
-  "type": "module",
+  "license": "MIT",
+  "homepage": "https://daeuniverse.github.io/daed",
+  "repository": "https://github.com/daeuniverse/daed",
   "scripts": {
     "build": "vite build",
     "codegen": "graphql-codegen",
