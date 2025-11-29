@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.3](https://github.com/daeuniverse/daed/compare/v0.9.2...v0.9.3) (2025-11-29)
+
+
+### Bug Fixes
+
+* standardize formatting and improve readability across multiple files ([62e5be8](https://github.com/daeuniverse/daed/commit/62e5be8ad2f90a0f71ebd45d0899785f39ad09cf))
+* update husky scripts to use pnpm for consistency ([f1637a4](https://github.com/daeuniverse/daed/commit/f1637a4b20764f80c0ed62a45c6463314089e00c))
+
 ## [0.9.2](https://github.com/daeuniverse/daed/compare/v0.9.1...v0.9.2) (2025-11-29)
 
 
