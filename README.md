@@ -28,9 +28,62 @@
 - 📱 **Responsive** — Fully mobile-friendly design
 - 🚀 **Fast** — Built with React and optimized for performance
 
+## 🌐 Online Demo
+
+Try daed directly in your browser without installation:
+
+**🔗 [daeuniverse.github.io/daed](https://daeuniverse.github.io/daed)**
+
+> ⚠️ **Important:** Since GitHub Pages uses HTTPS, your dae-wing backend must also be served over HTTPS. Browsers block mixed content (HTTPS page connecting to HTTP backend). Configure a reverse proxy with TLS or use a self-signed certificate for local development.
+
 ## 🚀 Getting Started
 
 Please refer to the [Quick Start Guide](./docs/getting-started.md) to start using daed right away!
+
+## 🐳 Docker Deployment
+
+Pull the prebuilt image:
+
+```bash
+docker pull ghcr.io/daeuniverse/daed
+```
+
+Run the container:
+
+```bash
+docker run -d \
+    --privileged \
+    --network=host \
+    --pid=host \
+    --restart=always \
+    -v /sys:/sys \
+    -v /etc/daed:/etc/daed \
+    --name=daed \
+    ghcr.io/daeuniverse/daed:latest
+```
+
+Or use Docker Compose:
+
+```yaml
+# docker-compose.yml
+services:
+  daed:
+    image: ghcr.io/daeuniverse/daed
+    container_name: daed
+    privileged: true
+    network_mode: host
+    pid: host
+    restart: always
+    volumes:
+      - /sys:/sys
+      - /etc/daed:/etc/daed
+```
+
+```bash
+docker compose up -d
+```
+
+Access the dashboard at `http://localhost:2023`.
 
 ## 💻 Development
 
