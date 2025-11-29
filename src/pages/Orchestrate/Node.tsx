@@ -1,19 +1,19 @@
-import type { QRCodeModalRef } from '../../components/QRCodeModal.tsx'
+import type { QRCodeModalRef } from '~/components/QRCodeModal.tsx'
+import type { NodesQuery } from '~/schemas/gql/graphql.ts'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Cloud, CloudUpload, Eye, FileInput, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
-
 import { useTranslation } from 'react-i18next'
-import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '../../apis/index.ts'
-import { DraggableResourceCard } from '../../components/DraggableResourceCard.tsx'
-import { EditNodeFormModal } from '../../components/EditNodeFormModal.tsx'
-import { ImportResourceFormModal } from '../../components/ImportResourceFormModal.tsx'
-import { ConfigureNodeFormModal } from '../../components/index.ts'
-import { QRCodeModal } from '../../components/QRCodeModal.tsx'
-import { Section } from '../../components/Section.tsx'
-import { Button } from '../../components/ui/button.tsx'
-import { DraggableResourceType } from '../../constants/index.ts'
+import { useImportNodesMutation, useRemoveNodesMutation } from '~/apis/index.ts'
+import { EditNodeFormModal } from '~/components/EditNodeFormModal.tsx'
+import { ImportResourceFormModal } from '~/components/ImportResourceFormModal.tsx'
+import { ConfigureNodeFormModal, SortableNodeCard } from '~/components/index.ts'
+import { QRCodeModal } from '~/components/QRCodeModal.tsx'
+import { Section } from '~/components/Section.tsx'
+import { Button } from '~/components/ui/button.tsx'
+import { DraggableResourceType } from '~/constants/index.ts'
 
-export function NodeResource() {
+export function NodeResource({ sortedNodes }: { sortedNodes: NodesQuery['nodes']['edges'] }) {
   const { t } = useTranslation()
 
   const [openedQRCodeModal, setOpenedQRCodeModal] = useState(false)
@@ -27,9 +27,10 @@ export function NodeResource() {
     name: string
   }>()
   const qrCodeModalRef = useRef<QRCodeModalRef>(null)
-  const { data: nodesQuery } = useNodesQuery()
   const removeNodesMutation = useRemoveNodesMutation()
   const importNodesMutation = useImportNodesMutation()
+
+  const nodeIds = sortedNodes.map((n) => `node-${n.id}`)
 
   return (
     <Section
@@ -44,54 +45,58 @@ export function NodeResource() {
       }
       bordered
     >
-      {nodesQuery?.nodes.edges.map(({ id, name, tag, protocol, link }) => (
-        <DraggableResourceCard
-          key={id}
-          id={`node-${id}`}
-          nodeID={id}
-          type={DraggableResourceType.node}
-          name={tag || name}
-          leftSection={protocol}
-          actions={
-            <Fragment>
-              <Button
-                variant="ghost"
-                size="xs"
-                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                onClick={() => {
-                  setEditingNode({
-                    id,
-                    link,
-                    tag: tag || '',
-                    name: name || '',
-                  })
-                  setOpenedEditNodeFormModal(true)
-                }}
-              >
-                <Pencil className="h-3.5 w-3.5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="xs"
-                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                onClick={() => {
-                  qrCodeModalRef.current?.setProps({
-                    name: tag || name!,
-                    link,
-                  })
-                  setOpenedQRCodeModal(true)
-                }}
-              >
-                <Eye className="h-3.5 w-3.5" />
-              </Button>
-            </Fragment>
-          }
-          onRemove={() => removeNodesMutation.mutate([id])}
-        >
-          {name && name !== tag && <p className="text-xs opacity-70">{name}</p>}
-          <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
-        </DraggableResourceCard>
-      ))}
+      <SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
+        <div className="flex flex-col gap-3">
+          {sortedNodes.map(({ id, name, tag, protocol, link }) => (
+            <SortableNodeCard
+              key={id}
+              id={`node-${id}`}
+              nodeID={id}
+              type={DraggableResourceType.node}
+              name={tag || name}
+              leftSection={protocol}
+              actions={
+                <Fragment>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                    onClick={() => {
+                      setEditingNode({
+                        id,
+                        link,
+                        tag: tag || '',
+                        name: name || '',
+                      })
+                      setOpenedEditNodeFormModal(true)
+                    }}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                    onClick={() => {
+                      qrCodeModalRef.current?.setProps({
+                        name: tag || name!,
+                        link,
+                      })
+                      setOpenedQRCodeModal(true)
+                    }}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                  </Button>
+                </Fragment>
+              }
+              onRemove={() => removeNodesMutation.mutate([id])}
+            >
+              {name && name !== tag && <p className="text-xs opacity-70">{name}</p>}
+              <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
+            </SortableNodeCard>
+          ))}
+        </div>
+      </SortableContext>
 
       <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={() => setOpenedQRCodeModal(false)} />
 

@@ -1,7 +1,6 @@
-import type { PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
+import type { PlainTextFormModalRef } from '~/components/PlainTextFormModal'
 import { useStore } from '@nanostores/react'
 import { Map, Settings2 } from 'lucide-react'
-
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -28,7 +27,7 @@ export function Routing() {
   const removeRoutingMutation = useRemoveRoutingMutation()
   const renameRoutingMutation = useRenameRoutingMutation()
   const createRoutingMutation = useCreateRoutingMutation()
-  const updateRoutingFormModalRef = useRef<PlainTextgFormModalRef>(null)
+  const updateRoutingFormModalRef = useRef<PlainTextFormModalRef>(null)
   const updateRoutingMutation = useUpdateRoutingMutation()
 
   const [openedCreateRoutingFormModal, { open: openCreateRoutingFormModal, close: closeCreateRoutingFormModal }] =

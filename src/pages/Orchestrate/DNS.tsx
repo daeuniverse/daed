@@ -1,4 +1,4 @@
-import type { PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
+import type { PlainTextFormModalRef } from '~/components/PlainTextFormModal'
 import { useStore } from '@nanostores/react'
 import { Route, Settings2 } from 'lucide-react'
 
@@ -29,7 +29,7 @@ export function DNS() {
   const removeDNSMutation = useRemoveDNSMutation()
   const renameDNSMutation = useRenameDNSMutation()
   const createDNSMutation = useCreateDNSMutation()
-  const updateDNSFormModalRef = useRef<PlainTextgFormModalRef>(null)
+  const updateDNSFormModalRef = useRef<PlainTextFormModalRef>(null)
   const updateDNSMutation = useUpdateDNSMutation()
 
   const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }] =

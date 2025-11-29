@@ -1,8 +1,9 @@
 import type { QRCodeModalRef } from '~/components/QRCodeModal'
+import type { SubscriptionsQuery } from '~/schemas/gql/graphql'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import dayjs from 'dayjs'
 import { CloudCog, CloudUpload, Download, Eye, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
-
 import { useTranslation } from 'react-i18next'
 import {
   useImportSubscriptionsMutation,
@@ -11,18 +12,22 @@ import {
   useUpdateSubscriptionsMutation,
 } from '~/apis'
 import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
-import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { EditSubscriptionFormModal } from '~/components/EditSubscriptionFormModal'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
 import { QRCodeModal } from '~/components/QRCodeModal'
 import { Section } from '~/components/Section'
+import { SortableSubscriptionCard } from '~/components/SortableSubscriptionCard'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
 import { Button } from '~/components/ui/button'
 import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 
-export function SubscriptionResource() {
+export function SubscriptionResource({
+  sortedSubscriptions,
+}: {
+  sortedSubscriptions: SubscriptionsQuery['subscriptions']
+}) {
   const { t } = useTranslation()
 
   const [openedQRCodeModal, { open: openQRCodeModal, close: closeQRCodeModal }] = useDisclosure(false)
@@ -40,10 +45,12 @@ export function SubscriptionResource() {
     tag: string
   }>()
   const qrCodeModalRef = useRef<QRCodeModalRef>(null)
-  const { data: subscriptionsQuery, refetch: refetchSubscriptions } = useSubscriptionsQuery()
+  const { refetch: refetchSubscriptions } = useSubscriptionsQuery()
   const removeSubscriptionsMutation = useRemoveSubscriptionsMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
+
+  const subscriptionIds = sortedSubscriptions.map((s) => `subscription-${s.id}`)
 
   return (
     <Section
@@ -53,13 +60,12 @@ export function SubscriptionResource() {
       onCreate={openImportSubscriptionFormModal}
       bordered
       actions={
-        subscriptionsQuery?.subscriptions &&
-        subscriptionsQuery.subscriptions.length > 2 && (
+        sortedSubscriptions.length > 2 && (
           <Button
             variant="ghost"
             size="icon"
             onClick={() => {
-              updateSubscriptionsMutation.mutate(subscriptionsQuery?.subscriptions.map(({ id }) => id) || [])
+              updateSubscriptionsMutation.mutate(sortedSubscriptions.map(({ id }) => id))
             }}
             loading={updateSubscriptionsMutation.isPending}
           >
@@ -68,79 +74,83 @@ export function SubscriptionResource() {
         )
       }
     >
-      {subscriptionsQuery?.subscriptions.map(({ id: subscriptionID, tag, link, updatedAt, nodes }) => (
-        <DraggableResourceCard
-          key={subscriptionID}
-          id={`subscription-${subscriptionID}`}
-          subscriptionID={subscriptionID}
-          type={DraggableResourceType.subscription}
-          name={tag || link}
-          leftSection={`${nodes.edges.length} ${t('node')}`}
-          actions={
-            <Fragment>
-              <Button
-                variant="ghost"
-                size="xs"
-                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                onClick={() => {
-                  setEditingSubscription({
-                    id: subscriptionID,
-                    link,
-                    tag: tag || '',
-                  })
-                  openEditSubscriptionFormModal()
-                }}
-              >
-                <Pencil className="h-3.5 w-3.5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="xs"
-                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                onClick={() => {
-                  qrCodeModalRef.current?.setProps({
-                    name: tag!,
-                    link,
-                  })
-                  openQRCodeModal()
-                }}
-              >
-                <Eye className="h-3.5 w-3.5" />
-              </Button>
-              <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
-            </Fragment>
-          }
-          onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
-        >
-          <p className="text-xs opacity-70">{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
+      <SortableContext items={subscriptionIds} strategy={verticalListSortingStrategy}>
+        <div className="flex flex-col gap-3">
+          {sortedSubscriptions.map(({ id: subscriptionID, tag, link, updatedAt, nodes }) => (
+            <SortableSubscriptionCard
+              key={subscriptionID}
+              id={`subscription-${subscriptionID}`}
+              subscriptionID={subscriptionID}
+              type={DraggableResourceType.subscription}
+              name={tag || link}
+              leftSection={`${nodes.edges.length} ${t('node')}`}
+              actions={
+                <Fragment>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                    onClick={() => {
+                      setEditingSubscription({
+                        id: subscriptionID,
+                        link,
+                        tag: tag || '',
+                      })
+                      openEditSubscriptionFormModal()
+                    }}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                    onClick={() => {
+                      qrCodeModalRef.current?.setProps({
+                        name: tag!,
+                        link,
+                      })
+                      openQRCodeModal()
+                    }}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                  </Button>
+                  <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
+                </Fragment>
+              }
+              onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
+            >
+              <p className="text-xs opacity-70">{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
 
-          <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
+              <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
 
-          <Accordion type="single" collapsible className="w-full mt-2">
-            <AccordionItem value="node" className="border-none">
-              <AccordionTrigger className="text-xs py-1 hover:no-underline">
-                {t('actions.show content')}
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {nodes.edges.map(({ id, name }) => (
-                    <DraggableResourceBadge
-                      key={id}
-                      name={name}
-                      id={`subscription-node-${id}`}
-                      nodeID={id}
-                      type={DraggableResourceType.subscription_node}
-                      subscriptionID={subscriptionID}
-                    >
-                      {name}
-                    </DraggableResourceBadge>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </DraggableResourceCard>
-      ))}
+              <Accordion type="single" collapsible className="w-full mt-2">
+                <AccordionItem value="node" className="border-none">
+                  <AccordionTrigger className="text-xs py-1 hover:no-underline">
+                    {t('actions.show content')}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {nodes.edges.map(({ id, name }) => (
+                        <DraggableResourceBadge
+                          key={id}
+                          name={name}
+                          id={`subscription-node-${id}`}
+                          nodeID={id}
+                          type={DraggableResourceType.subscription_node}
+                          subscriptionID={subscriptionID}
+                        >
+                          {name}
+                        </DraggableResourceBadge>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </SortableSubscriptionCard>
+          ))}
+        </div>
+      </SortableContext>
 
       <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={closeQRCodeModal} />
 

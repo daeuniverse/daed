@@ -4,7 +4,6 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-ki
 import { GripVertical } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
 import { DraggableResourceType } from '~/constants'

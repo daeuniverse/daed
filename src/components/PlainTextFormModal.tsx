@@ -2,11 +2,10 @@ import type { Monaco } from '@monaco-editor/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Editor } from '@monaco-editor/react'
 import { useStore } from '@nanostores/react'
-import { useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useCallback, useImperativeHandle, useRef, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-
 import { Dialog, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import {
@@ -33,7 +32,7 @@ const defaultValues: FormValues = {
   text: '',
 }
 
-export interface PlainTextgFormModalRef {
+export interface PlainTextFormModalRef {
   form: {
     setValues: (values: FormValues) => void
     setFieldValue: (field: string, value: string) => void
@@ -53,7 +52,7 @@ export function PlainTextFormModal({
   onClose,
   handleSubmit: onSubmitProp,
 }: {
-  ref?: React.Ref<PlainTextgFormModalRef>
+  ref?: React.Ref<PlainTextFormModalRef>
   title: string
   opened: boolean
   onClose: () => void
@@ -82,30 +81,33 @@ export function PlainTextFormModal({
 
   const {
     handleSubmit,
-    watch,
+    control,
     setValue: setValueOriginal,
     reset,
     formState: { errors, isDirty },
   } = form
 
   const setValue = useSetValue(setValueOriginal)
-  const formValues = watch()
+  const formValues = useWatch({ control })
 
-  const initOrigins = (origins: FormValues) => {
-    reset(origins)
-    setOrigins(origins)
-  }
+  const initOrigins = useCallback(
+    (origins: FormValues) => {
+      reset(origins)
+      setOrigins(origins)
+    },
+    [reset],
+  )
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     reset(defaultValues)
-  }
+  }, [reset])
 
   useImperativeHandle(ref, () => ({
     form: {
       setValues: (values: FormValues) => reset(values),
       setFieldValue: (field: string, value: string) => setValue(field as keyof FormValues, value),
       reset: resetForm,
-      values: formValues,
+      values: formValues as FormValues,
       errors: {
         name: errors.name?.message,
         text: errors.text?.message,
@@ -116,23 +118,21 @@ export function PlainTextFormModal({
     initOrigins,
   }))
 
-  // Reset form when modal closes
-  useEffect(() => {
-    if (!opened) {
-      resetForm()
-      setEditingID(undefined)
-      setOrigins(undefined)
-    }
-  }, [opened])
+  const handleClose = useCallback(() => {
+    onClose()
+    // Reset after close
+    resetForm()
+    setEditingID(undefined)
+    setOrigins(undefined)
+  }, [onClose, resetForm])
 
   const onSubmit = async (data: FormValues) => {
     await onSubmitProp(data)
-    onClose()
-    resetForm()
+    handleClose()
   }
 
   return (
-    <Dialog open={opened} onOpenChange={onClose}>
+    <Dialog open={opened} onOpenChange={handleClose}>
       <ScrollableDialogContent size="full" className="h-[calc(100vh-2rem)] sm:h-[90vh]">
         <ScrollableDialogHeader>
           <DialogTitle>{title}</DialogTitle>
