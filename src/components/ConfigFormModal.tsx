@@ -163,14 +163,20 @@ export function ConfigFormDrawer({
     initOrigins,
   }))
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      resetForm()
-      setEditingID(undefined)
-      setOrigins(undefined)
-      onClose()
-    }
-  }
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        onClose()
+        // Delay reset until after dialog close animation completes
+        setTimeout(() => {
+          resetForm()
+          setEditingID(undefined)
+          setOrigins(undefined)
+        }, 200)
+      }
+    },
+    [onClose, resetForm],
+  )
 
   const { data: generalQuery } = useGeneralQuery()
 

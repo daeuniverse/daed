@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Minus, Plus } from 'lucide-react'
-import { useEffect } from 'react'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useCallback } from 'react'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -55,7 +55,6 @@ export function ImportResourceFormModal({
   const {
     handleSubmit,
     control,
-    watch,
     setValue: setValueOriginal,
     reset,
     formState: { errors, isDirty },
@@ -68,23 +67,23 @@ export function ImportResourceFormModal({
     name: 'resources',
   })
 
-  const resources = watch('resources')
+  const resources = useWatch({ control, name: 'resources' })
 
-  // Reset form when modal closes
-  useEffect(() => {
-    if (!opened) {
+  // Reset form when modal closes (with delay for animation)
+  const handleClose = useCallback(() => {
+    onClose()
+    setTimeout(() => {
       reset(defaultValues)
-    }
-  }, [opened, reset])
+    }, 200)
+  }, [onClose, reset])
 
   const onSubmit = async (data: FormValues) => {
     await onSubmitProp(data)
-    onClose()
-    reset(defaultValues)
+    handleClose()
   }
 
   return (
-    <Dialog open={opened} onOpenChange={onClose}>
+    <Dialog open={opened} onOpenChange={handleClose}>
       <ScrollableDialogContent size="lg">
         <ScrollableDialogHeader>
           <DialogTitle>{title}</DialogTitle>

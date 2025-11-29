@@ -10,7 +10,7 @@ export function ExpandedTableRow({ data }: { data: { name: string; value: string
           <Fragment key={i}>
             <div className="flex items-center gap-3">
               <span className="uppercase text-sm font-medium">{name}: </span>
-              <span className="text-primary bg-gradient-to-r from-primary to-purple-500 bg-clip-text">{value}</span>
+              <span className="text-primary bg-linear-to-r from-primary to-purple-500 bg-clip-text">{value}</span>
             </div>
 
             {i !== data.length - 1 && <Separator />}

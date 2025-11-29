@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useImperativeHandle, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useCallback, useImperativeHandle, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -55,23 +55,32 @@ export function GroupFormModal({
 
   const {
     handleSubmit,
-    watch,
+    control,
     setValue: setValueOriginal,
     reset,
     formState: { errors, isDirty },
   } = form
 
   const setValue = useSetValue(setValueOriginal)
-  const formValues = watch()
+  const formValues = useWatch({ control })
 
   const initOrigins = (origins: FormValues) => {
     reset(origins)
     setOrigins(origins)
   }
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     reset(defaultValues)
-  }
+  }, [reset])
+
+  const handleClose = useCallback(() => {
+    onClose()
+    setTimeout(() => {
+      resetForm()
+      setEditingID(undefined)
+      setOrigins(undefined)
+    }, 200)
+  }, [onClose, resetForm])
 
   useImperativeHandle(ref, () => ({
     form: {
@@ -81,15 +90,6 @@ export function GroupFormModal({
     setEditingID,
     initOrigins,
   }))
-
-  // Reset form when modal closes
-  useEffect(() => {
-    if (!opened) {
-      resetForm()
-      setEditingID(undefined)
-      setOrigins(undefined)
-    }
-  }, [opened])
 
   const createGroupMutation = useCreateGroupMutation()
   const groupSetPolicyMutation = useGroupSetPolicyMutation()
@@ -139,12 +139,11 @@ export function GroupFormModal({
       })
     }
 
-    onClose()
-    resetForm()
+    handleClose()
   }
 
   return (
-    <Dialog open={opened} onOpenChange={onClose}>
+    <Dialog open={opened} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t('group')}</DialogTitle>

@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useImperativeHandle, useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useCallback, useImperativeHandle, useMemo, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -51,14 +51,14 @@ export function RenameFormModal({
 
   const {
     handleSubmit,
-    watch,
+    control,
     setValue: setValueOriginal,
     reset,
     formState: { errors, isDirty },
   } = form
 
   const setValue = useSetValue(setValueOriginal)
-  const formValues = watch()
+  const formValues = useWatch({ control })
 
   const ruleName = useMemo(() => {
     if (type === RuleType.config) {
@@ -81,12 +81,12 @@ export function RenameFormModal({
     setProps,
   }))
 
-  // Reset form when modal closes
-  useEffect(() => {
-    if (!opened) {
+  const handleClose = useCallback(() => {
+    onClose()
+    setTimeout(() => {
       reset({ name: '' })
-    }
-  }, [opened, reset])
+    }, 200)
+  }, [onClose, reset])
 
   const renameConfigMutation = useRenameConfigMutation()
   const renameDNSMutation = useRenameDNSMutation()
@@ -116,11 +116,11 @@ export function RenameFormModal({
       renameGroupMutation.mutate({ id, name })
     }
 
-    onClose()
+    handleClose()
   }
 
   return (
-    <Dialog open={opened} onOpenChange={onClose}>
+    <Dialog open={opened} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t('actions.rename')}</DialogTitle>

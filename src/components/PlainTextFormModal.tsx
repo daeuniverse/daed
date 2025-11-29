@@ -120,10 +120,12 @@ export function PlainTextFormModal({
 
   const handleClose = useCallback(() => {
     onClose()
-    // Reset after close
-    resetForm()
-    setEditingID(undefined)
-    setOrigins(undefined)
+    // Delay reset until after dialog close animation completes
+    setTimeout(() => {
+      resetForm()
+      setEditingID(undefined)
+      setOrigins(undefined)
+    }, 200)
   }, [onClose, resetForm])
 
   const onSubmit = async (data: FormValues) => {
