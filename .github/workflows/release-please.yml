@@ -215,7 +215,7 @@ jobs:
           sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
 
       - name: Download artifact - web
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: web
           path: dist/
@@ -313,7 +313,7 @@ jobs:
         with:
           ref: ${{ needs.release-please.outputs.tag_name }}
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           path: release/
 
@@ -361,7 +361,7 @@ jobs:
           ref: ${{ needs.release-please.outputs.tag_name }}
 
       - name: Download artifact - web
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: web
           path: dist/
