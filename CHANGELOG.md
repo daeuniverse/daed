@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.10.0](https://github.com/daeuniverse/daed/compare/v0.9.3...v0.10.0) (2025-11-29)
+
+
+### Features
+
+* enhance ConfigureNodeFormModal with scrollable dialog components ([36d4d1e](https://github.com/daeuniverse/daed/commit/36d4d1efb08b7fdeff98b59a93a4f28f6fe66ed2))
+* implement scrollable dialog components and update existing dialogs to use them ([e9d5b90](https://github.com/daeuniverse/daed/commit/e9d5b90dbae05e7d5afebf2efdd231176a080779))
+* improve code formatting and enhance drag overlay behavior ([9448abd](https://github.com/daeuniverse/daed/commit/9448abd1a605d6922400c507c13380dd6617a28c))
+* refactor modal components to improve type safety and props structure ([266282b](https://github.com/daeuniverse/daed/commit/266282b05f1834ac0571719260c483bb594b131f))
+
 ## [0.9.3](https://github.com/daeuniverse/daed/compare/v0.9.2...v0.9.3) (2025-11-29)
 
 
