@@ -17,7 +17,15 @@ export interface QRCodeModalRef {
   setProps: (props: Props) => void
 }
 
-export function QRCodeModal({ ref, opened, onClose }) {
+export function QRCodeModal({
+  ref,
+  opened,
+  onClose,
+}: {
+  ref: React.Ref<QRCodeModalRef>
+  opened: boolean
+  onClose: () => void
+}) {
   const [props, setProps] = useState<Props>({
     name: '',
     link: '',
@@ -49,9 +57,7 @@ export function QRCodeModal({ ref, opened, onClose }) {
           <QRCodeCanvas size={240} value={props.link} />
 
           <div className="flex items-center gap-2">
-            <Badge className="max-w-[240px] truncate" size="lg">
-              {props.link}
-            </Badge>
+            <Badge className="max-w-60 truncate text-base px-3 py-1">{props.link}</Badge>
 
             <CopyToClipboard text={props.link} onCopy={() => setCopied(true)}>
               <Button variant="ghost" size="icon">

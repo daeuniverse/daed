@@ -77,7 +77,7 @@ const _schema = z.object({
   fallbackResolver: z.string(),
 })
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.infer<typeof _schema>
 
 const defaultValues: FormValues = {
   name: '',
@@ -172,7 +172,15 @@ export interface ConfigFormModalRef {
   initOrigins: (origins: FormValues) => void
 }
 
-export function ConfigFormDrawer({ ref, opened, onClose }) {
+export function ConfigFormDrawer({
+  ref,
+  opened,
+  onClose,
+}: {
+  ref?: React.Ref<ConfigFormModalRef>
+  opened: boolean
+  onClose: () => void
+}) {
   const { t } = useTranslation()
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
@@ -256,7 +264,7 @@ export function ConfigFormDrawer({ ref, opened, onClose }) {
   }
 
   const updateField = <K extends keyof FormValues>(field: K, value: FormValues[K]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev: FormValues) => ({ ...prev, [field]: value }))
   }
 
   return (

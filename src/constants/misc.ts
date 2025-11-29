@@ -112,6 +112,7 @@ export interface DraggingResource {
   nodeID?: string
   groupID?: string
   subscriptionID?: string
+  rect?: { width: number; height: number }
 }
 
 export enum RuleType {

@@ -26,7 +26,15 @@ export interface GroupFormModalRef {
   initOrigins: (origins: FormValues) => void
 }
 
-export function GroupFormModal({ ref, opened, onClose }) {
+export function GroupFormModal({
+  ref,
+  opened,
+  onClose,
+}: {
+  ref?: React.Ref<GroupFormModalRef>
+  opened: boolean
+  onClose: () => void
+}) {
   const { t } = useTranslation()
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()

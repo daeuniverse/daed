@@ -1,8 +1,8 @@
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import type { DraggingResource } from '~/constants'
-import { DndContext, DragOverlay } from '@dnd-kit/core'
-
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { useMemo, useRef, useState } from 'react'
+
 import {
   useGroupAddNodesMutation,
   useGroupAddSubscriptionsMutation,
@@ -13,7 +13,6 @@ import {
 import { Badge } from '~/components/ui/badge'
 import { DraggableResourceType } from '~/constants'
 import { useMediaQuery } from '~/hooks'
-import { restrictToElement } from '~/utils'
 
 import { Config } from './Config'
 import { DNS } from './DNS'
@@ -31,6 +30,14 @@ export function OrchestratePage() {
   const groupAddSubscriptionsMutation = useGroupAddSubscriptionsMutation()
 
   const [draggingResource, setDraggingResource] = useState<DraggingResource | null>(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 3,
+      },
+    }),
+  )
 
   const draggingResourceDisplayName = useMemo(() => {
     if (draggingResource) {
@@ -78,8 +85,10 @@ export function OrchestratePage() {
   }, [draggingResource, groupsQuery?.groups, nodesQuery?.nodes.edges, subscriptionsQuery?.subscriptions])
 
   const onDragStart = (e: DragStartEvent) => {
+    const rect = e.active.rect.current.initial
     setDraggingResource({
       ...(e.active.data.current as DraggingResource),
+      rect: rect ? { width: rect.width, height: rect.height } : undefined,
     })
   }
 
@@ -122,9 +131,6 @@ export function OrchestratePage() {
 
   const dndAreaRef = useRef<HTMLDivElement>(null)
   const matchSmallScreen = useMediaQuery('(max-width: 640px)')
-  // The ref is only accessed when drag events occur, not during render
-  // eslint-disable-next-line react-hooks/refs
-  const dndModifiers = useMemo(() => [restrictToElement(dndAreaRef)], [])
 
   return (
     <div className="flex flex-col gap-6">
@@ -135,13 +141,17 @@ export function OrchestratePage() {
       </div>
 
       <div ref={dndAreaRef} className={`grid gap-4 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
-        <DndContext modifiers={dndModifiers} onDragStart={onDragStart} onDragEnd={onDragEnd}>
+        <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <GroupResource highlight={!!draggingResource} />
           <NodeResource />
           <SubscriptionResource />
 
-          <DragOverlay dropAnimation={null}>
-            {draggingResource && <Badge className="cursor-grabbing">{draggingResourceDisplayName}</Badge>}
+          <DragOverlay zIndex={9999}>
+            {draggingResource && (
+              <Badge className="cursor-grabbing shadow-lg pr-1 flex items-center gap-1">
+                <span className="truncate max-w-[150px]">{draggingResourceDisplayName}</span>
+              </Badge>
+            )}
           </DragOverlay>
         </DndContext>
       </div>

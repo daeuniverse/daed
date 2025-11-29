@@ -37,7 +37,19 @@ export interface PlainTextgFormModalRef {
   initOrigins: (origins: FormValues) => void
 }
 
-export function PlainTextFormModal({ ref, title, opened, onClose, handleSubmit }) {
+export function PlainTextFormModal({
+  ref,
+  title,
+  opened,
+  onClose,
+  handleSubmit,
+}: {
+  ref?: React.Ref<PlainTextgFormModalRef>
+  title: string
+  opened: boolean
+  onClose: () => void
+  handleSubmit: (values: FormValues) => Promise<void>
+}) {
   const { t } = useTranslation()
   const colorScheme = useStore(colorSchemeAtom)
   const [editingID, setEditingID] = useState<string>()
@@ -66,7 +78,7 @@ export function PlainTextFormModal({ ref, title, opened, onClose, handleSubmit }
       values: formData,
       errors,
     },
-    editingID,
+    editingID: editingID || '',
     setEditingID,
     initOrigins,
   }))

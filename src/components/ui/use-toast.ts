@@ -7,19 +7,14 @@ import * as React from 'react'
 const TOAST_LIMIT = 5
 const TOAST_REMOVE_DELAY = 5000
 
-type ToasterToast = ToastProps & {
+interface ToasterToastExtra {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
 }
 
-const _actionTypes = {
-  ADD_TOAST: 'ADD_TOAST',
-  UPDATE_TOAST: 'UPDATE_TOAST',
-  DISMISS_TOAST: 'DISMISS_TOAST',
-  REMOVE_TOAST: 'REMOVE_TOAST',
-} as const
+type ToasterToast = Omit<ToastProps, 'title' | 'description'> & ToasterToastExtra
 
 let count = 0
 
@@ -29,23 +24,21 @@ function genId() {
   return count.toString()
 }
 
-type ActionType = typeof actionTypes
-
 type Action =
   | {
-      type: ActionType['ADD_TOAST']
+      type: 'ADD_TOAST'
       toast: ToasterToast
     }
   | {
-      type: ActionType['UPDATE_TOAST']
+      type: 'UPDATE_TOAST'
       toast: Partial<ToasterToast>
     }
   | {
-      type: ActionType['DISMISS_TOAST']
+      type: 'DISMISS_TOAST'
       toastId?: ToasterToast['id']
     }
   | {
-      type: ActionType['REMOVE_TOAST']
+      type: 'REMOVE_TOAST'
       toastId?: ToasterToast['id']
     }
 

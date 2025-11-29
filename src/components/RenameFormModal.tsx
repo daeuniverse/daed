@@ -24,7 +24,15 @@ export interface RenameFormModalRef {
   setProps: (props: Props) => void
 }
 
-export function RenameFormModal({ ref, opened, onClose }) {
+export function RenameFormModal({
+  ref,
+  opened,
+  onClose,
+}: {
+  ref?: React.Ref<RenameFormModalRef>
+  opened: boolean
+  onClose: () => void
+}) {
   const { t } = useTranslation()
 
   const [props, setProps] = useState<Props>({})

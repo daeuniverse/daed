@@ -1,7 +1,7 @@
 import type { UniqueIdentifier } from '@dnd-kit/core'
 import type { RenameFormModalRef } from '~/components'
-import { closestCenter, DndContext, DragOverlay } from '@dnd-kit/core'
-import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd-kit/modifiers'
+import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { restrictToParentElement } from '@dnd-kit/modifiers'
 import { arrayMove, rectSwappingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { faker } from '@faker-js/faker'
 import Editor from '@monaco-editor/react'
@@ -20,7 +20,6 @@ import {
 import {
   ConfigFormDrawer,
   ConfigureNodeFormModal,
-  DraggableResourceBadge,
   DraggableResourceCard,
   DroppableGroupCard,
   GroupFormModal,
@@ -29,6 +28,7 @@ import {
   RenameFormModal,
   Section,
   SimpleCard,
+  SortableResourceBadge,
 } from '~/components'
 import {
   Accordion,
@@ -205,7 +205,16 @@ export function ExperimentPage() {
   const [draggingResource, setDraggingResource] = useState<{
     id: UniqueIdentifier
     type: DraggableResourceType
+    rect?: { width: number; height: number }
   } | null>(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 3,
+      },
+    }),
+  )
 
   const [openedRenameModal, { open: openRenameModal, close: closeRenameModal }] = useDisclosure(false)
   const [openedCreateConfigModal, { open: openCreateConfigModal, close: closeCreateConfigModal }] = useDisclosure(false)
@@ -353,8 +362,9 @@ export function ExperimentPage() {
 
       <div className="grid grid-cols-3 gap-4">
         <DndContext
-          modifiers={[restrictToFirstScrollableAncestor]}
+          sensors={sensors}
           onDragStart={(e) => {
+            const rect = e.active.rect.current.initial
             setDraggingResource({
               id: e.active.id,
               type: (
@@ -362,6 +372,7 @@ export function ExperimentPage() {
                   type: DraggableResourceType
                 }
               ).type,
+              rect: rect ? { width: rect.width, height: rect.height } : undefined,
             })
           }}
           onDragEnd={(e) => {
@@ -424,6 +435,7 @@ export function ExperimentPage() {
                       <AccordionContent>
                         <div className="grid grid-cols-2 gap-2">
                           <DndContext
+                            sensors={sensors}
                             modifiers={[restrictToParentElement]}
                             collisionDetection={closestCenter}
                             onDragEnd={({ active, over }) => {
@@ -445,7 +457,7 @@ export function ExperimentPage() {
                           >
                             <SortableContext items={nodes} strategy={rectSwappingStrategy}>
                               {nodes.map(({ id: nodeId, name }) => (
-                                <DraggableResourceBadge
+                                <SortableResourceBadge
                                   key={nodeId}
                                   type={DraggableResourceType.node}
                                   id={nodeId}
@@ -474,10 +486,30 @@ export function ExperimentPage() {
 
                       <AccordionContent>
                         <div className="grid grid-cols-2 gap-2">
-                          <DndContext modifiers={[restrictToParentElement]}>
+                          <DndContext
+                            sensors={sensors}
+                            modifiers={[restrictToParentElement]}
+                            collisionDetection={closestCenter}
+                            onDragEnd={({ active, over }) => {
+                              if (active && over && active.id !== over.id) {
+                                const updatedFakeGrups = produce(fakeGroups, (groups) => {
+                                  const group = groups.find((group) => group.id === groupId)
+
+                                  if (group) {
+                                    const from = group?.subscriptions.findIndex((s) => s.id === active.id)
+                                    const to = group?.subscriptions.findIndex((s) => s.id === over.id)
+
+                                    group.subscriptions = arrayMove(group.subscriptions, from, to)
+                                  }
+                                })
+
+                                setFakeGroups(updatedFakeGrups)
+                              }
+                            }}
+                          >
                             <SortableContext items={subscriptions} strategy={rectSwappingStrategy}>
                               {subscriptions.map(({ id: subscriptionId, name }) => (
-                                <DraggableResourceBadge
+                                <SortableResourceBadge
                                   key={subscriptionId}
                                   type={DraggableResourceType.subscription}
                                   id={subscriptionId}
@@ -581,12 +613,14 @@ export function ExperimentPage() {
             </div>
           </Section>
 
-          <DragOverlay dropAnimation={null}>
+          <DragOverlay zIndex={9999}>
             {draggingResource ? (
-              <Badge>
-                {draggingResource?.type === DraggableResourceType.node
-                  ? fakeNodes.find((node) => node.id === draggingResource.id)?.name
-                  : fakeSubscriptions.find((subscription) => subscription.id === draggingResource.id)?.name}
+              <Badge className="cursor-grabbing shadow-lg text-sm px-3 py-1">
+                <span className="truncate">
+                  {draggingResource?.type === DraggableResourceType.node
+                    ? fakeNodes.find((node) => node.id === draggingResource.id)?.name
+                    : fakeSubscriptions.find((subscription) => subscription.id === draggingResource.id)?.name}
+                </span>
               </Badge>
             ) : null}
           </DragOverlay>

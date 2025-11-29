@@ -1,5 +1,6 @@
 import type { DraggableResourceType } from '~/constants'
-import { useDraggable } from '@dnd-kit/core'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 import { X } from 'lucide-react'
 import { Badge } from '~/components/ui/badge'
@@ -7,7 +8,7 @@ import { Button } from '~/components/ui/button'
 import { SimpleTooltip } from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
 
-export function DraggableResourceBadge({
+export function SortableResourceBadge({
   id,
   name,
   type,
@@ -15,7 +16,7 @@ export function DraggableResourceBadge({
   groupID,
   subscriptionID,
   onRemove,
-  dragDisabled,
+  disabled,
   children,
 }: {
   id: string
@@ -25,10 +26,10 @@ export function DraggableResourceBadge({
   groupID?: string
   subscriptionID?: string
   onRemove?: () => void
-  dragDisabled?: boolean
+  disabled?: boolean
   children?: React.ReactNode
 }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
     data: {
       type,
@@ -36,12 +37,18 @@ export function DraggableResourceBadge({
       groupID,
       subscriptionID,
     },
-    disabled: dragDisabled,
+    disabled,
   })
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  }
 
   const badge = (
     <Badge
       ref={setNodeRef}
+      style={style}
       className={cn(
         'pr-1 flex items-center gap-1 touch-none select-none',
         isDragging ? 'opacity-50 z-10 cursor-grabbing' : 'cursor-grab',

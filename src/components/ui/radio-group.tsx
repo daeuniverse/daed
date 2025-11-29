@@ -7,7 +7,7 @@ import * as React from 'react'
 import { cn } from '~/lib/utils'
 import { Label } from './label'
 
-interface RadioGroupProps extends React.ComponentProps<typeof RadioGroupPrimitive.Root> {
+interface RadioGroupProps extends Omit<React.ComponentProps<typeof RadioGroupPrimitive.Root>, 'onChange'> {
   label?: string
   onChange?: (value: string) => void
 }

@@ -32,17 +32,25 @@ export function DraggableResourceCard({
   children: React.ReactNode
 }) {
   const { t } = useTranslation()
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { type, nodeID, subscriptionID } })
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id,
+    data: { type, nodeID, subscriptionID },
+  })
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   return (
     <>
-      <Card ref={setNodeRef} padding="sm" withBorder shadow="sm" className={cn(isDragging && 'opacity-50')}>
+      <Card padding="sm" withBorder shadow="sm" className={cn(isDragging && 'opacity-50')}>
         <div className="border-b pb-2 mb-2">
           <div className="flex items-center justify-between gap-2">
             {leftSection}
 
-            <Badge size="lg" className="flex-1 cursor-grab" {...listeners} {...attributes}>
+            <Badge
+              ref={setNodeRef}
+              className="flex-1 cursor-grab touch-none select-none text-sm px-3 py-1"
+              {...listeners}
+              {...attributes}
+            >
               <span className="truncate">{name}</span>
             </Badge>
 
