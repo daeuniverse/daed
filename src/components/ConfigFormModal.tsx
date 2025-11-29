@@ -258,7 +258,7 @@ export function ConfigFormDrawer({ ref, opened, onClose }) {
 
   return (
     <Dialog open={opened} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-2xl max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t('config')}</DialogTitle>
         </DialogHeader>

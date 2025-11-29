@@ -56,15 +56,18 @@ jobs:
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ^1.21
-      - run: go version
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ^1.22
+          cache-dependency-path: wing/go.sum
+
+      - run: go version
 
       - name: Download wing vendor
         run: |
@@ -181,15 +184,18 @@ jobs:
       CC: ${{ matrix.cc }}
 
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ^1.21
-      - run: go version
       - uses: actions/checkout@v4
         with:
           ref: ${{ needs.release-please.outputs.tag_name }}
           fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ^1.22
+          cache-dependency-path: wing/go.sum
+
+      - run: go version
 
       - name: Get the version
         id: get_version
