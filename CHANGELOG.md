@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/daeuniverse/daed/compare/v0.10.0...v0.11.0) (2025-11-29)
+
+
+### Features
+
+* update Header component to use APP_VERSION from environment variables ([45866d5](https://github.com/daeuniverse/daed/commit/45866d58604c3ead4dbc709307e925491ac571e1))
+
 ## [0.10.0](https://github.com/daeuniverse/daed/compare/v0.9.3...v0.10.0) (2025-11-29)
 
 
