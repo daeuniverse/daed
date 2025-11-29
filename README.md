@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/logo.webp" alt="daed logo" width="120" />
+  <img src="public/logo.webp" alt="daed logo" width="120" style="border-radius: 16px;" />
   <h1>daed</h1>
   <p><strong>A modern web dashboard for dae</strong></p>
 

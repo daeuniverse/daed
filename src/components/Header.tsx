@@ -271,13 +271,13 @@ export function HeaderWithActions() {
           </DropdownMenu>
 
           {matchSmallScreen ? (
-            <Button variant="ghost" size="icon" onClick={toggleBurger}>
+            <Button variant="ghost" size="icon" className="rounded-full" onClick={toggleBurger}>
               <Menu className="h-5 w-5" />
             </Button>
           ) : (
             <Fragment>
               <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="rounded-full">
                   <Github className="h-5 w-5" />
                 </Button>
               </a>
@@ -285,6 +285,7 @@ export function HeaderWithActions() {
               <Button
                 variant="ghost"
                 size="icon"
+                className="rounded-full"
                 onClick={() => {
                   if (i18n.language.startsWith('zh')) {
                     i18n.changeLanguage('en')
@@ -297,7 +298,7 @@ export function HeaderWithActions() {
               </Button>
 
               <SimpleTooltip label={getThemeLabel()}>
-                <Button variant="ghost" size="icon" onClick={cycleThemeMode}>
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={cycleThemeMode}>
                   {getThemeIcon()}
                 </Button>
               </SimpleTooltip>
@@ -309,6 +310,7 @@ export function HeaderWithActions() {
               <Button
                 variant="ghost"
                 size="icon"
+                className="rounded-full"
                 loading={runMutation.isPending}
                 onClick={() => runMutation.mutateAsync(false)}
               >
