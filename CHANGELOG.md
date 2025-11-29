@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.14.0](https://github.com/daeuniverse/daed/compare/v0.13.0...v0.14.0) (2025-11-29)
+
+
+### Features
+
+* add rename functionality to various components ([df74727](https://github.com/daeuniverse/daed/commit/df747275a14729475dc70d65fe9e4c8d52243724))
+* **EditNodeFormModal:** refactor to support edit node configurations ([ff8e77e](https://github.com/daeuniverse/daed/commit/ff8e77e0ce2223be7a80ac00b899deb4df2c2ca4))
+* **forms:** implement useNodeForm hook for streamlined form handling ([655220a](https://github.com/daeuniverse/daed/commit/655220ab39a30e6d550114667a9cfe6f07d18f52))
+* **styles:** update color scheme for light and dark modes ([141d3db](https://github.com/daeuniverse/daed/commit/141d3db833c894e6c3608c1e52ae6f86840816c2))
+* **theme:** refactor color scheme handling to support theme modes ([639c82c](https://github.com/daeuniverse/daed/commit/639c82c144e847fc6f9b8e6d08cc737bcab5c707))
+
+
+### Bug Fixes
+
+* **SimpleCard:** adjust border styles and class names for improved layout ([bbb1d4b](https://github.com/daeuniverse/daed/commit/bbb1d4ba46f803f584d3841c9f59a77bc984e979))
+
 ## [0.13.0](https://github.com/daeuniverse/daed/compare/v0.12.0...v0.13.0) (2025-11-29)
 
 
