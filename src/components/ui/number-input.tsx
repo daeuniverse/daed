@@ -118,7 +118,7 @@ function NumberInput({
           type="number"
           id={id}
           className={cn(
-            'flex w-full rounded-md border border-input bg-transparent py-1 shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+            'flex w-full rounded-md border border-input bg-transparent py-1 shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-inset disabled:cursor-not-allowed disabled:opacity-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
             sizeClasses[size],
             !hideControls && 'pr-8',
             error && 'border-destructive',

@@ -3,8 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { useImportNodesMutation } from '~/apis'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Dialog, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
+import {
+  ScrollableDialogBody,
+  ScrollableDialogContent,
+  ScrollableDialogHeader,
+} from '~/components/ui/scrollable-dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 
 import { HTTPForm } from './HTTPForm'
@@ -46,11 +51,11 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean; o
 
   return (
     <Dialog open={opened} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden">
-        <DialogHeader>
+      <ScrollableDialogContent size="lg">
+        <ScrollableDialogHeader>
           <DialogTitle>{t('configureNode.title')}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 overflow-hidden">
+        </ScrollableDialogHeader>
+        <ScrollableDialogBody className="space-y-4">
           <Input
             label={t('tag')}
             withAsterisk
@@ -59,8 +64,8 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean; o
             error={errors.tag}
           />
 
-          <Tabs defaultValue="v2ray" className="w-full min-w-0 overflow-hidden">
-            <div className="overflow-x-auto">
+          <Tabs defaultValue="v2ray" className="w-full min-w-0">
+            <div className="overflow-x-auto -mx-1 px-1">
               <TabsList className="inline-flex w-max gap-1">
                 <TabsTrigger value="v2ray">V2RAY</TabsTrigger>
                 <TabsTrigger value="ss">SS</TabsTrigger>
@@ -110,8 +115,8 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean; o
               <Socks5Form onLinkGeneration={onLinkGeneration} />
             </TabsContent>
           </Tabs>
-        </div>
-      </DialogContent>
+        </ScrollableDialogBody>
+      </ScrollableDialogContent>
     </Dialog>
   )
 }
