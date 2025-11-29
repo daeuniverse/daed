@@ -14,6 +14,7 @@ import {
   ScrollableDialogContent,
   ScrollableDialogHeader,
 } from '~/components/ui/scrollable-dialog'
+import { useSetValue } from '~/hooks/useSetValue'
 
 const schema = z.object({
   resources: z
@@ -48,16 +49,19 @@ export function ImportResourceFormModal({
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues,
+    mode: 'onChange',
   })
 
   const {
     handleSubmit,
     control,
     watch,
-    setValue,
+    setValue: setValueOriginal,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = form
+
+  const setValue = useSetValue(setValueOriginal)
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -134,7 +138,7 @@ export function ImportResourceFormModal({
                 <Plus className="h-4 w-4" />
               </Button>
 
-              <FormActions reset={() => reset(defaultValues)} />
+              <FormActions reset={() => reset(defaultValues)} isDirty={isDirty} errors={errors} />
             </div>
           </form>
         </ScrollableDialogBody>

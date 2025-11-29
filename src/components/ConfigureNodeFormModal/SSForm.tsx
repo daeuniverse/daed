@@ -9,17 +9,26 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_SS_FORM_VALUES, ssSchema } from '~/constants'
+import { useSetValue } from '~/hooks/useSetValue'
 
 type FormValues = z.infer<typeof ssSchema>
 
 export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
   const { t } = useTranslation()
 
-  const { handleSubmit, setValue, reset, control } = useForm<FormValues>({
+  const {
+    handleSubmit,
+    setValue: setValueOriginal,
+    reset,
+    control,
+    formState: { isDirty, errors },
+  } = useForm<FormValues>({
     resolver: zodResolver(ssSchema),
     defaultValues: DEFAULT_SS_FORM_VALUES,
+    mode: 'onChange',
   })
 
+  const setValue = useSetValue(setValueOriginal)
   const formValues = useWatch({ control })
 
   const onSubmit = (data: FormValues) => {
@@ -189,7 +198,7 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
         <Input label="Path" value={formValues.path} onChange={(e) => setValue('path', e.target.value)} />
       )}
 
-      <FormActions reset={() => reset(DEFAULT_SS_FORM_VALUES)} />
+      <FormActions reset={() => reset(DEFAULT_SS_FORM_VALUES)} isDirty={isDirty} errors={errors} />
     </form>
   )
 }

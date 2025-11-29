@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/u
 import { Input } from '~/components/ui/input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_GROUP_POLICY } from '~/constants'
+import { useSetValue } from '~/hooks/useSetValue'
 import { Policy } from '~/schemas/gql/graphql'
 
 const schema = z.object({
@@ -49,16 +50,18 @@ export function GroupFormModal({
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues,
+    mode: 'onChange',
   })
 
   const {
     handleSubmit,
     watch,
-    setValue,
+    setValue: setValueOriginal,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = form
 
+  const setValue = useSetValue(setValueOriginal)
   const formValues = watch()
 
   const initOrigins = (origins: FormValues) => {
@@ -172,6 +175,8 @@ export function GroupFormModal({
                   resetForm()
                 }
               }}
+              isDirty={isDirty}
+              errors={errors}
             />
           </div>
         </form>

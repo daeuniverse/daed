@@ -48,6 +48,7 @@ import {
   TLSImplementation,
   UTLSImitate,
 } from '~/constants'
+import { useSetValue } from '~/hooks/useSetValue'
 
 import { FormActions } from './FormActions'
 
@@ -129,19 +130,19 @@ export function ConfigFormDrawer({
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues,
-  })
-
   const {
     handleSubmit,
-    setValue,
+    setValue: setValueOriginal,
     reset,
     control,
-    formState: { errors },
-  } = form
+    formState: { errors, isDirty },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues,
+    mode: 'all',
+  })
 
+  const setValue = useSetValue(setValueOriginal)
   const formValues = useWatch({ control })
 
   const initOrigins = (origins: FormValues) => {
@@ -502,6 +503,8 @@ export function ConfigFormDrawer({
                   resetForm()
                 }
               }}
+              isDirty={isDirty}
+              errors={errors}
             />
           </ScrollableDialogFooter>
         </form>

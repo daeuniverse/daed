@@ -370,11 +370,17 @@ export function HeaderWithActions() {
               <FormActions
                 reset={() => {
                   setUploadingAvatarBase64(null)
+                  setFormData({ name: userQuery?.user.name || '' })
 
                   if (fileInputRef.current) {
                     fileInputRef.current.value = ''
                   }
                 }}
+                isDirty={
+                  formData.name !== (userQuery?.user.name || '') ||
+                  (uploadingAvatarBase64 !== null && uploadingAvatarBase64 !== userQuery?.user.avatar)
+                }
+                isValid={formData.name.length >= 1}
               />
             </div>
           </form>

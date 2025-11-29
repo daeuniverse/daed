@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { useUpdateNodeMutation } from '../apis/index.ts'
+import { useSetValue } from '../hooks/useSetValue.ts'
 import { FormActions } from './FormActions.tsx'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog.tsx'
 import { Input } from './ui/input.tsx'
@@ -33,16 +34,18 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { link: '' },
+    mode: 'onChange',
   })
 
   const {
     handleSubmit,
     watch,
-    setValue,
+    setValue: setValueOriginal,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = form
 
+  const setValue = useSetValue(setValueOriginal)
   const formValues = watch()
 
   // Initialize form when modal opens with node data
@@ -86,7 +89,12 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
           />
           <Input label={t('tag')} value={node?.tag || ''} disabled />
           <Input label={t('name')} value={node?.name || ''} disabled />
-          <FormActions reset={() => reset({ link: '' })} loading={updateNodeMutation.isPending} />
+          <FormActions
+            reset={() => node && reset({ link: node.link })}
+            loading={updateNodeMutation.isPending}
+            isDirty={isDirty}
+            errors={errors}
+          />
         </form>
       </DialogContent>
     </Dialog>

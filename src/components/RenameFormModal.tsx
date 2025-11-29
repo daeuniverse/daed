@@ -8,6 +8,7 @@ import { useRenameConfigMutation, useRenameDNSMutation, useRenameGroupMutation, 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { RuleType } from '~/constants'
+import { useSetValue } from '~/hooks/useSetValue'
 
 import { FormActions } from './FormActions'
 
@@ -45,16 +46,18 @@ export function RenameFormModal({
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { name: '' },
+    mode: 'onChange',
   })
 
   const {
     handleSubmit,
     watch,
-    setValue,
+    setValue: setValueOriginal,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = form
 
+  const setValue = useSetValue(setValueOriginal)
   const formValues = watch()
 
   const ruleName = useMemo(() => {
@@ -136,7 +139,7 @@ export function RenameFormModal({
               />
             </div>
 
-            <FormActions reset={() => reset({ name: '' })} />
+            <FormActions reset={() => reset({ name: '' })} isDirty={isDirty} errors={errors} />
           </div>
         </form>
       </DialogContent>

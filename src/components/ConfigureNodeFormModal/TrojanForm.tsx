@@ -9,6 +9,7 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_TROJAN_FORM_VALUES, trojanSchema } from '~/constants'
+import { useSetValue } from '~/hooks/useSetValue'
 import { generateURL } from '~/utils'
 
 type FormValues = z.infer<typeof trojanSchema>
@@ -16,11 +17,19 @@ type FormValues = z.infer<typeof trojanSchema>
 export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
   const { t } = useTranslation()
 
-  const { handleSubmit, setValue, reset, control } = useForm<FormValues>({
+  const {
+    handleSubmit,
+    setValue: setValueOriginal,
+    reset,
+    control,
+    formState: { isDirty, errors },
+  } = useForm<FormValues>({
     resolver: zodResolver(trojanSchema),
     defaultValues: DEFAULT_TROJAN_FORM_VALUES,
+    mode: 'onChange',
   })
 
+  const setValue = useSetValue(setValueOriginal)
   const formValues = useWatch({ control })
 
   const onSubmit = (data: FormValues) => {
@@ -163,7 +172,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
         />
       )}
 
-      <FormActions reset={() => reset(DEFAULT_TROJAN_FORM_VALUES)} />
+      <FormActions reset={() => reset(DEFAULT_TROJAN_FORM_VALUES)} isDirty={isDirty} errors={errors} />
     </form>
   )
 }

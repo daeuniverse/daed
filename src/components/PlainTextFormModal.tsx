@@ -14,6 +14,7 @@ import {
   ScrollableDialogHeader,
 } from '~/components/ui/scrollable-dialog'
 import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants'
+import { useSetValue } from '~/hooks/useSetValue'
 import { handleEditorBeforeMount } from '~/monaco'
 import { colorSchemeAtom } from '~/store'
 
@@ -65,16 +66,18 @@ export function PlainTextFormModal({
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues,
+    mode: 'onChange',
   })
 
   const {
     handleSubmit,
     watch,
-    setValue,
+    setValue: setValueOriginal,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = form
 
+  const setValue = useSetValue(setValueOriginal)
   const formValues = watch()
 
   const initOrigins = (origins: FormValues) => {
@@ -160,6 +163,8 @@ export function PlainTextFormModal({
                   resetForm()
                 }
               }}
+              isDirty={isDirty}
+              errors={errors}
             />
           </form>
         </ScrollableDialogBody>
