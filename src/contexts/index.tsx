@@ -16,26 +16,30 @@ export function GQLQueryClientProvider({ client, children }: { client: GraphQLCl
 export const useGQLQueryClient = () => use(GQLClientContext)
 
 type ColorScheme = 'dark' | 'light'
+type ThemeMode = 'system' | 'light' | 'dark'
 
 interface ColorSchemeContextValue {
   colorScheme: ColorScheme
-  toggleColorScheme: (value?: ColorScheme) => void
+  themeMode: ThemeMode
+  setThemeMode: (mode: ThemeMode) => void
 }
 
 export const ColorSchemeContext = createContext<ColorSchemeContextValue>({
   colorScheme: 'light',
-  toggleColorScheme: () => {},
+  themeMode: 'system',
+  setThemeMode: () => {},
 })
 
 export const useColorScheme = () => use(ColorSchemeContext)
 
 interface QueryProviderProps {
   children: React.ReactNode
-  toggleColorScheme: (value?: ColorScheme) => void
   colorScheme: ColorScheme
+  themeMode: ThemeMode
+  setThemeMode: (mode: ThemeMode) => void
 }
 
-export function QueryProvider({ children, toggleColorScheme, colorScheme }: QueryProviderProps) {
+export function QueryProvider({ children, colorScheme, themeMode, setThemeMode }: QueryProviderProps) {
   const endpointURL = useStore(endpointURLAtom)
   const token = useStore(tokenAtom)
 
@@ -65,7 +69,10 @@ export function QueryProvider({ children, toggleColorScheme, colorScheme }: Quer
     [endpointURL, token],
   )
 
-  const colorSchemeContextValue = useMemo(() => ({ colorScheme, toggleColorScheme }), [colorScheme, toggleColorScheme])
+  const colorSchemeContextValue = useMemo(
+    () => ({ colorScheme, themeMode, setThemeMode }),
+    [colorScheme, themeMode, setThemeMode],
+  )
 
   return (
     <ColorSchemeContext value={colorSchemeContextValue}>

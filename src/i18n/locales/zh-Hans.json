@@ -193,6 +193,11 @@
   "tag": "标签",
   "tcpCheckHttpMethod": "TCP 检测 HTTP 方式",
   "tcpCheckUrl": "TCP 检测链接",
+  "theme": {
+    "system": "跟随系统",
+    "light": "浅色",
+    "dark": "深色"
+  },
   "tlsImplementation": "TLS 实现",
   "tproxyPort": "透明代理端口",
   "tproxyPortProtect": "透明代理端口保护",

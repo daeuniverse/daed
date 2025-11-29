@@ -6,6 +6,7 @@ import { atom, map } from 'nanostores'
 import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL } from '~/constants'
 
 export type ColorScheme = 'light' | 'dark'
+export type ThemeMode = 'system' | 'light' | 'dark'
 
 export interface PersistentSortableKeys {
   nodeSortableKeys: UniqueIdentifier[]
@@ -17,7 +18,7 @@ export interface PersistentSortableKeys {
 }
 
 export type AppState = {
-  preferredColorScheme: ColorScheme | ''
+  themeMode: ThemeMode
   colsPerRow: number
 } & PersistentSortableKeys
 
@@ -27,7 +28,7 @@ export const endpointURLAtom = persistentAtom<string>('endpointURL', DEFAULT_END
 export const appStateAtom = persistentMap<AppState>(
   'APP_STATE',
   {
-    preferredColorScheme: '',
+    themeMode: 'system',
     colsPerRow: COLS_PER_ROW,
     nodeSortableKeys: [],
     subscriptionSortableKeys: [],

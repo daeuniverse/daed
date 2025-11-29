@@ -193,6 +193,11 @@
   "tag": "Tag",
   "tcpCheckHttpMethod": "TCP Check HTTP Method",
   "tcpCheckUrl": "TCP Check URL",
+  "theme": {
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
   "tlsImplementation": "TLS Implementation",
   "tproxyPort": "Transparent Proxy Port",
   "tproxyPortProtect": "Tproxy Port Protection",

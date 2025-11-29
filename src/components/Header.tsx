@@ -7,6 +7,7 @@ import {
   Languages,
   LogOut,
   Menu,
+  Monitor,
   Moon,
   RefreshCw,
   Sun,
@@ -68,7 +69,36 @@ const passwordChangeSchema = z
 export function HeaderWithActions() {
   const { t } = useTranslation()
   const endpointURL = useStore(endpointURLAtom)
-  const { colorScheme, toggleColorScheme } = useColorScheme()
+  const { themeMode, setThemeMode } = useColorScheme()
+
+  const cycleThemeMode = () => {
+    const modes: Array<'system' | 'light' | 'dark'> = ['system', 'light', 'dark']
+    const currentIndex = modes.indexOf(themeMode)
+    const nextIndex = (currentIndex + 1) % modes.length
+    setThemeMode(modes[nextIndex])
+  }
+
+  const getThemeIcon = () => {
+    switch (themeMode) {
+      case 'system':
+        return <Monitor className="h-5 w-5" />
+      case 'light':
+        return <Sun className="h-5 w-5" />
+      case 'dark':
+        return <Moon className="h-5 w-5" />
+    }
+  }
+
+  const getThemeLabel = () => {
+    switch (themeMode) {
+      case 'system':
+        return t('theme.system')
+      case 'light':
+        return t('theme.light')
+      case 'dark':
+        return t('theme.dark')
+    }
+  }
   const [userMenuOpened, setUserMenuOpened] = useState(false)
   const [openedBurger, { toggle: toggleBurger, close: closeBurger }] = useDisclosure(false)
   const [openedAccountSettingsFormModal, { open: openAccountSettingsFormModal, close: closeAccountSettingsFormModal }] =
@@ -266,9 +296,11 @@ export function HeaderWithActions() {
                 <Languages className="h-5 w-5" />
               </Button>
 
-              <Button variant="ghost" size="icon" onClick={() => toggleColorScheme()}>
-                {colorScheme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </Button>
+              <SimpleTooltip label={getThemeLabel()}>
+                <Button variant="ghost" size="icon" onClick={cycleThemeMode}>
+                  {getThemeIcon()}
+                </Button>
+              </SimpleTooltip>
             </Fragment>
           )}
 
@@ -328,9 +360,9 @@ export function HeaderWithActions() {
               {t('actions.switchLanguage')}
             </Button>
 
-            <Button variant="outline" className="w-full justify-start gap-3" onClick={() => toggleColorScheme()}>
-              {colorScheme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              {t('actions.switchTheme')}
+            <Button variant="outline" className="w-full justify-start gap-3" onClick={cycleThemeMode}>
+              {getThemeIcon()}
+              {getThemeLabel()}
             </Button>
           </div>
         </SheetContent>

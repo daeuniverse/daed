@@ -1,3 +1,4 @@
+import type { ThemeMode } from '~/store'
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -9,7 +10,7 @@ import { appStateAtom, colorSchemeAtom } from '~/store'
 
 type ColorScheme = 'dark' | 'light'
 
-function useColorScheme(): ColorScheme {
+function useSystemColorScheme(): ColorScheme {
   const [colorScheme, setColorScheme] = useState<ColorScheme>(() => {
     if (typeof window !== 'undefined') {
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -31,31 +32,15 @@ function useColorScheme(): ColorScheme {
 
 export function App() {
   const appState = useStore(appStateAtom)
-  const preferredColorScheme = useColorScheme()
-  // Derive colorScheme directly from appState or system preference
-  const colorScheme = appState.preferredColorScheme || preferredColorScheme
+  const systemColorScheme = useSystemColorScheme()
+  const themeMode = appState.themeMode || 'system'
 
-  const toggleColorScheme = useCallback(
-    (value?: ColorScheme) => {
-      const toScheme = value || (colorScheme === 'dark' ? 'light' : 'dark')
-      appStateAtom.setKey('preferredColorScheme', toScheme)
-    },
-    [colorScheme],
-  )
+  // Derive actual colorScheme from themeMode
+  const colorScheme: ColorScheme = themeMode === 'system' ? systemColorScheme : themeMode
 
-  useEffect(() => {
-    const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
-    const onDarkModeChange = (e: MediaQueryListEvent) => {
-      // Only update if no user preference is set
-      if (!appState.preferredColorScheme) {
-        appStateAtom.setKey('preferredColorScheme', e.matches ? 'dark' : 'light')
-      }
-    }
-
-    darkModePreference.addEventListener('change', onDarkModeChange)
-
-    return () => darkModePreference.removeEventListener('change', onDarkModeChange)
-  }, [appState.preferredColorScheme])
+  const setThemeMode = useCallback((mode: ThemeMode) => {
+    appStateAtom.setKey('themeMode', mode)
+  }, [])
 
   useEffect(() => {
     colorSchemeAtom.set(colorScheme)
@@ -71,7 +56,7 @@ export function App() {
   }, [colorScheme])
 
   return (
-    <QueryProvider toggleColorScheme={toggleColorScheme} colorScheme={colorScheme}>
+    <QueryProvider colorScheme={colorScheme} themeMode={themeMode} setThemeMode={setThemeMode}>
       <TooltipProvider>
         <div className="h-dvh">
           <Toaster />
