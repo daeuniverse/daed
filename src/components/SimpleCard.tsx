@@ -84,10 +84,10 @@ export function SimpleCard({
         padding="none"
         className={cn(
           'transition-all duration-200',
-          selected && 'ring-2 ring-primary ring-offset-2 ring-offset-background border-primary/50',
+          selected && 'ring-2 ring-primary ring-offset-2 ring-offset-background border-primary',
         )}
       >
-        <div className="flex items-center justify-between border-b">
+        <div className="flex items-center justify-between">
           {isEditing ? (
             <div className="flex-1 flex items-center gap-2 p-2">
               <Input
@@ -115,7 +115,7 @@ export function SimpleCard({
             <button
               type="button"
               className={cn(
-                'flex-1 p-3 text-left transition-colors rounded-t-xl',
+                'flex-1 p-3 text-left transition-colors rounded-l-xl',
                 selected ? 'bg-primary/10' : 'hover:bg-accent',
               )}
               onClick={onSelect}
