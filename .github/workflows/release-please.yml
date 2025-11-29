@@ -349,8 +349,8 @@ jobs:
           files=$(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip")
           gh release upload $TAG_NAME $files
 
-  # Publish Docker image when release is created
-  publish-docker-image:
+  # Publish container image when release is created
+  publish-container-image:
     needs: [release-please, build-web]
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
@@ -384,6 +384,17 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-config: |
+            {
+              "debug": true,
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -419,6 +430,7 @@ jobs:
           target: prod
           platforms: linux/386,linux/amd64,linux/arm64
           push: true
+          load: true
           tags: |
             ${{ github.repository }}:latest
             ${{ github.repository }}:${{ steps.prep.outputs.TAG }}
