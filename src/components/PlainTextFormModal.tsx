@@ -93,7 +93,7 @@ export function PlainTextFormModal({ ref, title, opened, onClose, handleSubmit }
     <Dialog open={opened} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="max-w-none w-[calc(100vw-2rem)] sm:w-screen h-[calc(100vh-2rem)] sm:h-screen max-h-[calc(100vh-2rem)] sm:max-h-screen sm:rounded-none flex flex-col"
+        className="max-w-none w-[calc(100vw-2rem)] sm:w-[90vw] sm:max-w-4xl h-[calc(100vh-2rem)] sm:h-[90vh] flex flex-col"
       >
         <DialogHeader className="shrink-0 flex-row items-center justify-between">
           <DialogTitle>{title}</DialogTitle>
