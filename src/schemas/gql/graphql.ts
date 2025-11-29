@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core'
 export type Maybe<T> = T | null
-export type InputMaybe<T> = Maybe<T>
+export type InputMaybe<T> = T | null | undefined
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
@@ -46,6 +46,7 @@ export type ConfigFlatDesc = {
 
 export type Dae = {
   __typename?: 'Dae'
+  /** modified indicates whether the running config has been modified. */
   modified: Scalars['Boolean']['output']
   running: Scalars['Boolean']['output']
   version: Scalars['String']['output']
@@ -174,44 +175,85 @@ export type InterfaceFlag = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  /** createConfig creates a global config. Null arguments will be converted to default value. */
   createConfig: Config
+  /** createConfig creates a dns config. Null arguments will be converted to default value. */
   createDns: Dns
+  /** createGroup is to create a group. */
   createGroup: Group
+  /** createConfig creates a routing config. Null arguments will be converted to default value. */
   createRouting: Routing
+  /** createUser creates a user if there is no user. */
   createUser: Scalars['String']['output']
+  /** groupAddNodes is to add nodes to the group. Nodes will not be removed from its subscription when subscription update. */
   groupAddNodes: Scalars['Int']['output']
+  /** groupAddSubscriptions is to add subscriptions to the group. */
   groupAddSubscriptions: Scalars['Int']['output']
+  /** groupDelNodes is to remove nodes from the group. */
   groupDelNodes: Scalars['Int']['output']
+  /** groupDelSubscriptions is to remove subscriptions from the group. */
   groupDelSubscriptions: Scalars['Int']['output']
+  /** groupSetPolicy is to set the group a new policy. */
   groupSetPolicy: Scalars['Int']['output']
+  /** importNodes is to import nodes with no subscription ID. rollbackError means abort the import on error. */
   importNodes: Array<NodeImportResult>
+  /** importSubscription is to fetch and resolve the subscription into nodes. */
   importSubscription: SubscriptionImportResult
+  /** removeConfig is to remove a config with given config ID. */
   removeConfig: Scalars['Int']['output']
+  /** removeDns is to remove a dns config with given dns ID. */
   removeDns: Scalars['Int']['output']
+  /** removeGroup is to remove a group. */
   removeGroup: Scalars['Int']['output']
+  /** removeJsonStorage remove given paths from user related json storage. Empty paths is to clear json storage. Refer to https://github.com/tidwall/sjson */
   removeJsonStorage: Scalars['Int']['output']
+  /** removeNodes is to remove nodes that have no subscription ID. */
   removeNodes: Scalars['Int']['output']
+  /** removeRouting is to remove a routing config with given routing ID. */
   removeRouting: Scalars['Int']['output']
+  /** removeSubscriptions is to remove subscriptions with given ID list. */
   removeSubscriptions: Scalars['Int']['output']
+  /** renameConfig is to give the config a new name. */
   renameConfig: Scalars['Int']['output']
+  /** renameDns is to give the dns config a new name. */
   renameDns: Scalars['Int']['output']
+  /** renameGroup is to rename a group. */
   renameGroup: Scalars['Int']['output']
+  /** renameRouting is to give the routing config a new name. */
   renameRouting: Scalars['Int']['output']
+  /** run proxy with selected config+dns+routing. Dry-run can be used to stop the proxy. */
   run: Scalars['Int']['output']
+  /** selectConfig is to select a config as the current config. */
   selectConfig: Scalars['Int']['output']
+  /** selectConfig is to select a dns config as the current dns. */
   selectDns: Scalars['Int']['output']
+  /** selectConfig is to select a routing config as the current routing. */
   selectRouting: Scalars['Int']['output']
+  /** setJsonStorage set given paths to values in user related json storage. Refer to https://github.com/tidwall/sjson */
   setJsonStorage: Scalars['Int']['output']
+  /** tagNode is to give the node a new tag. */
   tagNode: Scalars['Int']['output']
+  /** tagSubscription is to give the subscription a new tag. */
   tagSubscription: Scalars['Int']['output']
+  /** updateAvatar update avatar for current user. Remove avatar if avatar is null. Blob base64 encoded image is recommended. */
   updateAvatar: Scalars['Int']['output']
+  /** updateConfig allows to partially update global config with given id. */
   updateConfig: Config
+  /** updateDns is to update dns config with given id. */
   updateDns: Dns
+  /** updateName update name for current user. Remove name if name is null. */
   updateName: Scalars['Int']['output']
+  /** updateNode is to update a node with no subscription ID. */
   updateNode: Node
+  /** updatePassword update password for current user. currentPassword is needed to authenticate. Return new token. */
   updatePassword: Scalars['String']['output']
+  /** updateRouting is to update routing config with given id. */
   updateRouting: Routing
+  /** updateSubscription is to re-fetch subscription and resolve subscription into nodes. Old nodes that independently belong to any groups will not be removed. */
   updateSubscription: Subscription
+  /** updateSubscriptionLink is to update the subscription link without re-fetching nodes. */
+  updateSubscriptionLink: Subscription
+  /** updateUsername update username for current user. */
   updateUsername: Scalars['Int']['output']
 }
 
@@ -393,6 +435,11 @@ export type MutationUpdateSubscriptionArgs = {
   id: Scalars['ID']['input']
 }
 
+export type MutationUpdateSubscriptionLinkArgs = {
+  id: Scalars['ID']['input']
+  link: Scalars['String']['input']
+}
+
 export type MutationUpdateUsernameArgs = {
   username: Scalars['String']['input']
 }
@@ -462,6 +509,7 @@ export type Query = {
   group: Group
   groups: Array<Group>
   healthCheck: Scalars['Int']['output']
+  /** jsonStorage get given paths from user related json storage. Empty paths is to get all. Refer to https://github.com/tidwall/gjson */
   jsonStorage: Array<Scalars['String']['output']>
   nodes: NodesConnection
   numberUsers: Scalars['Int']['output']
@@ -571,6 +619,11 @@ export type User = {
   avatar?: Maybe<Scalars['String']['output']>
   name?: Maybe<Scalars['String']['output']>
   username: Scalars['String']['output']
+}
+
+export type _Service = {
+  __typename?: '_Service'
+  sdl: Scalars['String']['output']
 }
 
 export type GlobalInput = {
