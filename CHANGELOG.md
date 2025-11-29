@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/daeuniverse/daed/compare/v0.9.0...v0.9.1) (2025-11-29)
+
+
+### Bug Fixes
+
+* disable caching for Go setup in release workflow ([b5fe59e](https://github.com/daeuniverse/daed/commit/b5fe59ebb5049a65d20ea75b21f15e3c5186f650))
+
 ## [0.9.0](https://github.com/daeuniverse/daed/compare/v0.8.1...v0.9.0) (2025-11-29)
 
 
