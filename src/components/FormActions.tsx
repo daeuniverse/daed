@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
 
-export const FormActions = ({ loading, reset }: { loading?: boolean; reset?: () => void }) => {
+export function FormActions({ loading, reset }: { loading?: boolean, reset?: () => void }) {
   const { t } = useTranslation()
 
   return (

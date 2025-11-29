@@ -14,8 +14,7 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used for type inference
-const actionTypes = {
+const _actionTypes = {
   ADD_TOAST: 'ADD_TOAST',
   UPDATE_TOAST: 'UPDATE_TOAST',
   DISMISS_TOAST: 'DISMISS_TOAST',
@@ -32,23 +31,23 @@ function genId() {
 
 type ActionType = typeof actionTypes
 
-type Action =
+type Action
+  = | {
+    type: ActionType['ADD_TOAST']
+    toast: ToasterToast
+  }
   | {
-      type: ActionType['ADD_TOAST']
-      toast: ToasterToast
-    }
+    type: ActionType['UPDATE_TOAST']
+    toast: Partial<ToasterToast>
+  }
   | {
-      type: ActionType['UPDATE_TOAST']
-      toast: Partial<ToasterToast>
-    }
+    type: ActionType['DISMISS_TOAST']
+    toastId?: ToasterToast['id']
+  }
   | {
-      type: ActionType['DISMISS_TOAST']
-      toastId?: ToasterToast['id']
-    }
-  | {
-      type: ActionType['REMOVE_TOAST']
-      toastId?: ToasterToast['id']
-    }
+    type: ActionType['REMOVE_TOAST']
+    toastId?: ToasterToast['id']
+  }
 
 interface State {
   toasts: ToasterToast[]
@@ -56,7 +55,7 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
-const addToRemoveQueue = (toastId: string) => {
+function addToRemoveQueue(toastId: string) {
   if (toastTimeouts.has(toastId)) {
     return
   }
@@ -65,14 +64,14 @@ const addToRemoveQueue = (toastId: string) => {
     toastTimeouts.delete(toastId)
     dispatch({
       type: 'REMOVE_TOAST',
-      toastId: toastId,
+      toastId,
     })
   }, TOAST_REMOVE_DELAY)
 
   toastTimeouts.set(toastId, timeout)
 }
 
-export const reducer = (state: State, action: Action): State => {
+export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'ADD_TOAST':
       return {
@@ -83,7 +82,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'UPDATE_TOAST':
       return {
         ...state,
-        toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
+        toasts: state.toasts.map(t => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
       }
 
     case 'DISMISS_TOAST': {
@@ -93,7 +92,8 @@ export const reducer = (state: State, action: Action): State => {
       // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
-      } else {
+      }
+      else {
         state.toasts.forEach((toast) => {
           addToRemoveQueue(toast.id)
         })
@@ -101,7 +101,7 @@ export const reducer = (state: State, action: Action): State => {
 
       return {
         ...state,
-        toasts: state.toasts.map((t) =>
+        toasts: state.toasts.map(t =>
           t.id === toastId || toastId === undefined
             ? {
                 ...t,
@@ -121,7 +121,7 @@ export const reducer = (state: State, action: Action): State => {
 
       return {
         ...state,
-        toasts: state.toasts.filter((t) => t.id !== action.toastId),
+        toasts: state.toasts.filter(t => t.id !== action.toastId),
       }
   }
 }
@@ -156,13 +156,14 @@ function toast({ ...props }: Toast) {
       id,
       open: true,
       onOpenChange: (open) => {
-        if (!open) dismiss()
+        if (!open)
+          dismiss()
       },
     },
   })
 
   return {
-    id: id,
+    id,
     dismiss,
     update,
   }
@@ -178,8 +179,8 @@ interface NotificationProps {
 
 const notifications = {
   show: ({ title, message, color }: NotificationProps) => {
-    const variant =
-      color === 'red' ? 'destructive' : color === 'green' ? 'success' : color === 'yellow' ? 'warning' : 'default'
+    const variant
+      = color === 'red' ? 'destructive' : color === 'green' ? 'success' : color === 'yellow' ? 'warning' : 'default'
 
     return toast({
       title,

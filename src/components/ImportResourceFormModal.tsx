@@ -22,7 +22,7 @@ const schema = z.object({
 
 const randomId = () => Math.random().toString(36).substring(2, 15)
 
-export const ImportResourceFormModal = ({
+export function ImportResourceFormModal({
   title,
   opened,
   onClose,
@@ -32,7 +32,7 @@ export const ImportResourceFormModal = ({
   opened: boolean
   onClose: () => void
   handleSubmit: (values: z.infer<typeof schema>) => Promise<void>
-}) => {
+}) {
   const { t } = useTranslation()
   const [resources, setResources] = useState([{ id: randomId(), link: '', tag: '' }])
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -89,7 +89,7 @@ export const ImportResourceFormModal = ({
                     withAsterisk
                     label={t('link')}
                     value={link}
-                    onChange={(e) => updateResource(i, 'link', e.target.value)}
+                    onChange={e => updateResource(i, 'link', e.target.value)}
                     error={errors[`resources.${i}.link`]}
                   />
                   <Input
@@ -97,7 +97,7 @@ export const ImportResourceFormModal = ({
                     withAsterisk
                     label={t('tag')}
                     value={tag}
-                    onChange={(e) => updateResource(i, 'tag', e.target.value)}
+                    onChange={e => updateResource(i, 'tag', e.target.value)}
                     error={errors[`resources.${i}.tag`]}
                   />
                 </div>

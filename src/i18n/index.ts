@@ -8,12 +8,12 @@ import zhHans from './locales/zh-Hans.json'
 export const defaultNS = 'translation'
 
 export const resources = {
-  en: { [defaultNS]: en },
+  'en': { [defaultNS]: en },
   'zh-Hans': { [defaultNS]: zhHans },
 }
 
-const i18nInit = () =>
-  i18n
+function i18nInit() {
+  return i18n
     .use(detectLanguage)
     .use(initReactI18next)
     .init({
@@ -23,5 +23,6 @@ const i18nInit = () =>
       defaultNS,
       resources,
     })
+}
 
 export { i18n, i18nInit }

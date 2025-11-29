@@ -1,16 +1,16 @@
+import type { DraggableResourceType } from '~/constants'
 import { useDraggable } from '@dnd-kit/core'
 import { Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
+import { useTranslation } from 'react-i18next'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
-import { DraggableResourceType } from '~/constants'
 import { cn } from '~/lib/utils'
 
-export const DraggableResourceCard = ({
+export function DraggableResourceCard({
   id,
   nodeID,
   subscriptionID,
@@ -30,7 +30,7 @@ export const DraggableResourceCard = ({
   onRemove: () => void
   actions?: React.ReactNode
   children: React.ReactNode
-}) => {
+}) {
   const { t } = useTranslation()
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { type, nodeID, subscriptionID } })
   const [confirmOpen, setConfirmOpen] = useState(false)

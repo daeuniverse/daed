@@ -1,8 +1,10 @@
+import type { PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
+import type { RenameFormModalRef } from '~/components/RenameFormModal'
 import { useStore } from '@nanostores/react'
 import { Map, Pencil, Type } from 'lucide-react'
+
 import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-
 import {
   useCreateRoutingMutation,
   useRemoveRoutingMutation,
@@ -10,8 +12,8 @@ import {
   useSelectRoutingMutation,
   useUpdateRoutingMutation,
 } from '~/apis'
-import { PlainTextFormModal, PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
-import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
+import { PlainTextFormModal } from '~/components/PlainTextFormModal'
+import { RenameFormModal } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
@@ -20,7 +22,7 @@ import { RuleType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
-export const Routing = () => {
+export function Routing() {
   const { t } = useTranslation()
   const { defaultRoutingID } = useStore(defaultResourcesAtom)
   const { data: routingsQuery } = useRoutingsQuery()
@@ -32,18 +34,18 @@ export const Routing = () => {
 
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
-  const [openedCreateRoutingFormModal, { open: openCreateRoutingFormModal, close: closeCreateRoutingFormModal }] =
-    useDisclosure(false)
-  const [openedUpdateRoutingFormModal, { open: openUpdateRoutingFormModal, close: closeUpdateRoutingFormModal }] =
-    useDisclosure(false)
+  const [openedCreateRoutingFormModal, { open: openCreateRoutingFormModal, close: closeCreateRoutingFormModal }]
+    = useDisclosure(false)
+  const [openedUpdateRoutingFormModal, { open: openUpdateRoutingFormModal, close: closeUpdateRoutingFormModal }]
+    = useDisclosure(false)
 
   return (
     <Section title={t('routing')} icon={<Map className="h-5 w-5" />} onCreate={openCreateRoutingFormModal} bordered>
-      {routingsQuery?.routings.map((routing) => (
+      {routingsQuery?.routings.map(routing => (
         <SimpleCard
           key={routing.id}
           name={routing.name}
-          actions={
+          actions={(
             <Fragment>
               <Button
                 variant="ghost"
@@ -80,7 +82,7 @@ export const Routing = () => {
                 <Pencil className="h-4 w-4" />
               </Button>
             </Fragment>
-          }
+          )}
           selected={routing.selected}
           onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
           onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}

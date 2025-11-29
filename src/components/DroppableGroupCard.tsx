@@ -8,7 +8,7 @@ import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { cn } from '~/lib/utils'
 
-export const DroppableGroupCard = ({
+export function DroppableGroupCard({
   id,
   name,
   onRemove,
@@ -20,7 +20,7 @@ export const DroppableGroupCard = ({
   onRemove?: () => void
   actions?: React.ReactNode
   children?: React.ReactNode
-}) => {
+}) {
   const { t } = useTranslation()
   const { isOver, setNodeRef } = useDroppable({ id })
   const [confirmOpen, setConfirmOpen] = useState(false)

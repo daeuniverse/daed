@@ -1,7 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { MODE } from '~/constants'
 
+import type { GlobalInput, ImportArgument, Policy, PolicyParam } from '~/schemas/gql/graphql'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  MODE,
   QUERY_KEY_CONFIG,
   QUERY_KEY_DNS,
   QUERY_KEY_GENERAL,
@@ -13,15 +14,14 @@ import {
 } from '~/constants'
 import { useGQLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
-import { GlobalInput, ImportArgument, Policy, PolicyParam } from '~/schemas/gql/graphql'
 
-export const useSetJsonStorageMutation = () => {
+export function useSetJsonStorageMutation() {
   const gqlClient = useGQLQueryClient()
 
   return useMutation({
     mutationFn: (object: Record<string, string>) => {
       const paths = Object.keys(object)
-      const values = paths.map((path) => object[path])
+      const values = paths.map(path => object[path])
 
       return gqlClient.request(
         graphql(`
@@ -38,7 +38,7 @@ export const useSetJsonStorageMutation = () => {
   })
 }
 
-export const useSetModeMutation = () => {
+export function useSetModeMutation() {
   const gqlClient = useGQLQueryClient()
 
   return useMutation({
@@ -58,12 +58,12 @@ export const useSetModeMutation = () => {
   })
 }
 
-export const useCreateConfigMutation = () => {
+export function useCreateConfigMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ name, global }: { name?: string; global?: GlobalInput }) => {
+    mutationFn: ({ name, global }: { name?: string, global?: GlobalInput }) => {
       return gqlClient.request(
         graphql(`
           mutation CreateConfig($name: String, $global: globalInput) {
@@ -84,12 +84,12 @@ export const useCreateConfigMutation = () => {
   })
 }
 
-export const useUpdateConfigMutation = () => {
+export function useUpdateConfigMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, global }: { id: string; global: GlobalInput }) => {
+    mutationFn: ({ id, global }: { id: string, global: GlobalInput }) => {
       return gqlClient.request(
         graphql(`
           mutation UpdateConfig($id: ID!, $global: globalInput!) {
@@ -111,7 +111,7 @@ export const useUpdateConfigMutation = () => {
   })
 }
 
-export const useRemoveConfigMutation = () => {
+export function useRemoveConfigMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -134,7 +134,7 @@ export const useRemoveConfigMutation = () => {
   })
 }
 
-export const useSelectConfigMutation = () => {
+export function useSelectConfigMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -158,12 +158,12 @@ export const useSelectConfigMutation = () => {
   })
 }
 
-export const useRenameConfigMutation = () => {
+export function useRenameConfigMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string }) => {
+    mutationFn: ({ id, name }: { id: string, name: string }) => {
       return gqlClient.request(
         graphql(`
           mutation RenameConfig($id: ID!, $name: String!) {
@@ -182,12 +182,12 @@ export const useRenameConfigMutation = () => {
   })
 }
 
-export const useCreateRoutingMutation = () => {
+export function useCreateRoutingMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ name, routing }: { name?: string; routing?: string }) => {
+    mutationFn: ({ name, routing }: { name?: string, routing?: string }) => {
       return gqlClient.request(
         graphql(`
           mutation CreateRouting($name: String, $routing: String) {
@@ -208,12 +208,12 @@ export const useCreateRoutingMutation = () => {
   })
 }
 
-export const useUpdateRoutingMutation = () => {
+export function useUpdateRoutingMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, routing }: { id: string; routing: string }) => {
+    mutationFn: ({ id, routing }: { id: string, routing: string }) => {
       return gqlClient.request(
         graphql(`
           mutation UpdateRouting($id: ID!, $routing: String!) {
@@ -235,7 +235,7 @@ export const useUpdateRoutingMutation = () => {
   })
 }
 
-export const useRemoveRoutingMutation = () => {
+export function useRemoveRoutingMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -259,7 +259,7 @@ export const useRemoveRoutingMutation = () => {
   })
 }
 
-export const useSelectRoutingMutation = () => {
+export function useSelectRoutingMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -283,12 +283,12 @@ export const useSelectRoutingMutation = () => {
   })
 }
 
-export const useRenameRoutingMutation = () => {
+export function useRenameRoutingMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string }) => {
+    mutationFn: ({ id, name }: { id: string, name: string }) => {
       return gqlClient.request(
         graphql(`
           mutation RenameRouting($id: ID!, $name: String!) {
@@ -308,12 +308,12 @@ export const useRenameRoutingMutation = () => {
   })
 }
 
-export const useCreateDNSMutation = () => {
+export function useCreateDNSMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ name, dns }: { name?: string; dns?: string }) => {
+    mutationFn: ({ name, dns }: { name?: string, dns?: string }) => {
       return gqlClient.request(
         graphql(`
           mutation CreateDNS($name: String, $dns: String) {
@@ -334,12 +334,12 @@ export const useCreateDNSMutation = () => {
   })
 }
 
-export const useUpdateDNSMutation = () => {
+export function useUpdateDNSMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, dns }: { id: string; dns: string }) => {
+    mutationFn: ({ id, dns }: { id: string, dns: string }) => {
       return gqlClient.request(
         graphql(`
           mutation UpdateDNS($id: ID!, $dns: String!) {
@@ -361,7 +361,7 @@ export const useUpdateDNSMutation = () => {
   })
 }
 
-export const useRemoveDNSMutation = () => {
+export function useRemoveDNSMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -384,7 +384,7 @@ export const useRemoveDNSMutation = () => {
   })
 }
 
-export const useSelectDNSMutation = () => {
+export function useSelectDNSMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -408,12 +408,12 @@ export const useSelectDNSMutation = () => {
   })
 }
 
-export const useRenameDNSMutation = () => {
+export function useRenameDNSMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string }) => {
+    mutationFn: ({ id, name }: { id: string, name: string }) => {
       return gqlClient.request(
         graphql(`
           mutation RenameDNS($id: ID!, $name: String!) {
@@ -432,12 +432,12 @@ export const useRenameDNSMutation = () => {
   })
 }
 
-export const useCreateGroupMutation = () => {
+export function useCreateGroupMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ name, policy, policyParams }: { name: string; policy: Policy; policyParams: PolicyParam[] }) => {
+    mutationFn: ({ name, policy, policyParams }: { name: string, policy: Policy, policyParams: PolicyParam[] }) => {
       return gqlClient.request(
         graphql(`
           mutation CreateGroup($name: String!, $policy: Policy!, $policyParams: [PolicyParam!]) {
@@ -459,7 +459,7 @@ export const useCreateGroupMutation = () => {
   })
 }
 
-export const useRemoveGroupMutation = () => {
+export function useRemoveGroupMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -482,12 +482,12 @@ export const useRemoveGroupMutation = () => {
   })
 }
 
-export const useGroupSetPolicyMutation = () => {
+export function useGroupSetPolicyMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, policy, policyParams }: { id: string; policy: Policy; policyParams: PolicyParam[] }) => {
+    mutationFn: ({ id, policy, policyParams }: { id: string, policy: Policy, policyParams: PolicyParam[] }) => {
       return gqlClient.request(
         graphql(`
           mutation GroupSetPolicy($id: ID!, $policy: Policy!, $policyParams: [PolicyParam!]) {
@@ -508,12 +508,12 @@ export const useGroupSetPolicyMutation = () => {
   })
 }
 
-export const useRenameGroupMutation = () => {
+export function useRenameGroupMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string }) => {
+    mutationFn: ({ id, name }: { id: string, name: string }) => {
       return gqlClient.request(
         graphql(`
           mutation RenameGroup($id: ID!, $name: String!) {
@@ -533,12 +533,12 @@ export const useRenameGroupMutation = () => {
   })
 }
 
-export const useGroupAddNodesMutation = () => {
+export function useGroupAddNodesMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, nodeIDs }: { id: string; nodeIDs: string[] }) => {
+    mutationFn: ({ id, nodeIDs }: { id: string, nodeIDs: string[] }) => {
       return gqlClient.request(
         graphql(`
           mutation GroupAddNodes($id: ID!, $nodeIDs: [ID!]!) {
@@ -558,12 +558,12 @@ export const useGroupAddNodesMutation = () => {
   })
 }
 
-export const useGroupDelNodesMutation = () => {
+export function useGroupDelNodesMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, nodeIDs }: { id: string; nodeIDs: string[] }) => {
+    mutationFn: ({ id, nodeIDs }: { id: string, nodeIDs: string[] }) => {
       return gqlClient.request(
         graphql(`
           mutation GroupDelNodes($id: ID!, $nodeIDs: [ID!]!) {
@@ -583,12 +583,12 @@ export const useGroupDelNodesMutation = () => {
   })
 }
 
-export const useGroupAddSubscriptionsMutation = () => {
+export function useGroupAddSubscriptionsMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, subscriptionIDs }: { id: string; subscriptionIDs: string[] }) => {
+    mutationFn: ({ id, subscriptionIDs }: { id: string, subscriptionIDs: string[] }) => {
       return gqlClient.request(
         graphql(`
           mutation GroupAddSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {
@@ -608,12 +608,12 @@ export const useGroupAddSubscriptionsMutation = () => {
   })
 }
 
-export const useGroupDelSubscriptionsMutation = () => {
+export function useGroupDelSubscriptionsMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, subscriptionIDs }: { id: string; subscriptionIDs: string[] }) => {
+    mutationFn: ({ id, subscriptionIDs }: { id: string, subscriptionIDs: string[] }) => {
       return gqlClient.request(
         graphql(`
           mutation GroupDelSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {
@@ -633,7 +633,7 @@ export const useGroupDelSubscriptionsMutation = () => {
   })
 }
 
-export const useImportNodesMutation = () => {
+export function useImportNodesMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -663,7 +663,7 @@ export const useImportNodesMutation = () => {
   })
 }
 
-export const useRemoveNodesMutation = () => {
+export function useRemoveNodesMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -688,12 +688,12 @@ export const useRemoveNodesMutation = () => {
   })
 }
 
-export const useUpdateNodeMutation = () => {
+export function useUpdateNodeMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, newLink }: { id: string; newLink: string }) => {
+    mutationFn: ({ id, newLink }: { id: string, newLink: string }) => {
       return gqlClient.request(
         graphql(`
           mutation UpdateNode($id: ID!, $newLink: String!) {
@@ -718,14 +718,14 @@ export const useUpdateNodeMutation = () => {
   })
 }
 
-export const useImportSubscriptionsMutation = () => {
+export function useImportSubscriptionsMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (data: ImportArgument[]) =>
       Promise.all(
-        data.map((subscription) =>
+        data.map(subscription =>
           gqlClient.request(
             graphql(`
               mutation ImportSubscription($rollbackError: Boolean!, $arg: ImportArgument!) {
@@ -755,14 +755,14 @@ export const useImportSubscriptionsMutation = () => {
   })
 }
 
-export const useUpdateSubscriptionsMutation = () => {
+export function useUpdateSubscriptionsMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (ids: string[]) =>
       Promise.all(
-        ids.map((id) =>
+        ids.map(id =>
           gqlClient.request(
             graphql(`
               mutation UpdateSubscription($id: ID!) {
@@ -785,7 +785,7 @@ export const useUpdateSubscriptionsMutation = () => {
   })
 }
 
-export const useRemoveSubscriptionsMutation = () => {
+export function useRemoveSubscriptionsMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -809,7 +809,7 @@ export const useRemoveSubscriptionsMutation = () => {
   })
 }
 
-export const useRunMutation = () => {
+export function useRunMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -832,7 +832,7 @@ export const useRunMutation = () => {
   })
 }
 
-export const useUpdateAvatarMutation = () => {
+export function useUpdateAvatarMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -855,7 +855,7 @@ export const useUpdateAvatarMutation = () => {
   })
 }
 
-export const useUpdateNameMutation = () => {
+export function useUpdateNameMutation() {
   const gqlClient = useGQLQueryClient()
   const queryClient = useQueryClient()
 
@@ -878,11 +878,11 @@ export const useUpdateNameMutation = () => {
   })
 }
 
-export const useUpdatePasswordMutation = () => {
+export function useUpdatePasswordMutation() {
   const gqlClient = useGQLQueryClient()
 
   return useMutation({
-    mutationFn: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) => {
+    mutationFn: ({ currentPassword, newPassword }: { currentPassword: string, newPassword: string }) => {
       // Use raw GraphQL string instead of graphql template tag
       const query = `
         mutation UpdatePassword($currentPassword: String!, $newPassword: String!) {

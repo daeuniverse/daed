@@ -1,23 +1,23 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "baseUrl": "./",
-    "isolatedModules": true,
+    "target": "ESNext",
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "baseUrl": "./",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "noEmit": true,
+    "paths": { "~/*": ["src/*"] },
+    "resolveJsonModule": true,
+    "types": ["vitest/globals"],
+    "allowImportingTsExtensions": true,
+    "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "paths": { "~/*": ["src/*"] },
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "ESNext",
-    "types": ["vitest/globals"]
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "include": ["src"]
 }

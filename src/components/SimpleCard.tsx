@@ -7,7 +7,7 @@ import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { cn } from '~/lib/utils'
 
-export const SimpleCard = ({
+export function SimpleCard({
   name,
   selected,
   onSelect,
@@ -21,7 +21,7 @@ export const SimpleCard = ({
   onRemove?: () => void
   actions?: React.ReactNode
   children: React.ReactNode
-}) => {
+}) {
   const { t } = useTranslation()
   const [openedDetailsModal, setOpenedDetailsModal] = useState(false)
   const [openedConfirmModal, setOpenedConfirmModal] = useState(false)

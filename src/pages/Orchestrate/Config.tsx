@@ -1,11 +1,13 @@
+import type { ConfigFormModalRef } from '~/components/ConfigFormModal'
+import type { RenameFormModalRef } from '~/components/RenameFormModal'
 import { useStore } from '@nanostores/react'
 import { Pencil, Settings, Type } from 'lucide-react'
+
 import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-
 import { useConfigsQuery, useRemoveConfigMutation, useSelectConfigMutation } from '~/apis'
-import { ConfigFormDrawer, ConfigFormModalRef } from '~/components/ConfigFormModal'
-import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
+import { ConfigFormDrawer } from '~/components/ConfigFormModal'
+import { RenameFormModal } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
@@ -15,7 +17,7 @@ import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 import { deriveTime } from '~/utils'
 
-export const Config = () => {
+export function Config() {
   const { t } = useTranslation()
 
   const { defaultConfigID } = useStore(defaultResourcesAtom)
@@ -28,18 +30,18 @@ export const Config = () => {
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
 
-  const [openedCreateConfigFormDrawer, { open: openCreateConfigFormDrawer, close: closeCreateConfigFormDrawer }] =
-    useDisclosure(false)
-  const [openedUpdateConfigFormDrawer, { open: openUpdateConfigFormDrawer, close: closeUpdateConfigFormDrawer }] =
-    useDisclosure(false)
+  const [openedCreateConfigFormDrawer, { open: openCreateConfigFormDrawer, close: closeCreateConfigFormDrawer }]
+    = useDisclosure(false)
+  const [openedUpdateConfigFormDrawer, { open: openUpdateConfigFormDrawer, close: closeUpdateConfigFormDrawer }]
+    = useDisclosure(false)
 
   return (
     <Section title={t('config')} icon={<Settings className="h-5 w-5" />} onCreate={openCreateConfigFormDrawer} bordered>
-      {configsQuery?.configs.map((config) => (
+      {configsQuery?.configs.map(config => (
         <SimpleCard
           key={config.id}
           name={config.name}
-          actions={
+          actions={(
             <Fragment>
               <Button
                 variant="ghost"
@@ -85,7 +87,7 @@ export const Config = () => {
                 <Pencil className="h-4 w-4" />
               </Button>
             </Fragment>
-          }
+          )}
           selected={config.selected}
           onSelect={() => selectConfigMutation.mutate({ id: config.id })}
           onRemove={config.id !== defaultConfigID ? () => removeConfigMutation.mutate(config.id) : undefined}

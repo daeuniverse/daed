@@ -1,13 +1,14 @@
+import type { GenerateURLParams } from '~/utils'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
+import { useTranslation } from 'react-i18next'
 import { FormActions } from '~/components/FormActions'
 import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { DEFAULT_SOCKS5_FORM_VALUES, socks5Schema } from '~/constants'
-import { GenerateURLParams, generateURL } from '~/utils'
+import { generateURL } from '~/utils'
 
-export const Socks5Form = ({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) => {
+export function Socks5Form({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
   const { t } = useTranslation()
   const [formData, setFormData] = useState(DEFAULT_SOCKS5_FORM_VALUES)
 
@@ -16,7 +17,8 @@ export const Socks5Form = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
 
     const result = socks5Schema.safeParse(formData)
 
-    if (!result.success) return
+    if (!result.success)
+      return
 
     const generateURLParams: GenerateURLParams = {
       protocol: 'socks5',
@@ -36,7 +38,7 @@ export const Socks5Form = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
   }
 
   const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData(prev => ({ ...prev, [field]: value }))
   }
 
   return (
@@ -44,14 +46,14 @@ export const Socks5Form = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
       <Input
         label={t('configureNode.name')}
         value={formData.name}
-        onChange={(e) => updateField('name', e.target.value)}
+        onChange={e => updateField('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
         value={formData.host}
-        onChange={(e) => updateField('host', e.target.value)}
+        onChange={e => updateField('host', e.target.value)}
       />
 
       <NumberInput
@@ -60,19 +62,19 @@ export const Socks5Form = ({ onLinkGeneration }: { onLinkGeneration: (link: stri
         min={0}
         max={65535}
         value={formData.port}
-        onChange={(val) => updateField('port', Number(val))}
+        onChange={val => updateField('port', Number(val))}
       />
 
       <Input
         label={t('configureNode.username')}
         value={formData.username}
-        onChange={(e) => updateField('username', e.target.value)}
+        onChange={e => updateField('username', e.target.value)}
       />
 
       <Input
         label={t('configureNode.password')}
         value={formData.password}
-        onChange={(e) => updateField('password', e.target.value)}
+        onChange={e => updateField('password', e.target.value)}
       />
 
       <FormActions reset={() => setFormData(DEFAULT_SOCKS5_FORM_VALUES)} />

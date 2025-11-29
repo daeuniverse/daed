@@ -1,18 +1,19 @@
+import type { QRCodeModalRef } from '../../components/QRCodeModal.tsx'
 import { Cloud, CloudUpload, Eye, FileInput, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
+import { useTranslation } from 'react-i18next'
 import { useImportNodesMutation, useNodesQuery, useRemoveNodesMutation } from '../../apis/index.ts'
 import { DraggableResourceCard } from '../../components/DraggableResourceCard.tsx'
 import { EditNodeFormModal } from '../../components/EditNodeFormModal.tsx'
 import { ImportResourceFormModal } from '../../components/ImportResourceFormModal.tsx'
 import { ConfigureNodeFormModal } from '../../components/index.ts'
-import { QRCodeModal, QRCodeModalRef } from '../../components/QRCodeModal.tsx'
+import { QRCodeModal } from '../../components/QRCodeModal.tsx'
 import { Section } from '../../components/Section.tsx'
 import { Button } from '../../components/ui/button.tsx'
 import { DraggableResourceType } from '../../constants/index.ts'
 
-export const NodeResource = () => {
+export function NodeResource() {
   const { t } = useTranslation()
 
   const [openedQRCodeModal, setOpenedQRCodeModal] = useState(false)
@@ -36,11 +37,11 @@ export const NodeResource = () => {
       icon={<Cloud className="h-5 w-5" />}
       iconPlus={<CloudUpload className="h-4 w-4" />}
       onCreate={() => setOpenedImportNodeFormModal(true)}
-      actions={
+      actions={(
         <Button variant="ghost" size="icon" onClick={() => setOpenedConfigureNodeFormModal(true)}>
           <FileInput className="h-4 w-4" />
         </Button>
-      }
+      )}
       bordered
     >
       {nodesQuery?.nodes.edges.map(({ id, name, tag, protocol, link }) => (
@@ -51,7 +52,7 @@ export const NodeResource = () => {
           type={DraggableResourceType.node}
           name={tag}
           leftSection={<span className="text-xs font-semibold">{protocol}</span>}
-          actions={
+          actions={(
             <Fragment>
               <Button
                 variant="ghost"
@@ -84,7 +85,7 @@ export const NodeResource = () => {
                 <Eye className="h-3 w-3" />
               </Button>
             </Fragment>
-          }
+          )}
           onRemove={() => removeNodesMutation.mutate([id])}
         >
           <p className="font-semibold text-primary break-all">{name}</p>
@@ -118,7 +119,7 @@ export const NodeResource = () => {
   )
 }
 
-const Spoiler = ({ label, showLabel, hideLabel }: { label: string; showLabel: string; hideLabel: string }) => {
+function Spoiler({ label, showLabel, hideLabel }: { label: string, showLabel: string, hideLabel: string }) {
   const [show, setShow] = useState(false)
 
   return (

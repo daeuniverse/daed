@@ -1,5 +1,3 @@
-import { forwardRef } from 'react'
-
 import { cn } from '~/lib/utils'
 
 interface SelectItemWithDescriptionProps extends React.ComponentPropsWithoutRef<'div'> {
@@ -8,8 +6,14 @@ interface SelectItemWithDescriptionProps extends React.ComponentPropsWithoutRef<
   selected?: boolean
 }
 
-export const SelectItemWithDescription = forwardRef<HTMLDivElement, SelectItemWithDescriptionProps>(
-  ({ label, description, selected, ...props }, ref) => (
+export function SelectItemWithDescription({
+  ref,
+  label,
+  description,
+  selected,
+  ...props
+}: SelectItemWithDescriptionProps & { ref?: React.RefObject<HTMLDivElement | null> }) {
+  return (
     <div ref={ref} className="flex flex-col gap-1" {...props}>
       <span className="text-sm">{label}</span>
 
@@ -19,5 +23,5 @@ export const SelectItemWithDescription = forwardRef<HTMLDivElement, SelectItemWi
         </span>
       )}
     </div>
-  ),
-)
+  )
+}

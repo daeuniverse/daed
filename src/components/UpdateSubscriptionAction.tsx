@@ -3,7 +3,7 @@ import { RefreshCw } from 'lucide-react'
 import { useUpdateSubscriptionsMutation } from '~/apis'
 import { Button } from '~/components/ui/button'
 
-export const UpdateSubscriptionAction = ({ id, loading }: { id: string; loading?: boolean }) => {
+export function UpdateSubscriptionAction({ id, loading }: { id: string, loading?: boolean }) {
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
 
   return (

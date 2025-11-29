@@ -57,11 +57,11 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '^1.21'
+          go-version: ^1.21
       - run: go version
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: recursive
           ref: ${{ needs.release-please.outputs.tag_name }}
 
       - name: Download wing vendor
@@ -182,7 +182,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '^1.21'
+          go-version: ^1.21
       - run: go version
       - uses: actions/checkout@v4
         with:
@@ -369,7 +369,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: recursive
           ref: ${{ needs.release-please.outputs.tag_name }}
 
       - name: Download artifact - web

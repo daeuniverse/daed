@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
+import { useUpdateNodeMutation } from '../apis/index.ts'
 import { FormActions } from './FormActions.tsx'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog.tsx'
-import { Input } from './ui/input.tsx'
 
-import { useUpdateNodeMutation } from '../apis/index.ts'
+import { Input } from './ui/input.tsx'
 
 const schema = z.object({
   link: z.string().min(1),
@@ -25,7 +25,7 @@ export interface EditNodeFormModalProps {
   }
 }
 
-export const EditNodeFormModal = ({ opened, onClose, node }: EditNodeFormModalProps) => {
+export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalProps) {
   const { t } = useTranslation()
   const updateNodeMutation = useUpdateNodeMutation()
 
@@ -51,7 +51,8 @@ export const EditNodeFormModal = ({ opened, onClose, node }: EditNodeFormModalPr
   const handleOpenChange = (open: boolean) => {
     if (open) {
       initializeForm()
-    } else {
+    }
+    else {
       onClose()
     }
   }
@@ -93,7 +94,7 @@ export const EditNodeFormModal = ({ opened, onClose, node }: EditNodeFormModalPr
             label={t('link')}
             withAsterisk
             value={formData.link}
-            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+            onChange={e => setFormData({ ...formData, link: e.target.value })}
             error={errors.link}
           />
           <Input label={t('tag')} value={node?.tag || ''} disabled />

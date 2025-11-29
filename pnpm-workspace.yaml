@@ -1,4 +1,3 @@
-neverBuiltDependencies: []
-
 patchedDependencies:
   monaco-themes: patches/monaco-themes.patch
+neverBuiltDependencies: []

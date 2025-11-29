@@ -1,5 +1,5 @@
+import type { GraphQLClient } from 'graphql-request'
 import { useQuery } from '@tanstack/react-query'
-import { GraphQLClient } from 'graphql-request'
 
 import {
   QUERY_KEY_CONFIG,
@@ -15,7 +15,7 @@ import {
 import { useGQLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
 
-export const getModeRequest = (gqlClient: GraphQLClient) => {
+export function getModeRequest(gqlClient: GraphQLClient) {
   return async () => {
     const { jsonStorage } = await gqlClient.request(
       graphql(`
@@ -32,7 +32,7 @@ export const getModeRequest = (gqlClient: GraphQLClient) => {
   }
 }
 
-export const getDefaultsRequest = (gqlClient: GraphQLClient) => {
+export function getDefaultsRequest(gqlClient: GraphQLClient) {
   return async () => {
     const data = await gqlClient.request(
       graphql(`
@@ -56,7 +56,7 @@ export const getDefaultsRequest = (gqlClient: GraphQLClient) => {
   }
 }
 
-export const getInterfacesRequest = (gqlClient: GraphQLClient) => {
+export function getInterfacesRequest(gqlClient: GraphQLClient) {
   return () =>
     gqlClient.request(
       graphql(`
@@ -81,7 +81,7 @@ export const getInterfacesRequest = (gqlClient: GraphQLClient) => {
     )
 }
 
-export const useDefaultsQuery = () => {
+export function useDefaultsQuery() {
   const gqlClient = useGQLQueryClient()
 
   const { data } = useQuery({
@@ -113,7 +113,7 @@ export const useDefaultsQuery = () => {
   }
 }
 
-export const useGeneralQuery = () => {
+export function useGeneralQuery() {
   const gqlClient = useGQLQueryClient()
 
   return useQuery({
@@ -148,7 +148,7 @@ export const useGeneralQuery = () => {
   })
 }
 
-export const useNodesQuery = () => {
+export function useNodesQuery() {
   const gqlClient = useGQLQueryClient()
 
   return useQuery({
@@ -173,7 +173,7 @@ export const useNodesQuery = () => {
   })
 }
 
-export const useSubscriptionsQuery = () => {
+export function useSubscriptionsQuery() {
   const gqlClient = useGQLQueryClient()
 
   return useQuery({
@@ -204,7 +204,7 @@ export const useSubscriptionsQuery = () => {
   })
 }
 
-export const useConfigsQuery = () => {
+export function useConfigsQuery() {
   const gqlClient = useGQLQueryClient()
 
   return useQuery({
@@ -250,7 +250,7 @@ export const useConfigsQuery = () => {
   })
 }
 
-export const useGroupsQuery = () => {
+export function useGroupsQuery() {
   const gqlClient = useGQLQueryClient()
 
   return useQuery({
@@ -303,7 +303,7 @@ export const useGroupsQuery = () => {
   })
 }
 
-export const useRoutingsQuery = () => {
+export function useRoutingsQuery() {
   const gqlClient = useGQLQueryClient()
 
   return useQuery({
@@ -326,7 +326,7 @@ export const useRoutingsQuery = () => {
   })
 }
 
-export const useDNSsQuery = () => {
+export function useDNSsQuery() {
   const gqlClient = useGQLQueryClient()
 
   return useQuery({
@@ -358,7 +358,7 @@ export const useDNSsQuery = () => {
   })
 }
 
-export const useUserQuery = () => {
+export function useUserQuery() {
   const gqlClient = useGQLQueryClient()
 
   return useQuery({

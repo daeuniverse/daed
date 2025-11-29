@@ -10,16 +10,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 import { HTTPForm } from './HTTPForm'
 import { Hysteria2Form } from './Hysteria2Form'
 import { JuicityForm } from './JuicityForm'
+import { Socks5Form } from './Socks5Form'
 import { SSForm } from './SSForm'
 import { SSRForm } from './SSRForm'
-import { Socks5Form } from './Socks5Form'
 import { TrojanForm } from './TrojanForm'
 import { TuicForm } from './TuicForm'
 import { V2rayForm } from './V2rayForm'
 
 const schema = z.object({ tag: z.string().min(1) })
 
-export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
+export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean, onClose: () => void }) {
   const { t } = useTranslation()
   const importNodesMutation = useImportNodesMutation()
   const [formData, setFormData] = useState({ tag: '' })
@@ -55,7 +55,7 @@ export const ConfigureNodeFormModal = ({ opened, onClose }: { opened: boolean; o
             label={t('tag')}
             withAsterisk
             value={formData.tag}
-            onChange={(e) => setFormData({ tag: e.target.value })}
+            onChange={e => setFormData({ tag: e.target.value })}
             error={errors.tag}
           />
 

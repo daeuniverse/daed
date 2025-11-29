@@ -6,6 +6,7 @@
 ## How to run
 
 > **Note**
+>
 > - NEVER LET YOUR COMPUTER SLEEP OR HIBIRNATE WHILE PROXY IS STILL ON!
 > - NEVER SWITCH NETWORK WHILE PROXY IS STILL ON!
 > - TURN IT OFF BEFORE YOU MOVE OR LEAVE YOUR COMPUTER!
@@ -35,7 +36,7 @@ sudo daed [-h,--help]
 
 Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
 
-``````shell
+```shell
 # Download
 wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).deb
 
@@ -48,7 +49,7 @@ sudo systemctl start daed
 
 # enable daed start automatically
 sudo systemctl enable daed
-``````
+```
 
 ### Red Hat / Fedora
 
@@ -65,7 +66,7 @@ sudo dnf install daed
 
 Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
 
-``````shell
+```shell
 # Download
 wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).rpm
 
@@ -78,13 +79,13 @@ sudo systemctl start daed
 
 # enable daed start automatically
 sudo systemctl enable daed
-``````
+```
 
 ### openSUSE
 
 Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
 
-``````shell
+```shell
 # Download
 wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).rpm
 
@@ -97,7 +98,7 @@ sudo systemctl start daed
 
 # enable daed start automatically
 sudo systemctl enable daed
-``````
+```
 
 ### Arch Linux
 
@@ -107,45 +108,45 @@ Releases are available in <https://github.com/daeuniverse/daed/releases> or the 
 
 ##### Latest Release (Optimized Binary for x86-64 v3 / AVX2)
 
-``````shell
+```shell
 [yay/paru] -S daed-avx2-bin
-``````
+```
 
 ##### Latest Release (General x86-64 or aarch64)
 
-``````shell
+```shell
 [yay/paru] -S daed
-``````
+```
 
 ##### Latest Git Version
 
-``````shell
+```shell
 [yay/paru] -S daed-git
-``````
+```
 
 #### archlinuxcn
 
 ##### Latest Release (Optimized Binary for x86-64 v3 / AVX2)
 
-``````shell
+```shell
 sudo pacman -S daed-avx2-bin
-``````
+```
 
 ##### Latest Release (General x86-64 or aarch64)
 
-``````shell
+```shell
 sudo pacman -S daed
-``````
+```
 
 ##### Latest Git Version
 
-``````shell
+```shell
 sudo pacman -S daed-git
-``````
+```
 
 ### Docker (Experimental)
 
-Pre-built Docker images are available in `ghcr.io/daeuniverse/daed`, `quay.io/daeuniverse/daed` and `daeuniverse/daed`. 
+Pre-built Docker images are available in `ghcr.io/daeuniverse/daed`, `quay.io/daeuniverse/daed` and `daeuniverse/daed`.
 
 #### Take `ghcr.io` for example, the command below pulls and runs the latest image
 
@@ -182,14 +183,13 @@ sudo docker run -d \
     daed
 ```
 
-
 > **NOTE**
+>
 > - Docker currently supports only i386(x86-32), amd64(x86-64), armv7 and arm64(armv8). (Alpha)
 > - Only amd64 is tested working as expected, but not fully tested yet. (Beta)
 > - For self build from source, only amd64 and arm64 will run.
 > - Please refer to https://github.com/daeuniverse/daed/discussions/291 and relevant PRs and Issues for details
 > - Volunteers are welcomed.
-
 
 ## Access Panel
 

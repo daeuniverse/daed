@@ -1,13 +1,14 @@
-import { loader, Monaco } from '@monaco-editor/react'
+import type { Monaco } from '@monaco-editor/react'
+import type { editor } from 'monaco-editor'
+import { loader } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
-import { editor } from 'monaco-editor'
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
-import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+import themeGithubRaw from 'monaco-themes/themes/GitHub.json?raw'
 // Import theme JSON files using Vite's raw import
 import themeGithubLightRaw from 'monaco-themes/themes/GitHub Light.json?raw'
-import themeGithubRaw from 'monaco-themes/themes/GitHub.json?raw'
 
 import { EDITOR_LANGUAGE_ROUTINGA } from '~/constants/editor'
 
@@ -15,21 +16,21 @@ const themeGithub: editor.IStandaloneThemeData = JSON.parse(themeGithubRaw)
 const themeGithubLight: editor.IStandaloneThemeData = JSON.parse(themeGithubLightRaw)
 
 // Configure Monaco workers for Vite
-self.MonacoEnvironment = {
+globalThis.MonacoEnvironment = {
   getWorker(_, label) {
     if (label === 'json') {
-      return new jsonWorker()
+      return new JsonWorker()
     }
 
     if (label === 'html') {
-      return new htmlWorker()
+      return new HtmlWorker()
     }
 
     if (label === 'typescript' || label === 'javascript') {
-      return new tsWorker()
+      return new TsWorker()
     }
 
-    return new editorWorker()
+    return new EditorWorker()
   },
 }
 
@@ -37,7 +38,7 @@ self.MonacoEnvironment = {
 loader.config({ monaco })
 
 // Handler for beforeMount prop in Editor component
-export const handleEditorBeforeMount = (monacoInstance: Monaco) => {
+export function handleEditorBeforeMount(monacoInstance: Monaco) {
   // Register custom routingA language
   monacoInstance.languages.register({ id: 'routingA', extensions: ['dae'] })
   monacoInstance.languages.setMonarchTokensProvider('routingA', EDITOR_LANGUAGE_ROUTINGA)

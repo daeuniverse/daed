@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 
-export const Section = ({
+export function Section({
   title,
   icon,
   bordered,
@@ -21,7 +21,7 @@ export const Section = ({
   actions?: React.ReactNode
   highlight?: boolean
   children: React.ReactNode
-}) => {
+}) {
   return (
     <div
       className={cn(

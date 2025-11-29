@@ -1,19 +1,20 @@
-import { z } from 'zod'
+import type { z } from 'zod'
 
-import { GlobalInput, Policy } from '~/schemas/gql/graphql'
-
-import { DialMode, LogLevel, TLSImplementation, TcpCheckHttpMethod, UTLSImitate } from './misc'
-import {
+import type {
   httpSchema,
   hysteria2Schema,
   juicitySchema,
   socks5Schema,
-  ssSchema,
   ssrSchema,
+  ssSchema,
   trojanSchema,
   tuicSchema,
   v2raySchema,
 } from './schema'
+import type { GlobalInput } from '~/schemas/gql/graphql'
+
+import { Policy } from '~/schemas/gql/graphql'
+import { DialMode, LogLevel, TcpCheckHttpMethod, TLSImplementation, UTLSImitate } from './misc'
 
 export const DEFAULT_ENDPOINT_URL = `${location.protocol}//${location.hostname}:2023/graphql`
 
@@ -45,32 +46,34 @@ export const DEFAULT_DNS_NAME = 'default'
 export const DEFAULT_ROUTING_NAME = 'default'
 export const DEFAULT_GROUP_NAME = 'proxy'
 
-export const DEFAULT_CONFIG_WITH_LAN_INTERFACEs = (interfaces: string[] = []): GlobalInput => ({
-  logLevel: DEFAULT_LOG_LEVEL,
-  tproxyPort: DEFAULT_TPROXY_PORT,
-  tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
-  pprofPort: DEFAULT_PPROF_PORT,
-  soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
-  allowInsecure: DEFAULT_ALLOW_INSECURE,
-  checkInterval: `${DEFAULT_CHECK_INTERVAL_SECONDS}s`,
-  checkTolerance: `${DEFAULT_CHECK_TOLERANCE_MS}ms`,
-  sniffingTimeout: `${DEFAULT_SNIFFING_TIMEOUT_MS}ms`,
-  lanInterface: interfaces,
-  wanInterface: ['auto'],
-  udpCheckDns: DEFAULT_UDP_CHECK_DNS,
-  tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
-  tcpCheckHttpMethod: DEFAULT_TCP_CHECK_HTTP_METHOD,
-  dialMode: DEFAULT_DIAL_MODE,
-  autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
-  tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
-  utlsImitate: DEFAULT_UTLS_IMITATE,
-  disableWaitingNetwork: DEFAULT_DISABLE_WAITING_NETWORK,
-  enableLocalTcpFastRedirect: DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
-  mptcp: DEFAULT_MPTCP,
-  bandwidthMaxTx: DEFAULT_BANDWIDTH_MAX_TX,
-  bandwidthMaxRx: DEFAULT_BANDWIDTH_MAX_RX,
-  fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
-})
+export function DEFAULT_CONFIG_WITH_LAN_INTERFACEs(interfaces: string[] = []): GlobalInput {
+  return {
+    logLevel: DEFAULT_LOG_LEVEL,
+    tproxyPort: DEFAULT_TPROXY_PORT,
+    tproxyPortProtect: DEFAULT_TPROXY_PORT_PROTECT,
+    pprofPort: DEFAULT_PPROF_PORT,
+    soMarkFromDae: DEFAULT_SO_MARK_FROM_DAE,
+    allowInsecure: DEFAULT_ALLOW_INSECURE,
+    checkInterval: `${DEFAULT_CHECK_INTERVAL_SECONDS}s`,
+    checkTolerance: `${DEFAULT_CHECK_TOLERANCE_MS}ms`,
+    sniffingTimeout: `${DEFAULT_SNIFFING_TIMEOUT_MS}ms`,
+    lanInterface: interfaces,
+    wanInterface: ['auto'],
+    udpCheckDns: DEFAULT_UDP_CHECK_DNS,
+    tcpCheckUrl: DEFAULT_TCP_CHECK_URL,
+    tcpCheckHttpMethod: DEFAULT_TCP_CHECK_HTTP_METHOD,
+    dialMode: DEFAULT_DIAL_MODE,
+    autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
+    tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
+    utlsImitate: DEFAULT_UTLS_IMITATE,
+    disableWaitingNetwork: DEFAULT_DISABLE_WAITING_NETWORK,
+    enableLocalTcpFastRedirect: DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT,
+    mptcp: DEFAULT_MPTCP,
+    bandwidthMaxTx: DEFAULT_BANDWIDTH_MAX_TX,
+    bandwidthMaxRx: DEFAULT_BANDWIDTH_MAX_RX,
+    fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
+  }
+}
 
 export const DEFAULT_GROUP_POLICY = Policy.MinMovingAvg
 

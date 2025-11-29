@@ -13,7 +13,7 @@ export class Defer<T> {
   }
 }
 
-export const fileToBase64 = (file: File) => {
+export function fileToBase64(file: File) {
   const reader = new FileReader()
   reader.readAsDataURL(file)
 
@@ -34,19 +34,19 @@ export const fileToBase64 = (file: File) => {
   return defer.promise
 }
 
-const r = /([0-9]+)([a-z]+)/
+const r = /(\d+)([a-z]+)/
 
-type Time = {
+interface Time {
   hours: number
   minutes: number
   seconds: number
   milliseconds: number
 }
 
-export const parseDigitAndUnit = (
+export function parseDigitAndUnit(
   timeStr: string,
   output: Time = { hours: 0, milliseconds: 0, minutes: 0, seconds: 0 },
-): Time => {
+): Time {
   const matchRes = timeStr.match(r)
 
   if (!matchRes) {
@@ -74,5 +74,6 @@ export const parseDigitAndUnit = (
   return parseDigitAndUnit(timeStr.replace(r, ''), output)
 }
 
-export const deriveTime = (timeStr: string, outputUnit: 'ms' | 's') =>
-  dayjs.duration(parseDigitAndUnit(timeStr)).as(outputUnit === 'ms' ? 'milliseconds' : 'seconds')
+export function deriveTime(timeStr: string, outputUnit: 'ms' | 's') {
+  return dayjs.duration(parseDigitAndUnit(timeStr)).as(outputUnit === 'ms' ? 'milliseconds' : 'seconds')
+}

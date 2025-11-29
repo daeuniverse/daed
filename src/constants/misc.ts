@@ -1,4 +1,4 @@
-import { TFunction } from 'i18next'
+import type { TFunction } from 'i18next'
 
 export enum LogLevel {
   error = 'error',
@@ -72,13 +72,15 @@ export enum UTLSImitate {
   qq_11_1 = 'qq_11_1',
 }
 
-export const GET_LOG_LEVEL_STEPS = (t: TFunction) => [
-  [t('error'), LogLevel.error],
-  [t('warn'), LogLevel.warn],
-  [t('info'), LogLevel.info],
-  [t('debug'), LogLevel.debug],
-  [t('trace'), LogLevel.trace],
-]
+export function GET_LOG_LEVEL_STEPS(t: TFunction) {
+  return [
+    [t('error'), LogLevel.error],
+    [t('warn'), LogLevel.warn],
+    [t('info'), LogLevel.info],
+    [t('debug'), LogLevel.debug],
+    [t('trace'), LogLevel.trace],
+  ]
+}
 
 export enum MODE {
   simple = 'simple',
@@ -105,7 +107,7 @@ export enum DraggableResourceType {
   groupSubscription = 'group_subscription',
 }
 
-export type DraggingResource = {
+export interface DraggingResource {
   type: DraggableResourceType
   nodeID?: string
   groupID?: string

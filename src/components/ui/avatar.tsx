@@ -1,85 +1,60 @@
-'use client'
-
-import * as React from 'react'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
+import * as React from 'react'
 
 import { cn } from '~/lib/utils'
 
-const AvatarRoot = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Root
-    ref={ref}
-    className={cn('relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full', className)}
-    {...props}
-  />
-))
-AvatarRoot.displayName = AvatarPrimitive.Root.displayName
-
-const AvatarImage = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Image>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image ref={ref} className={cn('aspect-square h-full w-full', className)} {...props} />
-))
-AvatarImage.displayName = AvatarPrimitive.Image.displayName
-
-const AvatarFallback = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Fallback>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Fallback
-    ref={ref}
-    className={cn('flex h-full w-full items-center justify-center rounded-full bg-muted', className)}
-    {...props}
-  />
-))
-AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
-
-// Simple wrapper for easier usage matching Mantine's Avatar API
-interface AvatarProps {
-  src?: string | null
+interface AvatarProps extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> {
+  src?: string
   alt?: string
-  radius?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
-  size?: number | 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-  className?: string
-  children?: React.ReactNode
+  size?: number
+  fallback?: React.ReactNode
 }
 
-const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
-  ({ src, alt, radius = 'full', size = 'md', className, children }, ref) => {
-    const sizeValue =
-      typeof size === 'number'
-        ? size
-        : {
-            xs: 16,
-            sm: 24,
-            md: 40,
-            lg: 56,
-            xl: 84,
-          }[size]
-
-    const radiusClasses = {
-      sm: 'rounded-sm',
-      md: 'rounded-md',
-      lg: 'rounded-lg',
-      xl: 'rounded-xl',
-      full: 'rounded-full',
-    }
-
-    return (
-      <AvatarRoot
-        ref={ref}
-        className={cn(radiusClasses[radius], className)}
-        style={{ width: sizeValue, height: sizeValue }}
+function Avatar({
+  ref,
+  className,
+  src,
+  alt,
+  size = 32,
+  fallback,
+  ...props
+}: AvatarProps & { ref?: React.RefObject<React.ElementRef<typeof AvatarPrimitive.Root> | null> }) {
+  return (
+    <AvatarPrimitive.Root
+      ref={ref}
+      data-slot="avatar"
+      className={cn('relative flex shrink-0 overflow-hidden rounded-full', className)}
+      style={{ width: size, height: size }}
+      {...props}
+    >
+      {src && (
+        <AvatarPrimitive.Image data-slot="avatar-image" className="aspect-square size-full" src={src} alt={alt} />
+      )}
+      <AvatarPrimitive.Fallback
+        data-slot="avatar-fallback"
+        className="bg-muted flex size-full items-center justify-center rounded-full"
       >
-        {src ? <AvatarImage src={src} alt={alt} /> : null}
-        <AvatarFallback>{children || alt?.[0]?.toUpperCase()}</AvatarFallback>
-      </AvatarRoot>
-    )
-  },
-)
-Avatar.displayName = 'Avatar'
+        {fallback}
+      </AvatarPrimitive.Fallback>
+    </AvatarPrimitive.Root>
+  )
+}
+Avatar.displayName = AvatarPrimitive.Root.displayName
 
-export { Avatar, AvatarRoot, AvatarImage, AvatarFallback }
+function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+  return (
+    <AvatarPrimitive.Image data-slot="avatar-image" className={cn('aspect-square size-full', className)} {...props} />
+  )
+}
+
+function AvatarFallback({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+  return (
+    <AvatarPrimitive.Fallback
+      data-slot="avatar-fallback"
+      className={cn('bg-muted flex size-full items-center justify-center rounded-full', className)}
+      {...props}
+    />
+  )
+}
+
+export { Avatar, AvatarFallback, AvatarImage }

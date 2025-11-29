@@ -1,18 +1,19 @@
+import type { ClientError } from 'graphql-request'
 import { useStore } from '@nanostores/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ClientError, GraphQLClient } from 'graphql-request'
-import { createContext, useContext, useMemo } from 'react'
+import { GraphQLClient } from 'graphql-request'
+import { createContext, use, useMemo } from 'react'
 
 import { notifications } from '~/components/ui/use-toast'
 import { endpointURLAtom, tokenAtom } from '~/store'
 
 export const GQLClientContext = createContext<GraphQLClient>(null as unknown as GraphQLClient)
 
-export const GQLQueryClientProvider = ({ client, children }: { client: GraphQLClient; children: React.ReactNode }) => {
-  return <GQLClientContext.Provider value={client}>{children}</GQLClientContext.Provider>
+export function GQLQueryClientProvider({ client, children }: { client: GraphQLClient, children: React.ReactNode }) {
+  return <GQLClientContext value={client}>{children}</GQLClientContext>
 }
 
-export const useGQLQueryClient = () => useContext(GQLClientContext)
+export const useGQLQueryClient = () => use(GQLClientContext)
 
 type ColorScheme = 'dark' | 'light'
 
@@ -26,7 +27,7 @@ export const ColorSchemeContext = createContext<ColorSchemeContextValue>({
   toggleColorScheme: () => {},
 })
 
-export const useColorScheme = () => useContext(ColorSchemeContext)
+export const useColorScheme = () => use(ColorSchemeContext)
 
 interface QueryProviderProps {
   children: React.ReactNode
@@ -34,7 +35,7 @@ interface QueryProviderProps {
   colorScheme: ColorScheme
 }
 
-export const QueryProvider = ({ children, toggleColorScheme, colorScheme }: QueryProviderProps) => {
+export function QueryProvider({ children, toggleColorScheme, colorScheme }: QueryProviderProps) {
   const endpointURL = useStore(endpointURLAtom)
   const token = useStore(tokenAtom)
 
@@ -65,10 +66,10 @@ export const QueryProvider = ({ children, toggleColorScheme, colorScheme }: Quer
   )
 
   return (
-    <ColorSchemeContext.Provider value={{ colorScheme, toggleColorScheme }}>
+    <ColorSchemeContext value={{ colorScheme, toggleColorScheme }}>
       <QueryClientProvider client={queryClient}>
         <GQLQueryClientProvider client={gqlClient}>{children}</GQLQueryClientProvider>
       </QueryClientProvider>
-    </ColorSchemeContext.Provider>
+    </ColorSchemeContext>
   )
 }

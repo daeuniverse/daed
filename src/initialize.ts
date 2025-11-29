@@ -27,7 +27,7 @@ import {
 import { useGQLQueryClient } from '~/contexts'
 import { defaultResourcesAtom, modeAtom } from '~/store'
 
-export const useInitialize = () => {
+export function useInitialize() {
   const createConfigMutation = useCreateConfigMutation()
   const selectConfigMutation = useSelectConfigMutation()
   const createRoutingMutation = useCreateRoutingMutation()
@@ -42,9 +42,7 @@ export const useInitialize = () => {
   const getDefaults = getDefaultsRequest(gqlClient)
 
   return useCallback(async () => {
-    const lanInterfaces = (await getInterfaces()).general.interfaces
-      .filter(({ flag }) => !!flag.default)
-      .map(({ name }) => name)
+    const lanInterfaces = (await getInterfaces()).general.interfaces.filter(({ flag }) => !!flag.default).map(({ name }) => name)
 
     const { defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID } = await getDefaults()
 
@@ -95,7 +93,8 @@ export const useInitialize = () => {
       await setJsonStorageMutation.mutateAsync({ mode: MODE.simple })
 
       modeAtom.set(MODE.simple)
-    } else {
+    }
+    else {
       modeAtom.set(mode as MODE)
     }
 

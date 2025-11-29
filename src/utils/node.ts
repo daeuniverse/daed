@@ -1,6 +1,6 @@
 import URI from 'urijs'
 
-export type GenerateURLParams = {
+export interface GenerateURLParams {
   username?: string
   password?: string
   protocol: string
@@ -11,7 +11,7 @@ export type GenerateURLParams = {
   path?: string
 }
 
-export const generateURL = ({ username, password, protocol, host, port, params, hash, path }: GenerateURLParams) => {
+export function generateURL({ username, password, protocol, host, port, params, hash, path }: GenerateURLParams) {
   /**
    * 所有参数设置默认值
    * 避免方法检测到参数为null/undefine返回该值查询结果
@@ -30,7 +30,7 @@ export const generateURL = ({ username, password, protocol, host, port, params, 
   return uri.toString()
 }
 
-export const generateHysteria2URL = ({
+export function generateHysteria2URL({
   protocol,
   auth,
   host,
@@ -42,7 +42,7 @@ export const generateHysteria2URL = ({
   host: string
   port: number
   params: Record<string, string | number | boolean>
-}) => {
+}) {
   // Encode the auth field to handle special characters like '@'
   const encodedAuth = encodeURIComponent(auth)
   const uri = new URL(`${protocol}://${encodedAuth}@${host}:${port}/`)

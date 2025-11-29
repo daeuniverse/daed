@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -17,7 +17,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
-export type GroupFormModalRef = {
+export interface GroupFormModalRef {
   form: {
     setValues: (values: FormValues) => void
     reset: () => void
@@ -26,7 +26,7 @@ export type GroupFormModalRef = {
   initOrigins: (origins: FormValues) => void
 }
 
-export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean; onClose: () => void }, ref) => {
+export function GroupFormModal({ ref, opened, onClose }) {
   const { t } = useTranslation()
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
@@ -103,13 +103,14 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
       await groupSetPolicyMutation.mutateAsync({
         id: editingID,
         policy: formData.policy,
-        policyParams: policyParams,
+        policyParams,
       })
-    } else {
+    }
+    else {
       await createGroupMutation.mutateAsync({
         name: formData.name,
         policy: formData.policy,
-        policyParams: policyParams,
+        policyParams,
       })
     }
 
@@ -129,7 +130,7 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
               withAsterisk
               label={t('name')}
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
               error={errors.name}
               disabled={!!editingID}
             />
@@ -138,14 +139,15 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
               label={t('policy')}
               data={policyData}
               value={formData.policy}
-              onChange={(value) => setFormData({ ...formData, policy: value as Policy })}
+              onChange={value => setFormData({ ...formData, policy: value as Policy })}
             />
 
             <FormActions
               reset={() => {
                 if (editingID && origins) {
                   setFormData(origins)
-                } else {
+                }
+                else {
                   resetForm()
                 }
               }}
@@ -155,4 +157,4 @@ export const GroupFormModal = forwardRef(({ opened, onClose }: { opened: boolean
       </DialogContent>
     </Dialog>
   )
-})
+}

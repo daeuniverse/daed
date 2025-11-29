@@ -1,4 +1,5 @@
-import { CodegenConfig } from '@graphql-codegen/cli'
+import type { CodegenConfig } from '@graphql-codegen/cli'
+import process from 'node:process'
 
 export default {
   overwrite: true,

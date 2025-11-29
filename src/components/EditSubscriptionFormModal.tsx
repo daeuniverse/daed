@@ -24,12 +24,7 @@ export interface EditSubscriptionFormModalProps {
   onSubmit: (values: FormValues & { id: string }) => Promise<void>
 }
 
-export const EditSubscriptionFormModal = ({
-  opened,
-  onClose,
-  subscription,
-  onSubmit,
-}: EditSubscriptionFormModalProps) => {
+export function EditSubscriptionFormModal({ opened, onClose, subscription, onSubmit }: EditSubscriptionFormModalProps) {
   const { t } = useTranslation()
 
   const [formData, setFormData] = useState<FormValues>({
@@ -56,7 +51,8 @@ export const EditSubscriptionFormModal = ({
   const handleOpenChange = (open: boolean) => {
     if (open) {
       initializeForm()
-    } else {
+    }
+    else {
       onClose()
     }
   }
@@ -95,14 +91,14 @@ export const EditSubscriptionFormModal = ({
             label={t('link')}
             withAsterisk
             value={formData.link}
-            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+            onChange={e => setFormData({ ...formData, link: e.target.value })}
             error={errors.link}
           />
           <Input
             label={t('tag')}
             withAsterisk
             value={formData.tag}
-            onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
+            onChange={e => setFormData({ ...formData, tag: e.target.value })}
             error={errors.tag}
           />
           <FormActions reset={resetForm} />

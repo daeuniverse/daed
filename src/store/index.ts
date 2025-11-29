@@ -1,12 +1,13 @@
-import { UniqueIdentifier } from '@dnd-kit/core'
+import type { UniqueIdentifier } from '@dnd-kit/core'
+import type { MODE } from '~/constants'
 import { persistentAtom, persistentMap } from '@nanostores/persistent'
-import { atom, map } from 'nanostores'
 
-import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL, MODE } from '~/constants'
+import { atom, map } from 'nanostores'
+import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL } from '~/constants'
 
 export type ColorScheme = 'light' | 'dark'
 
-export type PersistentSortableKeys = {
+export interface PersistentSortableKeys {
   nodeSortableKeys: UniqueIdentifier[]
   subscriptionSortableKeys: UniqueIdentifier[]
   configSortableKeys: UniqueIdentifier[]
@@ -41,7 +42,7 @@ export const appStateAtom = persistentMap<AppState>(
   },
 )
 
-export type DEFAULT_RESOURCES = {
+export interface DEFAULT_RESOURCES {
   defaultConfigID: string
   defaultRoutingID: string
   defaultDNSID: string

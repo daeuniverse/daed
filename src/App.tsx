@@ -9,7 +9,7 @@ import { appStateAtom, colorSchemeAtom } from '~/store'
 
 type ColorScheme = 'dark' | 'light'
 
-const useColorScheme = (): ColorScheme => {
+function useColorScheme(): ColorScheme {
   const [colorScheme, setColorScheme] = useState<ColorScheme>(() => {
     if (typeof window !== 'undefined') {
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -29,7 +29,7 @@ const useColorScheme = (): ColorScheme => {
   return colorScheme
 }
 
-export const App = () => {
+export function App() {
   const appState = useStore(appStateAtom)
   const preferredColorScheme = useColorScheme()
   // Derive colorScheme directly from appState or system preference
@@ -65,7 +65,8 @@ export const App = () => {
   useEffect(() => {
     if (colorScheme === 'dark') {
       document.documentElement.classList.add('dark')
-    } else {
+    }
+    else {
       document.documentElement.classList.remove('dark')
     }
   }, [colorScheme])

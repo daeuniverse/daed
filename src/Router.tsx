@@ -6,7 +6,7 @@ import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom'
 import { ExperimentPage, MainLayout, OrchestratePage, SetupPage } from '~/pages'
 import { endpointURLAtom } from '~/store'
 
-export const Router = () => {
+export function Router() {
   const endpointURL = useStore(endpointURLAtom)
   const RouterType = import.meta.env.DEV ? BrowserRouter : HashRouter
 
@@ -23,13 +23,13 @@ export const Router = () => {
         {endpointURL && (
           <Route
             path="/graphiql"
-            element={
+            element={(
               <GraphiQL
                 fetcher={createGraphiQLFetcher({
                   url: endpointURL,
                 })}
               />
-            }
+            )}
           />
         )}
       </Routes>

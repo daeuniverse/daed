@@ -1,8 +1,9 @@
+import type { GlobalInput } from '~/schemas/gql/graphql'
 import { Minus, Plus } from 'lucide-react'
-import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
+import { useImperativeHandle, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 
+import { z } from 'zod'
 import { useCreateConfigMutation, useGeneralQuery, useUpdateConfigMutation } from '~/apis'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
 import { Button } from '~/components/ui/button'
@@ -36,16 +37,14 @@ import {
   DEFAULT_UTLS_IMITATE,
   DialMode,
   GET_LOG_LEVEL_STEPS,
-  TLSImplementation,
   TcpCheckHttpMethod,
+  TLSImplementation,
   UTLSImitate,
 } from '~/constants'
-import { GlobalInput } from '~/schemas/gql/graphql'
 
 import { FormActions } from './FormActions'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used for type inference
-const schema = z.object({
+const _schema = z.object({
   name: z.string().min(1),
   logLevelNumber: z.number().min(0).max(4),
   tproxyPort: z.number(),
@@ -101,7 +100,7 @@ const defaultValues: FormValues = {
   fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
 }
 
-const InputList = ({
+function InputList({
   label,
   description,
   values,
@@ -111,12 +110,14 @@ const InputList = ({
   description?: string
   values: string[]
   onChange: (values: string[]) => void
-}) => {
+}) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">
-          {label} <span className="text-destructive">*</span>
+          {label}
+          {' '}
+          <span className="text-destructive">*</span>
         </Label>
         <Button
           type="button"
@@ -158,7 +159,7 @@ const InputList = ({
   )
 }
 
-export type ConfigFormModalRef = {
+export interface ConfigFormModalRef {
   form: {
     setValues: (values: FormValues) => void
     reset: () => void
@@ -167,7 +168,7 @@ export type ConfigFormModalRef = {
   initOrigins: (origins: FormValues) => void
 }
 
-export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boolean; onClose: () => void }, ref) => {
+export function ConfigFormDrawer({ ref, opened, onClose }) {
   const { t } = useTranslation()
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
@@ -239,7 +240,8 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
         id: editingID,
         global,
       })
-    } else {
+    }
+    else {
       await createConfigMutation.mutateAsync({
         name: formData.name,
         global,
@@ -251,7 +253,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
   }
 
   const updateField = <K extends keyof FormValues>(field: K, value: FormValues[K]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData(prev => ({ ...prev, [field]: value }))
   }
 
   return (
@@ -266,7 +268,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
               label={t('name')}
               withAsterisk
               value={formData.name}
-              onChange={(e) => updateField('name', e.target.value)}
+              onChange={e => updateField('name', e.target.value)}
               disabled={!!editingID}
             />
 
@@ -293,14 +295,14 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       min={0}
                       max={65535}
                       value={formData.tproxyPort}
-                      onChange={(val) => updateField('tproxyPort', Number(val))}
+                      onChange={val => updateField('tproxyPort', Number(val))}
                     />
 
                     <Checkbox
                       label={t('tproxyPortProtect')}
                       description={t('descriptions.config.tproxyPortProtect')}
                       checked={formData.tproxyPortProtect}
-                      onCheckedChange={(checked) => updateField('tproxyPortProtect', !!checked)}
+                      onCheckedChange={checked => updateField('tproxyPortProtect', !!checked)}
                     />
 
                     <NumberInput
@@ -308,9 +310,9 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       description={t('descriptions.config.soMarkFromDae')}
                       withAsterisk
                       min={0}
-                      max={Math.pow(2, 32) - 1}
+                      max={2 ** 32 - 1}
                       value={formData.soMarkFromDae}
-                      onChange={(val) => updateField('soMarkFromDae', Number(val))}
+                      onChange={val => updateField('soMarkFromDae', Number(val))}
                     />
 
                     <div className="space-y-2">
@@ -318,7 +320,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       <Select
                         data={logLevelSteps.map(([label], value) => ({ label, value: String(value) }))}
                         value={String(formData.logLevelNumber)}
-                        onChange={(val) => updateField('logLevelNumber', Number(val))}
+                        onChange={val => updateField('logLevelNumber', Number(val))}
                       />
                     </div>
 
@@ -326,19 +328,19 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       label={t('disableWaitingNetwork')}
                       description={t('descriptions.config.disableWaitingNetwork')}
                       checked={formData.disableWaitingNetwork}
-                      onCheckedChange={(checked) => updateField('disableWaitingNetwork', !!checked)}
+                      onCheckedChange={checked => updateField('disableWaitingNetwork', !!checked)}
                     />
 
                     <Checkbox
                       label={t('enableLocalTcpFastRedirect')}
                       checked={formData.enableLocalTcpFastRedirect}
-                      onCheckedChange={(checked) => updateField('enableLocalTcpFastRedirect', !!checked)}
+                      onCheckedChange={checked => updateField('enableLocalTcpFastRedirect', !!checked)}
                     />
 
                     <Checkbox
                       label={t('mptcp')}
                       checked={formData.mptcp}
-                      onCheckedChange={(checked) => updateField('mptcp', !!checked)}
+                      onCheckedChange={checked => updateField('mptcp', !!checked)}
                     />
                   </div>
                 </AccordionContent>
@@ -355,7 +357,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       description={t('descriptions.config.lanInterface')}
                       data={lanInterfacesData}
                       value={formData.lanInterface[0] || ''}
-                      onChange={(val) => updateField('lanInterface', val ? [val] : [])}
+                      onChange={val => updateField('lanInterface', val ? [val] : [])}
                     />
 
                     <Select
@@ -363,14 +365,14 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       description={t('descriptions.config.wanInterface')}
                       data={wanInterfacesData}
                       value={formData.wanInterface[0] || ''}
-                      onChange={(val) => updateField('wanInterface', val ? [val] : [])}
+                      onChange={val => updateField('wanInterface', val ? [val] : [])}
                     />
 
                     <Checkbox
                       label={t('autoConfigKernelParameter')}
                       description={t('descriptions.config.autoConfigKernelParameter')}
                       checked={formData.autoConfigKernelParameter}
-                      onCheckedChange={(checked) => updateField('autoConfigKernelParameter', !!checked)}
+                      onCheckedChange={checked => updateField('autoConfigKernelParameter', !!checked)}
                     />
                   </div>
                 </AccordionContent>
@@ -386,36 +388,36 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       label={t('tcpCheckUrl')}
                       description={t('descriptions.config.tcpCheckUrl')}
                       values={formData.tcpCheckUrl}
-                      onChange={(vals) => updateField('tcpCheckUrl', vals)}
+                      onChange={vals => updateField('tcpCheckUrl', vals)}
                     />
 
                     <Select
                       label={t('tcpCheckHttpMethod')}
                       description={t('descriptions.config.tcpCheckHttpMethod')}
-                      data={Object.values(TcpCheckHttpMethod).map((method) => ({ label: method, value: method }))}
+                      data={Object.values(TcpCheckHttpMethod).map(method => ({ label: method, value: method }))}
                       value={formData.tcpCheckHttpMethod}
-                      onChange={(val) => updateField('tcpCheckHttpMethod', val || '')}
+                      onChange={val => updateField('tcpCheckHttpMethod', val || '')}
                     />
 
                     <InputList
                       label={t('udpCheckDns')}
                       description={t('descriptions.config.udpCheckDns')}
                       values={formData.udpCheckDns}
-                      onChange={(vals) => updateField('udpCheckDns', vals)}
+                      onChange={vals => updateField('udpCheckDns', vals)}
                     />
 
                     <Input
                       label={t('fallbackResolver')}
                       description={t('descriptions.config.fallbackResolver')}
                       value={formData.fallbackResolver}
-                      onChange={(e) => updateField('fallbackResolver', e.target.value)}
+                      onChange={e => updateField('fallbackResolver', e.target.value)}
                     />
 
                     <NumberInput
                       label={`${t('checkInterval')} (s)`}
                       withAsterisk
                       value={formData.checkIntervalSeconds}
-                      onChange={(val) => updateField('checkIntervalSeconds', Number(val))}
+                      onChange={val => updateField('checkIntervalSeconds', Number(val))}
                     />
 
                     <NumberInput
@@ -424,7 +426,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       withAsterisk
                       step={500}
                       value={formData.checkToleranceMS}
-                      onChange={(val) => updateField('checkToleranceMS', Number(val))}
+                      onChange={val => updateField('checkToleranceMS', Number(val))}
                     />
                   </div>
                 </AccordionContent>
@@ -439,7 +441,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                     <RadioGroup
                       label={t('dialMode')}
                       value={formData.dialMode}
-                      onChange={(val) => updateField('dialMode', val)}
+                      onChange={val => updateField('dialMode', val)}
                     >
                       <Radio
                         value={DialMode.ip}
@@ -467,7 +469,7 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       label={t('allowInsecure')}
                       description={t('descriptions.config.allowInsecure')}
                       checked={formData.allowInsecure}
-                      onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
+                      onCheckedChange={checked => updateField('allowInsecure', !!checked)}
                     />
 
                     <NumberInput
@@ -475,24 +477,24 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       description={t('descriptions.config.sniffingTimeout')}
                       step={500}
                       value={formData.sniffingTimeoutMS}
-                      onChange={(val) => updateField('sniffingTimeoutMS', Number(val))}
+                      onChange={val => updateField('sniffingTimeoutMS', Number(val))}
                     />
 
                     <Select
                       label={t('tlsImplementation')}
                       description={t('descriptions.config.tlsImplementation')}
-                      data={Object.values(TLSImplementation).map((impl) => ({ label: impl, value: impl }))}
+                      data={Object.values(TLSImplementation).map(impl => ({ label: impl, value: impl }))}
                       value={formData.tlsImplementation}
-                      onChange={(val) => updateField('tlsImplementation', val || '')}
+                      onChange={val => updateField('tlsImplementation', val || '')}
                     />
 
                     {formData.tlsImplementation === TLSImplementation.utls && (
                       <Select
                         label={t('utlsImitate')}
                         description={t('descriptions.config.utlsImitate')}
-                        data={Object.values(UTLSImitate).map((impl) => ({ label: impl, value: impl }))}
+                        data={Object.values(UTLSImitate).map(impl => ({ label: impl, value: impl }))}
                         value={formData.utlsImitate}
-                        onChange={(val) => updateField('utlsImitate', val || '')}
+                        onChange={val => updateField('utlsImitate', val || '')}
                       />
                     )}
 
@@ -500,14 +502,14 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
                       label={t('bandwidthMaxTx')}
                       description={t('descriptions.config.bandwidthMaxTx')}
                       value={formData.bandwidthMaxTx}
-                      onChange={(e) => updateField('bandwidthMaxTx', e.target.value)}
+                      onChange={e => updateField('bandwidthMaxTx', e.target.value)}
                     />
 
                     <Input
                       label={t('bandwidthMaxRx')}
                       description={t('descriptions.config.bandwidthMaxRx')}
                       value={formData.bandwidthMaxRx}
-                      onChange={(e) => updateField('bandwidthMaxRx', e.target.value)}
+                      onChange={e => updateField('bandwidthMaxRx', e.target.value)}
                     />
                   </div>
                 </AccordionContent>
@@ -518,7 +520,8 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
               reset={() => {
                 if (editingID && origins) {
                   setFormData(origins)
-                } else {
+                }
+                else {
                   resetForm()
                 }
               }}
@@ -528,4 +531,4 @@ export const ConfigFormDrawer = forwardRef(({ opened, onClose }: { opened: boole
       </DialogContent>
     </Dialog>
   )
-})
+}

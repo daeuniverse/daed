@@ -1,23 +1,23 @@
 import { Check, Copy } from 'lucide-react'
 import { QRCodeCanvas } from 'qrcode.react'
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { useEffect, useImperativeHandle, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 
-type Props = {
+interface Props {
   name: string
   link: string
 }
 
-export type QRCodeModalRef = {
+export interface QRCodeModalRef {
   props: Props
   setProps: (props: Props) => void
 }
 
-export const QRCodeModal = forwardRef(({ opened, onClose }: { opened: boolean; onClose: () => void }, ref) => {
+export function QRCodeModal({ ref, opened, onClose }) {
   const [props, setProps] = useState<Props>({
     name: '',
     link: '',
@@ -62,4 +62,4 @@ export const QRCodeModal = forwardRef(({ opened, onClose }: { opened: boolean; o
       </DialogContent>
     </Dialog>
   )
-})
+}

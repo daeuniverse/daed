@@ -1,13 +1,13 @@
+import type { DraggableResourceType } from '~/constants'
 import { useDraggable } from '@dnd-kit/core'
-import { X } from 'lucide-react'
 
+import { X } from 'lucide-react'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { SimpleTooltip } from '~/components/ui/tooltip'
-import { DraggableResourceType } from '~/constants'
 import { cn } from '~/lib/utils'
 
-export const DraggableResourceBadge = ({
+export function DraggableResourceBadge({
   id,
   name,
   type,
@@ -27,7 +27,7 @@ export const DraggableResourceBadge = ({
   onRemove?: () => void
   dragDisabled?: boolean
   children?: React.ReactNode
-}) => {
+}) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id,
     data: {

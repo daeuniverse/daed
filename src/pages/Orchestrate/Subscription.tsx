@@ -1,8 +1,9 @@
+import type { QRCodeModalRef } from '~/components/QRCodeModal'
 import dayjs from 'dayjs'
 import { CloudCog, CloudUpload, Download, Eye, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
+import { useTranslation } from 'react-i18next'
 import {
   useImportSubscriptionsMutation,
   useRemoveSubscriptionsMutation,
@@ -13,15 +14,15 @@ import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DraggableResourceCard } from '~/components/DraggableResourceCard'
 import { EditSubscriptionFormModal } from '~/components/EditSubscriptionFormModal'
 import { ImportResourceFormModal } from '~/components/ImportResourceFormModal'
-import { QRCodeModal, QRCodeModalRef } from '~/components/QRCodeModal'
+import { QRCodeModal } from '~/components/QRCodeModal'
 import { Section } from '~/components/Section'
-import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
 import { Button } from '~/components/ui/button'
+import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 
-export const SubscriptionResource = () => {
+export function SubscriptionResource() {
   const { t } = useTranslation()
 
   const [openedQRCodeModal, { open: openQRCodeModal, close: closeQRCodeModal }] = useDisclosure(false)
@@ -52,8 +53,8 @@ export const SubscriptionResource = () => {
       onCreate={openImportSubscriptionFormModal}
       bordered
       actions={
-        subscriptionsQuery?.subscriptions &&
-        subscriptionsQuery.subscriptions.length > 2 && (
+        subscriptionsQuery?.subscriptions
+        && subscriptionsQuery.subscriptions.length > 2 && (
           <Button
             variant="ghost"
             size="icon"
@@ -74,7 +75,7 @@ export const SubscriptionResource = () => {
           subscriptionID={subscriptionID}
           type={DraggableResourceType.subscription}
           name={tag || link}
-          actions={
+          actions={(
             <Fragment>
               <Button
                 variant="ghost"
@@ -107,7 +108,7 @@ export const SubscriptionResource = () => {
               </Button>
               <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
             </Fragment>
-          }
+          )}
           onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
         >
           <p className="font-semibold">{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
@@ -117,7 +118,11 @@ export const SubscriptionResource = () => {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="node">
               <AccordionTrigger className="text-xs px-2 py-2">
-                {t('node')} ({nodes.edges.length})
+                {t('node')}
+                {' '}
+                (
+                {nodes.edges.length}
+                )
               </AccordionTrigger>
               <AccordionContent>
                 <div className="flex flex-wrap gap-2">
@@ -167,7 +172,7 @@ export const SubscriptionResource = () => {
   )
 }
 
-const Spoiler = ({ label, showLabel, hideLabel }: { label: string; showLabel: string; hideLabel: string }) => {
+function Spoiler({ label, showLabel, hideLabel }: { label: string, showLabel: string, hideLabel: string }) {
   const [show, setShow] = useState(false)
 
   return (

@@ -6,7 +6,7 @@ import { HeaderWithActions } from '~/components/Header'
 import { useInitialize } from '~/initialize'
 import { endpointURLAtom, tokenAtom } from '~/store'
 
-export const MainLayout = () => {
+export function MainLayout() {
   const navigate = useNavigate()
   const token = useStore(tokenAtom)
   const endpointURL = useStore(endpointURLAtom)
@@ -27,13 +27,14 @@ export const MainLayout = () => {
     <div className="flex min-h-screen flex-col">
       <HeaderWithActions />
       <main className="flex-1">
-        <div className="container max-w-5xl p-4">
+        <div className="container mx-auto max-w-5xl p-4">
           <Outlet />
         </div>
       </main>
       <footer className="h-[50px] border-t flex items-center justify-center">
         <p className="text-xs text-muted-foreground font-light">
-          Made with passion 🔥 by{' '}
+          Made with passion 🔥 by
+          {' '}
           <a
             href="https://github.com/daeuniverse"
             target="_blank"

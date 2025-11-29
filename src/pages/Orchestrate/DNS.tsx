@@ -1,8 +1,10 @@
+import type { PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
+import type { RenameFormModalRef } from '~/components/RenameFormModal'
 import { useStore } from '@nanostores/react'
 import { Pencil, Route, Type } from 'lucide-react'
+
 import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-
 import {
   useCreateDNSMutation,
   useDNSsQuery,
@@ -10,8 +12,8 @@ import {
   useSelectDNSMutation,
   useUpdateDNSMutation,
 } from '~/apis'
-import { PlainTextFormModal, PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
-import { RenameFormModal, RenameFormModalRef } from '~/components/RenameFormModal'
+import { PlainTextFormModal } from '~/components/PlainTextFormModal'
+import { RenameFormModal } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
@@ -20,7 +22,7 @@ import { RuleType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
-export const DNS = () => {
+export function DNS() {
   const { t } = useTranslation()
 
   const { defaultDNSID } = useStore(defaultResourcesAtom)
@@ -33,18 +35,18 @@ export const DNS = () => {
 
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
-  const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }] =
-    useDisclosure(false)
-  const [openedUpdateDNSFormModal, { open: openUpdateDNSFormModal, close: closeUpdateDNSFormModal }] =
-    useDisclosure(false)
+  const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }]
+    = useDisclosure(false)
+  const [openedUpdateDNSFormModal, { open: openUpdateDNSFormModal, close: closeUpdateDNSFormModal }]
+    = useDisclosure(false)
 
   return (
     <Section title={t('dns')} icon={<Route className="h-5 w-5" />} onCreate={openCreateDNSFormModal} bordered>
-      {dnssQuery?.dnss.map((dns) => (
+      {dnssQuery?.dnss.map(dns => (
         <SimpleCard
           key={dns.id}
           name={dns.name}
-          actions={
+          actions={(
             <Fragment>
               <Button
                 variant="ghost"
@@ -81,7 +83,7 @@ export const DNS = () => {
                 <Pencil className="h-4 w-4" />
               </Button>
             </Fragment>
-          }
+          )}
           selected={dns.selected}
           onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
           onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}

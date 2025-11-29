@@ -1,14 +1,16 @@
-import { DndContext, DragOverlay, UniqueIdentifier, closestCenter } from '@dnd-kit/core'
+import type { UniqueIdentifier } from '@dnd-kit/core'
+import type { RenameFormModalRef } from '~/components'
+import { closestCenter, DndContext, DragOverlay } from '@dnd-kit/core'
 import { restrictToFirstScrollableAncestor, restrictToParentElement } from '@dnd-kit/modifiers'
-import { SortableContext, arrayMove, rectSwappingStrategy } from '@dnd-kit/sortable'
+import { arrayMove, rectSwappingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { faker } from '@faker-js/faker'
 import Editor from '@monaco-editor/react'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
 import { FileInput, Pencil } from 'lucide-react'
 import { useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
+import { useTranslation } from 'react-i18next'
 import {
   useCreateDNSMutation,
   useCreateRoutingMutation,
@@ -25,7 +27,6 @@ import {
   ImportResourceFormModal,
   PlainTextFormModal,
   RenameFormModal,
-  RenameFormModalRef,
   Section,
   SimpleCard,
 } from '~/components'
@@ -47,7 +48,7 @@ import { useDisclosure } from '~/hooks'
 import { handleEditorBeforeMount } from '~/monaco'
 import { Policy } from '~/schemas/gql/graphql'
 
-export const ExperimentPage = () => {
+export function ExperimentPage() {
   const { t } = useTranslation()
 
   const [fakeConfigs, setFakeConfigs] = useState(
@@ -209,14 +210,14 @@ export const ExperimentPage = () => {
   const [openedRenameModal, { open: openRenameModal, close: closeRenameModal }] = useDisclosure(false)
   const [openedCreateConfigModal, { open: openCreateConfigModal, close: closeCreateConfigModal }] = useDisclosure(false)
   const [openedCreateDnsModal, { open: openCreateDnsModal, close: closeCreateDnsModal }] = useDisclosure(false)
-  const [openedCreateRoutingModal, { open: openCreateRoutingModal, close: closeCreateRoutingModal }] =
-    useDisclosure(false)
+  const [openedCreateRoutingModal, { open: openCreateRoutingModal, close: closeCreateRoutingModal }]
+    = useDisclosure(false)
   const [openedCreateGroupModal, { open: openCreateGroupModal, close: closeCreateGroupModal }] = useDisclosure(false)
   const [openedImportNodeModal, { open: openImportNodeModal, close: closeImportNodeModal }] = useDisclosure(false)
-  const [openedConfigureNodeFormModal, { open: openConfigureNodeFormModal, close: closeConfigureNodeFormModal }] =
-    useDisclosure(false)
-  const [openedImportSubscriptionModal, { open: openImportSubscriptionModal, close: closeImportSubscriptionModal }] =
-    useDisclosure(false)
+  const [openedConfigureNodeFormModal, { open: openConfigureNodeFormModal, close: closeConfigureNodeFormModal }]
+    = useDisclosure(false)
+  const [openedImportSubscriptionModal, { open: openImportSubscriptionModal, close: closeImportSubscriptionModal }]
+    = useDisclosure(false)
 
   const createDNSMutation = useCreateDNSMutation()
   const createRoutingMutation = useCreateRoutingMutation()
@@ -238,12 +239,12 @@ export const ExperimentPage = () => {
       <div className="grid grid-cols-3 gap-4">
         <Section title={t('config')} onCreate={openCreateConfigModal}>
           <div className="flex flex-col gap-4">
-            {fakeConfigs.map((config) => (
+            {fakeConfigs.map(config => (
               <SimpleCard
                 key={config.id}
                 name={config.name}
                 selected={false}
-                actions={
+                actions={(
                   <Button
                     variant="ghost"
                     size="icon"
@@ -262,8 +263,8 @@ export const ExperimentPage = () => {
                   >
                     <Pencil className="h-3 w-3" />
                   </Button>
-                }
-                onRemove={() => setFakeConfigs((configs) => configs.filter((c) => c.id !== config.id))}
+                )}
+                onRemove={() => setFakeConfigs(configs => configs.filter(c => c.id !== config.id))}
               >
                 <Code>{JSON.stringify(config, null, 2)}</Code>
               </SimpleCard>
@@ -273,12 +274,12 @@ export const ExperimentPage = () => {
 
         <Section title={t('dns')} onCreate={openCreateDnsModal}>
           <div className="flex flex-col gap-4">
-            {fakeDnss.map((dns) => (
+            {fakeDnss.map(dns => (
               <SimpleCard
                 key={dns.id}
                 name={dns.name}
                 selected={false}
-                actions={
+                actions={(
                   <Button
                     variant="ghost"
                     size="icon"
@@ -297,8 +298,8 @@ export const ExperimentPage = () => {
                   >
                     <Pencil className="h-3 w-3" />
                   </Button>
-                }
-                onRemove={() => setFakeDnss((dnss) => dnss.filter((c) => c.id !== dns.id))}
+                )}
+                onRemove={() => setFakeDnss(dnss => dnss.filter(c => c.id !== dns.id))}
               >
                 <Code>{dns.dns}</Code>
               </SimpleCard>
@@ -308,12 +309,12 @@ export const ExperimentPage = () => {
 
         <Section title={t('routing')} onCreate={openCreateRoutingModal}>
           <div className="flex flex-col gap-4">
-            {fakeRoutings.map((routing) => (
+            {fakeRoutings.map(routing => (
               <SimpleCard
                 key={routing.id}
                 name={routing.name}
                 selected={false}
-                actions={
+                actions={(
                   <Button
                     variant="ghost"
                     size="icon"
@@ -332,8 +333,8 @@ export const ExperimentPage = () => {
                   >
                     <Pencil className="h-3 w-3" />
                   </Button>
-                }
-                onRemove={() => setFakeRoutings((routings) => routings.filter((c) => c.id !== routing.id))}
+                )}
+                onRemove={() => setFakeRoutings(routings => routings.filter(c => c.id !== routing.id))}
               >
                 <Code>{routing.routing.string}</Code>
               </SimpleCard>
@@ -367,13 +368,13 @@ export const ExperimentPage = () => {
             const { active, over } = e
 
             if (draggingResource?.type === DraggableResourceType.node) {
-              const activeNode = fakeNodes.find((node) => node.id === active.id)
+              const activeNode = fakeNodes.find(node => node.id === active.id)
 
               if (activeNode) {
                 const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                  const group = groups.find((group) => group.id === over?.id)
+                  const group = groups.find(group => group.id === over?.id)
 
-                  if (!group?.nodes.find((node) => node.id === active.id)) {
+                  if (!group?.nodes.find(node => node.id === active.id)) {
                     group?.nodes.push(activeNode)
                   }
                 })
@@ -383,13 +384,13 @@ export const ExperimentPage = () => {
             }
 
             if (draggingResource?.type === DraggableResourceType.subscription) {
-              const activeSubscription = fakeSubscriptions.find((subscription) => subscription.id === active.id)
+              const activeSubscription = fakeSubscriptions.find(subscription => subscription.id === active.id)
 
               if (activeSubscription) {
                 const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                  const group = groups.find((group) => group.id === over?.id)
+                  const group = groups.find(group => group.id === over?.id)
 
-                  if (!group?.subscriptions.find((subscription) => subscription.id === active.id)) {
+                  if (!group?.subscriptions.find(subscription => subscription.id === active.id)) {
                     group?.subscriptions.push(activeSubscription)
                   }
                 })
@@ -409,7 +410,7 @@ export const ExperimentPage = () => {
                   id={groupId}
                   name={name}
                   onRemove={() => {
-                    setFakeGroups((groups) => groups.filter((group) => group.id !== groupId))
+                    setFakeGroups(groups => groups.filter(group => group.id !== groupId))
                   }}
                 >
                   <p className="font-semibold">{policy}</p>
@@ -428,11 +429,11 @@ export const ExperimentPage = () => {
                             onDragEnd={({ active, over }) => {
                               if (active && over && active.id !== over.id) {
                                 const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                                  const group = groups.find((group) => group.id === groupId)
+                                  const group = groups.find(group => group.id === groupId)
 
                                   if (group) {
-                                    const from = group?.nodes.findIndex((node) => node.id === active.id)
-                                    const to = group?.nodes.findIndex((node) => node.id === over.id)
+                                    const from = group?.nodes.findIndex(node => node.id === active.id)
+                                    const to = group?.nodes.findIndex(node => node.id === over.id)
 
                                     group.nodes = arrayMove(group.nodes, from, to)
                                   }
@@ -451,10 +452,10 @@ export const ExperimentPage = () => {
                                   name={name}
                                   onRemove={() => {
                                     const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                                      const group = groups.find((group) => group.id === groupId)
+                                      const group = groups.find(group => group.id === groupId)
 
                                       if (group) {
-                                        group.nodes = group.nodes.filter((node) => node.id !== nodeId)
+                                        group.nodes = group.nodes.filter(node => node.id !== nodeId)
                                       }
                                     })
 
@@ -483,11 +484,11 @@ export const ExperimentPage = () => {
                                   name={name}
                                   onRemove={() => {
                                     const updatedFakeGrups = produce(fakeGroups, (groups) => {
-                                      const group = groups.find((group) => group.id === groupId)
+                                      const group = groups.find(group => group.id === groupId)
 
                                       if (group) {
                                         group.subscriptions = group.subscriptions.filter(
-                                          (subscription) => subscription.id !== subscriptionId,
+                                          subscription => subscription.id !== subscriptionId,
                                         )
                                       }
                                     })
@@ -510,11 +511,11 @@ export const ExperimentPage = () => {
           <Section
             title={t('node')}
             onCreate={openConfigureNodeFormModal}
-            actions={
+            actions={(
               <Button variant="ghost" size="icon" onClick={openImportNodeModal}>
                 <FileInput className="h-4 w-4" />
               </Button>
-            }
+            )}
             bordered
           >
             <div className="flex flex-col gap-4">
@@ -525,7 +526,7 @@ export const ExperimentPage = () => {
                   type={DraggableResourceType.node}
                   name={name}
                   onRemove={() => {
-                    setFakeNodes((nodes) => nodes.filter((node) => node.id !== id))
+                    setFakeNodes(nodes => nodes.filter(node => node.id !== id))
                   }}
                 >
                   <p className="font-semibold text-primary">{tag}</p>
@@ -552,8 +553,8 @@ export const ExperimentPage = () => {
                   type={DraggableResourceType.subscription}
                   name={name}
                   onRemove={() => {
-                    setFakeSubscriptions((subscriptions) =>
-                      subscriptions.filter((subscription) => subscription.id !== id),
+                    setFakeSubscriptions(subscriptions =>
+                      subscriptions.filter(subscription => subscription.id !== id),
                     )
                   }}
                 >
@@ -581,13 +582,15 @@ export const ExperimentPage = () => {
           </Section>
 
           <DragOverlay dropAnimation={null}>
-            {draggingResource ? (
-              <Badge>
-                {draggingResource?.type === DraggableResourceType.node
-                  ? fakeNodes.find((node) => node.id === draggingResource.id)?.name
-                  : fakeSubscriptions.find((subscription) => subscription.id === draggingResource.id)?.name}
-              </Badge>
-            ) : null}
+            {draggingResource
+              ? (
+                  <Badge>
+                    {draggingResource?.type === DraggableResourceType.node
+                      ? fakeNodes.find(node => node.id === draggingResource.id)?.name
+                      : fakeSubscriptions.find(subscription => subscription.id === draggingResource.id)?.name}
+                  </Badge>
+                )
+              : null}
           </DragOverlay>
         </DndContext>
       </div>
