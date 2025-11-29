@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { NodeFormProps } from './types'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -9,9 +10,9 @@ import { DEFAULT_TROJAN_FORM_VALUES, trojanSchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
 import { generateURL, parseTrojanUrl } from '~/utils'
 
-type FormValues = z.infer<typeof trojanSchema>
+export type TrojanFormValues = z.infer<typeof trojanSchema>
 
-function generateTrojanLink(data: FormValues): string {
+function generateTrojanLink(data: TrojanFormValues): string {
   const query: Record<string, unknown> = {
     allowInsecure: data.allowInsecure,
   }
@@ -48,10 +49,11 @@ function generateTrojanLink(data: FormValues): string {
   })
 }
 
-export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function TrojanForm({ onLinkGeneration, initialValues }: NodeFormProps<TrojanFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: trojanSchema,
     defaultValues: DEFAULT_TROJAN_FORM_VALUES,
+    initialValues,
     onLinkGeneration,
     generateLink: generateTrojanLink,
     parseLink: parseTrojanUrl,
@@ -96,7 +98,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
           { label: 'shadowsocks', value: 'shadowsocks' },
         ]}
         value={formValues.method}
-        onChange={(val) => setValue('method', (val || 'origin') as FormValues['method'])}
+        onChange={(val) => setValue('method', (val || 'origin') as TrojanFormValues['method'])}
       />
 
       {formValues.method === 'shadowsocks' && (
@@ -110,7 +112,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
             { label: 'chacha20-ietf-poly1305', value: 'chacha20-ietf-poly1305' },
           ]}
           value={formValues.ssCipher}
-          onChange={(val) => setValue('ssCipher', (val || 'aes-128-gcm') as FormValues['ssCipher'])}
+          onChange={(val) => setValue('ssCipher', (val || 'aes-128-gcm') as TrojanFormValues['ssCipher'])}
         />
       )}
 
@@ -139,7 +141,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
           { label: 'websocket', value: 'websocket' },
         ]}
         value={formValues.obfs}
-        onChange={(val) => setValue('obfs', (val || 'none') as FormValues['obfs'])}
+        onChange={(val) => setValue('obfs', (val || 'none') as TrojanFormValues['obfs'])}
       />
 
       {formValues.obfs === 'websocket' && (

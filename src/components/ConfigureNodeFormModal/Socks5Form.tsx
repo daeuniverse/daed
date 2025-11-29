@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { NodeFormProps } from './types'
 import type { GenerateURLParams } from '~/utils'
 
 import { FormActions } from '~/components/FormActions'
@@ -8,9 +9,9 @@ import { DEFAULT_SOCKS5_FORM_VALUES, socks5Schema } from '~/constants'
 import { useNodeForm } from '~/hooks'
 import { generateURL, parseSocks5Url } from '~/utils'
 
-type FormValues = z.infer<typeof socks5Schema>
+export type Socks5FormValues = z.infer<typeof socks5Schema>
 
-function generateSocks5Link(data: FormValues): string {
+function generateSocks5Link(data: Socks5FormValues): string {
   const generateURLParams: GenerateURLParams = {
     protocol: 'socks5',
     host: data.host,
@@ -28,10 +29,11 @@ function generateSocks5Link(data: FormValues): string {
   return generateURL(generateURLParams)
 }
 
-export function Socks5Form({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function Socks5Form({ onLinkGeneration, initialValues }: NodeFormProps<Socks5FormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: socks5Schema,
     defaultValues: DEFAULT_SOCKS5_FORM_VALUES,
+    initialValues,
     onLinkGeneration,
     generateLink: generateSocks5Link,
     parseLink: parseSocks5Url,

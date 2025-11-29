@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { NodeFormProps } from './types'
 import { Base64 } from 'js-base64'
 
 import { FormActions } from '~/components/FormActions'
@@ -9,9 +10,9 @@ import { DEFAULT_SS_FORM_VALUES, ssSchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
 import { parseSSUrl } from '~/utils'
 
-type FormValues = z.infer<typeof ssSchema>
+export type SSFormValues = z.infer<typeof ssSchema>
 
-function generateSSLink(data: FormValues): string {
+function generateSSLink(data: SSFormValues): string {
   /* ss://BASE64(method:password)@server:port#name */
   let link = `ss://${Base64.encode(`${data.method}:${data.password}`)}@${data.server}:${data.port}/`
 
@@ -65,10 +66,11 @@ function generateSSLink(data: FormValues): string {
   return link
 }
 
-export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function SSForm({ onLinkGeneration, initialValues }: NodeFormProps<SSFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: ssSchema,
     defaultValues: DEFAULT_SS_FORM_VALUES,
+    initialValues,
     onLinkGeneration,
     generateLink: generateSSLink,
     parseLink: parseSSUrl,
@@ -117,7 +119,7 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           { label: 'none', value: 'none' },
         ]}
         value={formValues.method}
-        onChange={(val) => setValue('method', (val || 'aes-128-gcm') as FormValues['method'])}
+        onChange={(val) => setValue('method', (val || 'aes-128-gcm') as SSFormValues['method'])}
       />
 
       <Select
@@ -128,7 +130,7 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           { label: 'v2ray-plugin', value: 'v2ray-plugin' },
         ]}
         value={formValues.plugin}
-        onChange={(val) => setValue('plugin', (val || '') as FormValues['plugin'])}
+        onChange={(val) => setValue('plugin', (val || '') as SSFormValues['plugin'])}
       />
 
       {(formValues.plugin === 'simple-obfs' || formValues.plugin === 'v2ray-plugin') && (
@@ -140,7 +142,7 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
             { label: 'transport', value: 'transport' },
           ]}
           value={formValues.impl}
-          onChange={(val) => setValue('impl', (val || '') as FormValues['impl'])}
+          onChange={(val) => setValue('impl', (val || '') as SSFormValues['impl'])}
         />
       )}
 
@@ -152,7 +154,7 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
             { label: 'tls', value: 'tls' },
           ]}
           value={formValues.obfs}
-          onChange={(val) => setValue('obfs', (val || 'http') as FormValues['obfs'])}
+          onChange={(val) => setValue('obfs', (val || 'http') as SSFormValues['obfs'])}
         />
       )}
 
@@ -173,7 +175,7 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
             { label: 'tls', value: 'tls' },
           ]}
           value={formValues.tls}
-          onChange={(val) => setValue('tls', (val || '') as FormValues['tls'])}
+          onChange={(val) => setValue('tls', (val || '') as SSFormValues['tls'])}
         />
       )}
 

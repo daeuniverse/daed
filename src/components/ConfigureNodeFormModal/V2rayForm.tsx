@@ -1,3 +1,4 @@
+import type { NodeFormProps } from './types'
 import { Base64 } from 'js-base64'
 import { z } from 'zod'
 
@@ -14,14 +15,14 @@ const formSchema = v2raySchema.extend({
   protocol: z.enum(['vmess', 'vless']),
 })
 
-type FormValues = z.infer<typeof formSchema>
+export type V2rayFormValues = z.infer<typeof formSchema>
 
-const defaultValues: FormValues = {
+const defaultValues: V2rayFormValues = {
   protocol: 'vmess',
   ...DEFAULT_V2RAY_FORM_VALUES,
 }
 
-function generateV2rayLink(data: FormValues): string {
+function generateV2rayLink(data: V2rayFormValues): string {
   const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = data
 
   if (protocol === 'vless') {
@@ -87,10 +88,11 @@ function generateV2rayLink(data: FormValues): string {
   return ''
 }
 
-export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function V2rayForm({ onLinkGeneration, initialValues }: NodeFormProps<V2rayFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: formSchema,
     defaultValues,
+    initialValues,
     onLinkGeneration,
     generateLink: generateV2rayLink,
     parseLink: parseV2rayUrl,
@@ -149,7 +151,7 @@ export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: 'zero', value: 'zero' },
           ]}
           value={formValues.scy}
-          onChange={(val) => setValue('scy', (val || 'auto') as FormValues['scy'])}
+          onChange={(val) => setValue('scy', (val || 'auto') as V2rayFormValues['scy'])}
         />
       )}
 
@@ -162,7 +164,7 @@ export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: 'xtls', value: 'xtls' },
           ]}
           value={formValues.tls}
-          onChange={(val) => setValue('tls', (val || 'none') as FormValues['tls'])}
+          onChange={(val) => setValue('tls', (val || 'none') as V2rayFormValues['tls'])}
         />
       )}
 
@@ -179,7 +181,7 @@ export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: strin
           { label: 'xtls-rprx-vision', value: 'xtls-rprx-vision-udp443' },
         ]}
         value={formValues.flow}
-        onChange={(val) => setValue('flow', (val || 'none') as FormValues['flow'])}
+        onChange={(val) => setValue('flow', (val || 'none') as V2rayFormValues['flow'])}
       />
 
       {formValues.tls !== 'none' && (
@@ -200,7 +202,7 @@ export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: strin
           { label: 'gRPC', value: 'grpc' },
         ]}
         value={formValues.net}
-        onChange={(val) => setValue('net', (val || 'tcp') as FormValues['net'])}
+        onChange={(val) => setValue('net', (val || 'tcp') as V2rayFormValues['net'])}
       />
 
       {formValues.net === 'tcp' && (
@@ -211,7 +213,7 @@ export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: t('configureNode.httpObfuscation'), value: 'srtp' },
           ]}
           value={formValues.type}
-          onChange={(val) => setValue('type', (val || 'none') as FormValues['type'])}
+          onChange={(val) => setValue('type', (val || 'none') as V2rayFormValues['type'])}
         />
       )}
 
@@ -227,7 +229,7 @@ export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: strin
             { label: t('configureNode.wireguardObfuscation'), value: 'wireguard' },
           ]}
           value={formValues.type}
-          onChange={(val) => setValue('type', (val || 'none') as FormValues['type'])}
+          onChange={(val) => setValue('type', (val || 'none') as V2rayFormValues['type'])}
         />
       )}
 

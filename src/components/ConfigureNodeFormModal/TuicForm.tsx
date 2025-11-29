@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { NodeFormProps } from './types'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -9,9 +10,9 @@ import { DEFAULT_TUIC_FORM_VALUES, tuicSchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
 import { generateURL, parseTuicUrl } from '~/utils'
 
-type FormValues = z.infer<typeof tuicSchema>
+export type TuicFormValues = z.infer<typeof tuicSchema>
 
-function generateTuicLink(data: FormValues): string {
+function generateTuicLink(data: TuicFormValues): string {
   const query = {
     congestion_control: data.congestion_control,
     alpn: data.alpn,
@@ -32,10 +33,11 @@ function generateTuicLink(data: FormValues): string {
   })
 }
 
-export function TuicForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function TuicForm({ onLinkGeneration, initialValues }: NodeFormProps<TuicFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: tuicSchema,
     defaultValues: DEFAULT_TUIC_FORM_VALUES,
+    initialValues,
     onLinkGeneration,
     generateLink: generateTuicLink,
     parseLink: parseTuicUrl,

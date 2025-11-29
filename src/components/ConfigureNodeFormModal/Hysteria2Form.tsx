@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { NodeFormProps } from './types'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -8,9 +9,9 @@ import { DEFAULT_HYSTERIA2_FORM_VALUES, hysteria2Schema } from '~/constants'
 import { useNodeForm } from '~/hooks'
 import { generateHysteria2URL, parseHysteria2Url } from '~/utils'
 
-type FormValues = z.infer<typeof hysteria2Schema>
+export type Hysteria2FormValues = z.infer<typeof hysteria2Schema>
 
-function generateHysteria2Link(data: FormValues): string {
+function generateHysteria2Link(data: Hysteria2FormValues): string {
   /* hysteria2://[auth@]hostname[:port]/?[key=value]&[key=value]... */
   const query = {
     obfs: data.obfs,
@@ -29,10 +30,11 @@ function generateHysteria2Link(data: FormValues): string {
   })
 }
 
-export function Hysteria2Form({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function Hysteria2Form({ onLinkGeneration, initialValues }: NodeFormProps<Hysteria2FormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: hysteria2Schema,
     defaultValues: DEFAULT_HYSTERIA2_FORM_VALUES,
+    initialValues,
     onLinkGeneration,
     generateLink: generateHysteria2Link,
     parseLink: parseHysteria2Url,

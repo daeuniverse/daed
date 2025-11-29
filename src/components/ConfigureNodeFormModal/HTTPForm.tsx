@@ -1,3 +1,4 @@
+import type { NodeFormProps } from './types'
 import type { GenerateURLParams } from '~/utils'
 import { z } from 'zod'
 
@@ -13,14 +14,14 @@ const formSchema = httpSchema.extend({
   protocol: z.enum(['http', 'https']),
 })
 
-type FormValues = z.infer<typeof formSchema>
+export type HTTPFormValues = z.infer<typeof formSchema>
 
-const defaultValues: FormValues = {
+const defaultValues: HTTPFormValues = {
   protocol: 'http',
   ...DEFAULT_HTTP_FORM_VALUES,
 }
 
-function generateHTTPLink(data: FormValues): string {
+function generateHTTPLink(data: HTTPFormValues): string {
   const generateURLParams: GenerateURLParams = {
     protocol: data.protocol,
     host: data.host,
@@ -38,10 +39,11 @@ function generateHTTPLink(data: FormValues): string {
   return generateURL(generateURLParams)
 }
 
-export function HTTPForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function HTTPForm({ onLinkGeneration, initialValues }: NodeFormProps<HTTPFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: formSchema,
     defaultValues,
+    initialValues,
     onLinkGeneration,
     generateLink: generateHTTPLink,
     parseLink: parseHTTPUrl,

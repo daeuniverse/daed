@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { NodeFormProps } from './types'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -9,9 +10,9 @@ import { DEFAULT_JUICITY_FORM_VALUES, juicitySchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
 import { generateURL, parseJuicityUrl } from '~/utils'
 
-type FormValues = z.infer<typeof juicitySchema>
+export type JuicityFormValues = z.infer<typeof juicitySchema>
 
-function generateJuicityLink(data: FormValues): string {
+function generateJuicityLink(data: JuicityFormValues): string {
   const query = {
     congestion_control: data.congestion_control,
     pinned_certchain_sha256: data.pinned_certchain_sha256,
@@ -30,10 +31,11 @@ function generateJuicityLink(data: FormValues): string {
   })
 }
 
-export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function JuicityForm({ onLinkGeneration, initialValues }: NodeFormProps<JuicityFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: juicitySchema,
     defaultValues: DEFAULT_JUICITY_FORM_VALUES,
+    initialValues,
     onLinkGeneration,
     generateLink: generateJuicityLink,
     parseLink: parseJuicityUrl,

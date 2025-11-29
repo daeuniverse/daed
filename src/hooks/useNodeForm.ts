@@ -12,6 +12,8 @@ export interface UseNodeFormOptions<TFormValues extends FieldValues> {
   schema: ZodType<TFormValues, any, any>
   /** Default form values */
   defaultValues: TFormValues
+  /** Initial values to populate the form (for edit mode) */
+  initialValues?: Partial<TFormValues>
   /** Function to generate URL from form data */
   generateLink: (data: TFormValues) => string
   /** Callback when link is generated */
@@ -65,15 +67,22 @@ export interface UseNodeFormReturn<TFormValues extends FieldValues> {
 export function useNodeForm<TFormValues extends FieldValues>({
   schema,
   defaultValues,
+  initialValues,
   generateLink,
   onLinkGeneration,
   parseLink,
 }: UseNodeFormOptions<TFormValues>): UseNodeFormReturn<TFormValues> {
   const { t } = useTranslation()
 
+  // Merge defaultValues with initialValues for edit mode
+  const mergedDefaults = useMemo(
+    () => (initialValues ? { ...defaultValues, ...initialValues } : defaultValues),
+    [defaultValues, initialValues],
+  )
+
   const form = useForm<TFormValues, any, TFormValues>({
     resolver: zodResolver(schema) as any,
-    defaultValues: defaultValues as any,
+    defaultValues: mergedDefaults as any,
     mode: 'onChange',
     // Ensure isValid is computed on mount
     criteriaMode: 'all',
@@ -105,8 +114,8 @@ export function useNodeForm<TFormValues extends FieldValues>({
   )
 
   const resetForm = useCallback(() => {
-    reset(defaultValues as TFormValues)
-  }, [reset, defaultValues])
+    reset(mergedDefaults as TFormValues)
+  }, [reset, mergedDefaults])
 
   const loadFromURL = useCallback(
     (url: string): boolean => {
@@ -124,7 +133,7 @@ export function useNodeForm<TFormValues extends FieldValues>({
 
         // Reset form first, then apply parsed values
         reset({
-          ...defaultValues,
+          ...mergedDefaults,
           ...parsed,
         } as TFormValues)
 
@@ -134,7 +143,7 @@ export function useNodeForm<TFormValues extends FieldValues>({
         return false
       }
     },
-    [parseLink, reset, defaultValues],
+    [parseLink, reset, mergedDefaults],
   )
 
   return useMemo(

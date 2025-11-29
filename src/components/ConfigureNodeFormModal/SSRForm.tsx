@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { NodeFormProps } from './types'
 import { Base64 } from 'js-base64'
 
 import { FormActions } from '~/components/FormActions'
@@ -9,9 +10,9 @@ import { DEFAULT_SSR_FORM_VALUES, ssrSchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
 import { parseSSRUrl } from '~/utils'
 
-type FormValues = z.infer<typeof ssrSchema>
+export type SSRFormValues = z.infer<typeof ssrSchema>
 
-function generateSSRLink(data: FormValues): string {
+function generateSSRLink(data: SSRFormValues): string {
   /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
   return `ssr://${Base64.encode(
     `${data.server}:${data.port}:${data.proto}:${data.method}:${data.obfs}:${Base64.encodeURI(
@@ -22,10 +23,11 @@ function generateSSRLink(data: FormValues): string {
   )}`
 }
 
-export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+export function SSRForm({ onLinkGeneration, initialValues }: NodeFormProps<SSRFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: ssrSchema,
     defaultValues: DEFAULT_SSR_FORM_VALUES,
+    initialValues,
     onLinkGeneration,
     generateLink: generateSSRLink,
     parseLink: parseSSRUrl,
@@ -91,7 +93,7 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'none', value: 'none' },
         ]}
         value={formValues.method}
-        onChange={(val) => setValue('method', (val || 'aes-128-cfb') as FormValues['method'])}
+        onChange={(val) => setValue('method', (val || 'aes-128-cfb') as SSRFormValues['method'])}
       />
 
       <Select
@@ -107,7 +109,7 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'auth_chain_b', value: 'auth_chain_b' },
         ]}
         value={formValues.proto}
-        onChange={(val) => setValue('proto', (val || 'origin') as FormValues['proto'])}
+        onChange={(val) => setValue('proto', (val || 'origin') as SSRFormValues['proto'])}
       />
 
       {formValues.proto !== 'origin' && (
@@ -129,7 +131,7 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'tls1.2_ticket_auth', value: 'tls1.2_ticket_auth' },
         ]}
         value={formValues.obfs}
-        onChange={(val) => setValue('obfs', (val || 'plain') as FormValues['obfs'])}
+        onChange={(val) => setValue('obfs', (val || 'plain') as SSRFormValues['obfs'])}
       />
 
       {formValues.obfs !== 'plain' && (
