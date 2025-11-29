@@ -181,7 +181,7 @@
   "select": "选择",
   "selected": "已选中",
   "settings": "设置",
-  "setup endpoint": "设置你的后端（graphql）接口地址",
+  "setup endpoint": "设置你的后端接口地址（graphql）",
   "sniffingTimeout": "嗅探超时",
   "soMarkFromDae": "为 dae 设置套接字标记",
   "software options": "软件选项",

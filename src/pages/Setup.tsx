@@ -188,9 +188,9 @@ export function SetupPage() {
   ]
 
   return (
-    <div className="container mx-auto h-full">
-      <div className="flex flex-col gap-4 pt-[20vh]">
-        <h1 className="text-3xl font-bold text-center">{t('welcome to', { name: 'daed' })}</h1>
+    <div className="flex min-h-dvh items-center justify-center p-4">
+      <div className="flex w-full max-w-2xl flex-col gap-4">
+        <h1 className="text-center text-3xl font-bold">{t('welcome to', { name: 'daed' })}</h1>
         <p className="text-center text-muted-foreground">
           {t('what for')}{' '}
           <a
@@ -206,27 +206,27 @@ export function SetupPage() {
         <div className="h-5" />
 
         {/* Stepper */}
-        <div className="flex justify-center items-start mb-8">
+        <div className="mb-8 flex items-center justify-center">
           {steps.map((step, index) => (
-            <div key={index} className="flex items-start">
-              <div className="flex flex-col items-center min-w-[120px]">
+            <div key={index} className="flex items-center">
+              <div className="flex w-28 flex-col items-center">
                 <div
                   className={cn(
-                    'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2',
-                    index < active && 'bg-primary border-primary text-primary-foreground',
+                    'flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium',
+                    index < active && 'border-primary bg-primary text-primary-foreground',
                     index === active && 'border-primary text-primary',
                     index > active && 'border-muted text-muted-foreground',
                   )}
                 >
                   {index + 1}
                 </div>
-                <div className="mt-2 text-center min-h-10">
+                <div className="mt-2 text-center">
                   <div className="text-xs font-medium">{step.label}</div>
-                  {step.description && <div className="text-xs text-muted-foreground">{step.description}</div>}
+                  <div className="h-4 text-xs text-muted-foreground">{step.description}</div>
                 </div>
               </div>
               {index < steps.length - 1 && (
-                <div className={cn('w-16 h-0.5 mt-5 -mx-4', index < active ? 'bg-primary' : 'bg-muted')} />
+                <div className={cn('mb-8 h-0.5 w-8', index < active ? 'bg-primary' : 'bg-muted')} />
               )}
             </div>
           ))}
@@ -235,7 +235,7 @@ export function SetupPage() {
         {/* Step content */}
         {active === 0 && (
           <form onSubmit={handleEndpointURLSubmit}>
-            <div className="max-w-md mx-auto space-y-4">
+            <div className="mx-auto w-full max-w-md space-y-4">
               <Input
                 label={t('endpointURL')}
                 placeholder={DEFAULT_ENDPOINT_URL}
@@ -255,7 +255,7 @@ export function SetupPage() {
 
         {active === 1 && numberUsers === 0 && (
           <form onSubmit={handleSignupSubmit}>
-            <div className="max-w-md mx-auto space-y-4">
+            <div className="mx-auto w-full max-w-md space-y-4">
               <Input
                 label={t('username')}
                 placeholder="admin"
@@ -284,7 +284,7 @@ export function SetupPage() {
 
         {active === 1 && numberUsers > 0 && (
           <form onSubmit={handleLoginSubmit}>
-            <div className="max-w-md mx-auto space-y-4">
+            <div className="mx-auto w-full max-w-md space-y-4">
               <Input
                 label={t('username')}
                 placeholder="admin"

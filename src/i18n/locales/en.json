@@ -181,7 +181,7 @@
   "select": "select",
   "selected": "selected",
   "settings": "Settings",
-  "setup endpoint": "Setup your backend (GraphQL) endpoint URL",
+  "setup endpoint": "Setup your backend endpoint URL (GraphQL)",
   "sniffingTimeout": "Sniffing Timeout",
   "soMarkFromDae": "Set socket mark for dae",
   "software options": "Software Options",
@@ -213,5 +213,5 @@
   "warn": "warn",
   "welcome back": "Welcome Back!",
   "welcome to": "Welcome to {{ name }}",
-  "what for": "A Modern Dashboard For"
+  "what for": "A modern web dashboard for"
 }
