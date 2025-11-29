@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/daeuniverse/daed/compare/v0.16.0...v0.17.0) (2025-11-29)
+
+
+### Features
+
+* make children prop optional and conditionally render button for details modal ([8809a2e](https://github.com/daeuniverse/daed/commit/8809a2e97f7c086334e1f3bd6e4ebecb2e412a2e))
+
 ## [0.16.0](https://github.com/daeuniverse/daed/compare/v0.15.1...v0.16.0) (2025-11-29)
 
 
