@@ -1,0 +1,1 @@
+import{n as e,t}from"./typescript-CetVYd-2.js";export{t as conf,e as language};

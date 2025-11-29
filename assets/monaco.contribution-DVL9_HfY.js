@@ -1,0 +1,1 @@
+import"./mouseTarget-cQdGy4_Y.js";import"./editor.api-DxNCK4Nx.js";import{n as e,t}from"./monaco.contribution-CKhJGAT6.js";export{t as getWorker,e as jsonDefaults};
