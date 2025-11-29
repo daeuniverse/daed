@@ -176,7 +176,7 @@ export function HeaderWithActions() {
 
           {!matchSmallScreen && (
             <SimpleTooltip label={endpointURL}>
-              <Code className="text-xs font-bold">{generalQuery?.general.dae.version}</Code>
+              <Code className="text-xs font-bold">{import.meta.env.APP_VERSION}</Code>
             </SimpleTooltip>
           )}
         </div>
