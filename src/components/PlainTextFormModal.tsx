@@ -1,6 +1,8 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Editor } from '@monaco-editor/react'
 import { useStore } from '@nanostores/react'
-import { useImperativeHandle, useState } from 'react'
+import { useEffect, useImperativeHandle, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -18,11 +20,16 @@ import { colorSchemeAtom } from '~/store'
 import { FormActions } from './FormActions'
 
 const schema = z.object({
-  name: z.string().min(1),
-  text: z.string().min(1),
+  name: z.string().min(1, 'Name is required'),
+  text: z.string().min(1, 'Text is required'),
 })
 
 type FormValues = z.infer<typeof schema>
+
+const defaultValues: FormValues = {
+  name: '',
+  text: '',
+}
 
 export interface PlainTextgFormModalRef {
   form: {
@@ -30,7 +37,7 @@ export interface PlainTextgFormModalRef {
     setFieldValue: (field: string, value: string) => void
     reset: () => void
     values: FormValues
-    errors: Record<string, string>
+    errors: Record<string, string | undefined>
   }
   editingID: string
   setEditingID: (id: string) => void
@@ -42,7 +49,7 @@ export function PlainTextFormModal({
   title,
   opened,
   onClose,
-  handleSubmit,
+  handleSubmit: onSubmitProp,
 }: {
   ref?: React.Ref<PlainTextgFormModalRef>
   title: string
@@ -54,52 +61,58 @@ export function PlainTextFormModal({
   const colorScheme = useStore(colorSchemeAtom)
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
-  const [formData, setFormData] = useState<FormValues>({
-    name: '',
-    text: '',
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues,
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = form
+
+  const formValues = watch()
 
   const initOrigins = (origins: FormValues) => {
-    setFormData(origins)
+    reset(origins)
     setOrigins(origins)
   }
 
   const resetForm = () => {
-    setFormData({ name: '', text: '' })
-    setErrors({})
+    reset(defaultValues)
   }
 
   useImperativeHandle(ref, () => ({
     form: {
-      setValues: setFormData,
-      setFieldValue: (field: string, value: string) => setFormData((prev) => ({ ...prev, [field]: value })),
+      setValues: (values: FormValues) => reset(values),
+      setFieldValue: (field: string, value: string) => setValue(field as keyof FormValues, value),
       reset: resetForm,
-      values: formData,
-      errors,
+      values: formValues,
+      errors: {
+        name: errors.name?.message,
+        text: errors.text?.message,
+      },
     },
     editingID: editingID || '',
     setEditingID,
     initOrigins,
   }))
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const result = schema.safeParse(formData)
-
-    if (!result.success) {
-      const newErrors: Record<string, string> = {}
-
-      result.error.issues.forEach((err) => {
-        newErrors[err.path[0] as string] = err.message
-      })
-      setErrors(newErrors)
-
-      return
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!opened) {
+      resetForm()
+      setEditingID(undefined)
+      setOrigins(undefined)
     }
+  }, [opened])
 
-    await handleSubmit(formData)
+  const onSubmit = async (data: FormValues) => {
+    await onSubmitProp(data)
     onClose()
     resetForm()
   }
@@ -115,9 +128,9 @@ export function PlainTextFormModal({
           <Input
             label={t('name')}
             withAsterisk
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            error={errors.name}
+            value={formValues.name}
+            onChange={(e) => setValue('name', e.target.value)}
+            error={errors.name?.message}
             disabled={!!editingID}
             className="shrink-0"
           />
@@ -129,20 +142,20 @@ export function PlainTextFormModal({
                 theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
                 options={EDITOR_OPTIONS}
                 language="routingA"
-                value={formData.text}
-                onChange={(value) => setFormData({ ...formData, text: value || '' })}
+                value={formValues.text}
+                onChange={(value) => setValue('text', value || '')}
                 beforeMount={handleEditorBeforeMount}
               />
             </div>
 
-            {errors.text && <p className="text-xs text-destructive">{errors.text}</p>}
+            {errors.text && <p className="text-xs text-destructive">{errors.text.message}</p>}
           </div>
 
-          <form onSubmit={handleFormSubmit} className="shrink-0">
+          <form onSubmit={handleSubmit(onSubmit)} className="shrink-0">
             <FormActions
               reset={() => {
                 if (editingID && origins) {
-                  setFormData(origins)
+                  reset(origins)
                 } else {
                   resetForm()
                 }

@@ -1,15 +1,16 @@
-import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { useUpdateNodeMutation } from '../apis/index.ts'
 import { FormActions } from './FormActions.tsx'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog.tsx'
-
 import { Input } from './ui/input.tsx'
 
 const schema = z.object({
-  link: z.string().min(1),
+  link: z.string().min(1, 'Link is required'),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -29,56 +30,43 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
   const { t } = useTranslation()
   const updateNodeMutation = useUpdateNodeMutation()
 
-  const [formData, setFormData] = useState<FormValues>({
-    link: '',
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { link: '' },
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const resetForm = () => {
-    setFormData({ link: '' })
-    setErrors({})
-  }
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = form
 
-  const initializeForm = () => {
-    if (node) {
-      setFormData({
-        link: node.link,
-      })
-      setErrors({})
+  const formValues = watch()
+
+  // Initialize form when modal opens with node data
+  useEffect(() => {
+    if (opened && node) {
+      reset({ link: node.link })
     }
-  }
+  }, [opened, node, reset])
 
   const handleOpenChange = (open: boolean) => {
-    if (open) {
-      initializeForm()
-    } else {
+    if (!open) {
+      reset({ link: '' })
       onClose()
     }
   }
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const result = schema.safeParse(formData)
-
-    if (!result.success) {
-      const newErrors: Record<string, string> = {}
-
-      result.error.issues.forEach((err) => {
-        newErrors[err.path[0] as string] = err.message
-      })
-      setErrors(newErrors)
-
-      return
-    }
-
+  const onSubmit = async (data: FormValues) => {
     if (node) {
       await updateNodeMutation.mutateAsync({
         id: node.id,
-        newLink: formData.link,
+        newLink: data.link,
       })
       onClose()
-      resetForm()
+      reset({ link: '' })
     }
   }
 
@@ -88,17 +76,17 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
         <DialogHeader>
           <DialogTitle>{t('editNode')}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <Input
             label={t('link')}
             withAsterisk
-            value={formData.link}
-            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-            error={errors.link}
+            value={formValues.link}
+            onChange={(e) => setValue('link', e.target.value)}
+            error={errors.link?.message}
           />
           <Input label={t('tag')} value={node?.tag || ''} disabled />
           <Input label={t('name')} value={node?.name || ''} disabled />
-          <FormActions reset={resetForm} loading={updateNodeMutation.isPending} />
+          <FormActions reset={() => reset({ link: '' })} loading={updateNodeMutation.isPending} />
         </form>
       </DialogContent>
     </Dialog>

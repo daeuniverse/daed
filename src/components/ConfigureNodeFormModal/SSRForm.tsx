@@ -1,5 +1,7 @@
+import type { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Base64 } from 'js-base64'
-import { useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { FormActions } from '~/components/FormActions'
@@ -8,46 +10,44 @@ import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_SSR_FORM_VALUES, ssrSchema } from '~/constants'
 
+type FormValues = z.infer<typeof ssrSchema>
+
 export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
   const { t } = useTranslation()
-  const [formData, setFormData] = useState(DEFAULT_SSR_FORM_VALUES)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const { handleSubmit, setValue, reset, control } = useForm<FormValues>({
+    resolver: zodResolver(ssrSchema),
+    defaultValues: DEFAULT_SSR_FORM_VALUES,
+  })
 
-    const result = ssrSchema.safeParse(formData)
+  const formValues = useWatch({ control })
 
-    if (!result.success) return
-
+  const onSubmit = (data: FormValues) => {
     /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
     return onLinkGeneration(
       `ssr://${Base64.encode(
-        `${formData.server}:${formData.port}:${formData.proto}:${formData.method}:${formData.obfs}:${Base64.encodeURI(
-          formData.password,
-        )}/?remarks=${Base64.encodeURI(formData.name)}&protoparam=${Base64.encodeURI(
-          formData.protoParam,
-        )}&obfsparam=${Base64.encodeURI(formData.obfsParam)}`,
+        `${data.server}:${data.port}:${data.proto}:${data.method}:${data.obfs}:${Base64.encodeURI(
+          data.password,
+        )}/?remarks=${Base64.encodeURI(data.name)}&protoparam=${Base64.encodeURI(
+          data.protoParam,
+        )}&obfsparam=${Base64.encodeURI(data.obfsParam)}`,
       )}`,
     )
   }
 
-  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
       <Input
         label={t('configureNode.name')}
-        value={formData.name}
-        onChange={(e) => updateField('name', e.target.value)}
+        value={formValues.name}
+        onChange={(e) => setValue('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
-        value={formData.server}
-        onChange={(e) => updateField('server', e.target.value)}
+        value={formValues.server}
+        onChange={(e) => setValue('server', e.target.value)}
       />
 
       <NumberInput
@@ -55,15 +55,15 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
         withAsterisk
         min={0}
         max={65535}
-        value={formData.port}
-        onChange={(val) => updateField('port', Number(val))}
+        value={formValues.port}
+        onChange={(val) => setValue('port', Number(val))}
       />
 
       <Input
         label={t('configureNode.password')}
         withAsterisk
-        value={formData.password}
-        onChange={(e) => updateField('password', e.target.value)}
+        value={formValues.password}
+        onChange={(e) => setValue('password', e.target.value)}
       />
 
       <Select
@@ -94,8 +94,8 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'seed-cfb', value: 'seed-cfb' },
           { label: 'none', value: 'none' },
         ]}
-        value={formData.method}
-        onChange={(val) => updateField('method', (val || 'aes-128-cfb') as typeof formData.method)}
+        value={formValues.method}
+        onChange={(val) => setValue('method', (val || 'aes-128-cfb') as FormValues['method'])}
       />
 
       <Select
@@ -110,15 +110,15 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'auth_chain_a', value: 'auth_chain_a' },
           { label: 'auth_chain_b', value: 'auth_chain_b' },
         ]}
-        value={formData.proto}
-        onChange={(val) => updateField('proto', (val || 'origin') as typeof formData.proto)}
+        value={formValues.proto}
+        onChange={(val) => setValue('proto', (val || 'origin') as FormValues['proto'])}
       />
 
-      {formData.proto !== 'origin' && (
+      {formValues.proto !== 'origin' && (
         <Input
           label={t('configureNode.protocolParam')}
-          value={formData.protoParam}
-          onChange={(e) => updateField('protoParam', e.target.value)}
+          value={formValues.protoParam}
+          onChange={(e) => setValue('protoParam', e.target.value)}
         />
       )}
 
@@ -132,19 +132,19 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'random_head', value: 'random_head' },
           { label: 'tls1.2_ticket_auth', value: 'tls1.2_ticket_auth' },
         ]}
-        value={formData.obfs}
-        onChange={(val) => updateField('obfs', (val || 'plain') as typeof formData.obfs)}
+        value={formValues.obfs}
+        onChange={(val) => setValue('obfs', (val || 'plain') as FormValues['obfs'])}
       />
 
-      {formData.obfs !== 'plain' && (
+      {formValues.obfs !== 'plain' && (
         <Input
           label={t('configureNode.obfsParam')}
-          value={formData.obfsParam}
-          onChange={(e) => updateField('obfsParam', e.target.value)}
+          value={formValues.obfsParam}
+          onChange={(e) => setValue('obfsParam', e.target.value)}
         />
       )}
 
-      <FormActions reset={() => setFormData(DEFAULT_SSR_FORM_VALUES)} />
+      <FormActions reset={() => reset(DEFAULT_SSR_FORM_VALUES)} />
     </form>
   )
 }

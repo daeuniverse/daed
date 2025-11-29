@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -7,8 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog.ts
 import { Input } from './ui/input.tsx'
 
 const schema = z.object({
-  link: z.string().min(1),
-  tag: z.string().min(1),
+  link: z.string().min(1, 'Link is required'),
+  tag: z.string().min(1, 'Tag is required'),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -27,55 +29,40 @@ export interface EditSubscriptionFormModalProps {
 export function EditSubscriptionFormModal({ opened, onClose, subscription, onSubmit }: EditSubscriptionFormModalProps) {
   const { t } = useTranslation()
 
-  const [formData, setFormData] = useState<FormValues>({
-    link: '',
-    tag: '',
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { link: '', tag: '' },
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const resetForm = () => {
-    setFormData({ link: '', tag: '' })
-    setErrors({})
-  }
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = form
 
-  const initializeForm = () => {
-    if (subscription) {
-      setFormData({
-        link: subscription.link,
-        tag: subscription.tag,
-      })
-      setErrors({})
+  const formValues = watch()
+
+  // Initialize form when modal opens with subscription data
+  useEffect(() => {
+    if (opened && subscription) {
+      reset({ link: subscription.link, tag: subscription.tag })
     }
-  }
+  }, [opened, subscription, reset])
 
   const handleOpenChange = (open: boolean) => {
-    if (open) {
-      initializeForm()
-    } else {
+    if (!open) {
+      reset({ link: '', tag: '' })
       onClose()
     }
   }
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const result = schema.safeParse(formData)
-
-    if (!result.success) {
-      const newErrors: Record<string, string> = {}
-
-      result.error.issues.forEach((err) => {
-        newErrors[err.path[0] as string] = err.message
-      })
-      setErrors(newErrors)
-
-      return
-    }
-
+  const handleFormSubmit = async (data: FormValues) => {
     if (subscription) {
-      await onSubmit({ ...formData, id: subscription.id })
+      await onSubmit({ ...data, id: subscription.id })
       onClose()
-      resetForm()
+      reset({ link: '', tag: '' })
     }
   }
 
@@ -85,22 +72,22 @@ export function EditSubscriptionFormModal({ opened, onClose, subscription, onSub
         <DialogHeader>
           <DialogTitle>{t('editSubscription')}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
           <Input
             label={t('link')}
             withAsterisk
-            value={formData.link}
-            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-            error={errors.link}
+            value={formValues.link}
+            onChange={(e) => setValue('link', e.target.value)}
+            error={errors.link?.message}
           />
           <Input
             label={t('tag')}
             withAsterisk
-            value={formData.tag}
-            onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
-            error={errors.tag}
+            value={formValues.tag}
+            onChange={(e) => setValue('tag', e.target.value)}
+            error={errors.tag?.message}
           />
-          <FormActions reset={resetForm} />
+          <FormActions reset={() => reset({ link: '', tag: '' })} />
         </form>
       </DialogContent>
     </Dialog>

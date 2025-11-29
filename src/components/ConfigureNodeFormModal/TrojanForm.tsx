@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import type { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { FormActions } from '~/components/FormActions'
@@ -9,38 +11,40 @@ import { Select } from '~/components/ui/select'
 import { DEFAULT_TROJAN_FORM_VALUES, trojanSchema } from '~/constants'
 import { generateURL } from '~/utils'
 
+type FormValues = z.infer<typeof trojanSchema>
+
 export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
   const { t } = useTranslation()
-  const [formData, setFormData] = useState(DEFAULT_TROJAN_FORM_VALUES)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const { handleSubmit, setValue, reset, control } = useForm<FormValues>({
+    resolver: zodResolver(trojanSchema),
+    defaultValues: DEFAULT_TROJAN_FORM_VALUES,
+  })
 
-    const result = trojanSchema.safeParse(formData)
+  const formValues = useWatch({ control })
 
-    if (!result.success) return
-
+  const onSubmit = (data: FormValues) => {
     const query: Record<string, unknown> = {
-      allowInsecure: formData.allowInsecure,
+      allowInsecure: data.allowInsecure,
     }
 
-    if (formData.peer !== '') {
-      query.sni = formData.peer
+    if (data.peer !== '') {
+      query.sni = data.peer
     }
 
     let protocol = 'trojan'
 
-    if (formData.method !== 'origin' || formData.obfs !== 'none') {
+    if (data.method !== 'origin' || data.obfs !== 'none') {
       protocol = 'trojan-go'
-      query.type = formData.obfs === 'none' ? 'original' : 'ws'
+      query.type = data.obfs === 'none' ? 'original' : 'ws'
 
-      if (formData.method === 'shadowsocks') {
-        query.encryption = `ss;${formData.ssCipher};${formData.ssPassword}`
+      if (data.method === 'shadowsocks') {
+        query.encryption = `ss;${data.ssCipher};${data.ssPassword}`
       }
 
       if (query.type === 'ws') {
-        query.host = formData.host || ''
-        query.path = formData.path || '/'
+        query.host = data.host || ''
+        query.path = data.path || '/'
       }
 
       delete query.allowInsecure
@@ -49,32 +53,28 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
     return onLinkGeneration(
       generateURL({
         protocol,
-        username: formData.password,
-        host: formData.server,
-        port: formData.port,
-        hash: formData.name,
+        username: data.password,
+        host: data.server,
+        port: data.port,
+        hash: data.name,
         params: query,
       }),
     )
   }
 
-  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
       <Input
         label={t('configureNode.name')}
-        value={formData.name}
-        onChange={(e) => updateField('name', e.target.value)}
+        value={formValues.name}
+        onChange={(e) => setValue('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
-        value={formData.server}
-        onChange={(e) => updateField('server', e.target.value)}
+        value={formValues.server}
+        onChange={(e) => setValue('server', e.target.value)}
       />
 
       <NumberInput
@@ -82,15 +82,15 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
         withAsterisk
         min={0}
         max={65535}
-        value={formData.port}
-        onChange={(val) => updateField('port', Number(val))}
+        value={formValues.port}
+        onChange={(val) => setValue('port', Number(val))}
       />
 
       <Input
         label={t('configureNode.password')}
         withAsterisk
-        value={formData.password}
-        onChange={(e) => updateField('password', e.target.value)}
+        value={formValues.password}
+        onChange={(e) => setValue('password', e.target.value)}
       />
 
       <Select
@@ -100,11 +100,11 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
           { label: 'origin', value: 'origin' },
           { label: 'shadowsocks', value: 'shadowsocks' },
         ]}
-        value={formData.method}
-        onChange={(val) => updateField('method', (val || 'origin') as typeof formData.method)}
+        value={formValues.method}
+        onChange={(val) => setValue('method', (val || 'origin') as FormValues['method'])}
       />
 
-      {formData.method === 'shadowsocks' && (
+      {formValues.method === 'shadowsocks' && (
         <Select
           label="Shadowsocks Cipher"
           withAsterisk
@@ -114,28 +114,28 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
             { label: 'chacha20-poly1305', value: 'chacha20-poly1305' },
             { label: 'chacha20-ietf-poly1305', value: 'chacha20-ietf-poly1305' },
           ]}
-          value={formData.ssCipher}
-          onChange={(val) => updateField('ssCipher', (val || 'aes-128-gcm') as typeof formData.ssCipher)}
+          value={formValues.ssCipher}
+          onChange={(val) => setValue('ssCipher', (val || 'aes-128-gcm') as FormValues['ssCipher'])}
         />
       )}
 
-      {formData.method === 'shadowsocks' && (
+      {formValues.method === 'shadowsocks' && (
         <Input
           label="Shadowsocks password"
           withAsterisk
-          value={formData.ssPassword}
-          onChange={(e) => updateField('ssPassword', e.target.value)}
+          value={formValues.ssPassword}
+          onChange={(e) => setValue('ssPassword', e.target.value)}
         />
       )}
 
       <Checkbox
         label={t('allowInsecure')}
-        disabled={formData.method !== 'origin' || formData.obfs !== 'none'}
-        checked={formData.allowInsecure}
-        onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
+        disabled={formValues.method !== 'origin' || formValues.obfs !== 'none'}
+        checked={formValues.allowInsecure}
+        onCheckedChange={(checked) => setValue('allowInsecure', !!checked)}
       />
 
-      <Input label="SNI(Peer)" value={formData.peer} onChange={(e) => updateField('peer', e.target.value)} />
+      <Input label="SNI(Peer)" value={formValues.peer} onChange={(e) => setValue('peer', e.target.value)} />
 
       <Select
         label="Obfs"
@@ -143,27 +143,27 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
           { label: t('configureNode.noObfuscation'), value: 'none' },
           { label: 'websocket', value: 'websocket' },
         ]}
-        value={formData.obfs}
-        onChange={(val) => updateField('obfs', (val || 'none') as typeof formData.obfs)}
+        value={formValues.obfs}
+        onChange={(val) => setValue('obfs', (val || 'none') as FormValues['obfs'])}
       />
 
-      {formData.obfs === 'websocket' && (
+      {formValues.obfs === 'websocket' && (
         <Input
           label={t('configureNode.websocketHost')}
-          value={formData.host}
-          onChange={(e) => updateField('host', e.target.value)}
+          value={formValues.host}
+          onChange={(e) => setValue('host', e.target.value)}
         />
       )}
 
-      {formData.obfs === 'websocket' && (
+      {formValues.obfs === 'websocket' && (
         <Input
           label={t('configureNode.websocketPath')}
-          value={formData.path}
-          onChange={(e) => updateField('path', e.target.value)}
+          value={formValues.path}
+          onChange={(e) => setValue('path', e.target.value)}
         />
       )}
 
-      <FormActions reset={() => setFormData(DEFAULT_TROJAN_FORM_VALUES)} />
+      <FormActions reset={() => reset(DEFAULT_TROJAN_FORM_VALUES)} />
     </form>
   )
 }

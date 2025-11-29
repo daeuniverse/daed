@@ -1,4 +1,6 @@
-import { useImperativeHandle, useMemo, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect, useImperativeHandle, useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -10,8 +12,10 @@ import { RuleType } from '~/constants'
 import { FormActions } from './FormActions'
 
 const schema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, 'Name is required'),
 })
+
+type FormValues = z.infer<typeof schema>
 
 interface Props {
   id?: string
@@ -37,8 +41,21 @@ export function RenameFormModal({
 
   const [props, setProps] = useState<Props>({})
   const { type, id } = props
-  const [formData, setFormData] = useState({ name: '' })
-  const [formErrors, setFormErrors] = useState<{ name?: string }>({})
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { name: '' },
+  })
+
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = form
+
+  const formValues = watch()
 
   const ruleName = useMemo(() => {
     if (type === RuleType.config) {
@@ -61,23 +78,20 @@ export function RenameFormModal({
     setProps,
   }))
 
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!opened) {
+      reset({ name: '' })
+    }
+  }, [opened, reset])
+
   const renameConfigMutation = useRenameConfigMutation()
   const renameDNSMutation = useRenameDNSMutation()
   const renameRoutingMutation = useRenameRoutingMutation()
   const renameGroupMutation = useRenameGroupMutation()
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const result = schema.safeParse(formData)
-
-    if (!result.success) {
-      setFormErrors({ name: result.error.issues[0]?.message })
-
-      return
-    }
-
-    const { name } = formData
+  const onSubmit = (data: FormValues) => {
+    const { name } = data
 
     if (!type || !id) {
       return
@@ -108,7 +122,7 @@ export function RenameFormModal({
         <DialogHeader>
           <DialogTitle>{t('actions.rename')}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <h4 className="font-semibold">{ruleName}</h4>
 
@@ -116,13 +130,13 @@ export function RenameFormModal({
               <Input disabled value={props.oldName} />
 
               <Input
-                value={formData.name}
-                onChange={(e) => setFormData({ name: e.target.value })}
-                error={formErrors.name}
+                value={formValues.name}
+                onChange={(e) => setValue('name', e.target.value)}
+                error={errors.name?.message}
               />
             </div>
 
-            <FormActions reset={() => setFormData({ name: '' })} />
+            <FormActions reset={() => reset({ name: '' })} />
           </div>
         </form>
       </DialogContent>

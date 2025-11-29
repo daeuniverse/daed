@@ -134,6 +134,9 @@
   "endpointURL": "接口地址",
   "error": "错误",
   "experiment": "试验",
+  "form": {
+    "required": "此项为必填项"
+  },
   "global": "全局",
   "group": "群组",
   "info": "信息",

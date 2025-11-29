@@ -1,15 +1,16 @@
 import type { GlobalInput } from '~/schemas/gql/graphql'
-import { Minus, Plus } from 'lucide-react'
-import { useImperativeHandle, useMemo, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useCallback, useImperativeHandle, useMemo, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { z } from 'zod'
 import { useCreateConfigMutation, useGeneralQuery, useUpdateConfigMutation } from '~/apis'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
-import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Dialog, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
+import { InputList } from '~/components/ui/input-list'
 import { Label } from '~/components/ui/label'
 import { NumberInput } from '~/components/ui/number-input'
 import { Radio, RadioGroup } from '~/components/ui/radio-group'
@@ -50,8 +51,8 @@ import {
 
 import { FormActions } from './FormActions'
 
-const _schema = z.object({
-  name: z.string().min(1),
+const schema = z.object({
+  name: z.string().min(1, 'Name is required'),
   logLevelNumber: z.number().min(0).max(4),
   tproxyPort: z.number(),
   allowInsecure: z.boolean(),
@@ -60,8 +61,8 @@ const _schema = z.object({
   sniffingTimeoutMS: z.number(),
   lanInterface: z.array(z.string()),
   wanInterface: z.array(z.string()),
-  udpCheckDns: z.array(z.string()).min(1),
-  tcpCheckUrl: z.array(z.string()).min(1),
+  udpCheckDns: z.array(z.string().min(1, 'Required')).min(1),
+  tcpCheckUrl: z.array(z.string().min(1, 'Required')).min(1),
   dialMode: z.string(),
   tcpCheckHttpMethod: z.string(),
   disableWaitingNetwork: z.boolean(),
@@ -77,7 +78,7 @@ const _schema = z.object({
   fallbackResolver: z.string(),
 })
 
-type FormValues = z.infer<typeof _schema>
+type FormValues = z.infer<typeof schema>
 
 const defaultValues: FormValues = {
   name: '',
@@ -106,63 +107,6 @@ const defaultValues: FormValues = {
   fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
 }
 
-function InputList({
-  label,
-  description,
-  values,
-  onChange,
-}: {
-  label: string
-  description?: string
-  values: string[]
-  onChange: (values: string[]) => void
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">
-          {label} <span className="text-destructive">*</span>
-        </Label>
-        <Button
-          type="button"
-          variant="default"
-          size="icon"
-          className="h-5 w-5 bg-green-600 hover:bg-green-700"
-          onClick={() => onChange([...values, ''])}
-        >
-          <Plus className="h-3 w-3" />
-        </Button>
-      </div>
-
-      {description && <p className="text-xs text-muted-foreground">{description}</p>}
-
-      {values.map((value, i) => (
-        <div key={i} className="flex items-start gap-2">
-          <Input
-            className="flex-1"
-            value={value}
-            onChange={(e) => {
-              const newValues = [...values]
-              newValues[i] = e.target.value
-              onChange(newValues)
-            }}
-          />
-
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            className="h-8 w-8 mt-0.5"
-            onClick={() => onChange(values.filter((_, idx) => idx !== i))}
-          >
-            <Minus className="h-3 w-3" />
-          </Button>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 export interface ConfigFormModalRef {
   form: {
     setValues: (values: FormValues) => void
@@ -184,25 +128,48 @@ export function ConfigFormDrawer({
   const { t } = useTranslation()
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
-  const [formData, setFormData] = useState<FormValues>(defaultValues)
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues,
+  })
+
+  const {
+    handleSubmit,
+    setValue,
+    reset,
+    control,
+    formState: { errors },
+  } = form
+
+  const formValues = useWatch({ control })
 
   const initOrigins = (origins: FormValues) => {
-    setFormData(origins)
+    reset(origins)
     setOrigins(origins)
   }
 
-  const resetForm = () => {
-    setFormData(defaultValues)
-  }
+  const resetForm = useCallback(() => {
+    reset(defaultValues)
+  }, [reset])
 
   useImperativeHandle(ref, () => ({
     form: {
-      setValues: setFormData,
+      setValues: (values: FormValues) => reset(values),
       reset: resetForm,
     },
     setEditingID,
     initOrigins,
   }))
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      resetForm()
+      setEditingID(undefined)
+      setOrigins(undefined)
+      onClose()
+    }
+  }
 
   const { data: generalQuery } = useGeneralQuery()
 
@@ -234,17 +201,15 @@ export function ConfigFormDrawer({
   const createConfigMutation = useCreateConfigMutation()
   const updateConfigMutation = useUpdateConfigMutation()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const logLevel = logLevelSteps[formData.logLevelNumber][1]
+  const onSubmit = async (data: FormValues) => {
+    const logLevel = logLevelSteps[data.logLevelNumber][1]
 
     const global: GlobalInput = {
       logLevel,
-      checkInterval: `${formData.checkIntervalSeconds}s`,
-      checkTolerance: `${formData.checkToleranceMS}ms`,
-      sniffingTimeout: `${formData.sniffingTimeoutMS}ms`,
-      ...formData,
+      checkInterval: `${data.checkIntervalSeconds}s`,
+      checkTolerance: `${data.checkToleranceMS}ms`,
+      sniffingTimeout: `${data.sniffingTimeoutMS}ms`,
+      ...data,
     }
 
     if (editingID) {
@@ -254,33 +219,29 @@ export function ConfigFormDrawer({
       })
     } else {
       await createConfigMutation.mutateAsync({
-        name: formData.name,
+        name: data.name,
         global,
       })
     }
 
-    onClose()
-    resetForm()
-  }
-
-  const updateField = <K extends keyof FormValues>(field: K, value: FormValues[K]) => {
-    setFormData((prev: FormValues) => ({ ...prev, [field]: value }))
+    handleOpenChange(false)
   }
 
   return (
-    <Dialog open={opened} onOpenChange={onClose}>
+    <Dialog open={opened} onOpenChange={handleOpenChange}>
       <ScrollableDialogContent size="lg">
         <ScrollableDialogHeader>
           <DialogTitle>{t('config')}</DialogTitle>
         </ScrollableDialogHeader>
-        <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex-1 flex flex-col min-h-0">
           <ScrollableDialogBody className="flex-1">
             <div className="space-y-4">
               <Input
                 label={t('name')}
                 withAsterisk
-                value={formData.name}
-                onChange={(e) => updateField('name', e.target.value)}
+                value={formValues.name}
+                onChange={(e) => setValue('name', e.target.value)}
+                error={errors.name?.message}
                 disabled={!!editingID}
               />
 
@@ -306,15 +267,15 @@ export function ConfigFormDrawer({
                         withAsterisk
                         min={0}
                         max={65535}
-                        value={formData.tproxyPort}
-                        onChange={(val) => updateField('tproxyPort', Number(val))}
+                        value={formValues.tproxyPort}
+                        onChange={(val) => setValue('tproxyPort', Number(val))}
                       />
 
                       <Checkbox
                         label={t('tproxyPortProtect')}
                         description={t('descriptions.config.tproxyPortProtect')}
-                        checked={formData.tproxyPortProtect}
-                        onCheckedChange={(checked) => updateField('tproxyPortProtect', !!checked)}
+                        checked={formValues.tproxyPortProtect}
+                        onCheckedChange={(checked) => setValue('tproxyPortProtect', !!checked)}
                       />
 
                       <NumberInput
@@ -323,36 +284,36 @@ export function ConfigFormDrawer({
                         withAsterisk
                         min={0}
                         max={2 ** 32 - 1}
-                        value={formData.soMarkFromDae}
-                        onChange={(val) => updateField('soMarkFromDae', Number(val))}
+                        value={formValues.soMarkFromDae}
+                        onChange={(val) => setValue('soMarkFromDae', Number(val))}
                       />
 
                       <div className="space-y-2">
                         <Label>{t('logLevel')}</Label>
                         <Select
                           data={logLevelSteps.map(([label], value) => ({ label, value: String(value) }))}
-                          value={String(formData.logLevelNumber)}
-                          onChange={(val) => updateField('logLevelNumber', Number(val))}
+                          value={String(formValues.logLevelNumber)}
+                          onChange={(val) => setValue('logLevelNumber', Number(val))}
                         />
                       </div>
 
                       <Checkbox
                         label={t('disableWaitingNetwork')}
                         description={t('descriptions.config.disableWaitingNetwork')}
-                        checked={formData.disableWaitingNetwork}
-                        onCheckedChange={(checked) => updateField('disableWaitingNetwork', !!checked)}
+                        checked={formValues.disableWaitingNetwork}
+                        onCheckedChange={(checked) => setValue('disableWaitingNetwork', !!checked)}
                       />
 
                       <Checkbox
                         label={t('enableLocalTcpFastRedirect')}
-                        checked={formData.enableLocalTcpFastRedirect}
-                        onCheckedChange={(checked) => updateField('enableLocalTcpFastRedirect', !!checked)}
+                        checked={formValues.enableLocalTcpFastRedirect}
+                        onCheckedChange={(checked) => setValue('enableLocalTcpFastRedirect', !!checked)}
                       />
 
                       <Checkbox
                         label={t('mptcp')}
-                        checked={formData.mptcp}
-                        onCheckedChange={(checked) => updateField('mptcp', !!checked)}
+                        checked={formValues.mptcp}
+                        onCheckedChange={(checked) => setValue('mptcp', !!checked)}
                       />
                     </div>
                   </AccordionContent>
@@ -368,23 +329,23 @@ export function ConfigFormDrawer({
                         label={t('lanInterface')}
                         description={t('descriptions.config.lanInterface')}
                         data={lanInterfacesData}
-                        value={formData.lanInterface[0] || ''}
-                        onChange={(val) => updateField('lanInterface', val ? [val] : [])}
+                        value={formValues.lanInterface?.[0] || ''}
+                        onChange={(val) => setValue('lanInterface', val ? [val] : [])}
                       />
 
                       <Select
                         label={t('wanInterface')}
                         description={t('descriptions.config.wanInterface')}
                         data={wanInterfacesData}
-                        value={formData.wanInterface[0] || ''}
-                        onChange={(val) => updateField('wanInterface', val ? [val] : [])}
+                        value={formValues.wanInterface?.[0] || ''}
+                        onChange={(val) => setValue('wanInterface', val ? [val] : [])}
                       />
 
                       <Checkbox
                         label={t('autoConfigKernelParameter')}
                         description={t('descriptions.config.autoConfigKernelParameter')}
-                        checked={formData.autoConfigKernelParameter}
-                        onCheckedChange={(checked) => updateField('autoConfigKernelParameter', !!checked)}
+                        checked={formValues.autoConfigKernelParameter}
+                        onCheckedChange={(checked) => setValue('autoConfigKernelParameter', !!checked)}
                       />
                     </div>
                   </AccordionContent>
@@ -399,37 +360,40 @@ export function ConfigFormDrawer({
                       <InputList
                         label={t('tcpCheckUrl')}
                         description={t('descriptions.config.tcpCheckUrl')}
-                        values={formData.tcpCheckUrl}
-                        onChange={(vals) => updateField('tcpCheckUrl', vals)}
+                        values={formValues.tcpCheckUrl || []}
+                        onChange={(vals) => setValue('tcpCheckUrl', vals)}
                       />
 
                       <Select
                         label={t('tcpCheckHttpMethod')}
                         description={t('descriptions.config.tcpCheckHttpMethod')}
                         data={Object.values(TcpCheckHttpMethod).map((method) => ({ label: method, value: method }))}
-                        value={formData.tcpCheckHttpMethod}
-                        onChange={(val) => updateField('tcpCheckHttpMethod', val || '')}
+                        value={formValues.tcpCheckHttpMethod}
+                        onChange={(val) => setValue('tcpCheckHttpMethod', val || '')}
                       />
 
                       <InputList
                         label={t('udpCheckDns')}
                         description={t('descriptions.config.udpCheckDns')}
-                        values={formData.udpCheckDns}
-                        onChange={(vals) => updateField('udpCheckDns', vals)}
+                        values={formValues.udpCheckDns || []}
+                        onChange={(vals) => setValue('udpCheckDns', vals)}
+                        errors={(formValues.udpCheckDns || []).map((v) =>
+                          v.trim() === '' ? t('form.required') : undefined,
+                        )}
                       />
 
                       <Input
                         label={t('fallbackResolver')}
                         description={t('descriptions.config.fallbackResolver')}
-                        value={formData.fallbackResolver}
-                        onChange={(e) => updateField('fallbackResolver', e.target.value)}
+                        value={formValues.fallbackResolver}
+                        onChange={(e) => setValue('fallbackResolver', e.target.value)}
                       />
 
                       <NumberInput
                         label={`${t('checkInterval')} (s)`}
                         withAsterisk
-                        value={formData.checkIntervalSeconds}
-                        onChange={(val) => updateField('checkIntervalSeconds', Number(val))}
+                        value={formValues.checkIntervalSeconds}
+                        onChange={(val) => setValue('checkIntervalSeconds', Number(val))}
                       />
 
                       <NumberInput
@@ -437,8 +401,8 @@ export function ConfigFormDrawer({
                         description={t('descriptions.config.checkTolerance')}
                         withAsterisk
                         step={500}
-                        value={formData.checkToleranceMS}
-                        onChange={(val) => updateField('checkToleranceMS', Number(val))}
+                        value={formValues.checkToleranceMS}
+                        onChange={(val) => setValue('checkToleranceMS', Number(val))}
                       />
                     </div>
                   </AccordionContent>
@@ -452,8 +416,8 @@ export function ConfigFormDrawer({
                     <div className="space-y-4 pt-2">
                       <RadioGroup
                         label={t('dialMode')}
-                        value={formData.dialMode}
-                        onChange={(val) => updateField('dialMode', val)}
+                        value={formValues.dialMode}
+                        onChange={(val) => setValue('dialMode', val)}
                       >
                         <Radio
                           value={DialMode.ip}
@@ -480,48 +444,48 @@ export function ConfigFormDrawer({
                       <Checkbox
                         label={t('allowInsecure')}
                         description={t('descriptions.config.allowInsecure')}
-                        checked={formData.allowInsecure}
-                        onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
+                        checked={formValues.allowInsecure}
+                        onCheckedChange={(checked) => setValue('allowInsecure', !!checked)}
                       />
 
                       <NumberInput
                         label={`${t('sniffingTimeout')} (ms)`}
                         description={t('descriptions.config.sniffingTimeout')}
                         step={500}
-                        value={formData.sniffingTimeoutMS}
-                        onChange={(val) => updateField('sniffingTimeoutMS', Number(val))}
+                        value={formValues.sniffingTimeoutMS}
+                        onChange={(val) => setValue('sniffingTimeoutMS', Number(val))}
                       />
 
                       <Select
                         label={t('tlsImplementation')}
                         description={t('descriptions.config.tlsImplementation')}
                         data={Object.values(TLSImplementation).map((impl) => ({ label: impl, value: impl }))}
-                        value={formData.tlsImplementation}
-                        onChange={(val) => updateField('tlsImplementation', val || '')}
+                        value={formValues.tlsImplementation}
+                        onChange={(val) => setValue('tlsImplementation', val || '')}
                       />
 
-                      {formData.tlsImplementation === TLSImplementation.utls && (
+                      {formValues.tlsImplementation === TLSImplementation.utls && (
                         <Select
                           label={t('utlsImitate')}
                           description={t('descriptions.config.utlsImitate')}
                           data={Object.values(UTLSImitate).map((impl) => ({ label: impl, value: impl }))}
-                          value={formData.utlsImitate}
-                          onChange={(val) => updateField('utlsImitate', val || '')}
+                          value={formValues.utlsImitate}
+                          onChange={(val) => setValue('utlsImitate', val || '')}
                         />
                       )}
 
                       <Input
                         label={t('bandwidthMaxTx')}
                         description={t('descriptions.config.bandwidthMaxTx')}
-                        value={formData.bandwidthMaxTx}
-                        onChange={(e) => updateField('bandwidthMaxTx', e.target.value)}
+                        value={formValues.bandwidthMaxTx}
+                        onChange={(e) => setValue('bandwidthMaxTx', e.target.value)}
                       />
 
                       <Input
                         label={t('bandwidthMaxRx')}
                         description={t('descriptions.config.bandwidthMaxRx')}
-                        value={formData.bandwidthMaxRx}
-                        onChange={(e) => updateField('bandwidthMaxRx', e.target.value)}
+                        value={formValues.bandwidthMaxRx}
+                        onChange={(e) => setValue('bandwidthMaxRx', e.target.value)}
                       />
                     </div>
                   </AccordionContent>
@@ -533,7 +497,7 @@ export function ConfigFormDrawer({
             <FormActions
               reset={() => {
                 if (editingID && origins) {
-                  setFormData(origins)
+                  reset(origins)
                 } else {
                   resetForm()
                 }

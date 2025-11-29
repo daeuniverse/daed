@@ -1,4 +1,6 @@
-import { useImperativeHandle, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect, useImperativeHandle, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -11,11 +13,16 @@ import { DEFAULT_GROUP_POLICY } from '~/constants'
 import { Policy } from '~/schemas/gql/graphql'
 
 const schema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, 'Name is required'),
   policy: z.nativeEnum(Policy),
 })
 
 type FormValues = z.infer<typeof schema>
+
+const defaultValues: FormValues = {
+  name: '',
+  policy: DEFAULT_GROUP_POLICY,
+}
 
 export interface GroupFormModalRef {
   form: {
@@ -38,30 +45,48 @@ export function GroupFormModal({
   const { t } = useTranslation()
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
-  const [formData, setFormData] = useState<FormValues>({
-    name: '',
-    policy: DEFAULT_GROUP_POLICY,
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues,
   })
-  const [errors, setErrors] = useState<{ name?: string }>({})
+
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = form
+
+  const formValues = watch()
 
   const initOrigins = (origins: FormValues) => {
-    setFormData(origins)
+    reset(origins)
     setOrigins(origins)
   }
 
   const resetForm = () => {
-    setFormData({ name: '', policy: DEFAULT_GROUP_POLICY })
-    setErrors({})
+    reset(defaultValues)
   }
 
   useImperativeHandle(ref, () => ({
     form: {
-      setValues: setFormData,
+      setValues: (values: FormValues) => reset(values),
       reset: resetForm,
     },
     setEditingID,
     initOrigins,
   }))
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!opened) {
+      resetForm()
+      setEditingID(undefined)
+      setOrigins(undefined)
+    }
+  }, [opened])
 
   const createGroupMutation = useCreateGroupMutation()
   const groupSetPolicyMutation = useGroupSetPolicyMutation()
@@ -94,29 +119,19 @@ export function GroupFormModal({
     },
   ]
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const result = schema.safeParse(formData)
-
-    if (!result.success) {
-      setErrors({ name: result.error.issues[0]?.message })
-
-      return
-    }
-
-    const policyParams = formData.policy === Policy.Fixed ? [{ key: '', val: '0' }] : []
+  const onSubmit = async (data: FormValues) => {
+    const policyParams = data.policy === Policy.Fixed ? [{ key: '', val: '0' }] : []
 
     if (editingID) {
       await groupSetPolicyMutation.mutateAsync({
         id: editingID,
-        policy: formData.policy,
+        policy: data.policy,
         policyParams,
       })
     } else {
       await createGroupMutation.mutateAsync({
-        name: formData.name,
-        policy: formData.policy,
+        name: data.name,
+        policy: data.policy,
         policyParams,
       })
     }
@@ -131,28 +146,28 @@ export function GroupFormModal({
         <DialogHeader>
           <DialogTitle>{t('group')}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <Input
               withAsterisk
               label={t('name')}
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              error={errors.name}
+              value={formValues.name}
+              onChange={(e) => setValue('name', e.target.value)}
+              error={errors.name?.message}
               disabled={!!editingID}
             />
 
             <Select
               label={t('policy')}
               data={policyData}
-              value={formData.policy}
-              onChange={(value) => setFormData({ ...formData, policy: value as Policy })}
+              value={formValues.policy}
+              onChange={(value) => setValue('policy', value as Policy)}
             />
 
             <FormActions
               reset={() => {
                 if (editingID && origins) {
-                  setFormData(origins)
+                  reset(origins)
                 } else {
                   resetForm()
                 }

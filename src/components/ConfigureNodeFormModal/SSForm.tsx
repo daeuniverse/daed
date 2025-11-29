@@ -1,5 +1,7 @@
+import type { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Base64 } from 'js-base64'
-import { useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { FormActions } from '~/components/FormActions'
@@ -8,37 +10,39 @@ import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_SS_FORM_VALUES, ssSchema } from '~/constants'
 
+type FormValues = z.infer<typeof ssSchema>
+
 export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
   const { t } = useTranslation()
-  const [formData, setFormData] = useState(DEFAULT_SS_FORM_VALUES)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const { handleSubmit, setValue, reset, control } = useForm<FormValues>({
+    resolver: zodResolver(ssSchema),
+    defaultValues: DEFAULT_SS_FORM_VALUES,
+  })
 
-    const result = ssSchema.safeParse(formData)
+  const formValues = useWatch({ control })
 
-    if (!result.success) return
-
+  const onSubmit = (data: FormValues) => {
     /* ss://BASE64(method:password)@server:port#name */
-    let link = `ss://${Base64.encode(`${formData.method}:${formData.password}`)}@${formData.server}:${formData.port}/`
+    let link = `ss://${Base64.encode(`${data.method}:${data.password}`)}@${data.server}:${data.port}/`
 
-    if (formData.plugin) {
-      const plugin: string[] = [formData.plugin]
+    if (data.plugin) {
+      const plugin: string[] = [data.plugin]
 
-      if (formData.plugin === 'v2ray-plugin') {
-        if (formData.tls) {
+      if (data.plugin === 'v2ray-plugin') {
+        if (data.tls) {
           plugin.push('tls')
         }
 
-        if (formData.mode !== 'websocket') {
-          plugin.push(`mode=${formData.mode}`)
+        if (data.mode !== 'websocket') {
+          plugin.push(`mode=${data.mode}`)
         }
 
-        if (formData.host) {
-          plugin.push(`host=${formData.host}`)
+        if (data.host) {
+          plugin.push(`host=${data.host}`)
         }
 
-        let path = formData.path
+        let path = data.path
 
         if (path) {
           if (!path.startsWith('/')) {
@@ -48,47 +52,43 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           plugin.push(`path=${path}`)
         }
 
-        if (formData.impl) {
-          plugin.push(`impl=${formData.impl}`)
+        if (data.impl) {
+          plugin.push(`impl=${data.impl}`)
         }
       } else {
-        plugin.push(`obfs=${formData.obfs}`)
-        plugin.push(`obfs-host=${formData.host}`)
+        plugin.push(`obfs=${data.obfs}`)
+        plugin.push(`obfs-host=${data.host}`)
 
-        if (formData.obfs === 'http') {
-          plugin.push(`obfs-path=${formData.path}`)
+        if (data.obfs === 'http') {
+          plugin.push(`obfs-path=${data.path}`)
         }
 
-        if (formData.impl) {
-          plugin.push(`impl=${formData.impl}`)
+        if (data.impl) {
+          plugin.push(`impl=${data.impl}`)
         }
       }
 
       link += `?plugin=${encodeURIComponent(plugin.join(';'))}`
     }
 
-    link += formData.name.length ? `#${encodeURIComponent(formData.name)}` : ''
+    link += data.name.length ? `#${encodeURIComponent(data.name)}` : ''
 
     return onLinkGeneration(link)
   }
 
-  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
       <Input
         label={t('configureNode.name')}
-        value={formData.name}
-        onChange={(e) => updateField('name', e.target.value)}
+        value={formValues.name}
+        onChange={(e) => setValue('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
-        value={formData.server}
-        onChange={(e) => updateField('server', e.target.value)}
+        value={formValues.server}
+        onChange={(e) => setValue('server', e.target.value)}
       />
 
       <NumberInput
@@ -96,15 +96,15 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
         withAsterisk
         min={0}
         max={65535}
-        value={formData.port}
-        onChange={(val) => updateField('port', Number(val))}
+        value={formValues.port}
+        onChange={(val) => setValue('port', Number(val))}
       />
 
       <Input
         label={t('configureNode.password')}
         withAsterisk
-        value={formData.password}
-        onChange={(e) => updateField('password', e.target.value)}
+        value={formValues.password}
+        onChange={(e) => setValue('password', e.target.value)}
       />
 
       <Select
@@ -118,8 +118,8 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           { label: 'plain', value: 'plain' },
           { label: 'none', value: 'none' },
         ]}
-        value={formData.method}
-        onChange={(val) => updateField('method', (val || 'aes-128-gcm') as typeof formData.method)}
+        value={formValues.method}
+        onChange={(val) => setValue('method', (val || 'aes-128-gcm') as FormValues['method'])}
       />
 
       <Select
@@ -129,11 +129,11 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
           { label: 'simple-obfs', value: 'simple-obfs' },
           { label: 'v2ray-plugin', value: 'v2ray-plugin' },
         ]}
-        value={formData.plugin}
-        onChange={(val) => updateField('plugin', (val || '') as typeof formData.plugin)}
+        value={formValues.plugin}
+        onChange={(val) => setValue('plugin', (val || '') as FormValues['plugin'])}
       />
 
-      {(formData.plugin === 'simple-obfs' || formData.plugin === 'v2ray-plugin') && (
+      {(formValues.plugin === 'simple-obfs' || formValues.plugin === 'v2ray-plugin') && (
         <Select
           label="Impl"
           data={[
@@ -141,54 +141,55 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
             { label: 'chained', value: 'chained' },
             { label: 'transport', value: 'transport' },
           ]}
-          value={formData.impl}
-          onChange={(val) => updateField('impl', (val || '') as typeof formData.impl)}
+          value={formValues.impl}
+          onChange={(val) => setValue('impl', (val || '') as FormValues['impl'])}
         />
       )}
 
-      {formData.plugin === 'simple-obfs' && (
+      {formValues.plugin === 'simple-obfs' && (
         <Select
           label="Obfs"
           data={[
             { label: 'http', value: 'http' },
             { label: 'tls', value: 'tls' },
           ]}
-          value={formData.obfs}
-          onChange={(val) => updateField('obfs', (val || 'http') as typeof formData.obfs)}
+          value={formValues.obfs}
+          onChange={(val) => setValue('obfs', (val || 'http') as FormValues['obfs'])}
         />
       )}
 
-      {formData.plugin === 'v2ray-plugin' && (
+      {formValues.plugin === 'v2ray-plugin' && (
         <Select
           label="Mode"
           data={[{ label: 'websocket', value: 'websocket' }]}
-          value={formData.mode}
-          onChange={(val) => updateField('mode', val || '')}
+          value={formValues.mode}
+          onChange={(val) => setValue('mode', val || '')}
         />
       )}
 
-      {formData.plugin === 'v2ray-plugin' && (
+      {formValues.plugin === 'v2ray-plugin' && (
         <Select
           label="TLS"
           data={[
             { label: 'off', value: '' },
             { label: 'tls', value: 'tls' },
           ]}
-          value={formData.tls}
-          onChange={(val) => updateField('tls', (val || '') as typeof formData.tls)}
+          value={formValues.tls}
+          onChange={(val) => setValue('tls', (val || '') as FormValues['tls'])}
         />
       )}
 
-      {((formData.plugin === 'simple-obfs' && (formData.obfs === 'http' || formData.obfs === 'tls')) ||
-        formData.plugin === 'v2ray-plugin') && (
-        <Input label="Host" value={formData.host} onChange={(e) => updateField('host', e.target.value)} />
+      {((formValues.plugin === 'simple-obfs' && (formValues.obfs === 'http' || formValues.obfs === 'tls')) ||
+        formValues.plugin === 'v2ray-plugin') && (
+        <Input label="Host" value={formValues.host} onChange={(e) => setValue('host', e.target.value)} />
       )}
 
-      {((formData.plugin === 'simple-obfs' && formData.obfs === 'http') || formData.plugin === 'v2ray-plugin') && (
-        <Input label="Path" value={formData.path} onChange={(e) => updateField('path', e.target.value)} />
+      {((formValues.plugin === 'simple-obfs' && formValues.obfs === 'http') ||
+        formValues.plugin === 'v2ray-plugin') && (
+        <Input label="Path" value={formValues.path} onChange={(e) => setValue('path', e.target.value)} />
       )}
 
-      <FormActions reset={() => setFormData(DEFAULT_SS_FORM_VALUES)} />
+      <FormActions reset={() => reset(DEFAULT_SS_FORM_VALUES)} />
     </form>
   )
 }

@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import type { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { FormActions } from '~/components/FormActions'
@@ -9,54 +11,52 @@ import { Select } from '~/components/ui/select'
 import { DEFAULT_JUICITY_FORM_VALUES, juicitySchema } from '~/constants'
 import { generateURL } from '~/utils'
 
+type FormValues = z.infer<typeof juicitySchema>
+
 export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
   const { t } = useTranslation()
-  const [formData, setFormData] = useState(DEFAULT_JUICITY_FORM_VALUES)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const { handleSubmit, setValue, reset, control } = useForm<FormValues>({
+    resolver: zodResolver(juicitySchema),
+    defaultValues: DEFAULT_JUICITY_FORM_VALUES,
+  })
 
-    const result = juicitySchema.safeParse(formData)
+  const formValues = useWatch({ control })
 
-    if (!result.success) return
-
+  const onSubmit = (data: FormValues) => {
     const query = {
-      congestion_control: formData.congestion_control,
-      pinned_certchain_sha256: formData.pinned_certchain_sha256,
-      sni: formData.sni,
-      allow_insecure: formData.allowInsecure,
+      congestion_control: data.congestion_control,
+      pinned_certchain_sha256: data.pinned_certchain_sha256,
+      sni: data.sni,
+      allow_insecure: data.allowInsecure,
     }
 
     return onLinkGeneration(
       generateURL({
         protocol: 'juicity',
-        username: formData.uuid,
-        password: formData.password,
-        host: formData.server,
-        port: formData.port,
-        hash: formData.name,
+        username: data.uuid,
+        password: data.password,
+        host: data.server,
+        port: data.port,
+        hash: data.name,
         params: query,
       }),
     )
   }
 
-  const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
       <Input
         label={t('configureNode.name')}
-        value={formData.name}
-        onChange={(e) => updateField('name', e.target.value)}
+        value={formValues.name}
+        onChange={(e) => setValue('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
-        value={formData.server}
-        onChange={(e) => updateField('server', e.target.value)}
+        value={formValues.server}
+        onChange={(e) => setValue('server', e.target.value)}
       />
 
       <NumberInput
@@ -64,17 +64,17 @@ export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: str
         withAsterisk
         min={0}
         max={65535}
-        value={formData.port}
-        onChange={(val) => updateField('port', Number(val))}
+        value={formValues.port}
+        onChange={(val) => setValue('port', Number(val))}
       />
 
-      <Input label="UUID" withAsterisk value={formData.uuid} onChange={(e) => updateField('uuid', e.target.value)} />
+      <Input label="UUID" withAsterisk value={formValues.uuid} onChange={(e) => setValue('uuid', e.target.value)} />
 
       <Input
         label={t('configureNode.password')}
         withAsterisk
-        value={formData.password}
-        onChange={(e) => updateField('password', e.target.value)}
+        value={formValues.password}
+        onChange={(e) => setValue('password', e.target.value)}
       />
 
       <Select
@@ -84,25 +84,25 @@ export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: str
           { label: 'cubic', value: 'cubic' },
           { label: 'new_reno', value: 'new_reno' },
         ]}
-        value={formData.congestion_control}
-        onChange={(val) => updateField('congestion_control', val || '')}
+        value={formValues.congestion_control}
+        onChange={(val) => setValue('congestion_control', val || '')}
       />
 
       <Input
         label={t('configureNode.pinned_certchain_sha256')}
-        value={formData.pinned_certchain_sha256}
-        onChange={(e) => updateField('pinned_certchain_sha256', e.target.value)}
+        value={formValues.pinned_certchain_sha256}
+        onChange={(e) => setValue('pinned_certchain_sha256', e.target.value)}
       />
 
-      <Input label="SNI" value={formData.sni} onChange={(e) => updateField('sni', e.target.value)} />
+      <Input label="SNI" value={formValues.sni} onChange={(e) => setValue('sni', e.target.value)} />
 
       <Checkbox
         label={t('allowInsecure')}
-        checked={formData.allowInsecure}
-        onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
+        checked={formValues.allowInsecure}
+        onCheckedChange={(checked) => setValue('allowInsecure', !!checked)}
       />
 
-      <FormActions reset={() => setFormData(DEFAULT_JUICITY_FORM_VALUES)} />
+      <FormActions reset={() => reset(DEFAULT_JUICITY_FORM_VALUES)} />
     </form>
   )
 }

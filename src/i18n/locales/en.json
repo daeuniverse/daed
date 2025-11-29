@@ -134,6 +134,9 @@
   "endpointURL": "Endpoint URL",
   "error": "error",
   "experiment": "Experiment",
+  "form": {
+    "required": "This field is required"
+  },
   "global": "Global",
   "group": "Group",
   "info": "info",

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
@@ -22,35 +23,54 @@ import { TrojanForm } from './TrojanForm'
 import { TuicForm } from './TuicForm'
 import { V2rayForm } from './V2rayForm'
 
-const schema = z.object({ tag: z.string().min(1) })
+const schema = z.object({ tag: z.string().min(1, 'This field is required') })
+
+type FormValues = z.infer<typeof schema>
 
 export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean; onClose: () => void }) {
   const { t } = useTranslation()
   const importNodesMutation = useImportNodesMutation()
-  const [formData, setFormData] = useState({ tag: '' })
-  const [errors, setErrors] = useState<{ tag?: string }>({})
+
+  const {
+    setValue,
+    reset,
+    control,
+    formState: { errors },
+    trigger,
+    getValues,
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { tag: '' },
+  })
+
+  const tag = useWatch({ control, name: 'tag' })
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      reset()
+      onClose()
+    }
+  }
 
   const onLinkGeneration = async (link: string) => {
-    const result = schema.safeParse(formData)
+    const isValid = await trigger()
 
-    if (!result.success) {
-      setErrors({ tag: result.error.issues[0]?.message })
+    if (!isValid) return
 
-      return
-    }
+    const { tag } = getValues()
 
     await importNodesMutation.mutateAsync([
       {
         link,
-        tag: formData.tag,
+        tag,
       },
     ])
 
-    onClose()
+    handleOpenChange(false)
   }
 
   return (
-    <Dialog open={opened} onOpenChange={onClose}>
+    <Dialog open={opened} onOpenChange={handleOpenChange}>
       <ScrollableDialogContent size="lg">
         <ScrollableDialogHeader>
           <DialogTitle>{t('configureNode.title')}</DialogTitle>
@@ -59,9 +79,9 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean; o
           <Input
             label={t('tag')}
             withAsterisk
-            value={formData.tag}
-            onChange={(e) => setFormData({ tag: e.target.value })}
-            error={errors.tag}
+            value={tag}
+            onChange={(e) => setValue('tag', e.target.value)}
+            error={errors.tag?.message}
           />
 
           <Tabs defaultValue="v2ray" className="w-full min-w-0">
