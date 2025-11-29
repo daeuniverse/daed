@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/daeuniverse/daed/compare/v0.17.0...v0.18.0) (2025-11-29)
+
+
+### Features
+
+* implement drag-and-drop functionality for input list items ([23a3a29](https://github.com/daeuniverse/daed/commit/23a3a291a19e182eb56b984d6380f64e7769c609))
+
 ## [0.17.0](https://github.com/daeuniverse/daed/compare/v0.16.0...v0.17.0) (2025-11-29)
 
 
