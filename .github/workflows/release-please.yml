@@ -23,8 +23,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  # Publish GitHub Pages on every push to main
+  # Publish GitHub Pages when a new release is created
   publish-gh-pages:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
