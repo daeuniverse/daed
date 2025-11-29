@@ -1,3 +1,7 @@
 patchedDependencies:
   monaco-themes: patches/monaco-themes.patch
+
 neverBuiltDependencies: []
+
+overrides:
+  vite: 'npm:rolldown-vite@latest'
