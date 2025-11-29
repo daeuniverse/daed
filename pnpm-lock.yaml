@@ -261,7 +261,7 @@ importers:
         version: 16.5.0
       graphiql:
         specifier: ^5.2.1
-        version: 5.2.1(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+        version: 5.2.1(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
       graphql:
         specifier: ^16.12.0
         version: 16.12.0
@@ -278,8 +278,8 @@ importers:
         specifier: ^8.2.0
         version: 8.2.0
       immer:
-        specifier: ^11.0.0
-        version: 11.0.0
+        specifier: ^11.0.1
+        version: 11.0.1
       input-otp:
         specifier: ^1.4.2
         version: 1.4.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -4522,8 +4522,8 @@ packages:
     resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
     engines: {node: '>= 4'}
 
-  immer@11.0.0:
-    resolution: {integrity: sha512-XtRG4SINt4dpqlnJvs70O2j6hH7H0X8fUzFsjMn1rwnETaxwp83HLNimXBjZ78MrKl3/d3/pkzDH0o0Lkxm37Q==}
+  immer@11.0.1:
+    resolution: {integrity: sha512-naDCyggtcBWANtIrjQEajhhBEuL9b0Zg4zmlWK2CzS6xCWSE39/vvf4LqnMjUAWHBhot4m9MHCM/Z+mfWhUkiA==}
 
   immutable@3.7.6:
     resolution: {integrity: sha512-AizQPcaofEtO11RZhPPHBOJRdo/20MKQF9mBLnVkBoyHi1/zXK8fzVdnEpSV9gxqtnh6Qomfp3F0xT5qP/vThw==}
@@ -7578,28 +7578,28 @@ snapshots:
 
   '@fontsource/source-code-pro@5.2.7': {}
 
-  '@graphiql/plugin-doc-explorer@0.4.1(@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/react@19.2.7)(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
+  '@graphiql/plugin-doc-explorer@0.4.1(@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/react@19.2.7)(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
     dependencies:
-      '@graphiql/react': 0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/react': 0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
       '@headlessui/react': 2.2.9(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       graphql: 16.12.0
       react: 19.2.0
       react-compiler-runtime: 19.1.0-rc.1(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
-      zustand: 5.0.8(@types/react@19.2.7)(immer@11.0.0)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      zustand: 5.0.8(@types/react@19.2.7)(immer@11.0.1)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
     transitivePeerDependencies:
       - '@types/react'
       - immer
       - use-sync-external-store
 
-  '@graphiql/plugin-history@0.4.1(@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/node@24.10.1)(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
+  '@graphiql/plugin-history@0.4.1(@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/node@24.10.1)(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
     dependencies:
-      '@graphiql/react': 0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/react': 0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
       '@graphiql/toolkit': 0.11.3(@types/node@24.10.1)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)
       react: 19.2.0
       react-compiler-runtime: 19.1.0-rc.1(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
-      zustand: 5.0.8(@types/react@19.2.7)(immer@11.0.0)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      zustand: 5.0.8(@types/react@19.2.7)(immer@11.0.1)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
     transitivePeerDependencies:
       - '@types/node'
       - '@types/react'
@@ -7608,7 +7608,7 @@ snapshots:
       - immer
       - use-sync-external-store
 
-  '@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
+  '@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
     dependencies:
       '@graphiql/toolkit': 0.11.3(@types/node@24.10.1)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)
       '@radix-ui/react-dialog': 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -7629,7 +7629,7 @@ snapshots:
       react-compiler-runtime: 19.1.0-rc.1(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
       set-value: 4.1.0
-      zustand: 5.0.8(@types/react@19.2.7)(immer@11.0.0)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      zustand: 5.0.8(@types/react@19.2.7)(immer@11.0.1)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
       - '@types/node'
@@ -11191,11 +11191,11 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  graphiql@5.2.1(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)):
+  graphiql@5.2.1(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)):
     dependencies:
-      '@graphiql/plugin-doc-explorer': 0.4.1(@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/react@19.2.7)(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
-      '@graphiql/plugin-history': 0.4.1(@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/node@24.10.1)(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
-      '@graphiql/react': 0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.0)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/plugin-doc-explorer': 0.4.1(@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/react@19.2.7)(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/plugin-history': 0.4.1(@graphiql/react@0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/node@24.10.1)(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/react': 0.37.2(@emotion/is-prop-valid@0.8.8)(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(graphql-ws@5.16.0(graphql@16.12.0))(graphql@16.12.0)(immer@11.0.1)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
       graphql: 16.12.0
       react: 19.2.0
       react-compiler-runtime: 19.1.0-rc.1(react@19.2.0)
@@ -11326,7 +11326,7 @@ snapshots:
 
   ignore@7.0.5: {}
 
-  immer@11.0.0: {}
+  immer@11.0.1: {}
 
   immutable@3.7.6: {}
 
@@ -13334,10 +13334,10 @@ snapshots:
 
   zod@4.1.13: {}
 
-  zustand@5.0.8(@types/react@19.2.7)(immer@11.0.0)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)):
+  zustand@5.0.8(@types/react@19.2.7)(immer@11.0.1)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)):
     optionalDependencies:
       '@types/react': 19.2.7
-      immer: 11.0.0
+      immer: 11.0.1
       react: 19.2.0
       use-sync-external-store: 1.6.0(react@19.2.0)
 
