@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.1](https://github.com/daeuniverse/daed/compare/v0.15.0...v0.15.1) (2025-11-29)
+
+
+### Bug Fixes
+
+* **i18n:** update labels for sensitive content visibility in English and Chinese locales ([b86188e](https://github.com/daeuniverse/daed/commit/b86188ecbcb1a99fc2efa2634a00dd3cadc5eef1))
+
 ## [0.15.0](https://github.com/daeuniverse/daed/compare/v0.14.0...v0.15.0) (2025-11-29)
 
 
