@@ -1,10 +1,12 @@
 import type { UniqueIdentifier } from '@dnd-kit/core'
+import type { Monaco } from '@monaco-editor/react'
 import type { RenameFormModalRef } from '~/components'
 import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { restrictToParentElement, snapCenterToCursor } from '@dnd-kit/modifiers'
 import { arrayMove, rectSwappingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { faker } from '@faker-js/faker'
 import Editor from '@monaco-editor/react'
+import { useStore } from '@nanostores/react'
 import dayjs from 'dayjs'
 import { produce } from 'immer'
 import { FileInput, Pencil } from 'lucide-react'
@@ -43,13 +45,24 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui'
-import { DialMode, DraggableResourceType, EDITOR_OPTIONS, LogLevel, RuleType } from '~/constants'
+import {
+  DialMode,
+  DraggableResourceType,
+  EDITOR_OPTIONS,
+  EDITOR_THEME_DARK,
+  EDITOR_THEME_LIGHT,
+  LogLevel,
+  RuleType,
+} from '~/constants'
 import { useDisclosure } from '~/hooks'
-import { handleEditorBeforeMount } from '~/monaco'
+import { applyShikiThemes, handleEditorBeforeMount, isShikiReady } from '~/monaco'
 import { Policy } from '~/schemas/gql/graphql'
+import { colorSchemeAtom } from '~/store'
 
 export function ExperimentPage() {
   const { t } = useTranslation()
+  const colorScheme = useStore(colorSchemeAtom)
+  const [, forceUpdate] = useState({})
 
   const [fakeConfigs, setFakeConfigs] = useState(
     faker.helpers.multiple(
@@ -240,9 +253,23 @@ export function ExperimentPage() {
       <Editor
         height={500}
         defaultValue="hello world"
-        theme="vs-dark"
+        theme={
+          isShikiReady()
+            ? colorScheme === 'dark'
+              ? EDITOR_THEME_DARK
+              : EDITOR_THEME_LIGHT
+            : colorScheme === 'dark'
+              ? 'vs-dark'
+              : 'vs'
+        }
         options={EDITOR_OPTIONS}
         beforeMount={handleEditorBeforeMount}
+        onMount={async (_editor, monacoInstance: Monaco) => {
+          if (!isShikiReady()) {
+            await applyShikiThemes(monacoInstance)
+            forceUpdate({})
+          }
+        }}
       />
 
       <div className="grid grid-cols-3 gap-4">

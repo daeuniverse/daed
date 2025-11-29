@@ -1,7 +1,8 @@
+import type { Monaco } from '@monaco-editor/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Editor } from '@monaco-editor/react'
 import { useStore } from '@nanostores/react'
-import { useEffect, useImperativeHandle, useState } from 'react'
+import { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -15,7 +16,7 @@ import {
 } from '~/components/ui/scrollable-dialog'
 import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants'
 import { useSetValue } from '~/hooks/useSetValue'
-import { handleEditorBeforeMount } from '~/monaco'
+import { applyShikiThemes, handleEditorBeforeMount, isShikiReady } from '~/monaco'
 import { colorSchemeAtom } from '~/store'
 
 import { FormActions } from './FormActions'
@@ -62,6 +63,16 @@ export function PlainTextFormModal({
   const colorScheme = useStore(colorSchemeAtom)
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
+  const [, forceUpdate] = useState({})
+  const monacoRef = useRef<Monaco | null>(null)
+
+  const handleEditorDidMount = async (_editor: unknown, monacoInstance: Monaco) => {
+    monacoRef.current = monacoInstance
+    if (!isShikiReady()) {
+      await applyShikiThemes(monacoInstance)
+      forceUpdate({}) // Trigger re-render to update theme
+    }
+  }
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -142,12 +153,21 @@ export function PlainTextFormModal({
             <div className="flex-1 rounded overflow-hidden border min-h-[200px]">
               <Editor
                 height="100%"
-                theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
+                theme={
+                  isShikiReady()
+                    ? colorScheme === 'dark'
+                      ? EDITOR_THEME_DARK
+                      : EDITOR_THEME_LIGHT
+                    : colorScheme === 'dark'
+                      ? 'vs-dark'
+                      : 'vs'
+                }
                 options={EDITOR_OPTIONS}
                 language="routingA"
                 value={formValues.text}
                 onChange={(value) => setValue('text', value || '')}
                 beforeMount={handleEditorBeforeMount}
+                onMount={handleEditorDidMount}
               />
             </div>
 
