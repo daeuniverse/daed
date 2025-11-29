@@ -4,11 +4,12 @@ import { Link2, LockKeyhole, User } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { toast } from 'sonner'
+
 import { z } from 'zod'
 
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
-import { notifications } from '~/components/ui/use-toast'
 import { DEFAULT_ENDPOINT_URL } from '~/constants'
 import { cn } from '~/lib/utils'
 import { graphql } from '~/schemas/gql'
@@ -84,10 +85,7 @@ export function SetupPage() {
 
       nextStep()
     } catch (err) {
-      notifications.show({
-        color: 'red',
-        message: (err as Error).message,
-      })
+      toast.error((err as Error).message)
     }
   }
 
@@ -127,10 +125,7 @@ export function SetupPage() {
 
       setNumberUsers(numberUsers)
     } catch (err) {
-      notifications.show({
-        color: 'red',
-        message: (err as Error).message,
-      })
+      toast.error((err as Error).message)
     }
   }
 
@@ -166,18 +161,13 @@ export function SetupPage() {
         },
       )
 
-      notifications.show({
-        message: t('notifications.login succeeded'),
-      })
+      toast.success(t('notifications.login succeeded'))
 
       tokenAtom.set(token)
 
       nextStep()
     } catch (err) {
-      notifications.show({
-        color: 'red',
-        message: (err as Error).message,
-      })
+      toast.error((err as Error).message)
     }
   }
 

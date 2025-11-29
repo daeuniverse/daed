@@ -3,8 +3,8 @@ import { useStore } from '@nanostores/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GraphQLClient } from 'graphql-request'
 import { createContext, use, useMemo } from 'react'
+import { toast } from 'sonner'
 
-import { notifications } from '~/components/ui/use-toast'
 import { endpointURLAtom, tokenAtom } from '~/store'
 
 export const GQLClientContext = createContext<GraphQLClient>(null as unknown as GraphQLClient)
@@ -55,10 +55,7 @@ export function QueryProvider({ children, colorScheme, themeMode, setThemeMode }
           const error = (response as ClientError).response?.errors?.[0]
 
           if (error) {
-            notifications.show({
-              color: 'red',
-              message: error.message,
-            })
+            toast.error(error.message)
 
             if (error.message === 'access denied') {
               tokenAtom.set('')

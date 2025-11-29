@@ -2,7 +2,7 @@ import type { ThemeMode } from '~/store'
 import { useStore } from '@nanostores/react'
 import { useCallback, useEffect, useState } from 'react'
 
-import { Toaster } from '~/components/ui/toaster'
+import { Toaster } from '~/components/ui/sonner'
 import { TooltipProvider } from '~/components/ui/tooltip'
 import { QueryProvider } from '~/contexts'
 import { Router } from '~/Router'
