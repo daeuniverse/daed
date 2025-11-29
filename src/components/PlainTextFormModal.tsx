@@ -1,13 +1,16 @@
 import { Editor } from '@monaco-editor/react'
 import { useStore } from '@nanostores/react'
-import { X } from 'lucide-react'
 import { useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
-import { Button } from '~/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Dialog, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
+import {
+  ScrollableDialogBody,
+  ScrollableDialogContent,
+  ScrollableDialogHeader,
+} from '~/components/ui/scrollable-dialog'
 import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants'
 import { handleEditorBeforeMount } from '~/monaco'
 import { colorSchemeAtom } from '~/store'
@@ -91,47 +94,40 @@ export function PlainTextFormModal({ ref, title, opened, onClose, handleSubmit }
 
   return (
     <Dialog open={opened} onOpenChange={onClose}>
-      <DialogContent
-        showCloseButton={false}
-        className="max-w-none w-[calc(100vw-2rem)] sm:w-[90vw] sm:max-w-4xl h-[calc(100vh-2rem)] sm:h-[90vh] flex flex-col"
-      >
-        <DialogHeader className="shrink-0 flex-row items-center justify-between">
+      <ScrollableDialogContent size="full" className="h-[calc(100vh-2rem)] sm:h-[90vh]">
+        <ScrollableDialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <Button variant="ghost" size="icon" onClick={() => onClose()}>
-            <X className="h-4 w-4" />
-          </Button>
-        </DialogHeader>
+        </ScrollableDialogHeader>
 
-        <form onSubmit={handleFormSubmit} className="flex-1 flex flex-col min-h-0 overflow-hidden">
-          <div className="flex-1 flex flex-col gap-4 min-h-0 overflow-hidden">
-            <Input
-              label={t('name')}
-              withAsterisk
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              error={errors.name}
-              disabled={!!editingID}
-              className="shrink-0"
-            />
+        <ScrollableDialogBody className="flex flex-col gap-4 overflow-hidden">
+          <Input
+            label={t('name')}
+            withAsterisk
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            error={errors.name}
+            disabled={!!editingID}
+            className="shrink-0"
+          />
 
-            <div className="flex-1 flex flex-col gap-1 min-h-0 overflow-hidden">
-              <div className="flex-1 rounded overflow-hidden border min-h-[200px]">
-                <Editor
-                  height="100%"
-                  theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
-                  options={EDITOR_OPTIONS}
-                  language="routingA"
-                  value={formData.text}
-                  onChange={(value) => setFormData({ ...formData, text: value || '' })}
-                  beforeMount={handleEditorBeforeMount}
-                />
-              </div>
-
-              {errors.text && <p className="text-xs text-destructive">{errors.text}</p>}
+          <div className="flex-1 flex flex-col gap-1 min-h-0 overflow-hidden">
+            <div className="flex-1 rounded overflow-hidden border min-h-[200px]">
+              <Editor
+                height="100%"
+                theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
+                options={EDITOR_OPTIONS}
+                language="routingA"
+                value={formData.text}
+                onChange={(value) => setFormData({ ...formData, text: value || '' })}
+                beforeMount={handleEditorBeforeMount}
+              />
             </div>
 
+            {errors.text && <p className="text-xs text-destructive">{errors.text}</p>}
+          </div>
+
+          <form onSubmit={handleFormSubmit} className="shrink-0">
             <FormActions
-              className="shrink-0"
               reset={() => {
                 if (editingID && origins) {
                   setFormData(origins)
@@ -140,9 +136,9 @@ export function PlainTextFormModal({ ref, title, opened, onClose, handleSubmit }
                 }
               }}
             />
-          </div>
-        </form>
-      </DialogContent>
+          </form>
+        </ScrollableDialogBody>
+      </ScrollableDialogContent>
     </Dialog>
   )
 }

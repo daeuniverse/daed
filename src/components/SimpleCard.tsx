@@ -5,6 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import {
+  ScrollableDialogBody,
+  ScrollableDialogContent,
+  ScrollableDialogHeader,
+} from '~/components/ui/scrollable-dialog'
 import { cn } from '~/lib/utils'
 
 export function SimpleCard({
@@ -65,12 +70,12 @@ export function SimpleCard({
       </div>
 
       <Dialog open={openedDetailsModal} onOpenChange={setOpenedDetailsModal}>
-        <DialogContent>
-          <DialogHeader>
+        <ScrollableDialogContent size="lg">
+          <ScrollableDialogHeader>
             <DialogTitle>{name}</DialogTitle>
-          </DialogHeader>
-          {children}
-        </DialogContent>
+          </ScrollableDialogHeader>
+          <ScrollableDialogBody>{children}</ScrollableDialogBody>
+        </ScrollableDialogContent>
       </Dialog>
 
       <Dialog open={openedConfirmModal} onOpenChange={setOpenedConfirmModal}>
