@@ -7,7 +7,6 @@ import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import themeGithubRaw from 'monaco-themes/themes/GitHub.json?raw'
-// Import theme JSON files using Vite's raw import
 import themeGithubLightRaw from 'monaco-themes/themes/GitHub Light.json?raw'
 
 import { EDITOR_LANGUAGE_ROUTINGA } from '~/constants/editor'

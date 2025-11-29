@@ -60,7 +60,7 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean, o
           />
 
           <Tabs defaultValue="v2ray" className="w-full">
-            <TabsList className="grid w-full grid-cols-9">
+            <TabsList className="flex w-full flex-wrap gap-1 h-auto">
               <TabsTrigger value="v2ray">V2RAY</TabsTrigger>
               <TabsTrigger value="ss">SS</TabsTrigger>
               <TabsTrigger value="ssr">SSR</TabsTrigger>

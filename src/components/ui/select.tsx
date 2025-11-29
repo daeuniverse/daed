@@ -159,6 +159,9 @@ interface SimpleSelectProps {
 }
 
 function SimpleSelect({ data, value, onChange, placeholder, className, label, description }: SimpleSelectProps) {
+  // Filter out items with empty string values as they are not allowed by Radix Select
+  const filteredData = data.filter(item => item.value !== '')
+
   return (
     <div className="space-y-2">
       {label && <Label>{label}</Label>}
@@ -168,7 +171,7 @@ function SimpleSelect({ data, value, onChange, placeholder, className, label, de
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {data.map(item => (
+          {filteredData.map(item => (
             <SelectItem key={item.value} value={item.value}>
               {item.label}
             </SelectItem>

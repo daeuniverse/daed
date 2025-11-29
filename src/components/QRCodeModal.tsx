@@ -27,9 +27,10 @@ export function QRCodeModal({ ref, opened, onClose }) {
 
   useEffect(() => {
     if (copied) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setCopied(false)
       }, 500)
+      return () => clearTimeout(timer)
     }
   }, [copied])
 

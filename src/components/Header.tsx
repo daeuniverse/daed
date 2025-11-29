@@ -186,6 +186,7 @@ export function HeaderWithActions() {
           <DropdownMenu open={userMenuOpened} onOpenChange={setUserMenuOpened}>
             <DropdownMenuTrigger asChild>
               <button
+                type="button"
                 className={cn(
                   'flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-accent',
                   userMenuOpened && 'bg-accent',

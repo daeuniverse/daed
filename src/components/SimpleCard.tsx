@@ -35,6 +35,7 @@ export function SimpleCard({
         <Card withBorder shadow="sm" padding="none">
           <div className="flex items-center justify-between border-b">
             <button
+              type="button"
               className={cn('flex-1 p-3 text-left hover:bg-accent transition-colors', selected && 'bg-accent/50')}
               onClick={onSelect}
             >

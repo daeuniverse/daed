@@ -34,7 +34,7 @@ export function ImportResourceFormModal({
   handleSubmit: (values: z.infer<typeof schema>) => Promise<void>
 }) {
   const { t } = useTranslation()
-  const [resources, setResources] = useState([{ id: randomId(), link: '', tag: '' }])
+  const [resources, setResources] = useState(() => [{ id: randomId(), link: '', tag: '' }])
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleFormSubmit = async (e: React.FormEvent) => {

@@ -65,8 +65,10 @@ export function QueryProvider({ children, toggleColorScheme, colorScheme }: Quer
     [endpointURL, token],
   )
 
+  const colorSchemeContextValue = useMemo(() => ({ colorScheme, toggleColorScheme }), [colorScheme, toggleColorScheme])
+
   return (
-    <ColorSchemeContext value={{ colorScheme, toggleColorScheme }}>
+    <ColorSchemeContext value={colorSchemeContextValue}>
       <QueryClientProvider client={queryClient}>
         <GQLQueryClientProvider client={gqlClient}>{children}</GQLQueryClientProvider>
       </QueryClientProvider>

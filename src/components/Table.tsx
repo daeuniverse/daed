@@ -43,7 +43,7 @@ export function Table<Data extends Record<string, unknown>>({
   const [selectedRecords, setSelectedRecords] = useState<Data[]>([])
   const [opened, setOpened] = useState(false)
   const [removing, setRemoving] = useState(false)
-  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set())
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(() => new Set())
 
   const toggleRowSelection = (record: Data, index: number) => {
     if (isRecordSelectable && !isRecordSelectable(record, index))
