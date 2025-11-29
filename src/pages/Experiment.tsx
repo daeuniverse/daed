@@ -1,7 +1,7 @@
 import type { UniqueIdentifier } from '@dnd-kit/core'
 import type { RenameFormModalRef } from '~/components'
 import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { restrictToParentElement } from '@dnd-kit/modifiers'
+import { restrictToParentElement, snapCenterToCursor } from '@dnd-kit/modifiers'
 import { arrayMove, rectSwappingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { faker } from '@faker-js/faker'
 import Editor from '@monaco-editor/react'
@@ -613,7 +613,7 @@ export function ExperimentPage() {
             </div>
           </Section>
 
-          <DragOverlay zIndex={9999}>
+          <DragOverlay zIndex={9999} modifiers={[snapCenterToCursor]}>
             {draggingResource ? (
               <Badge className="cursor-grabbing shadow-lg text-sm px-3 py-1">
                 <span className="truncate">

@@ -1,6 +1,7 @@
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import type { DraggingResource } from '~/constants'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { snapCenterToCursor } from '@dnd-kit/modifiers'
 import { useMemo, useRef, useState } from 'react'
 
 import {
@@ -146,9 +147,9 @@ export function OrchestratePage() {
           <NodeResource />
           <SubscriptionResource />
 
-          <DragOverlay zIndex={9999}>
+          <DragOverlay zIndex={9999} modifiers={[snapCenterToCursor]}>
             {draggingResource && (
-              <Badge className="cursor-grabbing shadow-lg pr-1 flex items-center gap-1">
+              <Badge className="cursor-grabbing shadow-lg text-sm px-3 py-1">
                 <span className="truncate max-w-[150px]">{draggingResourceDisplayName}</span>
               </Badge>
             )}
