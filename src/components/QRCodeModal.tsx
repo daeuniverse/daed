@@ -3,7 +3,6 @@ import { QRCodeCanvas } from 'qrcode.react'
 import { useEffect, useImperativeHandle, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 
@@ -53,14 +52,16 @@ export function QRCodeModal({
         <DialogHeader>
           <DialogTitle>{props.name}</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col items-center justify-center gap-4 py-4 mx-auto">
+        <div className="flex flex-col items-center justify-center gap-4 py-4 mx-auto w-full">
           <QRCodeCanvas size={240} value={props.link} />
 
-          <div className="flex items-center gap-2">
-            <Badge className="max-w-60 truncate text-base px-3 py-1">{props.link}</Badge>
+          <div className="flex items-start gap-2 w-full max-w-full">
+            <div className="flex-1 min-w-0 p-3 bg-muted rounded-md">
+              <p className="text-sm font-mono break-all whitespace-pre-wrap">{props.link}</p>
+            </div>
 
             <CopyToClipboard text={props.link} onCopy={() => setCopied(true)}>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="shrink-0">
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </CopyToClipboard>
