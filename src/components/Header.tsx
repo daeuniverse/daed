@@ -38,7 +38,7 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
-import { Sheet, SheetContent } from '~/components/ui/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '~/components/ui/sheet'
 import { Switch } from '~/components/ui/switch'
 import { SimpleTooltip } from '~/components/ui/tooltip'
 import { useColorScheme } from '~/contexts'
@@ -167,7 +167,7 @@ export function HeaderWithActions() {
 
   return (
     <header className="sticky top-0 z-50 h-[60px] border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 flex items-center shadow-sm">
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="container mx-auto px-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80">
             <img src="/logo.webp" alt="daed" className="w-8 h-8 rounded-sm" />
@@ -302,13 +302,20 @@ export function HeaderWithActions() {
 
       <Sheet open={openedBurger} onOpenChange={closeBurger}>
         <SheetContent side="right" size="full">
-          <div className="grid grid-cols-3 gap-4 mt-8">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Menu</SheetTitle>
+          </SheetHeader>
+          <div className="flex flex-col gap-3 px-4 mt-8">
             <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
-              <Button className="w-full uppercase">Github</Button>
+              <Button variant="outline" className="w-full justify-start gap-3">
+                <Github className="h-5 w-5" />
+                GitHub
+              </Button>
             </a>
 
             <Button
-              className="w-full uppercase"
+              variant="outline"
+              className="w-full justify-start gap-3"
               onClick={() => {
                 if (i18n.language.startsWith('zh')) {
                   i18n.changeLanguage('en')
@@ -317,10 +324,12 @@ export function HeaderWithActions() {
                 }
               }}
             >
+              <Languages className="h-5 w-5" />
               {t('actions.switchLanguage')}
             </Button>
 
-            <Button className="w-full uppercase" onClick={() => toggleColorScheme()}>
+            <Button variant="outline" className="w-full justify-start gap-3" onClick={() => toggleColorScheme()}>
+              {colorScheme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               {t('actions.switchTheme')}
             </Button>
           </div>

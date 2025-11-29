@@ -27,7 +27,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll": "always"
+    "source.fixAll": "always",
+    "source.organizeImports": "never"
   },
   "editor.formatOnSave": true
 }
