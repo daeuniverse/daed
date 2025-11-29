@@ -1,49 +1,78 @@
-## How to run and build this project manually
+# Build from Source
 
-### Prerequisites
+This guide covers how to build daed from source code.
 
-- nodejs
-- golang
-- clang
-- make
-- pnpm
+---
 
-### Bootstrap
+## 📋 Prerequisites
 
-The following command will bootstrap the stack (`daed`, `dae-wing`, and `dae`) altogether.
+| Tool                                       | Version | Required |
+| ------------------------------------------ | ------- | -------- |
+| [Node.js](https://nodejs.org/)             | >= 20   | ✅       |
+| [pnpm](https://pnpm.io/)                   | >= 9    | ✅       |
+| [Go](https://go.dev/)                      | >= 1.22 | ✅       |
+| [Clang](https://clang.llvm.org/)           | >= 15   | ✅       |
+| [LLVM](https://llvm.org/)                  | >= 15   | ✅       |
+| [Make](https://www.gnu.org/software/make/) | Latest  | ✅       |
+
+---
+
+## 🚀 Quick Build
+
+The following command bootstraps the full stack (`daed` + `dae-wing` + `dae`):
 
 ```bash
 make
 ```
 
-### Advanced use case (Dev ONLY)
+This will:
 
-> **Warning**: If you do NOT plan to use custom `Graphql` schema, please ignore this part.
+1. Install frontend dependencies
+2. Build the frontend assets
+3. Compile the Go backend with embedded frontend
+4. Output the `daed` binary
 
-> **Note**: By default, Graphql type definitions and api bindings are generated automatically on the fly.
-> However, if you would like to configure new `schema` for Graphql, use environment variable `SCHEMA_PATH` to specify your schema endpoint
-> It can be a `url` starts with http(s) pointing to graphql endpoint or a static graphql schema file
-> Optionally, append `-w` or `--watch` at the end of the command to watch upcoming changes
+---
+
+## 🛠️ Advanced: Custom GraphQL Schema
+
+> ⚠️ **For Development Only** — Skip this if you're not modifying the GraphQL schema.
+
+By default, GraphQL type definitions and API bindings are generated automatically. To use a custom schema:
 
 ```bash
-# e.g.
-# SCHEMA_PATH=http(s)://example.com/graphql pnpm codegen
-# SCHEMA_PATH=http(s)://example.com/graphql.schema pnpm codegen
+# From a GraphQL endpoint
+SCHEMA_PATH=https://example.com/graphql pnpm codegen
 
-SCHEMA_PATH=/path/to/SCHEMA_PATH pnpm codegen --watch
+# From a local schema file
+SCHEMA_PATH=/path/to/schema.graphql pnpm codegen
+
+# Watch mode for development
+SCHEMA_PATH=/path/to/schema.graphql pnpm codegen --watch
 ```
 
-### Spin up server locally
+---
+
+## ▶️ Run the Binary
 
 ```bash
+# Make executable and install
 sudo chmod +x ./daed
 sudo install -Dm755 daed /usr/bin/
+
+# Run daed
 sudo daed run
 
-# helper
-sudo daed [-h,--help]
+# Show help
+daed --help
 ```
 
-If everything goes well, open your browser and navigate to `http://localhost:2023`
+---
 
-Happy Hacking!
+## 🎉 Access the Dashboard
+
+Once running, open your browser:
+
+**👉 http://localhost:2023**
+
+Happy Hacking! 🚀

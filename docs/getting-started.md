@@ -1,157 +1,136 @@
 # Quick Start Guide
 
-> **Note**
-> `daed` (UI component) is bundled with [dae-wing](https://github.com/daeuniverse/dae-wing) (backend API server) and [dae](https://github.com/daeuniverse/dae) (core).
+> **Note:** `daed` bundles [dae-wing](https://github.com/daeuniverse/dae-wing) (backend API) and [dae](https://github.com/daeuniverse/dae) (eBPF core) into a single binary.
 
-## How to run
+---
 
-> **Note**
+## ⚠️ Important Notice
+
+> **Warning:** Network connectivity issues may occur if the system sleeps/hibernates or switches networks while the proxy is active.
 >
-> - NEVER LET YOUR COMPUTER SLEEP OR HIBIRNATE WHILE PROXY IS STILL ON!
-> - NEVER SWITCH NETWORK WHILE PROXY IS STILL ON!
-> - TURN IT OFF BEFORE YOU MOVE OR LEAVE YOUR COMPUTER!
-> - OR YOU WILL HAVE POSSIBILITY TO NEED A REBOOT TO RECOVER YOUR NETWORK CONNECTIVITY!
+> Always **stop the proxy** before:
+>
+> - Putting your computer to sleep or hibernate
+> - Switching between Wi-Fi networks
+> - Disconnecting from the network
+>
+> If you experience network issues, a system reboot may be required to restore connectivity.
 
-### Download pre-compiled binaries
+---
 
-Releases are available in <https://github.com/daeuniverse/daed/releases>
+## 📦 Installation
 
-> **Note**
-> If you would like to get a taste of new features, there are `PR Builds` available. Most of the time, newly proposed changes will be included in `PRs` and will be exported as cross-platform executable binaries in builds (GitHub Action Workflow Build). Noted that newly introduced features are sometimes buggy, do it at your own risk. However, we still highly encourage you to check out our latest builds as it may help us further analyze features stability and resolve potential bugs accordingly.
+### Download Pre-built Binaries
 
-PR-builds are available in <https://github.com/daeuniverse/daed/actions/workflows/pr-build.yml>
+Download the latest release for your platform:
 
-### Spin up server locally
+**👉 [GitHub Releases](https://github.com/daeuniverse/daed/releases)**
+
+> 💡 **Tip:** Want to try new features? Check out [PR Builds](https://github.com/daeuniverse/daed/actions/workflows/pr-build.yml) for the latest development builds. Note that these may be unstable.
+
+### Quick Install (Manual)
 
 ```bash
+# Make executable and install
 sudo chmod +x ./daed
 sudo install -Dm755 daed /usr/bin/
+
+# Run daed
 sudo daed run
 
-# helper
-sudo daed [-h,--help]
+# Show help
+daed --help
 ```
+
+---
+
+## 🐧 Linux Distribution Packages
 
 ### Debian / Ubuntu
 
-Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
-
-```shell
-# Download
+```bash
+# Download the latest .deb package
 wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).deb
 
-# install
+# Install
 sudo dpkg -i /tmp/installer-daed-linux-$(arch).deb
-rm /tmp/installer-daed-linux-$(arch).deb
 
-# Start daed
-sudo systemctl start daed
-
-# enable daed start automatically
-sudo systemctl enable daed
+# Start and enable service
+sudo systemctl enable --now daed
 ```
 
-### Red Hat / Fedora
+### Fedora / Red Hat
 
-#### Fedora Copr
+#### Option 1: Fedora Copr (Recommended)
 
-daed has been released on [Fedora Copr](https://copr.fedorainfracloud.org/coprs/zhullyb/v2rayA/package/daed).
-
-```shell
+```bash
 sudo dnf copr enable zhullyb/v2rayA
 sudo dnf install daed
 ```
 
-#### RPM Installation
+#### Option 2: RPM Package
 
-Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
-
-```shell
-# Download
+```bash
+# Download the latest .rpm package
 wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).rpm
 
-# install
+# Install
 sudo rpm -ivh /tmp/installer-daed-linux-$(arch).rpm
-rm /tmp/installer-daed-linux-$(arch).rpm
 
-# Start daed
-sudo systemctl start daed
-
-# enable daed start automatically
-sudo systemctl enable daed
+# Start and enable service
+sudo systemctl enable --now daed
 ```
 
 ### openSUSE
 
-Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command gets the latest version of the precompiled installation package consistent with your current system architecture
-
-```shell
-# Download
+```bash
+# Download the latest .rpm package
 wget -P /tmp https://github.com/daeuniverse/daed/releases/latest/download/installer-daed-linux-$(arch).rpm
 
-# install
+# Install
 sudo zypper install /tmp/installer-daed-linux-$(arch).rpm
-rm /tmp/installer-daed-linux-$(arch).rpm
 
-# Start daed
-sudo systemctl start daed
-
-# enable daed start automatically
-sudo systemctl enable daed
+# Start and enable service
+sudo systemctl enable --now daed
 ```
 
 ### Arch Linux
 
-Releases are available in <https://github.com/daeuniverse/daed/releases> or the following command installs the latest version of the precompiled installation package consistent with your current system architecture
-
 #### AUR
 
-##### Latest Release (Optimized Binary for x86-64 v3 / AVX2)
-
-```shell
-[yay/paru] -S daed-avx2-bin
-```
-
-##### Latest Release (General x86-64 or aarch64)
-
-```shell
-[yay/paru] -S daed
-```
-
-##### Latest Git Version
-
-```shell
-[yay/paru] -S daed-git
-```
+| Package         | Description                       | Command                 |
+| --------------- | --------------------------------- | ----------------------- |
+| `daed`          | Latest release (x86-64 / aarch64) | `paru -S daed`          |
+| `daed-avx2-bin` | Optimized for x86-64 v3 / AVX2    | `paru -S daed-avx2-bin` |
+| `daed-git`      | Latest git version                | `paru -S daed-git`      |
 
 #### archlinuxcn
 
-##### Latest Release (Optimized Binary for x86-64 v3 / AVX2)
-
-```shell
-sudo pacman -S daed-avx2-bin
-```
-
-##### Latest Release (General x86-64 or aarch64)
-
-```shell
+```bash
+# Standard version
 sudo pacman -S daed
-```
 
-##### Latest Git Version
+# AVX2 optimized version
+sudo pacman -S daed-avx2-bin
 
-```shell
+# Git version
 sudo pacman -S daed-git
 ```
 
-### Docker (Experimental)
+---
 
-Pre-built Docker images are available in `ghcr.io/daeuniverse/daed`, `quay.io/daeuniverse/daed` and `daeuniverse/daed`.
+## 🐳 Docker
 
-#### Take `ghcr.io` for example, the command below pulls and runs the latest image
+Pre-built images are available at:
 
-```shell
-sudo docker run -d \
+- `ghcr.io/daeuniverse/daed`
+- `quay.io/daeuniverse/daed`
+- `daeuniverse/daed`
+
+### Docker Run
+
+```bash
+docker run -d \
     --privileged \
     --network=host \
     --pid=host \
@@ -162,37 +141,42 @@ sudo docker run -d \
     ghcr.io/daeuniverse/daed:latest
 ```
 
-#### You may also build from source:
+### Docker Compose
 
-```shell
-# clone the repository
-git clone https://github.com/daeuniverse/daed --recursive
-
-# build the image
-docker build -t daed .
-
-# run the container
-sudo docker run -d \
-    --privileged \
-    --network=host \
-    --pid=host \
-    --restart=unless-stopped \
-    -v /sys:/sys \
-    -v /etc/daed:/etc/daed \
-    --name=daed \
-    daed
+```yaml
+# docker-compose.yml
+services:
+  daed:
+    image: ghcr.io/daeuniverse/daed:latest
+    container_name: daed
+    privileged: true
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /sys:/sys
+      - /etc/daed:/etc/daed
 ```
 
-> **NOTE**
->
-> - Docker currently supports only i386(x86-32), amd64(x86-64), armv7 and arm64(armv8). (Alpha)
-> - Only amd64 is tested working as expected, but not fully tested yet. (Beta)
-> - For self build from source, only amd64 and arm64 will run.
-> - Please refer to https://github.com/daeuniverse/daed/discussions/291 and relevant PRs and Issues for details
-> - Volunteers are welcomed.
+```bash
+docker compose up -d
+```
 
-## Access Panel
+### Build from Source
 
-If everything goes well, open your browser and navigate to `http://localhost:2023`
+```bash
+git clone https://github.com/daeuniverse/daed --recursive
+docker build -t daed .
+```
 
-Happy Hacking!
+> **Note:** Docker support is currently available for i386, amd64, armv7, and arm64 architectures. See [discussion #291](https://github.com/daeuniverse/daed/discussions/291) for details.
+
+---
+
+## 🎉 Access the Dashboard
+
+Once daed is running, open your browser and navigate to:
+
+**👉 http://localhost:2023**
+
+Happy Hacking! 🚀
