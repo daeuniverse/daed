@@ -94,7 +94,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.19",
-    "embla-carousel-react": "8.0.0-rc14",
+    "embla-carousel-react": "8.6.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
