@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.15.0](https://github.com/daeuniverse/daed/compare/v0.14.0...v0.15.0) (2025-11-29)
+
+
+### Features
+
+* add sortable components for nodes and subscriptions ([f98f784](https://github.com/daeuniverse/daed/commit/f98f784008953eaa82bf4a8d9529fa06b722f4e8))
+* enhance draggable components with grip handles ([77552d7](https://github.com/daeuniverse/daed/commit/77552d71f2744bdab653a71f50213f1c4ba0d89b))
+* **monaco:** integrate Shiki for enhanced syntax highlighting and theme support ([02510f9](https://github.com/daeuniverse/daed/commit/02510f915921faa6a77e2082f92e2ba42f609cc6))
+
 ## [0.14.0](https://github.com/daeuniverse/daed/compare/v0.13.0...v0.14.0) (2025-11-29)
 
 
