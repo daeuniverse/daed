@@ -1,4 +1,4 @@
-FROM node:alpine as build-web
+FROM node:alpine AS build-web
 
 WORKDIR /build
 
@@ -11,7 +11,7 @@ RUN pnpm build
 
 
 
-FROM golang:1.21-bookworm as build-bundle
+FROM golang:1.22-bookworm AS build-bundle
 
 RUN \
     apt-get update; apt-get install -y git make llvm-15 clang-15; \

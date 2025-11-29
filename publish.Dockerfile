@@ -2,7 +2,7 @@
 
 ARG DAED_VERSION
 
-FROM golang:1.22-bookworm as build
+FROM golang:1.22-bookworm AS build
 
 RUN \
     apt-get update; apt-get install -y git make llvm-15 clang-15; \
@@ -23,7 +23,7 @@ WORKDIR /build/wing
 RUN make APPNAME=daed VERSION=$DAED_VERSION OUTPUT=daed WEB_DIST=/build/web/ bundle
 
 
-FROM alpine as prod
+FROM alpine AS prod
 
 LABEL org.opencontainers.image.source=https://github.com/daeuniverse/daed
 
