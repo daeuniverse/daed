@@ -1,7 +1,4 @@
 import type { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -9,49 +6,38 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_JUICITY_FORM_VALUES, juicitySchema } from '~/constants'
-import { useSetValue } from '~/hooks/useSetValue'
-import { generateURL } from '~/utils'
+import { useNodeForm } from '~/hooks'
+import { generateURL, parseJuicityUrl } from '~/utils'
 
 type FormValues = z.infer<typeof juicitySchema>
 
-export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
-  const { t } = useTranslation()
-
-  const {
-    handleSubmit,
-    setValue: setValueOriginal,
-    reset,
-    control,
-    formState: { isDirty, errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(juicitySchema),
-    defaultValues: DEFAULT_JUICITY_FORM_VALUES,
-    mode: 'onChange',
-  })
-
-  const setValue = useSetValue(setValueOriginal)
-  const formValues = useWatch({ control })
-
-  const onSubmit = (data: FormValues) => {
-    const query = {
-      congestion_control: data.congestion_control,
-      pinned_certchain_sha256: data.pinned_certchain_sha256,
-      sni: data.sni,
-      allow_insecure: data.allowInsecure,
-    }
-
-    return onLinkGeneration(
-      generateURL({
-        protocol: 'juicity',
-        username: data.uuid,
-        password: data.password,
-        host: data.server,
-        port: data.port,
-        hash: data.name,
-        params: query,
-      }),
-    )
+function generateJuicityLink(data: FormValues): string {
+  const query = {
+    congestion_control: data.congestion_control,
+    pinned_certchain_sha256: data.pinned_certchain_sha256,
+    sni: data.sni,
+    allow_insecure: data.allowInsecure,
   }
+
+  return generateURL({
+    protocol: 'juicity',
+    username: data.uuid,
+    password: data.password,
+    host: data.server,
+    port: data.port,
+    hash: data.name,
+    params: query,
+  })
+}
+
+export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+    schema: juicitySchema,
+    defaultValues: DEFAULT_JUICITY_FORM_VALUES,
+    onLinkGeneration,
+    generateLink: generateJuicityLink,
+    parseLink: parseJuicityUrl,
+  })
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -111,7 +97,7 @@ export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: str
         onCheckedChange={(checked) => setValue('allowInsecure', !!checked)}
       />
 
-      <FormActions reset={() => reset(DEFAULT_JUICITY_FORM_VALUES)} isDirty={isDirty} errors={errors} />
+      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
     </form>
   )
 }

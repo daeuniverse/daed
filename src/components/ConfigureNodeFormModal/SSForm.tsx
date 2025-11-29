@@ -1,89 +1,78 @@
 import type { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Base64 } from 'js-base64'
-import { useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import { FormActions } from '~/components/FormActions'
 import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_SS_FORM_VALUES, ssSchema } from '~/constants'
-import { useSetValue } from '~/hooks/useSetValue'
+import { useNodeForm } from '~/hooks'
+import { parseSSUrl } from '~/utils'
 
 type FormValues = z.infer<typeof ssSchema>
 
-export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
-  const { t } = useTranslation()
+function generateSSLink(data: FormValues): string {
+  /* ss://BASE64(method:password)@server:port#name */
+  let link = `ss://${Base64.encode(`${data.method}:${data.password}`)}@${data.server}:${data.port}/`
 
-  const {
-    handleSubmit,
-    setValue: setValueOriginal,
-    reset,
-    control,
-    formState: { isDirty, errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(ssSchema),
-    defaultValues: DEFAULT_SS_FORM_VALUES,
-    mode: 'onChange',
-  })
+  if (data.plugin) {
+    const plugin: string[] = [data.plugin]
 
-  const setValue = useSetValue(setValueOriginal)
-  const formValues = useWatch({ control })
-
-  const onSubmit = (data: FormValues) => {
-    /* ss://BASE64(method:password)@server:port#name */
-    let link = `ss://${Base64.encode(`${data.method}:${data.password}`)}@${data.server}:${data.port}/`
-
-    if (data.plugin) {
-      const plugin: string[] = [data.plugin]
-
-      if (data.plugin === 'v2ray-plugin') {
-        if (data.tls) {
-          plugin.push('tls')
-        }
-
-        if (data.mode !== 'websocket') {
-          plugin.push(`mode=${data.mode}`)
-        }
-
-        if (data.host) {
-          plugin.push(`host=${data.host}`)
-        }
-
-        let path = data.path
-
-        if (path) {
-          if (!path.startsWith('/')) {
-            path = `/${path}`
-          }
-
-          plugin.push(`path=${path}`)
-        }
-
-        if (data.impl) {
-          plugin.push(`impl=${data.impl}`)
-        }
-      } else {
-        plugin.push(`obfs=${data.obfs}`)
-        plugin.push(`obfs-host=${data.host}`)
-
-        if (data.obfs === 'http') {
-          plugin.push(`obfs-path=${data.path}`)
-        }
-
-        if (data.impl) {
-          plugin.push(`impl=${data.impl}`)
-        }
+    if (data.plugin === 'v2ray-plugin') {
+      if (data.tls) {
+        plugin.push('tls')
       }
 
-      link += `?plugin=${encodeURIComponent(plugin.join(';'))}`
+      if (data.mode !== 'websocket') {
+        plugin.push(`mode=${data.mode}`)
+      }
+
+      if (data.host) {
+        plugin.push(`host=${data.host}`)
+      }
+
+      let path = data.path
+
+      if (path) {
+        if (!path.startsWith('/')) {
+          path = `/${path}`
+        }
+
+        plugin.push(`path=${path}`)
+      }
+
+      if (data.impl) {
+        plugin.push(`impl=${data.impl}`)
+      }
+    } else {
+      plugin.push(`obfs=${data.obfs}`)
+      plugin.push(`obfs-host=${data.host}`)
+
+      if (data.obfs === 'http') {
+        plugin.push(`obfs-path=${data.path}`)
+      }
+
+      if (data.impl) {
+        plugin.push(`impl=${data.impl}`)
+      }
     }
 
-    link += data.name.length ? `#${encodeURIComponent(data.name)}` : ''
-
-    return onLinkGeneration(link)
+    link += `?plugin=${encodeURIComponent(plugin.join(';'))}`
   }
+
+  link += data.name.length ? `#${encodeURIComponent(data.name)}` : ''
+
+  return link
+}
+
+export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+    schema: ssSchema,
+    defaultValues: DEFAULT_SS_FORM_VALUES,
+    onLinkGeneration,
+    generateLink: generateSSLink,
+    parseLink: parseSSUrl,
+  })
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -198,7 +187,7 @@ export function SSForm({ onLinkGeneration }: { onLinkGeneration: (link: string) 
         <Input label="Path" value={formValues.path} onChange={(e) => setValue('path', e.target.value)} />
       )}
 
-      <FormActions reset={() => reset(DEFAULT_SS_FORM_VALUES)} isDirty={isDirty} errors={errors} />
+      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
     </form>
   )
 }

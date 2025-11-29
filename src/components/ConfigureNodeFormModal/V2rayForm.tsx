@@ -1,7 +1,4 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Base64 } from 'js-base64'
-import { useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
@@ -10,8 +7,8 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_V2RAY_FORM_VALUES, v2raySchema } from '~/constants'
-import { useSetValue } from '~/hooks/useSetValue'
-import { generateURL } from '~/utils'
+import { useNodeForm } from '~/hooks'
+import { generateURL, parseV2rayUrl } from '~/utils'
 
 const formSchema = v2raySchema.extend({
   protocol: z.enum(['vmess', 'vless']),
@@ -24,89 +21,80 @@ const defaultValues: FormValues = {
   ...DEFAULT_V2RAY_FORM_VALUES,
 }
 
-export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
-  const { t } = useTranslation()
+function generateV2rayLink(data: FormValues): string {
+  const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = data
 
-  const {
-    handleSubmit,
-    setValue: setValueOriginal,
-    reset,
-    control,
-    formState: { isDirty, errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues,
-    mode: 'onChange',
-  })
-
-  const setValue = useSetValue(setValueOriginal)
-  const formValues = useWatch({ control })
-
-  const onSubmit = (data: FormValues) => {
-    const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = data
-
-    if (protocol === 'vless') {
-      const params: Record<string, unknown> = {
-        type: net,
-        security: tls,
-        path,
-        host,
-        headerType: type,
-        sni,
-        flow,
-        allowInsecure,
-      }
-
-      if (alpn !== '') params.alpn = alpn
-
-      if (net === 'grpc') params.serviceName = path
-
-      if (net === 'kcp') params.seed = path
-
-      return onLinkGeneration(
-        generateURL({
-          protocol,
-          username: id,
-          host: add,
-          port,
-          hash: ps,
-          params,
-        }),
-      )
+  if (protocol === 'vless') {
+    const params: Record<string, unknown> = {
+      type: net,
+      security: tls,
+      path,
+      host,
+      headerType: type,
+      sni,
+      flow,
+      allowInsecure,
     }
 
-    if (protocol === 'vmess') {
-      const body: Record<string, unknown> = structuredClone(data)
+    if (alpn !== '') params.alpn = alpn
 
-      switch (net) {
-        case 'kcp':
-        case 'tcp':
-        default:
-          body.type = ''
-      }
+    if (net === 'grpc') params.serviceName = path
 
-      switch (body.net) {
-        case 'ws':
-          // No operation, skip
-          break
-        case 'h2':
-        case 'grpc':
-        case 'kcp':
-        default:
-          if (body.net === 'tcp' && body.type === 'http') {
-            break
-          }
+    if (net === 'kcp') params.seed = path
 
-          body.path = ''
-      }
-
-      if (!(body.protocol === 'vless' && body.tls === 'xtls')) {
-        delete body.flow
-      }
-
-      return onLinkGeneration(`vmess://${Base64.encode(JSON.stringify(body))}`)
-    }
+    return generateURL({
+      protocol,
+      username: id,
+      host: add,
+      port,
+      hash: ps,
+      params,
+    })
   }
+
+  if (protocol === 'vmess') {
+    const body: Record<string, unknown> = structuredClone(data)
+
+    switch (net) {
+      case 'kcp':
+      case 'tcp':
+      default:
+        body.type = ''
+    }
+
+    switch (body.net) {
+      case 'ws':
+        // No operation, skip
+        break
+      case 'h2':
+      case 'grpc':
+      case 'kcp':
+      default:
+        if (body.net === 'tcp' && body.type === 'http') {
+          break
+        }
+
+        body.path = ''
+    }
+
+    if (!(body.protocol === 'vless' && body.tls === 'xtls')) {
+      delete body.flow
+    }
+
+    return `vmess://${Base64.encode(JSON.stringify(body))}`
+  }
+
+  return ''
+}
+
+export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+    schema: formSchema,
+    defaultValues,
+    onLinkGeneration,
+    generateLink: generateV2rayLink,
+    parseLink: parseV2rayUrl,
+  })
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -276,7 +264,7 @@ export function V2rayForm({ onLinkGeneration }: { onLinkGeneration: (link: strin
         <Input label="ServiceName" value={formValues.path} onChange={(e) => setValue('path', e.target.value)} />
       )}
 
-      <FormActions reset={() => reset(defaultValues)} isDirty={isDirty} errors={errors} />
+      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
     </form>
   )
 }

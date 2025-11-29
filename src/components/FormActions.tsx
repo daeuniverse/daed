@@ -24,15 +24,16 @@ export function FormActions<T extends FieldValues = FieldValues>({
   loading,
   reset,
   isDirty = true,
-  isValid: isValidProp = true,
+  isValid: isValidProp,
   errors,
   requireDirty = true,
 }: FormActionsProps<T>) {
   const { t } = useTranslation()
 
-  // Compute isValid from errors if provided, otherwise use isValid prop
-  // This fixes react-hook-form + zod resolver sync issues
-  const isValid = errors ? Object.keys(errors).length === 0 : isValidProp
+  // Priority: use isValid prop if explicitly provided (from react-hook-form's formState)
+  // Fallback to computing from errors if isValid is not provided
+  // Default to true only if neither is provided (backwards compatibility)
+  const isValid = isValidProp !== undefined ? isValidProp : errors ? Object.keys(errors).length === 0 : true
 
   const isResetDisabled = !isDirty
   const isSubmitDisabled = (requireDirty && !isDirty) || !isValid

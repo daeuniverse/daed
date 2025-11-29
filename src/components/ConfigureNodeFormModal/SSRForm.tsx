@@ -1,48 +1,35 @@
 import type { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Base64 } from 'js-base64'
-import { useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import { FormActions } from '~/components/FormActions'
 import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_SSR_FORM_VALUES, ssrSchema } from '~/constants'
-import { useSetValue } from '~/hooks/useSetValue'
+import { useNodeForm } from '~/hooks'
+import { parseSSRUrl } from '~/utils'
 
 type FormValues = z.infer<typeof ssrSchema>
 
+function generateSSRLink(data: FormValues): string {
+  /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
+  return `ssr://${Base64.encode(
+    `${data.server}:${data.port}:${data.proto}:${data.method}:${data.obfs}:${Base64.encodeURI(
+      data.password,
+    )}/?remarks=${Base64.encodeURI(data.name)}&protoparam=${Base64.encodeURI(
+      data.protoParam,
+    )}&obfsparam=${Base64.encodeURI(data.obfsParam)}`,
+  )}`
+}
+
 export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
-  const { t } = useTranslation()
-
-  const {
-    handleSubmit,
-    setValue: setValueOriginal,
-    reset,
-    control,
-    formState: { isDirty, errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(ssrSchema),
+  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+    schema: ssrSchema,
     defaultValues: DEFAULT_SSR_FORM_VALUES,
-    mode: 'onChange',
+    onLinkGeneration,
+    generateLink: generateSSRLink,
+    parseLink: parseSSRUrl,
   })
-
-  const setValue = useSetValue(setValueOriginal)
-  const formValues = useWatch({ control })
-
-  const onSubmit = (data: FormValues) => {
-    /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
-    return onLinkGeneration(
-      `ssr://${Base64.encode(
-        `${data.server}:${data.port}:${data.proto}:${data.method}:${data.obfs}:${Base64.encodeURI(
-          data.password,
-        )}/?remarks=${Base64.encodeURI(data.name)}&protoparam=${Base64.encodeURI(
-          data.protoParam,
-        )}&obfsparam=${Base64.encodeURI(data.obfsParam)}`,
-      )}`,
-    )
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -153,7 +140,7 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
         />
       )}
 
-      <FormActions reset={() => reset(DEFAULT_SSR_FORM_VALUES)} isDirty={isDirty} errors={errors} />
+      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
     </form>
   )
 }

@@ -1,7 +1,4 @@
 import type { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -9,67 +6,56 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_TROJAN_FORM_VALUES, trojanSchema } from '~/constants'
-import { useSetValue } from '~/hooks/useSetValue'
-import { generateURL } from '~/utils'
+import { useNodeForm } from '~/hooks'
+import { generateURL, parseTrojanUrl } from '~/utils'
 
 type FormValues = z.infer<typeof trojanSchema>
 
-export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
-  const { t } = useTranslation()
-
-  const {
-    handleSubmit,
-    setValue: setValueOriginal,
-    reset,
-    control,
-    formState: { isDirty, errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(trojanSchema),
-    defaultValues: DEFAULT_TROJAN_FORM_VALUES,
-    mode: 'onChange',
-  })
-
-  const setValue = useSetValue(setValueOriginal)
-  const formValues = useWatch({ control })
-
-  const onSubmit = (data: FormValues) => {
-    const query: Record<string, unknown> = {
-      allowInsecure: data.allowInsecure,
-    }
-
-    if (data.peer !== '') {
-      query.sni = data.peer
-    }
-
-    let protocol = 'trojan'
-
-    if (data.method !== 'origin' || data.obfs !== 'none') {
-      protocol = 'trojan-go'
-      query.type = data.obfs === 'none' ? 'original' : 'ws'
-
-      if (data.method === 'shadowsocks') {
-        query.encryption = `ss;${data.ssCipher};${data.ssPassword}`
-      }
-
-      if (query.type === 'ws') {
-        query.host = data.host || ''
-        query.path = data.path || '/'
-      }
-
-      delete query.allowInsecure
-    }
-
-    return onLinkGeneration(
-      generateURL({
-        protocol,
-        username: data.password,
-        host: data.server,
-        port: data.port,
-        hash: data.name,
-        params: query,
-      }),
-    )
+function generateTrojanLink(data: FormValues): string {
+  const query: Record<string, unknown> = {
+    allowInsecure: data.allowInsecure,
   }
+
+  if (data.peer !== '') {
+    query.sni = data.peer
+  }
+
+  let protocol = 'trojan'
+
+  if (data.method !== 'origin' || data.obfs !== 'none') {
+    protocol = 'trojan-go'
+    query.type = data.obfs === 'none' ? 'original' : 'ws'
+
+    if (data.method === 'shadowsocks') {
+      query.encryption = `ss;${data.ssCipher};${data.ssPassword}`
+    }
+
+    if (query.type === 'ws') {
+      query.host = data.host || ''
+      query.path = data.path || '/'
+    }
+
+    delete query.allowInsecure
+  }
+
+  return generateURL({
+    protocol,
+    username: data.password,
+    host: data.server,
+    port: data.port,
+    hash: data.name,
+    params: query,
+  })
+}
+
+export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+    schema: trojanSchema,
+    defaultValues: DEFAULT_TROJAN_FORM_VALUES,
+    onLinkGeneration,
+    generateLink: generateTrojanLink,
+    parseLink: parseTrojanUrl,
+  })
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -172,7 +158,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
         />
       )}
 
-      <FormActions reset={() => reset(DEFAULT_TROJAN_FORM_VALUES)} isDirty={isDirty} errors={errors} />
+      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
     </form>
   )
 }

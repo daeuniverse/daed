@@ -1,7 +1,4 @@
 import type { GenerateURLParams } from '~/utils'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
@@ -9,8 +6,8 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_HTTP_FORM_VALUES, httpSchema } from '~/constants'
-import { useSetValue } from '~/hooks/useSetValue'
-import { generateURL } from '~/utils'
+import { useNodeForm } from '~/hooks'
+import { generateURL, parseHTTPUrl } from '~/utils'
 
 const formSchema = httpSchema.extend({
   protocol: z.enum(['http', 'https']),
@@ -23,41 +20,32 @@ const defaultValues: FormValues = {
   ...DEFAULT_HTTP_FORM_VALUES,
 }
 
-export function HTTPForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
-  const { t } = useTranslation()
-
-  const {
-    handleSubmit,
-    setValue: setValueOriginal,
-    reset,
-    control,
-    formState: { isDirty, errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues,
-    mode: 'onChange',
-  })
-
-  const setValue = useSetValue(setValueOriginal)
-  const formValues = useWatch({ control })
-
-  const onSubmit = (data: FormValues) => {
-    const generateURLParams: GenerateURLParams = {
-      protocol: data.protocol,
-      host: data.host,
-      port: data.port,
-      hash: data.name,
-    }
-
-    if (data.username && data.password) {
-      Object.assign(generateURLParams, {
-        username: data.username,
-        password: data.password,
-      })
-    }
-
-    return onLinkGeneration(generateURL(generateURLParams))
+function generateHTTPLink(data: FormValues): string {
+  const generateURLParams: GenerateURLParams = {
+    protocol: data.protocol,
+    host: data.host,
+    port: data.port,
+    hash: data.name,
   }
+
+  if (data.username && data.password) {
+    Object.assign(generateURLParams, {
+      username: data.username,
+      password: data.password,
+    })
+  }
+
+  return generateURL(generateURLParams)
+}
+
+export function HTTPForm({ onLinkGeneration }: { onLinkGeneration: (link: string) => void }) {
+  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+    schema: formSchema,
+    defaultValues,
+    onLinkGeneration,
+    generateLink: generateHTTPLink,
+    parseLink: parseHTTPUrl,
+  })
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -105,7 +93,7 @@ export function HTTPForm({ onLinkGeneration }: { onLinkGeneration: (link: string
         onChange={(e) => setValue('password', e.target.value)}
       />
 
-      <FormActions reset={() => reset(defaultValues)} isDirty={isDirty} errors={errors} />
+      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
     </form>
   )
 }
