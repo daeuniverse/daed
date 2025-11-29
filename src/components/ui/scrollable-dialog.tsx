@@ -76,7 +76,7 @@ function ScrollableDialogFooter({ className, ...props }: React.ComponentProps<'d
   return (
     <div
       data-slot="dialog-footer"
-      className={cn('shrink-0 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end p-6 pt-0', className)}
+      className={cn('shrink-0 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end p-6 border-t', className)}
       {...props}
     />
   )

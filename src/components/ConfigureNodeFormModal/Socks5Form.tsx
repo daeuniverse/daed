@@ -1,6 +1,7 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
 import type { GenerateURLParams } from '~/utils'
+import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
 import { Input } from '~/components/ui/input'
@@ -29,7 +30,7 @@ function generateSocks5Link(data: Socks5FormValues): string {
   return generateURL(generateURLParams)
 }
 
-export function Socks5Form({ onLinkGeneration, initialValues }: NodeFormProps<Socks5FormValues>) {
+export function Socks5Form({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<Socks5FormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: socks5Schema,
     defaultValues: DEFAULT_SOCKS5_FORM_VALUES,
@@ -75,7 +76,14 @@ export function Socks5Form({ onLinkGeneration, initialValues }: NodeFormProps<So
         onChange={(e) => setValue('password', e.target.value)}
       />
 
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }

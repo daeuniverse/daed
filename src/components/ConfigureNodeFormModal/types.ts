@@ -3,4 +3,6 @@ export interface NodeFormProps<T = unknown> {
   onLinkGeneration: (link: string) => void
   /** Initial values for edit mode */
   initialValues?: T
+  /** Container element to portal FormActions into (for fixed footer) */
+  actionsPortal?: HTMLElement | null
 }

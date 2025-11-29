@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
+import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -31,7 +32,7 @@ function generateJuicityLink(data: JuicityFormValues): string {
   })
 }
 
-export function JuicityForm({ onLinkGeneration, initialValues }: NodeFormProps<JuicityFormValues>) {
+export function JuicityForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<JuicityFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: juicitySchema,
     defaultValues: DEFAULT_JUICITY_FORM_VALUES,
@@ -99,7 +100,14 @@ export function JuicityForm({ onLinkGeneration, initialValues }: NodeFormProps<J
         onCheckedChange={(checked) => setValue('allowInsecure', !!checked)}
       />
 
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }

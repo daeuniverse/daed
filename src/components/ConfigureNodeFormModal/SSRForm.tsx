@@ -1,6 +1,7 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
 import { Base64 } from 'js-base64'
+import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
 import { Input } from '~/components/ui/input'
@@ -23,7 +24,7 @@ function generateSSRLink(data: SSRFormValues): string {
   )}`
 }
 
-export function SSRForm({ onLinkGeneration, initialValues }: NodeFormProps<SSRFormValues>) {
+export function SSRForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<SSRFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: ssrSchema,
     defaultValues: DEFAULT_SSR_FORM_VALUES,
@@ -142,7 +143,14 @@ export function SSRForm({ onLinkGeneration, initialValues }: NodeFormProps<SSRFo
         />
       )}
 
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }

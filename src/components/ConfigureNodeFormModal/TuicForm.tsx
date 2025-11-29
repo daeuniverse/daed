@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
+import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -33,7 +34,7 @@ function generateTuicLink(data: TuicFormValues): string {
   })
 }
 
-export function TuicForm({ onLinkGeneration, initialValues }: NodeFormProps<TuicFormValues>) {
+export function TuicForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<TuicFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: tuicSchema,
     defaultValues: DEFAULT_TUIC_FORM_VALUES,
@@ -112,7 +113,14 @@ export function TuicForm({ onLinkGeneration, initialValues }: NodeFormProps<Tuic
         onCheckedChange={(checked) => setValue('allowInsecure', !!checked)}
       />
 
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }

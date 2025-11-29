@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
+import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -49,7 +50,7 @@ function generateTrojanLink(data: TrojanFormValues): string {
   })
 }
 
-export function TrojanForm({ onLinkGeneration, initialValues }: NodeFormProps<TrojanFormValues>) {
+export function TrojanForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<TrojanFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: trojanSchema,
     defaultValues: DEFAULT_TROJAN_FORM_VALUES,
@@ -160,7 +161,14 @@ export function TrojanForm({ onLinkGeneration, initialValues }: NodeFormProps<Tr
         />
       )}
 
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }

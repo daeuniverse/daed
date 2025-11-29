@@ -1,5 +1,6 @@
 import type { NodeFormProps } from './types'
 import { Base64 } from 'js-base64'
+import { createPortal } from 'react-dom'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
@@ -88,7 +89,7 @@ function generateV2rayLink(data: V2rayFormValues): string {
   return ''
 }
 
-export function V2rayForm({ onLinkGeneration, initialValues }: NodeFormProps<V2rayFormValues>) {
+export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<V2rayFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: formSchema,
     defaultValues,
@@ -266,7 +267,14 @@ export function V2rayForm({ onLinkGeneration, initialValues }: NodeFormProps<V2r
         <Input label="ServiceName" value={formValues.path} onChange={(e) => setValue('path', e.target.value)} />
       )}
 
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }

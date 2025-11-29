@@ -1,6 +1,7 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
 import { Base64 } from 'js-base64'
+import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
 import { Input } from '~/components/ui/input'
@@ -66,7 +67,7 @@ function generateSSLink(data: SSFormValues): string {
   return link
 }
 
-export function SSForm({ onLinkGeneration, initialValues }: NodeFormProps<SSFormValues>) {
+export function SSForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<SSFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: ssSchema,
     defaultValues: DEFAULT_SS_FORM_VALUES,
@@ -189,7 +190,14 @@ export function SSForm({ onLinkGeneration, initialValues }: NodeFormProps<SSForm
         <Input label="Path" value={formValues.path} onChange={(e) => setValue('path', e.target.value)} />
       )}
 
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }

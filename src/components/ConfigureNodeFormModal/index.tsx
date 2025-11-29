@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -9,6 +10,7 @@ import { Input } from '~/components/ui/input'
 import {
   ScrollableDialogBody,
   ScrollableDialogContent,
+  ScrollableDialogFooter,
   ScrollableDialogHeader,
 } from '~/components/ui/scrollable-dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
@@ -30,6 +32,7 @@ type FormValues = z.infer<typeof schema>
 export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean; onClose: () => void }) {
   const { t } = useTranslation()
   const importNodesMutation = useImportNodesMutation()
+  const [actionsPortal, setActionsPortal] = useState<HTMLDivElement | null>(null)
 
   const {
     setValue,
@@ -75,67 +78,72 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean; o
         <ScrollableDialogHeader>
           <DialogTitle>{t('configureNode.title')}</DialogTitle>
         </ScrollableDialogHeader>
-        <ScrollableDialogBody className="space-y-4">
-          <Input
-            label={t('tag')}
-            withAsterisk
-            value={tag}
-            onChange={(e) => setValue('tag', e.target.value)}
-            error={errors.tag?.message}
-          />
+        <div className="flex-1 flex flex-col min-h-0">
+          <ScrollableDialogBody className="flex-1 space-y-4">
+            <Input
+              label={t('tag')}
+              withAsterisk
+              value={tag}
+              onChange={(e) => setValue('tag', e.target.value)}
+              error={errors.tag?.message}
+            />
 
-          <Tabs defaultValue="v2ray" className="w-full min-w-0">
-            <div className="overflow-x-auto -mx-1 px-1">
-              <TabsList className="inline-flex w-max gap-1">
-                <TabsTrigger value="v2ray">V2RAY</TabsTrigger>
-                <TabsTrigger value="ss">SS</TabsTrigger>
-                <TabsTrigger value="ssr">SSR</TabsTrigger>
-                <TabsTrigger value="trojan">Trojan</TabsTrigger>
-                <TabsTrigger value="juicity">Juicity</TabsTrigger>
-                <TabsTrigger value="hysteria2">Hysteria2</TabsTrigger>
-                <TabsTrigger value="tuic">Tuic</TabsTrigger>
-                <TabsTrigger value="http">HTTP</TabsTrigger>
-                <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
-              </TabsList>
-            </div>
+            <Tabs defaultValue="v2ray" className="w-full min-w-0">
+              <div className="overflow-x-auto -mx-1 px-1">
+                <TabsList className="inline-flex w-max gap-1">
+                  <TabsTrigger value="v2ray">V2RAY</TabsTrigger>
+                  <TabsTrigger value="ss">SS</TabsTrigger>
+                  <TabsTrigger value="ssr">SSR</TabsTrigger>
+                  <TabsTrigger value="trojan">Trojan</TabsTrigger>
+                  <TabsTrigger value="juicity">Juicity</TabsTrigger>
+                  <TabsTrigger value="hysteria2">Hysteria2</TabsTrigger>
+                  <TabsTrigger value="tuic">Tuic</TabsTrigger>
+                  <TabsTrigger value="http">HTTP</TabsTrigger>
+                  <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
+                </TabsList>
+              </div>
 
-            <TabsContent value="v2ray" className="space-y-2 pt-2">
-              <V2rayForm onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
+              <TabsContent value="v2ray" className="space-y-2 pt-2">
+                <V2rayForm onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
 
-            <TabsContent value="ss" className="space-y-2 pt-2">
-              <SSForm onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
+              <TabsContent value="ss" className="space-y-2 pt-2">
+                <SSForm onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
 
-            <TabsContent value="ssr" className="space-y-2 pt-2">
-              <SSRForm onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
+              <TabsContent value="ssr" className="space-y-2 pt-2">
+                <SSRForm onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
 
-            <TabsContent value="trojan" className="space-y-2 pt-2">
-              <TrojanForm onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
+              <TabsContent value="trojan" className="space-y-2 pt-2">
+                <TrojanForm onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
 
-            <TabsContent value="juicity" className="space-y-2 pt-2">
-              <JuicityForm onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
+              <TabsContent value="juicity" className="space-y-2 pt-2">
+                <JuicityForm onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
 
-            <TabsContent value="hysteria2" className="space-y-2 pt-2">
-              <Hysteria2Form onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
+              <TabsContent value="hysteria2" className="space-y-2 pt-2">
+                <Hysteria2Form onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
 
-            <TabsContent value="tuic" className="space-y-2 pt-2">
-              <TuicForm onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
+              <TabsContent value="tuic" className="space-y-2 pt-2">
+                <TuicForm onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
 
-            <TabsContent value="http" className="space-y-2 pt-2">
-              <HTTPForm onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
+              <TabsContent value="http" className="space-y-2 pt-2">
+                <HTTPForm onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
 
-            <TabsContent value="socks5" className="space-y-2 pt-2">
-              <Socks5Form onLinkGeneration={onLinkGeneration} />
-            </TabsContent>
-          </Tabs>
-        </ScrollableDialogBody>
+              <TabsContent value="socks5" className="space-y-2 pt-2">
+                <Socks5Form onLinkGeneration={onLinkGeneration} actionsPortal={actionsPortal} />
+              </TabsContent>
+            </Tabs>
+          </ScrollableDialogBody>
+          <ScrollableDialogFooter>
+            <div ref={setActionsPortal} className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end w-full" />
+          </ScrollableDialogFooter>
+        </div>
       </ScrollableDialogContent>
     </Dialog>
   )

@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
+import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -30,7 +31,7 @@ function generateHysteria2Link(data: Hysteria2FormValues): string {
   })
 }
 
-export function Hysteria2Form({ onLinkGeneration, initialValues }: NodeFormProps<Hysteria2FormValues>) {
+export function Hysteria2Form({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<Hysteria2FormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: hysteria2Schema,
     defaultValues: DEFAULT_HYSTERIA2_FORM_VALUES,
@@ -69,7 +70,14 @@ export function Hysteria2Form({ onLinkGeneration, initialValues }: NodeFormProps
         checked={formValues.allowInsecure}
         onCheckedChange={(checked) => setValue('allowInsecure', !!checked)}
       />
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }

@@ -1,5 +1,6 @@
 import type { NodeFormProps } from './types'
 import type { GenerateURLParams } from '~/utils'
+import { createPortal } from 'react-dom'
 import { z } from 'zod'
 
 import { FormActions } from '~/components/FormActions'
@@ -39,7 +40,7 @@ function generateHTTPLink(data: HTTPFormValues): string {
   return generateURL(generateURLParams)
 }
 
-export function HTTPForm({ onLinkGeneration, initialValues }: NodeFormProps<HTTPFormValues>) {
+export function HTTPForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<HTTPFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: formSchema,
     defaultValues,
@@ -95,7 +96,14 @@ export function HTTPForm({ onLinkGeneration, initialValues }: NodeFormProps<HTTP
         onChange={(e) => setValue('password', e.target.value)}
       />
 
-      <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      {actionsPortal ? (
+        createPortal(
+          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          actionsPortal,
+        )
+      ) : (
+        <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />
+      )}
     </form>
   )
 }
