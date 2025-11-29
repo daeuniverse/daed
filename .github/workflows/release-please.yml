@@ -84,7 +84,7 @@ jobs:
           zip -9vr daed-full-src.zip . -x .git/\*
 
       - name: Upload artifact - full source
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: daed-full-src.zip
           path: daed-full-src.zip
@@ -113,7 +113,7 @@ jobs:
           pnpm build
 
       - name: Upload artifact - web
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: web
           path: dist
@@ -234,7 +234,7 @@ jobs:
           curl -L -o ./bundled/geosite.dat https://github.com/v2rayA/dist-v2ray-rules-dat/raw/master/geosite.dat
 
       - name: Upload artifact - bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.get_filename.outputs.BUNDLE_NAME }}
           path: bundled/*
