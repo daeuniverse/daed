@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/daeuniverse/daed/compare/v0.15.1...v0.16.0) (2025-11-29)
+
+
+### Features
+
+* enhance form structure and integrate actions portal for improved footer management ([1a94040](https://github.com/daeuniverse/daed/commit/1a940404631314545f1dbc827457c9ae43c0dece))
+
 ## [0.15.1](https://github.com/daeuniverse/daed/compare/v0.15.0...v0.15.1) (2025-11-29)
 
 
