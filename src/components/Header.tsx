@@ -355,8 +355,12 @@ export function HeaderWithActions() {
                   className="w-[100px] h-[100px] rounded-full overflow-hidden border-2 border-dashed border-muted-foreground hover:border-primary transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  {uploadingAvatarBase64 ? (
-                    <img src={uploadingAvatarBase64} alt={t('avatar')} className="w-full h-full object-cover" />
+                  {uploadingAvatarBase64 || userQuery?.user.avatar ? (
+                    <img
+                      src={uploadingAvatarBase64 || userQuery?.user.avatar || undefined}
+                      alt={t('avatar')}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <Avatar className="w-full h-full" />
                   )}
