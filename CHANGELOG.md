@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2](https://github.com/daeuniverse/daed/compare/v0.9.1...v0.9.2) (2025-11-29)
+
+
+### Bug Fixes
+
+* update Dockerfile to streamline build process and remove unnecessary platforms ([deee5c1](https://github.com/daeuniverse/daed/commit/deee5c1357f2cee07ce4e4d326f58233bfb0e0f8))
+
 ## [0.9.1](https://github.com/daeuniverse/daed/compare/v0.9.0...v0.9.1) (2025-11-29)
 
 
