@@ -35,7 +35,7 @@ jobs:
         with:
           version: latest
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           cache: pnpm
           node-version: latest
@@ -102,7 +102,7 @@ jobs:
         with:
           version: latest
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           cache: pnpm
           node-version: latest
