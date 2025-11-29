@@ -22,8 +22,8 @@ function ToggleGroup({
   spacing = 0,
   children,
   ...props
-}: React.ComponentProps<typeof ToggleGroupPrimitive.Root>
-  & VariantProps<typeof toggleVariants> & {
+}: React.ComponentProps<typeof ToggleGroupPrimitive.Root> &
+  VariantProps<typeof toggleVariants> & {
     spacing?: number
   }) {
   return (

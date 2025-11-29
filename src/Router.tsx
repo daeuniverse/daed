@@ -23,13 +23,13 @@ export function Router() {
         {endpointURL && (
           <Route
             path="/graphiql"
-            element={(
+            element={
               <GraphiQL
                 fetcher={createGraphiQLFetcher({
                   url: endpointURL,
                 })}
               />
-            )}
+            }
           />
         )}
       </Routes>

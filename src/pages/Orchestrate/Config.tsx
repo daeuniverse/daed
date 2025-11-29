@@ -30,18 +30,18 @@ export function Config() {
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
 
-  const [openedCreateConfigFormDrawer, { open: openCreateConfigFormDrawer, close: closeCreateConfigFormDrawer }]
-    = useDisclosure(false)
-  const [openedUpdateConfigFormDrawer, { open: openUpdateConfigFormDrawer, close: closeUpdateConfigFormDrawer }]
-    = useDisclosure(false)
+  const [openedCreateConfigFormDrawer, { open: openCreateConfigFormDrawer, close: closeCreateConfigFormDrawer }] =
+    useDisclosure(false)
+  const [openedUpdateConfigFormDrawer, { open: openUpdateConfigFormDrawer, close: closeUpdateConfigFormDrawer }] =
+    useDisclosure(false)
 
   return (
     <Section title={t('config')} icon={<Settings className="h-5 w-5" />} onCreate={openCreateConfigFormDrawer} bordered>
-      {configsQuery?.configs.map(config => (
+      {configsQuery?.configs.map((config) => (
         <SimpleCard
           key={config.id}
           name={config.name}
-          actions={(
+          actions={
             <Fragment>
               <Button
                 variant="ghost"
@@ -87,7 +87,7 @@ export function Config() {
                 <Pencil className="h-4 w-4" />
               </Button>
             </Fragment>
-          )}
+          }
           selected={config.selected}
           onSelect={() => selectConfigMutation.mutate({ id: config.id })}
           onRemove={config.id !== defaultConfigID ? () => removeConfigMutation.mutate(config.id) : undefined}

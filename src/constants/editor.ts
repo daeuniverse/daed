@@ -5,22 +5,22 @@ export const EDITOR_THEME_DARK = 'vs-dark'
 export const EDITOR_THEME_LIGHT = 'githubLight'
 
 export const EDITOR_OPTIONS: EditorProps['options'] = {
-  'fontSize': 14,
-  'fontWeight': 'bold',
-  'fontFamily': 'Source Code Pro',
+  fontSize: 14,
+  fontWeight: 'bold',
+  fontFamily: 'Source Code Pro',
   'semanticHighlighting.enabled': true,
-  'lineHeight': 1.6,
-  'minimap': {
+  lineHeight: 1.6,
+  minimap: {
     enabled: false,
   },
-  'scrollBeyondLastLine': false,
-  'renderWhitespace': 'selection',
-  'cursorBlinking': 'solid',
-  'formatOnPaste': true,
-  'insertSpaces': true,
-  'tabSize': 2,
-  'lineNumbers': 'off',
-  'padding': {
+  scrollBeyondLastLine: false,
+  renderWhitespace: 'selection',
+  cursorBlinking: 'solid',
+  formatOnPaste: true,
+  insertSpaces: true,
+  tabSize: 2,
+  lineNumbers: 'off',
+  padding: {
     top: 8,
     bottom: 8,
   },

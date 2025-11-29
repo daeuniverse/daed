@@ -35,18 +35,18 @@ export function DNS() {
 
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
-  const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }]
-    = useDisclosure(false)
-  const [openedUpdateDNSFormModal, { open: openUpdateDNSFormModal, close: closeUpdateDNSFormModal }]
-    = useDisclosure(false)
+  const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }] =
+    useDisclosure(false)
+  const [openedUpdateDNSFormModal, { open: openUpdateDNSFormModal, close: closeUpdateDNSFormModal }] =
+    useDisclosure(false)
 
   return (
     <Section title={t('dns')} icon={<Route className="h-5 w-5" />} onCreate={openCreateDNSFormModal} bordered>
-      {dnssQuery?.dnss.map(dns => (
+      {dnssQuery?.dnss.map((dns) => (
         <SimpleCard
           key={dns.id}
           name={dns.name}
-          actions={(
+          actions={
             <Fragment>
               <Button
                 variant="ghost"
@@ -83,7 +83,7 @@ export function DNS() {
                 <Pencil className="h-4 w-4" />
               </Button>
             </Fragment>
-          )}
+          }
           selected={dns.selected}
           onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
           onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}

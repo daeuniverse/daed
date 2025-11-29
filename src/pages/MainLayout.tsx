@@ -33,8 +33,7 @@ export function MainLayout() {
       </main>
       <footer className="h-[50px] border-t flex items-center justify-center">
         <p className="text-xs text-muted-foreground font-light">
-          Made with passion 🔥 by
-          {' '}
+          Made with passion 🔥 by{' '}
           <a
             href="https://github.com/daeuniverse"
             target="_blank"

@@ -37,11 +37,11 @@ export function NodeResource() {
       icon={<Cloud className="h-5 w-5" />}
       iconPlus={<CloudUpload className="h-4 w-4" />}
       onCreate={() => setOpenedImportNodeFormModal(true)}
-      actions={(
+      actions={
         <Button variant="ghost" size="icon" onClick={() => setOpenedConfigureNodeFormModal(true)}>
           <FileInput className="h-4 w-4" />
         </Button>
-      )}
+      }
       bordered
     >
       {nodesQuery?.nodes.edges.map(({ id, name, tag, protocol, link }) => (
@@ -52,7 +52,7 @@ export function NodeResource() {
           type={DraggableResourceType.node}
           name={tag}
           leftSection={<span className="text-xs font-semibold">{protocol}</span>}
-          actions={(
+          actions={
             <Fragment>
               <Button
                 variant="ghost"
@@ -85,7 +85,7 @@ export function NodeResource() {
                 <Eye className="h-3 w-3" />
               </Button>
             </Fragment>
-          )}
+          }
           onRemove={() => removeNodesMutation.mutate([id])}
         >
           <p className="font-semibold text-primary break-all">{name}</p>
@@ -119,7 +119,7 @@ export function NodeResource() {
   )
 }
 
-function Spoiler({ label, showLabel, hideLabel }: { label: string, showLabel: string, hideLabel: string }) {
+function Spoiler({ label, showLabel, hideLabel }: { label: string; showLabel: string; hideLabel: string }) {
   const [show, setShow] = useState(false)
 
   return (

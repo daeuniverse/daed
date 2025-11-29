@@ -60,7 +60,7 @@ const passwordChangeSchema = z
     newPassword: z.string().min(6, 'New password must be at least 6 characters'),
     confirmPassword: z.string(),
   })
-  .refine(data => data.newPassword === data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
@@ -71,10 +71,10 @@ export function HeaderWithActions() {
   const { colorScheme, toggleColorScheme } = useColorScheme()
   const [userMenuOpened, setUserMenuOpened] = useState(false)
   const [openedBurger, { toggle: toggleBurger, close: closeBurger }] = useDisclosure(false)
-  const [openedAccountSettingsFormModal, { open: openAccountSettingsFormModal, close: closeAccountSettingsFormModal }]
-    = useDisclosure(false)
-  const [openedPasswordChangeModal, { open: openPasswordChangeModal, close: closePasswordChangeModal }]
-    = useDisclosure(false)
+  const [openedAccountSettingsFormModal, { open: openAccountSettingsFormModal, close: closeAccountSettingsFormModal }] =
+    useDisclosure(false)
+  const [openedPasswordChangeModal, { open: openPasswordChangeModal, close: closePasswordChangeModal }] =
+    useDisclosure(false)
   const { data: userQuery } = useUserQuery()
   const { data: generalQuery } = useGeneralQuery()
   const runMutation = useRunMutation()
@@ -160,8 +160,7 @@ export function HeaderWithActions() {
       setPasswordFormData({ currentPassword: '', newPassword: '', confirmPassword: '' })
       setPasswordFormErrors({})
       closePasswordChangeModal()
-    }
-    catch {
+    } catch {
       setPasswordFormErrors({ currentPassword: t('password.current.incorrect') })
     }
   }
@@ -241,40 +240,37 @@ export function HeaderWithActions() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {matchSmallScreen
-            ? (
-                <Button variant="ghost" size="icon" onClick={toggleBurger}>
-                  <Menu className="h-5 w-5" />
+          {matchSmallScreen ? (
+            <Button variant="ghost" size="icon" onClick={toggleBurger}>
+              <Menu className="h-5 w-5" />
+            </Button>
+          ) : (
+            <Fragment>
+              <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
+                <Button variant="ghost" size="icon">
+                  <Github className="h-5 w-5" />
                 </Button>
-              )
-            : (
-                <Fragment>
-                  <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon">
-                      <Github className="h-5 w-5" />
-                    </Button>
-                  </a>
+              </a>
 
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      if (i18n.language.startsWith('zh')) {
-                        i18n.changeLanguage('en')
-                      }
-                      else {
-                        i18n.changeLanguage('zh-Hans')
-                      }
-                    }}
-                  >
-                    <Languages className="h-5 w-5" />
-                  </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  if (i18n.language.startsWith('zh')) {
+                    i18n.changeLanguage('en')
+                  } else {
+                    i18n.changeLanguage('zh-Hans')
+                  }
+                }}
+              >
+                <Languages className="h-5 w-5" />
+              </Button>
 
-                  <Button variant="ghost" size="icon" onClick={() => toggleColorScheme()}>
-                    {colorScheme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                  </Button>
-                </Fragment>
-              )}
+              <Button variant="ghost" size="icon" onClick={() => toggleColorScheme()}>
+                {colorScheme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+            </Fragment>
+          )}
 
           {generalQuery?.general.dae.modified && (
             <SimpleTooltip label={t('actions.reload')}>
@@ -316,8 +312,7 @@ export function HeaderWithActions() {
               onClick={() => {
                 if (i18n.language.startsWith('zh')) {
                   i18n.changeLanguage('en')
-                }
-                else {
+                } else {
                   i18n.changeLanguage('zh-Hans')
                 }
               }}
@@ -343,7 +338,7 @@ export function HeaderWithActions() {
                 label={t('display name')}
                 withAsterisk
                 value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 error={formErrors.name}
               />
 
@@ -360,13 +355,11 @@ export function HeaderWithActions() {
                   className="w-[100px] h-[100px] rounded-full overflow-hidden border-2 border-dashed border-muted-foreground hover:border-primary transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  {uploadingAvatarBase64
-                    ? (
-                        <img src={uploadingAvatarBase64} alt={t('avatar')} className="w-full h-full object-cover" />
-                      )
-                    : (
-                        <Avatar className="w-full h-full" />
-                      )}
+                  {uploadingAvatarBase64 ? (
+                    <img src={uploadingAvatarBase64} alt={t('avatar')} className="w-full h-full object-cover" />
+                  ) : (
+                    <Avatar className="w-full h-full" />
+                  )}
                 </button>
               </div>
 
@@ -396,7 +389,7 @@ export function HeaderWithActions() {
                 label={t('password.current')}
                 placeholder={t('password.current.placeholder')}
                 value={passwordFormData.currentPassword}
-                onChange={e => setPasswordFormData({ ...passwordFormData, currentPassword: e.target.value })}
+                onChange={(e) => setPasswordFormData({ ...passwordFormData, currentPassword: e.target.value })}
                 error={passwordFormErrors.currentPassword}
               />
               <Input
@@ -404,7 +397,7 @@ export function HeaderWithActions() {
                 label={t('password.new')}
                 placeholder={t('password.new.placeholder')}
                 value={passwordFormData.newPassword}
-                onChange={e => setPasswordFormData({ ...passwordFormData, newPassword: e.target.value })}
+                onChange={(e) => setPasswordFormData({ ...passwordFormData, newPassword: e.target.value })}
                 error={passwordFormErrors.newPassword}
               />
               <Input
@@ -412,7 +405,7 @@ export function HeaderWithActions() {
                 label={t('password.confirm')}
                 placeholder={t('password.confirm.placeholder')}
                 value={passwordFormData.confirmPassword}
-                onChange={e => setPasswordFormData({ ...passwordFormData, confirmPassword: e.target.value })}
+                onChange={(e) => setPasswordFormData({ ...passwordFormData, confirmPassword: e.target.value })}
                 error={passwordFormErrors.confirmPassword}
               />
               <Button type="submit" className="w-full" loading={updatePasswordMutation.isPending}>

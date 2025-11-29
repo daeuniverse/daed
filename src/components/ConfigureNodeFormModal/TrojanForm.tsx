@@ -18,8 +18,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
 
     const result = trojanSchema.safeParse(formData)
 
-    if (!result.success)
-      return
+    if (!result.success) return
 
     const query: Record<string, unknown> = {
       allowInsecure: formData.allowInsecure,
@@ -60,7 +59,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
   }
 
   const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   return (
@@ -68,14 +67,14 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
       <Input
         label={t('configureNode.name')}
         value={formData.name}
-        onChange={e => updateField('name', e.target.value)}
+        onChange={(e) => updateField('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
         value={formData.server}
-        onChange={e => updateField('server', e.target.value)}
+        onChange={(e) => updateField('server', e.target.value)}
       />
 
       <NumberInput
@@ -84,14 +83,14 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
         min={0}
         max={65535}
         value={formData.port}
-        onChange={val => updateField('port', Number(val))}
+        onChange={(val) => updateField('port', Number(val))}
       />
 
       <Input
         label={t('configureNode.password')}
         withAsterisk
         value={formData.password}
-        onChange={e => updateField('password', e.target.value)}
+        onChange={(e) => updateField('password', e.target.value)}
       />
 
       <Select
@@ -102,7 +101,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
           { label: 'shadowsocks', value: 'shadowsocks' },
         ]}
         value={formData.method}
-        onChange={val => updateField('method', (val || 'origin') as typeof formData.method)}
+        onChange={(val) => updateField('method', (val || 'origin') as typeof formData.method)}
       />
 
       {formData.method === 'shadowsocks' && (
@@ -116,7 +115,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
             { label: 'chacha20-ietf-poly1305', value: 'chacha20-ietf-poly1305' },
           ]}
           value={formData.ssCipher}
-          onChange={val => updateField('ssCipher', (val || 'aes-128-gcm') as typeof formData.ssCipher)}
+          onChange={(val) => updateField('ssCipher', (val || 'aes-128-gcm') as typeof formData.ssCipher)}
         />
       )}
 
@@ -125,7 +124,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
           label="Shadowsocks password"
           withAsterisk
           value={formData.ssPassword}
-          onChange={e => updateField('ssPassword', e.target.value)}
+          onChange={(e) => updateField('ssPassword', e.target.value)}
         />
       )}
 
@@ -133,10 +132,10 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
         label={t('allowInsecure')}
         disabled={formData.method !== 'origin' || formData.obfs !== 'none'}
         checked={formData.allowInsecure}
-        onCheckedChange={checked => updateField('allowInsecure', !!checked)}
+        onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
       />
 
-      <Input label="SNI(Peer)" value={formData.peer} onChange={e => updateField('peer', e.target.value)} />
+      <Input label="SNI(Peer)" value={formData.peer} onChange={(e) => updateField('peer', e.target.value)} />
 
       <Select
         label="Obfs"
@@ -145,14 +144,14 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
           { label: 'websocket', value: 'websocket' },
         ]}
         value={formData.obfs}
-        onChange={val => updateField('obfs', (val || 'none') as typeof formData.obfs)}
+        onChange={(val) => updateField('obfs', (val || 'none') as typeof formData.obfs)}
       />
 
       {formData.obfs === 'websocket' && (
         <Input
           label={t('configureNode.websocketHost')}
           value={formData.host}
-          onChange={e => updateField('host', e.target.value)}
+          onChange={(e) => updateField('host', e.target.value)}
         />
       )}
 
@@ -160,7 +159,7 @@ export function TrojanForm({ onLinkGeneration }: { onLinkGeneration: (link: stri
         <Input
           label={t('configureNode.websocketPath')}
           value={formData.path}
-          onChange={e => updateField('path', e.target.value)}
+          onChange={(e) => updateField('path', e.target.value)}
         />
       )}
 

@@ -89,7 +89,7 @@ export function ImportResourceFormModal({
                     withAsterisk
                     label={t('link')}
                     value={link}
-                    onChange={e => updateResource(i, 'link', e.target.value)}
+                    onChange={(e) => updateResource(i, 'link', e.target.value)}
                     error={errors[`resources.${i}.link`]}
                   />
                   <Input
@@ -97,7 +97,7 @@ export function ImportResourceFormModal({
                     withAsterisk
                     label={t('tag')}
                     value={tag}
-                    onChange={e => updateResource(i, 'tag', e.target.value)}
+                    onChange={(e) => updateResource(i, 'tag', e.target.value)}
                     error={errors[`resources.${i}.tag`]}
                   />
                 </div>

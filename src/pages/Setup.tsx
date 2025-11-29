@@ -45,7 +45,7 @@ export function SetupPage() {
   const { t } = useTranslation()
 
   const [active, setActive] = useState(0)
-  const nextStep = () => setActive(current => (current < 3 ? current + 1 : current))
+  const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current))
   const [numberUsers, setNumberUsers] = useState(0)
 
   const defaultEndpointURL = useStore(endpointURLAtom)
@@ -54,10 +54,10 @@ export function SetupPage() {
   const [endpointFormErrors, setEndpointFormErrors] = useState<{ endpointURL?: string }>({})
 
   const [signupFormData, setSignupFormData] = useState({ username: '', password: '' })
-  const [signupFormErrors, setSignupFormErrors] = useState<{ username?: string, password?: string }>({})
+  const [signupFormErrors, setSignupFormErrors] = useState<{ username?: string; password?: string }>({})
 
   const [loginFormData, setLoginFormData] = useState({ username: '', password: '' })
-  const [loginFormErrors, setLoginFormErrors] = useState<{ username?: string, password?: string }>({})
+  const [loginFormErrors, setLoginFormErrors] = useState<{ username?: string; password?: string }>({})
 
   const handleEndpointURLSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -83,8 +83,7 @@ export function SetupPage() {
       setNumberUsers(numberUsers)
 
       nextStep()
-    }
-    catch (err) {
+    } catch (err) {
       notifications.show({
         color: 'red',
         message: (err as Error).message,
@@ -98,7 +97,7 @@ export function SetupPage() {
     const result = signupSchema.safeParse(signupFormData)
 
     if (!result.success) {
-      const errors: { username?: string, password?: string } = {}
+      const errors: { username?: string; password?: string } = {}
 
       result.error.issues.forEach((err) => {
         errors[err.path[0] as 'username' | 'password'] = err.message
@@ -127,8 +126,7 @@ export function SetupPage() {
       const numberUsers = await getNumberUsers(endpointFormData.endpointURL)
 
       setNumberUsers(numberUsers)
-    }
-    catch (err) {
+    } catch (err) {
       notifications.show({
         color: 'red',
         message: (err as Error).message,
@@ -142,7 +140,7 @@ export function SetupPage() {
     const result = loginSchema.safeParse(loginFormData)
 
     if (!result.success) {
-      const errors: { username?: string, password?: string } = {}
+      const errors: { username?: string; password?: string } = {}
 
       result.error.issues.forEach((err) => {
         errors[err.path[0] as 'username' | 'password'] = err.message
@@ -175,8 +173,7 @@ export function SetupPage() {
       tokenAtom.set(token)
 
       nextStep()
-    }
-    catch (err) {
+    } catch (err) {
       notifications.show({
         color: 'red',
         message: (err as Error).message,
@@ -184,7 +181,7 @@ export function SetupPage() {
     }
   }
 
-  const steps: { label: string, description: string }[] = [
+  const steps: { label: string; description: string }[] = [
     { label: `${t('step')} 1`, description: t('setup endpoint') },
     { label: `${t('step')} 2`, description: t('login account') },
     { label: t('actions.confirm'), description: '' },
@@ -195,8 +192,7 @@ export function SetupPage() {
       <div className="flex flex-col gap-4 pt-[20vh]">
         <h1 className="text-3xl font-bold text-center">{t('welcome to', { name: 'daed' })}</h1>
         <p className="text-center text-muted-foreground">
-          {t('what for')}
-          {' '}
+          {t('what for')}{' '}
           <a
             target="_blank"
             href="https://github.com/daeuniverse/dae"
@@ -245,7 +241,7 @@ export function SetupPage() {
                 placeholder={DEFAULT_ENDPOINT_URL}
                 withAsterisk
                 value={endpointFormData.endpointURL}
-                onChange={e => setEndpointFormData({ endpointURL: e.target.value })}
+                onChange={(e) => setEndpointFormData({ endpointURL: e.target.value })}
                 error={endpointFormErrors.endpointURL}
                 icon={<Link2 className="h-4 w-4" />}
               />
@@ -265,7 +261,7 @@ export function SetupPage() {
                 placeholder="admin"
                 withAsterisk
                 value={signupFormData.username}
-                onChange={e => setSignupFormData({ ...signupFormData, username: e.target.value })}
+                onChange={(e) => setSignupFormData({ ...signupFormData, username: e.target.value })}
                 error={signupFormErrors.username}
                 icon={<User className="h-4 w-4" />}
               />
@@ -275,7 +271,7 @@ export function SetupPage() {
                 placeholder="password"
                 withAsterisk
                 value={signupFormData.password}
-                onChange={e => setSignupFormData({ ...signupFormData, password: e.target.value })}
+                onChange={(e) => setSignupFormData({ ...signupFormData, password: e.target.value })}
                 error={signupFormErrors.password}
                 icon={<LockKeyhole className="h-4 w-4" />}
               />
@@ -294,7 +290,7 @@ export function SetupPage() {
                 placeholder="admin"
                 withAsterisk
                 value={loginFormData.username}
-                onChange={e => setLoginFormData({ ...loginFormData, username: e.target.value })}
+                onChange={(e) => setLoginFormData({ ...loginFormData, username: e.target.value })}
                 error={loginFormErrors.username}
                 icon={<User className="h-4 w-4" />}
               />
@@ -304,7 +300,7 @@ export function SetupPage() {
                 placeholder="password"
                 withAsterisk
                 value={loginFormData.password}
-                onChange={e => setLoginFormData({ ...loginFormData, password: e.target.value })}
+                onChange={(e) => setLoginFormData({ ...loginFormData, password: e.target.value })}
                 error={loginFormErrors.password}
                 icon={<LockKeyhole className="h-4 w-4" />}
               />

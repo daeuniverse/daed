@@ -52,8 +52,8 @@ function Toast({
   className,
   variant,
   ...props
-}: React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root>
-  & VariantProps<typeof toastVariants> & {
+}: React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
+  VariantProps<typeof toastVariants> & {
     ref?: React.RefObject<React.ElementRef<typeof ToastPrimitives.Root> | null>
   }) {
   return <ToastPrimitives.Root ref={ref} className={cn(toastVariants({ variant }), className)} {...props} />

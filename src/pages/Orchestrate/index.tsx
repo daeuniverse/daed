@@ -37,14 +37,14 @@ export function OrchestratePage() {
       const { type, nodeID, groupID, subscriptionID } = draggingResource
 
       if (type === DraggableResourceType.node) {
-        const node = nodesQuery?.nodes.edges.find(node => node.id === nodeID)
+        const node = nodesQuery?.nodes.edges.find((node) => node.id === nodeID)
 
         return node?.tag
       }
 
       if (type === DraggableResourceType.subscription) {
         const subscription = subscriptionsQuery?.subscriptions.find(
-          subscription => subscription.id === subscriptionID,
+          (subscription) => subscription.id === subscriptionID,
         )
 
         return subscription?.tag || subscription?.link
@@ -52,25 +52,25 @@ export function OrchestratePage() {
 
       if (type === DraggableResourceType.subscription_node) {
         const subscription = subscriptionsQuery?.subscriptions.find(
-          subscription => subscription.id === subscriptionID,
+          (subscription) => subscription.id === subscriptionID,
         )
-        const node = subscription?.nodes.edges.find(node => node.id === nodeID)
+        const node = subscription?.nodes.edges.find((node) => node.id === nodeID)
 
         return node?.name
       }
 
       if (type === DraggableResourceType.groupNode) {
-        const group = groupsQuery?.groups.find(group => group.id === groupID)
+        const group = groupsQuery?.groups.find((group) => group.id === groupID)
 
-        const node = group?.nodes.find(node => node.id === nodeID)
+        const node = group?.nodes.find((node) => node.id === nodeID)
 
         return node?.name
       }
 
       if (type === DraggableResourceType.groupSubscription) {
-        const group = groupsQuery?.groups.find(group => group.id === groupID)
+        const group = groupsQuery?.groups.find((group) => group.id === groupID)
 
-        const subscription = group?.subscriptions.find(subscription => subscription.id === subscriptionID)
+        const subscription = group?.subscriptions.find((subscription) => subscription.id === subscriptionID)
 
         return subscription?.tag
       }
@@ -87,20 +87,20 @@ export function OrchestratePage() {
     const { over } = e
 
     if (over?.id && draggingResource) {
-      const group = groupsQuery?.groups.find(group => group.id === over.id)
+      const group = groupsQuery?.groups.find((group) => group.id === over.id)
 
       if (
-        [DraggableResourceType.node, DraggableResourceType.groupNode].includes(draggingResource.type)
-        && draggingResource?.nodeID
-        && !group?.nodes.find(node => node.id === draggingResource.nodeID)
+        [DraggableResourceType.node, DraggableResourceType.groupNode].includes(draggingResource.type) &&
+        draggingResource?.nodeID &&
+        !group?.nodes.find((node) => node.id === draggingResource.nodeID)
       ) {
         groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.nodeID] })
       }
 
       if (
-        [DraggableResourceType.subscription, DraggableResourceType.groupSubscription].includes(draggingResource.type)
-        && draggingResource.subscriptionID
-        && !group?.subscriptions.find(subscription => subscription.id === draggingResource.subscriptionID)
+        [DraggableResourceType.subscription, DraggableResourceType.groupSubscription].includes(draggingResource.type) &&
+        draggingResource.subscriptionID &&
+        !group?.subscriptions.find((subscription) => subscription.id === draggingResource.subscriptionID)
       ) {
         groupAddSubscriptionsMutation.mutate({
           id: over.id as string,
@@ -109,9 +109,9 @@ export function OrchestratePage() {
       }
 
       if (
-        draggingResource.type === DraggableResourceType.subscription_node
-        && draggingResource.nodeID
-        && !group?.nodes.find(node => node.id === draggingResource.nodeID)
+        draggingResource.type === DraggableResourceType.subscription_node &&
+        draggingResource.nodeID &&
+        !group?.nodes.find((node) => node.id === draggingResource.nodeID)
       ) {
         groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.nodeID] })
       }

@@ -4,7 +4,8 @@ export default antfu({
   react: true,
   typescript: true,
   yaml: false,
-  ignores: ['src/schemas/**'],
+  stylistic: false,
+  ignores: ['wing', 'src/schemas/**'],
   rules: {
     // Allow exporting variants alongside components (shadcn pattern)
     'react-refresh/only-export-components': 'off',

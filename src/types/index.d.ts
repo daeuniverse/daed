@@ -6,12 +6,12 @@ declare type SortableList = Array<{ id: UniqueIdentifier } & Record<string, unkn
 
 declare type SimpleDisplayable = number | string
 
-declare type Displayable
-  = | null
-    | boolean
-    | SimpleDisplayable
-    | Array<SimpleDisplayable>
-    | Array<{ [key: string]: SimpleDisplayable }>
+declare type Displayable =
+  | null
+  | boolean
+  | SimpleDisplayable
+  | Array<SimpleDisplayable>
+  | Array<{ [key: string]: SimpleDisplayable }>
 
 declare module 'i18next' {
   interface CustomTypeOptions {

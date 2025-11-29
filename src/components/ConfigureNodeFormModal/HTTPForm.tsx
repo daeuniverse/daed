@@ -18,8 +18,7 @@ export function HTTPForm({ onLinkGeneration }: { onLinkGeneration: (link: string
 
     const result = httpSchema.safeParse(formData)
 
-    if (!result.success)
-      return
+    if (!result.success) return
 
     const generateURLParams: GenerateURLParams = {
       protocol: formData.protocol,
@@ -39,7 +38,7 @@ export function HTTPForm({ onLinkGeneration }: { onLinkGeneration: (link: string
   }
 
   const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   return (
@@ -51,20 +50,20 @@ export function HTTPForm({ onLinkGeneration }: { onLinkGeneration: (link: string
           { label: 'HTTPS', value: 'https' },
         ]}
         value={formData.protocol}
-        onChange={val => updateField('protocol', val as 'http' | 'https')}
+        onChange={(val) => updateField('protocol', val as 'http' | 'https')}
       />
 
       <Input
         label={t('configureNode.name')}
         value={formData.name}
-        onChange={e => updateField('name', e.target.value)}
+        onChange={(e) => updateField('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
         value={formData.host}
-        onChange={e => updateField('host', e.target.value)}
+        onChange={(e) => updateField('host', e.target.value)}
       />
 
       <NumberInput
@@ -73,19 +72,19 @@ export function HTTPForm({ onLinkGeneration }: { onLinkGeneration: (link: string
         min={0}
         max={65535}
         value={formData.port}
-        onChange={val => updateField('port', Number(val))}
+        onChange={(val) => updateField('port', Number(val))}
       />
 
       <Input
         label={t('configureNode.username')}
         value={formData.username}
-        onChange={e => updateField('username', e.target.value)}
+        onChange={(e) => updateField('username', e.target.value)}
       />
 
       <Input
         label={t('configureNode.password')}
         value={formData.password}
-        onChange={e => updateField('password', e.target.value)}
+        onChange={(e) => updateField('password', e.target.value)}
       />
 
       <FormActions reset={() => setFormData({ protocol: 'http', ...DEFAULT_HTTP_FORM_VALUES })} />

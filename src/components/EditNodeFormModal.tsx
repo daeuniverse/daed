@@ -51,8 +51,7 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
   const handleOpenChange = (open: boolean) => {
     if (open) {
       initializeForm()
-    }
-    else {
+    } else {
       onClose()
     }
   }
@@ -94,7 +93,7 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
             label={t('link')}
             withAsterisk
             value={formData.link}
-            onChange={e => setFormData({ ...formData, link: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
             error={errors.link}
           />
           <Input label={t('tag')} value={node?.tag || ''} disabled />

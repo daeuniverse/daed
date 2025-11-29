@@ -109,7 +109,7 @@ export function RenameFormModal({ ref, opened, onClose }) {
 
               <Input
                 value={formData.name}
-                onChange={e => setFormData({ name: e.target.value })}
+                onChange={(e) => setFormData({ name: e.target.value })}
                 error={formErrors.name}
               />
             </div>

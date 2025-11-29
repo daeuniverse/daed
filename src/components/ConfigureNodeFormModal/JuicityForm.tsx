@@ -18,8 +18,7 @@ export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: str
 
     const result = juicitySchema.safeParse(formData)
 
-    if (!result.success)
-      return
+    if (!result.success) return
 
     const query = {
       congestion_control: formData.congestion_control,
@@ -42,7 +41,7 @@ export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: str
   }
 
   const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   return (
@@ -50,14 +49,14 @@ export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: str
       <Input
         label={t('configureNode.name')}
         value={formData.name}
-        onChange={e => updateField('name', e.target.value)}
+        onChange={(e) => updateField('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
         value={formData.server}
-        onChange={e => updateField('server', e.target.value)}
+        onChange={(e) => updateField('server', e.target.value)}
       />
 
       <NumberInput
@@ -66,16 +65,16 @@ export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: str
         min={0}
         max={65535}
         value={formData.port}
-        onChange={val => updateField('port', Number(val))}
+        onChange={(val) => updateField('port', Number(val))}
       />
 
-      <Input label="UUID" withAsterisk value={formData.uuid} onChange={e => updateField('uuid', e.target.value)} />
+      <Input label="UUID" withAsterisk value={formData.uuid} onChange={(e) => updateField('uuid', e.target.value)} />
 
       <Input
         label={t('configureNode.password')}
         withAsterisk
         value={formData.password}
-        onChange={e => updateField('password', e.target.value)}
+        onChange={(e) => updateField('password', e.target.value)}
       />
 
       <Select
@@ -86,21 +85,21 @@ export function JuicityForm({ onLinkGeneration }: { onLinkGeneration: (link: str
           { label: 'new_reno', value: 'new_reno' },
         ]}
         value={formData.congestion_control}
-        onChange={val => updateField('congestion_control', val || '')}
+        onChange={(val) => updateField('congestion_control', val || '')}
       />
 
       <Input
         label={t('configureNode.pinned_certchain_sha256')}
         value={formData.pinned_certchain_sha256}
-        onChange={e => updateField('pinned_certchain_sha256', e.target.value)}
+        onChange={(e) => updateField('pinned_certchain_sha256', e.target.value)}
       />
 
-      <Input label="SNI" value={formData.sni} onChange={e => updateField('sni', e.target.value)} />
+      <Input label="SNI" value={formData.sni} onChange={(e) => updateField('sni', e.target.value)} />
 
       <Checkbox
         label={t('allowInsecure')}
         checked={formData.allowInsecure}
-        onCheckedChange={checked => updateField('allowInsecure', !!checked)}
+        onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
       />
 
       <FormActions reset={() => setFormData(DEFAULT_JUICITY_FORM_VALUES)} />

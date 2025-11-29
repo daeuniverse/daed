@@ -9,7 +9,7 @@ import { endpointURLAtom, tokenAtom } from '~/store'
 
 export const GQLClientContext = createContext<GraphQLClient>(null as unknown as GraphQLClient)
 
-export function GQLQueryClientProvider({ client, children }: { client: GraphQLClient, children: React.ReactNode }) {
+export function GQLQueryClientProvider({ client, children }: { client: GraphQLClient; children: React.ReactNode }) {
   return <GQLClientContext value={client}>{children}</GQLClientContext>
 }
 

@@ -8,7 +8,7 @@ import zhHans from './locales/zh-Hans.json'
 export const defaultNS = 'translation'
 
 export const resources = {
-  'en': { [defaultNS]: en },
+  en: { [defaultNS]: en },
   'zh-Hans': { [defaultNS]: zhHans },
 }
 

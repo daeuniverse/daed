@@ -51,8 +51,7 @@ export function EditSubscriptionFormModal({ opened, onClose, subscription, onSub
   const handleOpenChange = (open: boolean) => {
     if (open) {
       initializeForm()
-    }
-    else {
+    } else {
       onClose()
     }
   }
@@ -91,14 +90,14 @@ export function EditSubscriptionFormModal({ opened, onClose, subscription, onSub
             label={t('link')}
             withAsterisk
             value={formData.link}
-            onChange={e => setFormData({ ...formData, link: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
             error={errors.link}
           />
           <Input
             label={t('tag')}
             withAsterisk
             value={formData.tag}
-            onChange={e => setFormData({ ...formData, tag: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
             error={errors.tag}
           />
           <FormActions reset={resetForm} />

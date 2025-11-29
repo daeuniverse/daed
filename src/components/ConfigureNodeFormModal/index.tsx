@@ -19,7 +19,7 @@ import { V2rayForm } from './V2rayForm'
 
 const schema = z.object({ tag: z.string().min(1) })
 
-export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean, onClose: () => void }) {
+export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean; onClose: () => void }) {
   const { t } = useTranslation()
   const importNodesMutation = useImportNodesMutation()
   const [formData, setFormData] = useState({ tag: '' })
@@ -55,7 +55,7 @@ export function ConfigureNodeFormModal({ opened, onClose }: { opened: boolean, o
             label={t('tag')}
             withAsterisk
             value={formData.tag}
-            onChange={e => setFormData({ tag: e.target.value })}
+            onChange={(e) => setFormData({ tag: e.target.value })}
             error={errors.tag}
           />
 

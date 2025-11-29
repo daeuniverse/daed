@@ -15,7 +15,7 @@ export interface DataTableColumn<T> {
 }
 
 export interface DataTableRowExpansionProps<T> {
-  content: (args: { record: T, collapse: () => void }) => React.ReactNode
+  content: (args: { record: T; collapse: () => void }) => React.ReactNode
 }
 
 interface Props<T> {
@@ -46,14 +46,13 @@ export function Table<Data extends Record<string, unknown>>({
   const [expandedRows, setExpandedRows] = useState<Set<number>>(() => new Set())
 
   const toggleRowSelection = (record: Data, index: number) => {
-    if (isRecordSelectable && !isRecordSelectable(record, index))
-      return
+    if (isRecordSelectable && !isRecordSelectable(record, index)) return
 
     setSelectedRecords((prev) => {
       const isSelected = prev.includes(record)
 
       if (isSelected) {
-        return prev.filter(r => r !== record)
+        return prev.filter((r) => r !== record)
       }
 
       return [...prev, record]
@@ -66,8 +65,7 @@ export function Table<Data extends Record<string, unknown>>({
 
       if (newSet.has(index)) {
         newSet.delete(index)
-      }
-      else {
+      } else {
         newSet.add(index)
       }
 
@@ -98,8 +96,7 @@ export function Table<Data extends Record<string, unknown>>({
           loading={removing}
           uppercase
           onClick={async () => {
-            if (!onRemove)
-              return
+            if (!onRemove) return
 
             setSelectedRecords([])
             setRemoving(true)
@@ -107,11 +104,7 @@ export function Table<Data extends Record<string, unknown>>({
             setRemoving(false)
           }}
         >
-          {t('actions.remove')}
-          {' '}
-          (
-          {selectedRecords.length}
-          )
+          {t('actions.remove')} ({selectedRecords.length})
         </Button>
       </div>
 
@@ -126,8 +119,7 @@ export function Table<Data extends Record<string, unknown>>({
                     onCheckedChange={(checked) => {
                       if (checked) {
                         setSelectedRecords(records.filter((r, i) => !isRecordSelectable || isRecordSelectable(r, i)))
-                      }
-                      else {
+                      } else {
                         setSelectedRecords([])
                       }
                     }}
@@ -150,75 +142,71 @@ export function Table<Data extends Record<string, unknown>>({
               </tr>
             </thead>
             <tbody>
-              {fetching
-                ? (
-                    <tr>
-                      <td colSpan={columns.length + 1} className="p-8 text-center text-muted-foreground">
-                        Loading...
-                      </td>
-                    </tr>
-                  )
-                : records.length === 0
-                  ? (
-                      <tr>
-                        <td colSpan={columns.length + 1} className="p-8 text-center text-muted-foreground">
-                          No records found
-                        </td>
-                      </tr>
-                    )
-                  : (
-                      records.map((record, index) => {
-                        const isSelectable = !isRecordSelectable || isRecordSelectable(record, index)
-                        const isSelected = selectedRecords.includes(record)
-                        const isExpanded = expandedRows.has(index)
+              {fetching ? (
+                <tr>
+                  <td colSpan={columns.length + 1} className="p-8 text-center text-muted-foreground">
+                    Loading...
+                  </td>
+                </tr>
+              ) : records.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length + 1} className="p-8 text-center text-muted-foreground">
+                    No records found
+                  </td>
+                </tr>
+              ) : (
+                records.map((record, index) => {
+                  const isSelectable = !isRecordSelectable || isRecordSelectable(record, index)
+                  const isSelected = selectedRecords.includes(record)
+                  const isExpanded = expandedRows.has(index)
 
-                        return (
-                          <Fragment key={index}>
-                            <tr
-                              className={cn(
-                                'border-t hover:bg-accent/50 transition-colors',
-                                index % 2 === 1 && 'bg-muted/30',
-                                isSelected && 'bg-primary/10',
-                                rowExpansion && 'cursor-pointer',
-                              )}
-                              onClick={() => rowExpansion && toggleRowExpansion(index)}
-                            >
-                              <td className="p-3" onClick={e => e.stopPropagation()}>
-                                <Checkbox
-                                  checked={isSelected}
-                                  disabled={!isSelectable}
-                                  onCheckedChange={() => toggleRowSelection(record, index)}
-                                />
-                              </td>
-                              {columns.map((col, colIdx) => (
-                                <td
-                                  key={colIdx}
-                                  className={cn(
-                                    'p-3 border-l',
-                                    col.textAlignment === 'center' && 'text-center',
-                                    col.textAlignment === 'right' && 'text-right',
-                                  )}
-                                >
-                                  {col.render
-                                    ? col.render(record, index)
-                                    : String(getNestedValue(record, col.accessor) ?? '')}
-                                </td>
-                              ))}
-                            </tr>
-                            {rowExpansion && isExpanded && (
-                              <tr key={`${index}-expansion`}>
-                                <td colSpan={columns.length + 1} className="p-0 border-t bg-muted/20">
-                                  {rowExpansion.content({
-                                    record,
-                                    collapse: () => toggleRowExpansion(index),
-                                  })}
-                                </td>
-                              </tr>
+                  return (
+                    <Fragment key={index}>
+                      <tr
+                        className={cn(
+                          'border-t hover:bg-accent/50 transition-colors',
+                          index % 2 === 1 && 'bg-muted/30',
+                          isSelected && 'bg-primary/10',
+                          rowExpansion && 'cursor-pointer',
+                        )}
+                        onClick={() => rowExpansion && toggleRowExpansion(index)}
+                      >
+                        <td className="p-3" onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={isSelected}
+                            disabled={!isSelectable}
+                            onCheckedChange={() => toggleRowSelection(record, index)}
+                          />
+                        </td>
+                        {columns.map((col, colIdx) => (
+                          <td
+                            key={colIdx}
+                            className={cn(
+                              'p-3 border-l',
+                              col.textAlignment === 'center' && 'text-center',
+                              col.textAlignment === 'right' && 'text-right',
                             )}
-                          </Fragment>
-                        )
-                      })
-                    )}
+                          >
+                            {col.render
+                              ? col.render(record, index)
+                              : String(getNestedValue(record, col.accessor) ?? '')}
+                          </td>
+                        ))}
+                      </tr>
+                      {rowExpansion && isExpanded && (
+                        <tr key={`${index}-expansion`}>
+                          <td colSpan={columns.length + 1} className="p-0 border-t bg-muted/20">
+                            {rowExpansion.content({
+                              record,
+                              collapse: () => toggleRowExpansion(index),
+                            })}
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  )
+                })
+              )}
             </tbody>
           </table>
         </div>

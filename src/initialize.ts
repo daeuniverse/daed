@@ -42,7 +42,9 @@ export function useInitialize() {
   const getDefaults = getDefaultsRequest(gqlClient)
 
   return useCallback(async () => {
-    const lanInterfaces = (await getInterfaces()).general.interfaces.filter(({ flag }) => !!flag.default).map(({ name }) => name)
+    const lanInterfaces = (await getInterfaces()).general.interfaces
+      .filter(({ flag }) => !!flag.default)
+      .map(({ name }) => name)
 
     const { defaultConfigID, defaultRoutingID, defaultDNSID, defaultGroupID } = await getDefaults()
 
@@ -93,8 +95,7 @@ export function useInitialize() {
       await setJsonStorageMutation.mutateAsync({ mode: MODE.simple })
 
       modeAtom.set(MODE.simple)
-    }
-    else {
+    } else {
       modeAtom.set(mode as MODE)
     }
 

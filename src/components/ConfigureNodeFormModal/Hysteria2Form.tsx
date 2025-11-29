@@ -17,8 +17,7 @@ export function Hysteria2Form({ onLinkGeneration }: { onLinkGeneration: (link: s
 
     const result = hysteria2Schema.safeParse(formData)
 
-    if (!result.success)
-      return
+    if (!result.success) return
 
     /* hysteria2://[auth@]hostname[:port]/?[key=value]&[key=value]... */
     const query = {
@@ -41,7 +40,7 @@ export function Hysteria2Form({ onLinkGeneration }: { onLinkGeneration: (link: s
   }
 
   const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   return (
@@ -49,13 +48,13 @@ export function Hysteria2Form({ onLinkGeneration }: { onLinkGeneration: (link: s
       <Input
         label={t('configureNode.name')}
         value={formData.name}
-        onChange={e => updateField('name', e.target.value)}
+        onChange={(e) => updateField('name', e.target.value)}
       />
       <Input
         label={t('configureNode.host')}
         withAsterisk
         value={formData.server}
-        onChange={e => updateField('server', e.target.value)}
+        onChange={(e) => updateField('server', e.target.value)}
       />
       <NumberInput
         label={t('configureNode.port')}
@@ -63,15 +62,15 @@ export function Hysteria2Form({ onLinkGeneration }: { onLinkGeneration: (link: s
         min={0}
         max={65535}
         value={formData.port}
-        onChange={val => updateField('port', Number(val))}
+        onChange={(val) => updateField('port', Number(val))}
       />
-      <Input label="Auth" withAsterisk value={formData.auth} onChange={e => updateField('auth', e.target.value)} />
-      <Input label="SNI" value={formData.sni} onChange={e => updateField('sni', e.target.value)} />
-      <Input label="Pin SHA256" value={formData.pinSHA256} onChange={e => updateField('pinSHA256', e.target.value)} />
+      <Input label="Auth" withAsterisk value={formData.auth} onChange={(e) => updateField('auth', e.target.value)} />
+      <Input label="SNI" value={formData.sni} onChange={(e) => updateField('sni', e.target.value)} />
+      <Input label="Pin SHA256" value={formData.pinSHA256} onChange={(e) => updateField('pinSHA256', e.target.value)} />
       <Checkbox
         label={t('allowInsecure')}
         checked={formData.allowInsecure}
-        onCheckedChange={checked => updateField('allowInsecure', !!checked)}
+        onCheckedChange={(checked) => updateField('allowInsecure', !!checked)}
       />
       <FormActions reset={() => setFormData(DEFAULT_HYSTERIA2_FORM_VALUES)} />
     </form>

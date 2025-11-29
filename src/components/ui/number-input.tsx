@@ -59,14 +59,11 @@ function NumberInput({
 
     let num = Number.parseFloat(val)
 
-    if (Number.isNaN(num))
-      return
+    if (Number.isNaN(num)) return
 
-    if (min !== undefined && num < min)
-      num = min
+    if (min !== undefined && num < min) num = min
 
-    if (max !== undefined && num > max)
-      num = max
+    if (max !== undefined && num > max) num = max
 
     if (precision !== undefined) {
       num = Number.parseFloat(num.toFixed(precision))
@@ -76,14 +73,12 @@ function NumberInput({
   }
 
   const increment = () => {
-    if (disabled)
-      return
+    if (disabled) return
 
     const current = typeof value === 'number' ? value : Number.parseFloat(value as string) || 0
     let newValue = current + step
 
-    if (max !== undefined && newValue > max)
-      newValue = max
+    if (max !== undefined && newValue > max) newValue = max
 
     if (precision !== undefined) {
       newValue = Number.parseFloat(newValue.toFixed(precision))
@@ -93,14 +88,12 @@ function NumberInput({
   }
 
   const decrement = () => {
-    if (disabled)
-      return
+    if (disabled) return
 
     const current = typeof value === 'number' ? value : Number.parseFloat(value as string) || 0
     let newValue = current - step
 
-    if (min !== undefined && newValue < min)
-      newValue = min
+    if (min !== undefined && newValue < min) newValue = min
 
     if (precision !== undefined) {
       newValue = Number.parseFloat(newValue.toFixed(precision))

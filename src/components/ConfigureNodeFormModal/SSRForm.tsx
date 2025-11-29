@@ -17,8 +17,7 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
 
     const result = ssrSchema.safeParse(formData)
 
-    if (!result.success)
-      return
+    if (!result.success) return
 
     /* ssr://server:port:proto:method:obfs:URLBASE64(password)/?remarks=URLBASE64(remarks)&protoparam=URLBASE64(protoparam)&obfsparam=URLBASE64(obfsparam)) */
     return onLinkGeneration(
@@ -33,7 +32,7 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
   }
 
   const updateField = <K extends keyof typeof formData>(field: K, value: (typeof formData)[K]) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   return (
@@ -41,14 +40,14 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
       <Input
         label={t('configureNode.name')}
         value={formData.name}
-        onChange={e => updateField('name', e.target.value)}
+        onChange={(e) => updateField('name', e.target.value)}
       />
 
       <Input
         label={t('configureNode.host')}
         withAsterisk
         value={formData.server}
-        onChange={e => updateField('server', e.target.value)}
+        onChange={(e) => updateField('server', e.target.value)}
       />
 
       <NumberInput
@@ -57,14 +56,14 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
         min={0}
         max={65535}
         value={formData.port}
-        onChange={val => updateField('port', Number(val))}
+        onChange={(val) => updateField('port', Number(val))}
       />
 
       <Input
         label={t('configureNode.password')}
         withAsterisk
         value={formData.password}
-        onChange={e => updateField('password', e.target.value)}
+        onChange={(e) => updateField('password', e.target.value)}
       />
 
       <Select
@@ -96,7 +95,7 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'none', value: 'none' },
         ]}
         value={formData.method}
-        onChange={val => updateField('method', (val || 'aes-128-cfb') as typeof formData.method)}
+        onChange={(val) => updateField('method', (val || 'aes-128-cfb') as typeof formData.method)}
       />
 
       <Select
@@ -112,14 +111,14 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'auth_chain_b', value: 'auth_chain_b' },
         ]}
         value={formData.proto}
-        onChange={val => updateField('proto', (val || 'origin') as typeof formData.proto)}
+        onChange={(val) => updateField('proto', (val || 'origin') as typeof formData.proto)}
       />
 
       {formData.proto !== 'origin' && (
         <Input
           label={t('configureNode.protocolParam')}
           value={formData.protoParam}
-          onChange={e => updateField('protoParam', e.target.value)}
+          onChange={(e) => updateField('protoParam', e.target.value)}
         />
       )}
 
@@ -134,14 +133,14 @@ export function SSRForm({ onLinkGeneration }: { onLinkGeneration: (link: string)
           { label: 'tls1.2_ticket_auth', value: 'tls1.2_ticket_auth' },
         ]}
         value={formData.obfs}
-        onChange={val => updateField('obfs', (val || 'plain') as typeof formData.obfs)}
+        onChange={(val) => updateField('obfs', (val || 'plain') as typeof formData.obfs)}
       />
 
       {formData.obfs !== 'plain' && (
         <Input
           label={t('configureNode.obfsParam')}
           value={formData.obfsParam}
-          onChange={e => updateField('obfsParam', e.target.value)}
+          onChange={(e) => updateField('obfsParam', e.target.value)}
         />
       )}
 

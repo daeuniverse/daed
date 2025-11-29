@@ -64,7 +64,7 @@ function Calendar({
       )}
       captionLayout={captionLayout}
       formatters={{
-        formatMonthDropdown: date => date.toLocaleString('default', { month: 'short' }),
+        formatMonthDropdown: (date) => date.toLocaleString('default', { month: 'short' }),
         ...formatters,
       }}
       classNames={{
@@ -147,8 +147,7 @@ function CalendarDayButton({ className, day, modifiers, ...props }: React.Compon
 
   const ref = React.useRef<HTMLButtonElement>(null)
   React.useEffect(() => {
-    if (modifiers.focused)
-      ref.current?.focus()
+    if (modifiers.focused) ref.current?.focus()
   }, [modifiers.focused])
 
   return (

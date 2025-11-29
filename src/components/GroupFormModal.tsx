@@ -105,8 +105,7 @@ export function GroupFormModal({ ref, opened, onClose }) {
         policy: formData.policy,
         policyParams,
       })
-    }
-    else {
+    } else {
       await createGroupMutation.mutateAsync({
         name: formData.name,
         policy: formData.policy,
@@ -130,7 +129,7 @@ export function GroupFormModal({ ref, opened, onClose }) {
               withAsterisk
               label={t('name')}
               value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               error={errors.name}
               disabled={!!editingID}
             />
@@ -139,15 +138,14 @@ export function GroupFormModal({ ref, opened, onClose }) {
               label={t('policy')}
               data={policyData}
               value={formData.policy}
-              onChange={value => setFormData({ ...formData, policy: value as Policy })}
+              onChange={(value) => setFormData({ ...formData, policy: value as Policy })}
             />
 
             <FormActions
               reset={() => {
                 if (editingID && origins) {
                   setFormData(origins)
-                }
-                else {
+                } else {
                   resetForm()
                 }
               }}

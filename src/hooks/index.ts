@@ -5,7 +5,7 @@ export function useDisclosure(initialState = false) {
 
   const open = useCallback(() => setOpened(true), [])
   const close = useCallback(() => setOpened(false), [])
-  const toggle = useCallback(() => setOpened(prev => !prev), [])
+  const toggle = useCallback(() => setOpened((prev) => !prev), [])
 
   return [opened, { open, close, toggle }] as const
 }
@@ -20,8 +20,7 @@ export function useMediaQuery(query: string): boolean {
   })
 
   useEffect(() => {
-    if (typeof window === 'undefined')
-      return
+    if (typeof window === 'undefined') return
 
     const mediaQuery = window.matchMedia(query)
     const handler = (e: MediaQueryListEvent) => setMatches(e.matches)

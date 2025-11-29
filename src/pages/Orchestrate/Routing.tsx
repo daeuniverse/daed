@@ -34,18 +34,18 @@ export function Routing() {
 
   const renameFormModalRef = useRef<RenameFormModalRef>(null)
   const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
-  const [openedCreateRoutingFormModal, { open: openCreateRoutingFormModal, close: closeCreateRoutingFormModal }]
-    = useDisclosure(false)
-  const [openedUpdateRoutingFormModal, { open: openUpdateRoutingFormModal, close: closeUpdateRoutingFormModal }]
-    = useDisclosure(false)
+  const [openedCreateRoutingFormModal, { open: openCreateRoutingFormModal, close: closeCreateRoutingFormModal }] =
+    useDisclosure(false)
+  const [openedUpdateRoutingFormModal, { open: openUpdateRoutingFormModal, close: closeUpdateRoutingFormModal }] =
+    useDisclosure(false)
 
   return (
     <Section title={t('routing')} icon={<Map className="h-5 w-5" />} onCreate={openCreateRoutingFormModal} bordered>
-      {routingsQuery?.routings.map(routing => (
+      {routingsQuery?.routings.map((routing) => (
         <SimpleCard
           key={routing.id}
           name={routing.name}
-          actions={(
+          actions={
             <Fragment>
               <Button
                 variant="ghost"
@@ -82,7 +82,7 @@ export function Routing() {
                 <Pencil className="h-4 w-4" />
               </Button>
             </Fragment>
-          )}
+          }
           selected={routing.selected}
           onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
           onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}

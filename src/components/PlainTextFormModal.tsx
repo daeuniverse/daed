@@ -58,7 +58,7 @@ export function PlainTextFormModal({ ref, title, opened, onClose, handleSubmit }
   useImperativeHandle(ref, () => ({
     form: {
       setValues: setFormData,
-      setFieldValue: (field: string, value: string) => setFormData(prev => ({ ...prev, [field]: value })),
+      setFieldValue: (field: string, value: string) => setFormData((prev) => ({ ...prev, [field]: value })),
       reset: resetForm,
       values: formData,
       errors,
@@ -102,26 +102,27 @@ export function PlainTextFormModal({ ref, title, opened, onClose, handleSubmit }
           </Button>
         </DialogHeader>
 
-        <form onSubmit={handleFormSubmit} className="flex-1 flex flex-col min-h-0">
-          <div className="flex-1 flex flex-col gap-4 min-h-0">
+        <form onSubmit={handleFormSubmit} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <div className="flex-1 flex flex-col gap-4 min-h-0 overflow-hidden">
             <Input
               label={t('name')}
               withAsterisk
               value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               error={errors.name}
               disabled={!!editingID}
+              className="shrink-0"
             />
 
-            <div className="flex-1 flex flex-col gap-1 min-h-0">
-              <div className="flex-1 rounded overflow-hidden border min-h-[400px]">
+            <div className="flex-1 flex flex-col gap-1 min-h-0 overflow-hidden">
+              <div className="flex-1 rounded overflow-hidden border min-h-[200px]">
                 <Editor
                   height="100%"
                   theme={colorScheme === 'dark' ? EDITOR_THEME_DARK : EDITOR_THEME_LIGHT}
                   options={EDITOR_OPTIONS}
                   language="routingA"
                   value={formData.text}
-                  onChange={value => setFormData({ ...formData, text: value || '' })}
+                  onChange={(value) => setFormData({ ...formData, text: value || '' })}
                   beforeMount={handleEditorBeforeMount}
                 />
               </div>
@@ -130,11 +131,11 @@ export function PlainTextFormModal({ ref, title, opened, onClose, handleSubmit }
             </div>
 
             <FormActions
+              className="shrink-0"
               reset={() => {
                 if (editingID && origins) {
                   setFormData(origins)
-                }
-                else {
+                } else {
                   resetForm()
                 }
               }}
