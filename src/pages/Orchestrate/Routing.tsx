@@ -15,7 +15,6 @@ import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
-import { Code } from '~/components/ui/code'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
@@ -63,9 +62,7 @@ export function Routing() {
           onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
           onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}
           onRename={(newName) => renameRoutingMutation.mutate({ id: routing.id, name: newName })}
-        >
-          <Code block>{routing.routing.string}</Code>
-        </SimpleCard>
+        />
       ))}
 
       <PlainTextFormModal

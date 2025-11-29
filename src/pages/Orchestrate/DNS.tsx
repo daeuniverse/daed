@@ -1,7 +1,6 @@
 import type { PlainTextFormModalRef } from '~/components/PlainTextFormModal'
 import { useStore } from '@nanostores/react'
 import { Route, Settings2 } from 'lucide-react'
-
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -16,7 +15,6 @@ import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
-import { Code } from '~/components/ui/code'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
@@ -65,9 +63,7 @@ export function DNS() {
           onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
           onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}
           onRename={(newName) => renameDNSMutation.mutate({ id: dns.id, name: newName })}
-        >
-          <Code block>{dns.dns.string}</Code>
-        </SimpleCard>
+        />
       ))}
 
       <PlainTextFormModal

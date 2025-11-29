@@ -28,7 +28,7 @@ export function SimpleCard({
   onRemove?: () => void
   onRename?: (newName: string) => void
   actions?: React.ReactNode
-  children: React.ReactNode
+  children?: React.ReactNode
 }) {
   const { t } = useTranslation()
   const [openedDetailsModal, setOpenedDetailsModal] = useState(false)
@@ -139,9 +139,11 @@ export function SimpleCard({
             )}
             {actions}
 
-            <Button variant="ghost" size="xs" onClick={() => setOpenedDetailsModal(true)}>
-              <Eye className="h-4 w-4" />
-            </Button>
+            {children && (
+              <Button variant="ghost" size="xs" onClick={() => setOpenedDetailsModal(true)}>
+                <Eye className="h-4 w-4" />
+              </Button>
+            )}
 
             {!selected && onRemove && (
               <Button
