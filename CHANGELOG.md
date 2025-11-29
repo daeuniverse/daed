@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.13.0](https://github.com/daeuniverse/daed/compare/v0.12.0...v0.13.0) (2025-11-29)
+
+
+### Features
+
+* **dependabot:** add daily update schedules for GitHub Actions and Git submodules ([dc03f56](https://github.com/daeuniverse/daed/commit/dc03f56400805fdf6461268ab4fd5ea5f920e9f8))
+* **docs:** update build, commit message guide, and getting started documentation ([5b70612](https://github.com/daeuniverse/daed/commit/5b70612abaea61bca0522352457d43252892dcbd))
+* enhance README with Docker deployment instructions and online demo section ([d78a38c](https://github.com/daeuniverse/daed/commit/d78a38c969905c9a78748a8e7bb73c85cedcfe19))
+* **forms:** extract setValue logic into useSetValue hook and enhance form validation ([84810c5](https://github.com/daeuniverse/daed/commit/84810c5f8f2ed573bc436ce4e9b88eeeaf20c5e3))
+* **Header:** enhance header component with new Sheet elements and improve button styles ([010119e](https://github.com/daeuniverse/daed/commit/010119ece8c87252e1388067eeb091020037b6ac))
+
+
+### Bug Fixes
+
+* **i18n:** refine endpoint setup messages for clarity and consistency ([02f5bc4](https://github.com/daeuniverse/daed/commit/02f5bc4defb51cfd0bbd0bf6c327c714c10ff522))
+
 ## [0.12.0](https://github.com/daeuniverse/daed/compare/v0.11.0...v0.12.0) (2025-11-29)
 
 
