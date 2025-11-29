@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.12.0](https://github.com/daeuniverse/daed/compare/v0.11.0...v0.12.0) (2025-11-29)
+
+
+### Features
+
+* refactor forms to use react-hook-form with zod validation ([0a13447](https://github.com/daeuniverse/daed/commit/0a13447f397fb3a75d996a594f376e58fc2b67bf))
+* update Header component to handle avatar display and add APP_VERSION type definitions ([4c19631](https://github.com/daeuniverse/daed/commit/4c1963129ef8a697c70f08744aa8426a6336eb48))
+
 ## [0.11.0](https://github.com/daeuniverse/daed/compare/v0.10.0...v0.11.0) (2025-11-29)
 
 
