@@ -75,12 +75,13 @@ export function SubscriptionResource() {
           subscriptionID={subscriptionID}
           type={DraggableResourceType.subscription}
           name={tag || link}
+          leftSection={`${nodes.edges.length} ${t('node')}`}
           actions={
             <Fragment>
               <Button
                 variant="ghost"
                 size="xs"
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
                 onClick={() => {
                   setEditingSubscription({
                     id: subscriptionID,
@@ -90,12 +91,12 @@ export function SubscriptionResource() {
                   openEditSubscriptionFormModal()
                 }}
               >
-                <Pencil className="h-3 w-3" />
+                <Pencil className="h-3.5 w-3.5" />
               </Button>
               <Button
                 variant="ghost"
                 size="xs"
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
                 onClick={() => {
                   qrCodeModalRef.current?.setProps({
                     name: tag!,
@@ -104,24 +105,24 @@ export function SubscriptionResource() {
                   openQRCodeModal()
                 }}
               >
-                <Eye className="h-3 w-3" />
+                <Eye className="h-3.5 w-3.5" />
               </Button>
               <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
             </Fragment>
           }
           onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
         >
-          <p className="font-semibold">{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
+          <p className="text-xs opacity-70">{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
 
           <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
 
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="node">
-              <AccordionTrigger className="text-xs px-2 py-2">
-                {t('node')} ({nodes.edges.length})
+          <Accordion type="single" collapsible className="w-full mt-2">
+            <AccordionItem value="node" className="border-none">
+              <AccordionTrigger className="text-xs py-1 hover:no-underline">
+                {t('actions.show content')}
               </AccordionTrigger>
               <AccordionContent>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 pt-2">
                   {nodes.edges.map(({ id, name }) => (
                     <DraggableResourceBadge
                       key={id}

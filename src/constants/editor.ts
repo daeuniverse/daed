@@ -72,7 +72,7 @@ export const EDITOR_LANGUAGE_ROUTINGA: languages.IMonarchLanguage = {
   connectionTypes: ['http', 'socks', 'freedom'],
 
   // Built-in outbounds
-  builtinOutbounds: ['proxy', 'block', 'direct'],
+  builtinOutbounds: ['proxy', 'block', 'direct', 'must_direct', 'must_proxy'],
 
   // Connection parameters
   parameters: ['address', 'port', 'user', 'pass', 'sniffing', 'domainStrategy', 'redirect', 'userLevel'],
@@ -103,9 +103,9 @@ export const EDITOR_LANGUAGE_ROUTINGA: languages.IMonarchLanguage = {
       // Geosite/geoip prefix
       [/(geosite|geoip)(:)/, ['keyword.special', 'delimiter']],
 
-      // Rule functions
+      // Rule functions and identifiers (including process names like NetworkManager)
       [
-        /[a-z]\w*/i,
+        /[a-zA-Z][\w-]*/, // eslint-disable-line regexp/use-ignore-case
         {
           cases: {
             '@ruleFunctions': 'keyword',
@@ -125,8 +125,8 @@ export const EDITOR_LANGUAGE_ROUTINGA: languages.IMonarchLanguage = {
       [/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,2})?/, 'number.ip'],
 
       // IPv6 addresses (simplified pattern)
-      [/[\da-f:]+::[\da-f:]+/i, 'number.ip'],
-      [/[\da-f]+:[\da-f:]+/i, 'number.ip'],
+      [/[\da-fA-F:]+::[\da-fA-F:]+/, 'number.ip'], // eslint-disable-line regexp/use-ignore-case
+      [/[\da-fA-F]+:[\da-fA-F:]+/, 'number.ip'], // eslint-disable-line regexp/use-ignore-case
 
       // Port ranges
       [/\d+-\d+/, 'number.range'],

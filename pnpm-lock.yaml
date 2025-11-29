@@ -7,11 +7,6 @@ settings:
 overrides:
   vite: npm:rolldown-vite@latest
 
-patchedDependencies:
-  monaco-themes:
-    hash: e279638004890f1be3c8fb55fd35bab026df79f3a4130fcabde7f776f545040c
-    path: patches/monaco-themes.patch
-
 importers:
 
   .:
@@ -298,9 +293,6 @@ importers:
       monaco-editor:
         specifier: ^0.55.1
         version: 0.55.1
-      monaco-themes:
-        specifier: ^0.4.8
-        version: 0.4.8(patch_hash=e279638004890f1be3c8fb55fd35bab026df79f3a4130fcabde7f776f545040c)
       nanostores:
         specifier: ^1.1.0
         version: 1.1.0
@@ -4096,9 +4088,6 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
-  fast-plist@0.1.3:
-    resolution: {integrity: sha512-d9cEfo/WcOezgPLAC/8t8wGb6YOD6JTCPMw2QcG2nAdFmyY+9rTUizCTaGjIZAloWENTEUMAPpkUAIJJJ0i96A==}
-
   fast-uri@3.0.3:
     resolution: {integrity: sha512-aLrHthzCjH5He4Z2H9YZ+v6Ujb9ocRuW6ZzkJQOrTxleEijANq4v1TsaPaVG1PZcuurEzrLcWRyYBYXD5cEiaw==}
 
@@ -5008,10 +4997,6 @@ packages:
       graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
       monaco-editor: '>= 0.20.0 < 1'
       prettier: ^2.8.0 || ^3.0.0
-
-  monaco-themes@0.4.8:
-    resolution: {integrity: sha512-QEDCwl5XUMPPpsg8TVNfi1VKIDtMsMTJAhUfxHSZ6hzkEfZgfTK2hicwyzkDKhAhrpMkHkwMtG13ynvdztJesw==}
-    engines: {node: '>=22.0.0'}
 
   motion-dom@12.23.23:
     resolution: {integrity: sha512-n5yolOs0TQQBRUFImrRfs/+6X4p3Q4n1dUEqt/H58Vx7OW6RF+foWEgmTVDhIWJIMXOuNNL0apKH2S16en9eiA==}
@@ -10599,8 +10584,6 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
-  fast-plist@0.1.3: {}
-
   fast-uri@3.0.3: {}
 
   fastq@1.19.1:
@@ -11627,10 +11610,6 @@ snapshots:
       monaco-editor: 0.52.2
       picomatch-browser: 2.2.6
       prettier: 3.7.1
-
-  monaco-themes@0.4.8(patch_hash=e279638004890f1be3c8fb55fd35bab026df79f3a4130fcabde7f776f545040c):
-    dependencies:
-      fast-plist: 0.1.3
 
   motion-dom@12.23.23:
     dependencies:

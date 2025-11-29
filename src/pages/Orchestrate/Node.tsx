@@ -50,14 +50,14 @@ export function NodeResource() {
           id={`node-${id}`}
           nodeID={id}
           type={DraggableResourceType.node}
-          name={tag}
-          leftSection={<span className="text-xs font-semibold">{protocol}</span>}
+          name={tag || name}
+          leftSection={protocol}
           actions={
             <Fragment>
               <Button
                 variant="ghost"
                 size="xs"
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
                 onClick={() => {
                   setEditingNode({
                     id,
@@ -68,28 +68,27 @@ export function NodeResource() {
                   setOpenedEditNodeFormModal(true)
                 }}
               >
-                <Pencil className="h-3 w-3" />
+                <Pencil className="h-3.5 w-3.5" />
               </Button>
               <Button
                 variant="ghost"
                 size="xs"
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
                 onClick={() => {
                   qrCodeModalRef.current?.setProps({
-                    name: name || tag!,
+                    name: tag || name!,
                     link,
                   })
                   setOpenedQRCodeModal(true)
                 }}
               >
-                <Eye className="h-3 w-3" />
+                <Eye className="h-3.5 w-3.5" />
               </Button>
             </Fragment>
           }
           onRemove={() => removeNodesMutation.mutate([id])}
         >
-          <p className="font-semibold text-primary break-all">{name}</p>
-
+          {name && name !== tag && <p className="text-xs opacity-70">{name}</p>}
           <Spoiler label={link} showLabel={t('actions.show content')} hideLabel={t('actions.hide')} />
         </DraggableResourceCard>
       ))}

@@ -2,8 +2,9 @@ import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import type { DraggingResource } from '~/constants'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { snapCenterToCursor } from '@dnd-kit/modifiers'
-import { useMemo, useRef, useState } from 'react'
+import { GripVertical } from 'lucide-react'
 
+import { useMemo, useRef, useState } from 'react'
 import {
   useGroupAddNodesMutation,
   useGroupAddSubscriptionsMutation,
@@ -11,7 +12,6 @@ import {
   useNodesQuery,
   useSubscriptionsQuery,
 } from '~/apis'
-import { Badge } from '~/components/ui/badge'
 import { DraggableResourceType } from '~/constants'
 import { useMediaQuery } from '~/hooks'
 
@@ -64,7 +64,7 @@ export function OrchestratePage() {
         )
         const node = subscription?.nodes.edges.find((node) => node.id === nodeID)
 
-        return node?.name
+        return node?.tag || node?.name
       }
 
       if (type === DraggableResourceType.groupNode) {
@@ -72,7 +72,7 @@ export function OrchestratePage() {
 
         const node = group?.nodes.find((node) => node.id === nodeID)
 
-        return node?.name
+        return node?.tag || node?.name
       }
 
       if (type === DraggableResourceType.groupSubscription) {
@@ -143,15 +143,16 @@ export function OrchestratePage() {
 
       <div ref={dndAreaRef} className={`grid gap-4 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
         <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
-          <GroupResource highlight={!!draggingResource} />
+          <GroupResource highlight={!!draggingResource} draggingResource={draggingResource} />
           <NodeResource />
           <SubscriptionResource />
 
           <DragOverlay zIndex={9999} modifiers={[snapCenterToCursor]}>
             {draggingResource && (
-              <Badge className="cursor-grabbing shadow-lg text-sm px-3 py-1">
-                <span className="truncate max-w-[150px]">{draggingResourceDisplayName}</span>
-              </Badge>
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg border bg-card shadow-lg cursor-grabbing">
+                <GripVertical className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+                <span className="text-sm font-medium truncate max-w-[200px]">{draggingResourceDisplayName}</span>
+              </div>
             )}
           </DragOverlay>
         </DndContext>

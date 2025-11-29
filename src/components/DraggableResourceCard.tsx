@@ -1,12 +1,11 @@
 import type { DraggableResourceType } from '~/constants'
 import { useDraggable } from '@dnd-kit/core'
-import { Trash2 } from 'lucide-react'
+import { GripVertical, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useTranslation } from 'react-i18next'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
-import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { cn } from '~/lib/utils'
 
@@ -40,37 +39,56 @@ export function DraggableResourceCard({
 
   return (
     <>
-      <Card padding="sm" withBorder shadow="sm" className={cn(isDragging && 'opacity-50')}>
-        <div className="border-b pb-2 mb-2">
-          <div className="flex items-center justify-between gap-2">
-            {leftSection}
+      <div
+        ref={setNodeRef}
+        className={cn(
+          'group relative bg-card rounded-xl border transition-all duration-200',
+          'hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5',
+          'cursor-grab active:cursor-grabbing touch-none select-none',
+          isDragging && 'opacity-50 shadow-lg scale-[1.02] z-50',
+        )}
+        {...listeners}
+        {...attributes}
+      >
+        {/* Drag handle indicator */}
+        <div className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-40 transition-opacity pointer-events-none">
+          <GripVertical className="h-4 w-4 text-muted-foreground" />
+        </div>
 
-            <Badge
-              ref={setNodeRef}
-              className="flex-1 cursor-grab touch-none select-none text-sm px-3 py-1"
-              {...listeners}
-              {...attributes}
+        <div className="p-3 pl-7">
+          {/* Header with protocol badge and name */}
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              {leftSection && (
+                <Badge variant="secondary" className="shrink-0 text-xs font-medium px-2 py-0.5">
+                  {leftSection}
+                </Badge>
+              )}
+              <h4 className="font-semibold text-sm truncate">{name}</h4>
+            </div>
+
+            {/* Actions - visible on hover */}
+            <div
+              className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
             >
-              <span className="truncate">{name}</span>
-            </Badge>
-
-            <div className="flex items-center gap-2">
               {actions}
-
               <Button
                 variant="ghost"
                 size="xs"
-                className="text-destructive hover:text-destructive"
+                className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
                 onClick={() => setConfirmOpen(true)}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
-        </div>
 
-        <div>{children}</div>
-      </Card>
+          {/* Content */}
+          <div className="text-sm text-muted-foreground">{children}</div>
+        </div>
+      </div>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>

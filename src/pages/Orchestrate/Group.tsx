@@ -1,8 +1,9 @@
 import type { GroupFormModalRef } from '~/components/GroupFormModal'
+import type { DraggingResource } from '~/constants'
 import { useStore } from '@nanostores/react'
 import { Settings2, Table2 } from 'lucide-react'
 
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useGroupDelNodesMutation,
@@ -12,17 +13,22 @@ import {
   useRenameGroupMutation,
   useSubscriptionsQuery,
 } from '~/apis'
-import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { GroupFormModal } from '~/components/GroupFormModal'
 import { Section } from '~/components/Section'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
+import { SortableGroupContent } from '~/components/SortableGroupContent'
 import { Button } from '~/components/ui/button'
 import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
-export function GroupResource({ highlight }: { highlight?: boolean }) {
+export function GroupResource({
+  highlight,
+  draggingResource,
+}: {
+  highlight?: boolean
+  draggingResource?: DraggingResource | null
+}) {
   const { t } = useTranslation()
   const { data: groupsQuery } = useGroupsQuery()
   const { defaultGroupID } = useStore(defaultResourcesAtom)
@@ -36,6 +42,24 @@ export function GroupResource({ highlight }: { highlight?: boolean }) {
   const groupDelSubscriptionsMutation = useGroupDelSubscriptionsMutation()
   const updateGroupFormModalRef = useRef<GroupFormModalRef>(null)
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
+
+  // Determine which accordion sections should be auto-expanded based on drag type
+  const autoExpandValue = useMemo(() => {
+    if (!draggingResource) return undefined
+
+    const { type } = draggingResource
+    if (
+      type === DraggableResourceType.node ||
+      type === DraggableResourceType.groupNode ||
+      type === DraggableResourceType.subscription_node
+    ) {
+      return 'node'
+    }
+    if (type === DraggableResourceType.subscription || type === DraggableResourceType.groupSubscription) {
+      return 'subscription'
+    }
+    return undefined
+  }, [draggingResource])
 
   return (
     <Section
@@ -76,68 +100,25 @@ export function GroupResource({ highlight }: { highlight?: boolean }) {
 
             <div className="h-2.5" />
 
-            <Accordion type="multiple" className="w-full">
-              {groupNodes.length > 0 && (
-                <AccordionItem value="node">
-                  <AccordionTrigger className="text-xs px-2 py-2">
-                    {t('node')} ({groupNodes.length})
-                  </AccordionTrigger>
-
-                  <AccordionContent>
-                    <div className="grid grid-cols-2 gap-2">
-                      {groupNodes.map(({ id: nodeId, tag, name, subscriptionID }) => (
-                        <DraggableResourceBadge
-                          key={nodeId}
-                          id={`${groupId}-${nodeId}`}
-                          nodeID={nodeId}
-                          groupID={groupId}
-                          type={DraggableResourceType.groupNode}
-                          name={tag || name}
-                          onRemove={() =>
-                            groupDelNodesMutation.mutate({
-                              id: groupId,
-                              nodeIDs: [nodeId],
-                            })
-                          }
-                        >
-                          {subscriptionID &&
-                            subscriptionsQuery?.subscriptions.find((s) => s.id === subscriptionID)?.tag}
-                        </DraggableResourceBadge>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-
-              {groupSubscriptions.length > 0 && (
-                <AccordionItem value="subscription">
-                  <AccordionTrigger className="text-xs px-2 py-2">
-                    {t('subscription')} ({groupSubscriptions.length})
-                  </AccordionTrigger>
-
-                  <AccordionContent>
-                    <div className="grid grid-cols-2 gap-2">
-                      {groupSubscriptions.map(({ id: subscriptionId, tag, link }) => (
-                        <DraggableResourceBadge
-                          key={subscriptionId}
-                          id={`${groupId}-${subscriptionId}`}
-                          groupID={groupId}
-                          subscriptionID={subscriptionId}
-                          type={DraggableResourceType.groupSubscription}
-                          name={tag || link}
-                          onRemove={() =>
-                            groupDelSubscriptionsMutation.mutate({
-                              id: groupId,
-                              subscriptionIDs: [subscriptionId],
-                            })
-                          }
-                        />
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
+            <SortableGroupContent
+              groupId={groupId}
+              nodes={groupNodes}
+              subscriptions={groupSubscriptions}
+              allSubscriptions={subscriptionsQuery?.subscriptions}
+              autoExpandValue={autoExpandValue}
+              onDelNode={(nodeId) =>
+                groupDelNodesMutation.mutate({
+                  id: groupId,
+                  nodeIDs: [nodeId],
+                })
+              }
+              onDelSubscription={(subscriptionId) =>
+                groupDelSubscriptionsMutation.mutate({
+                  id: groupId,
+                  subscriptionIDs: [subscriptionId],
+                })
+              }
+            />
           </DroppableGroupCard>
         ),
       )}
