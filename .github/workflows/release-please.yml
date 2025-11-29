@@ -65,7 +65,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ^1.22
-          cache-dependency-path: wing/go.sum
+          cache: false
 
       - run: go version
 
@@ -188,12 +188,13 @@ jobs:
         with:
           ref: ${{ needs.release-please.outputs.tag_name }}
           fetch-depth: 0
+          submodules: recursive
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: ^1.22
-          cache-dependency-path: wing/go.sum
+          cache: false
 
       - run: go version
 
