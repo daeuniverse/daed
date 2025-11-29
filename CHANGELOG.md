@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.0](https://github.com/daeuniverse/daed/compare/v0.8.1...v0.9.0) (2025-11-29)
+
+
+### Features
+
+* update pnpm workspace and vite configuration ([18d26f6](https://github.com/daeuniverse/daed/commit/18d26f68e06eba847bced47dc21a8f0f322d98fd))
+
+
+### Bug Fixes
+
+* improve code formatting and consistency in PlainTextFormModal component ([934f082](https://github.com/daeuniverse/daed/commit/934f0828ec8a5ccad4501da3e62a4bf140292cbc))
+* update Go version to 1.22 and improve code formatting in form components ([585af57](https://github.com/daeuniverse/daed/commit/585af572c5ec1d6d4ebd56da267f7a36b1248eac))
+
 ## [0.8.1](https://github.com/daeuniverse/daed/compare/v0.8.0...v0.8.1) (2025-11-29)
 
 
