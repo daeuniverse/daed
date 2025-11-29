@@ -1,18 +1,16 @@
 import type { ConfigFormModalRef } from '~/components/ConfigFormModal'
-import type { RenameFormModalRef } from '~/components/RenameFormModal'
 import { useStore } from '@nanostores/react'
-import { Pencil, Settings, Type } from 'lucide-react'
+import { Settings, Settings2 } from 'lucide-react'
 
-import { Fragment, useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useConfigsQuery, useRemoveConfigMutation, useSelectConfigMutation } from '~/apis'
+import { useConfigsQuery, useRemoveConfigMutation, useRenameConfigMutation, useSelectConfigMutation } from '~/apis'
 import { ConfigFormDrawer } from '~/components/ConfigFormModal'
-import { RenameFormModal } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
 import { Code } from '~/components/ui/code'
-import { GET_LOG_LEVEL_STEPS, RuleType } from '~/constants'
+import { GET_LOG_LEVEL_STEPS } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 import { deriveTime } from '~/utils'
@@ -25,10 +23,8 @@ export function Config() {
   const { data: configsQuery } = useConfigsQuery()
   const selectConfigMutation = useSelectConfigMutation()
   const removeConfigMutation = useRemoveConfigMutation()
+  const renameConfigMutation = useRenameConfigMutation()
   const updateConfigFormModalRef = useRef<ConfigFormModalRef>(null)
-
-  const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
-  const renameFormModalRef = useRef<RenameFormModalRef>(null)
 
   const [openedCreateConfigFormDrawer, { open: openCreateConfigFormDrawer, close: closeCreateConfigFormDrawer }] =
     useDisclosure(false)
@@ -42,55 +38,36 @@ export function Config() {
           key={config.id}
           name={config.name}
           actions={
-            <Fragment>
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => {
-                  if (renameFormModalRef.current) {
-                    renameFormModalRef.current.setProps({
-                      id: config.id,
-                      type: RuleType.config,
-                      oldName: config.name,
-                    })
-                  }
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => {
+                updateConfigFormModalRef.current?.setEditingID(config.id)
 
-                  openRenameFormModal()
-                }}
-              >
-                <Type className="h-4 w-4" />
-              </Button>
+                const { checkInterval, checkTolerance, sniffingTimeout, logLevel, ...global } = config.global
 
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => {
-                  updateConfigFormModalRef.current?.setEditingID(config.id)
+                const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
+                const logLevelNumber = logLevelSteps.findIndex(([, l]) => l === logLevel)
 
-                  const { checkInterval, checkTolerance, sniffingTimeout, logLevel, ...global } = config.global
+                updateConfigFormModalRef.current?.initOrigins({
+                  name: config.name,
+                  logLevelNumber,
+                  checkIntervalSeconds: deriveTime(checkInterval, 's'),
+                  checkToleranceMS: deriveTime(checkTolerance, 'ms'),
+                  sniffingTimeoutMS: deriveTime(sniffingTimeout, 'ms'),
+                  ...global,
+                })
 
-                  const logLevelSteps = GET_LOG_LEVEL_STEPS(t)
-                  const logLevelNumber = logLevelSteps.findIndex(([, l]) => l === logLevel)
-
-                  updateConfigFormModalRef.current?.initOrigins({
-                    name: config.name,
-                    logLevelNumber,
-                    checkIntervalSeconds: deriveTime(checkInterval, 's'),
-                    checkToleranceMS: deriveTime(checkTolerance, 'ms'),
-                    sniffingTimeoutMS: deriveTime(sniffingTimeout, 'ms'),
-                    ...global,
-                  })
-
-                  openUpdateConfigFormDrawer()
-                }}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-            </Fragment>
+                openUpdateConfigFormDrawer()
+              }}
+            >
+              <Settings2 className="h-4 w-4" />
+            </Button>
           }
           selected={config.selected}
           onSelect={() => selectConfigMutation.mutate({ id: config.id })}
           onRemove={config.id !== defaultConfigID ? () => removeConfigMutation.mutate(config.id) : undefined}
+          onRename={(newName) => renameConfigMutation.mutate({ id: config.id, name: newName })}
         >
           <Code block>{JSON.stringify(config, null, 2)}</Code>
         </SimpleCard>
@@ -102,8 +79,6 @@ export function Config() {
         opened={openedUpdateConfigFormDrawer}
         onClose={closeUpdateConfigFormDrawer}
       />
-
-      <RenameFormModal ref={renameFormModalRef} opened={openedRenameFormModal} onClose={closeRenameFormModal} />
     </Section>
   )
 }

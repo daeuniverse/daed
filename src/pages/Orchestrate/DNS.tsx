@@ -1,24 +1,22 @@
 import type { PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
-import type { RenameFormModalRef } from '~/components/RenameFormModal'
 import { useStore } from '@nanostores/react'
-import { Pencil, Route, Type } from 'lucide-react'
+import { Route, Settings2 } from 'lucide-react'
 
-import { Fragment, useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useCreateDNSMutation,
   useDNSsQuery,
   useRemoveDNSMutation,
+  useRenameDNSMutation,
   useSelectDNSMutation,
   useUpdateDNSMutation,
 } from '~/apis'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
-import { RenameFormModal } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
 import { Code } from '~/components/ui/code'
-import { RuleType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
@@ -29,12 +27,11 @@ export function DNS() {
   const { data: dnssQuery } = useDNSsQuery()
   const selectDNSMutation = useSelectDNSMutation()
   const removeDNSMutation = useRemoveDNSMutation()
+  const renameDNSMutation = useRenameDNSMutation()
   const createDNSMutation = useCreateDNSMutation()
   const updateDNSFormModalRef = useRef<PlainTextgFormModalRef>(null)
   const updateDNSMutation = useUpdateDNSMutation()
 
-  const renameFormModalRef = useRef<RenameFormModalRef>(null)
-  const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
   const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }] =
     useDisclosure(false)
   const [openedUpdateDNSFormModal, { open: openUpdateDNSFormModal, close: closeUpdateDNSFormModal }] =
@@ -47,46 +44,27 @@ export function DNS() {
           key={dns.id}
           name={dns.name}
           actions={
-            <Fragment>
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => {
-                  if (renameFormModalRef.current) {
-                    renameFormModalRef.current.setProps({
-                      id: dns.id,
-                      type: RuleType.dns,
-                      oldName: dns.name,
-                    })
-                  }
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => {
+                updateDNSFormModalRef.current?.setEditingID(dns.id)
 
-                  openRenameFormModal()
-                }}
-              >
-                <Type className="h-4 w-4" />
-              </Button>
+                updateDNSFormModalRef.current?.initOrigins({
+                  name: dns.name,
+                  text: dns.dns.string,
+                })
 
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => {
-                  updateDNSFormModalRef.current?.setEditingID(dns.id)
-
-                  updateDNSFormModalRef.current?.initOrigins({
-                    name: dns.name,
-                    text: dns.dns.string,
-                  })
-
-                  openUpdateDNSFormModal()
-                }}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-            </Fragment>
+                openUpdateDNSFormModal()
+              }}
+            >
+              <Settings2 className="h-4 w-4" />
+            </Button>
           }
           selected={dns.selected}
           onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
           onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}
+          onRename={(newName) => renameDNSMutation.mutate({ id: dns.id, name: newName })}
         >
           <Code block>{dns.dns.string}</Code>
         </SimpleCard>
@@ -118,8 +96,6 @@ export function DNS() {
           }
         }}
       />
-
-      <RenameFormModal ref={renameFormModalRef} opened={openedRenameFormModal} onClose={closeRenameFormModal} />
     </Section>
   )
 }

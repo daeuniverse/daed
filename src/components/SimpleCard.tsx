@@ -1,10 +1,11 @@
-import { Eye, Trash2 } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { Check, Eye, Trash2, Type, X } from 'lucide-react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Input } from '~/components/ui/input'
 import {
   ScrollableDialogBody,
   ScrollableDialogContent,
@@ -17,6 +18,7 @@ export function SimpleCard({
   selected,
   onSelect,
   onRemove,
+  onRename,
   actions,
   children,
 }: {
@@ -24,50 +26,136 @@ export function SimpleCard({
   selected: boolean
   onSelect?: () => void
   onRemove?: () => void
+  onRename?: (newName: string) => void
   actions?: React.ReactNode
   children: React.ReactNode
 }) {
   const { t } = useTranslation()
   const [openedDetailsModal, setOpenedDetailsModal] = useState(false)
   const [openedConfirmModal, setOpenedConfirmModal] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editValue, setEditValue] = useState(name)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [isEditing])
+
+  useEffect(() => {
+    setEditValue(name)
+  }, [name])
+
+  const handleStartEdit = () => {
+    setEditValue(name)
+    setIsEditing(true)
+  }
+
+  const handleCancelEdit = () => {
+    setEditValue(name)
+    setIsEditing(false)
+  }
+
+  const handleSaveEdit = () => {
+    const trimmedValue = editValue.trim()
+    if (trimmedValue && trimmedValue !== name) {
+      onRename?.(trimmedValue)
+    }
+    setIsEditing(false)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleSaveEdit()
+    } else if (e.key === 'Escape') {
+      e.preventDefault()
+      handleCancelEdit()
+    }
+  }
 
   return (
     <Fragment>
-      <div className="relative">
-        {selected && (
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 rounded-full bg-primary z-10" />
+      <Card
+        withBorder
+        shadow="sm"
+        padding="none"
+        className={cn(
+          'transition-all duration-200',
+          selected && 'ring-2 ring-primary ring-offset-2 ring-offset-background border-primary/50',
         )}
-        <Card withBorder shadow="sm" padding="none">
-          <div className="flex items-center justify-between border-b">
+      >
+        <div className="flex items-center justify-between border-b">
+          {isEditing ? (
+            <div className="flex-1 flex items-center gap-2 p-2">
+              <Input
+                ref={inputRef}
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onBlur={handleSaveEdit}
+                className="h-8 text-sm font-semibold"
+              />
+              <Button variant="ghost" size="xs" onClick={handleSaveEdit} className="shrink-0">
+                <Check className="h-4 w-4 text-primary" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={handleCancelEdit}
+                onMouseDown={(e) => e.preventDefault()}
+                className="shrink-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
             <button
               type="button"
-              className={cn('flex-1 p-3 text-left hover:bg-accent transition-colors', selected && 'bg-accent/50')}
+              className={cn(
+                'flex-1 p-3 text-left transition-colors rounded-t-xl',
+                selected ? 'bg-primary/10' : 'hover:bg-accent',
+              )}
               onClick={onSelect}
             >
-              <h4 className="font-semibold">{name}</h4>
+              <div className="flex items-center gap-2">
+                {selected && (
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary text-primary-foreground shrink-0">
+                    <Check className="w-3 h-3" strokeWidth={3} />
+                  </div>
+                )}
+                <h4 className={cn('font-semibold', selected && 'text-primary')}>{name}</h4>
+              </div>
             </button>
+          )}
 
-            <div className="flex items-center gap-2 p-3">
-              {actions}
-
-              <Button variant="ghost" size="xs" onClick={() => setOpenedDetailsModal(true)}>
-                <Eye className="h-4 w-4" />
+          <div className="flex items-center gap-2 p-3">
+            {!isEditing && onRename && (
+              <Button variant="ghost" size="xs" onClick={handleStartEdit}>
+                <Type className="h-4 w-4" />
               </Button>
+            )}
+            {actions}
 
-              {!selected && onRemove && (
-                <Button
-                  variant="ghost"
-                  size="xs"
-                  className="text-destructive hover:text-destructive"
-                  onClick={() => setOpenedConfirmModal(true)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
+            <Button variant="ghost" size="xs" onClick={() => setOpenedDetailsModal(true)}>
+              <Eye className="h-4 w-4" />
+            </Button>
+
+            {!selected && onRemove && (
+              <Button
+                variant="ghost"
+                size="xs"
+                className="text-destructive hover:text-destructive"
+                onClick={() => setOpenedConfirmModal(true)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
 
       <Dialog open={openedDetailsModal} onOpenChange={setOpenedDetailsModal}>
         <ScrollableDialogContent size="lg">

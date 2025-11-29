@@ -1,24 +1,22 @@
 import type { PlainTextgFormModalRef } from '~/components/PlainTextFormModal'
-import type { RenameFormModalRef } from '~/components/RenameFormModal'
 import { useStore } from '@nanostores/react'
-import { Map, Pencil, Type } from 'lucide-react'
+import { Map, Settings2 } from 'lucide-react'
 
-import { Fragment, useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useCreateRoutingMutation,
   useRemoveRoutingMutation,
+  useRenameRoutingMutation,
   useRoutingsQuery,
   useSelectRoutingMutation,
   useUpdateRoutingMutation,
 } from '~/apis'
 import { PlainTextFormModal } from '~/components/PlainTextFormModal'
-import { RenameFormModal } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
 import { Code } from '~/components/ui/code'
-import { RuleType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
@@ -28,12 +26,11 @@ export function Routing() {
   const { data: routingsQuery } = useRoutingsQuery()
   const selectRoutingMutation = useSelectRoutingMutation()
   const removeRoutingMutation = useRemoveRoutingMutation()
+  const renameRoutingMutation = useRenameRoutingMutation()
   const createRoutingMutation = useCreateRoutingMutation()
   const updateRoutingFormModalRef = useRef<PlainTextgFormModalRef>(null)
   const updateRoutingMutation = useUpdateRoutingMutation()
 
-  const renameFormModalRef = useRef<RenameFormModalRef>(null)
-  const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
   const [openedCreateRoutingFormModal, { open: openCreateRoutingFormModal, close: closeCreateRoutingFormModal }] =
     useDisclosure(false)
   const [openedUpdateRoutingFormModal, { open: openUpdateRoutingFormModal, close: closeUpdateRoutingFormModal }] =
@@ -46,46 +43,27 @@ export function Routing() {
           key={routing.id}
           name={routing.name}
           actions={
-            <Fragment>
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => {
-                  if (renameFormModalRef.current) {
-                    renameFormModalRef.current.setProps({
-                      id: routing.id,
-                      type: RuleType.routing,
-                      oldName: routing.name,
-                    })
-                  }
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => {
+                updateRoutingFormModalRef.current?.setEditingID(routing.id)
 
-                  openRenameFormModal()
-                }}
-              >
-                <Type className="h-4 w-4" />
-              </Button>
+                updateRoutingFormModalRef.current?.initOrigins({
+                  name: routing.name,
+                  text: routing.routing.string,
+                })
 
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => {
-                  updateRoutingFormModalRef.current?.setEditingID(routing.id)
-
-                  updateRoutingFormModalRef.current?.initOrigins({
-                    name: routing.name,
-                    text: routing.routing.string,
-                  })
-
-                  openUpdateRoutingFormModal()
-                }}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-            </Fragment>
+                openUpdateRoutingFormModal()
+              }}
+            >
+              <Settings2 className="h-4 w-4" />
+            </Button>
           }
           selected={routing.selected}
           onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
           onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}
+          onRename={(newName) => renameRoutingMutation.mutate({ id: routing.id, name: newName })}
         >
           <Code block>{routing.routing.string}</Code>
         </SimpleCard>
@@ -117,8 +95,6 @@ export function Routing() {
           }
         }}
       />
-
-      <RenameFormModal ref={renameFormModalRef} opened={openedRenameFormModal} onClose={closeRenameFormModal} />
     </Section>
   )
 }

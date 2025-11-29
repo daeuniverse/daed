@@ -1,25 +1,24 @@
 import type { GroupFormModalRef } from '~/components/GroupFormModal'
-import type { RenameFormModalRef } from '~/components/RenameFormModal'
 import { useStore } from '@nanostores/react'
-import { Pencil, Table2, Type } from 'lucide-react'
+import { Settings2, Table2 } from 'lucide-react'
 
-import { Fragment, useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useGroupDelNodesMutation,
   useGroupDelSubscriptionsMutation,
   useGroupsQuery,
   useRemoveGroupMutation,
+  useRenameGroupMutation,
   useSubscriptionsQuery,
 } from '~/apis'
 import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { GroupFormModal } from '~/components/GroupFormModal'
-import { RenameFormModal } from '~/components/RenameFormModal'
 import { Section } from '~/components/Section'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
 import { Button } from '~/components/ui/button'
-import { DraggableResourceType, RuleType } from '~/constants'
+import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
@@ -27,15 +26,14 @@ export function GroupResource({ highlight }: { highlight?: boolean }) {
   const { t } = useTranslation()
   const { data: groupsQuery } = useGroupsQuery()
   const { defaultGroupID } = useStore(defaultResourcesAtom)
-  const [openedRenameFormModal, { open: openRenameFormModal, close: closeRenameFormModal }] = useDisclosure(false)
   const [openedCreateGroupFormModal, { open: openCreateGroupFormModal, close: closeCreateGroupFormModal }] =
     useDisclosure(false)
   const [openedUpdateGroupFormModal, { open: openUpdateGroupFormModal, close: closeUpdateGroupFormModal }] =
     useDisclosure(false)
   const removeGroupMutation = useRemoveGroupMutation()
+  const renameGroupMutation = useRenameGroupMutation()
   const groupDelNodesMutation = useGroupDelNodesMutation()
   const groupDelSubscriptionsMutation = useGroupDelSubscriptionsMutation()
-  const renameFormModalRef = useRef<RenameFormModalRef>(null)
   const updateGroupFormModalRef = useRef<GroupFormModalRef>(null)
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
 
@@ -54,43 +52,24 @@ export function GroupResource({ highlight }: { highlight?: boolean }) {
             id={groupId}
             name={name}
             onRemove={defaultGroupID !== groupId ? () => removeGroupMutation.mutate(groupId) : undefined}
+            onRename={(newName) => renameGroupMutation.mutate({ id: groupId, name: newName })}
             actions={
-              <Fragment>
-                <Button
-                  variant="ghost"
-                  size="xs"
-                  onClick={() => {
-                    if (renameFormModalRef.current) {
-                      renameFormModalRef.current.setProps({
-                        id: groupId,
-                        type: RuleType.group,
-                        oldName: name,
-                      })
-                    }
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => {
+                  updateGroupFormModalRef.current?.setEditingID(groupId)
 
-                    openRenameFormModal()
-                  }}
-                >
-                  <Type className="h-4 w-4" />
-                </Button>
+                  updateGroupFormModalRef.current?.initOrigins({
+                    name,
+                    policy,
+                  })
 
-                <Button
-                  variant="ghost"
-                  size="xs"
-                  onClick={() => {
-                    updateGroupFormModalRef.current?.setEditingID(groupId)
-
-                    updateGroupFormModalRef.current?.initOrigins({
-                      name,
-                      policy,
-                    })
-
-                    openUpdateGroupFormModal()
-                  }}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-              </Fragment>
+                  openUpdateGroupFormModal()
+                }}
+              >
+                <Settings2 className="h-4 w-4" />
+              </Button>
             }
           >
             <p className="text-sm font-semibold">{policy}</p>
@@ -169,8 +148,6 @@ export function GroupResource({ highlight }: { highlight?: boolean }) {
         opened={openedUpdateGroupFormModal}
         onClose={closeUpdateGroupFormModal}
       />
-
-      <RenameFormModal ref={renameFormModalRef} opened={openedRenameFormModal} onClose={closeRenameFormModal} />
     </Section>
   )
 }
