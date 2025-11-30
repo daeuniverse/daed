@@ -1,0 +1,1 @@
+import"./mouseTarget-DhR3DWva.js";import"./editor.api-DHR_z1CR.js";import{n as e,t}from"./monaco.contribution-DPRcaphG.js";export{t as getWorker,e as jsonDefaults};
