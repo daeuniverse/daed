@@ -355,24 +355,55 @@ jobs:
 
       - name: Prepare files for upload
         run: |
+          set -euo pipefail
+
+          # Parallel execution helper function
+          # Usage: parallel_exec <function_name> <input_list>
+          parallel_exec() {
+              local func_name="$1"
+              shift
+              export -f "$func_name"
+              echo "$@" | tr ' ' '\n' | xargs -P 8 -I {} bash -c 'set -e; '"$func_name"' "$@"' _ {}
+          }
+
           cp release/*/*.deb ./
           cp release/*/*.rpm ./
           cp release/*/*.pkg.tar.zst ./
           cp release/*/*.zip ./
-          pushd release
-          zip -9vr ../web.zip web/*
-          for zip_file in $(ls | grep -E "^daed-linux*");do
-              pushd $zip_file
-              zip -9r ../../"$zip_file".zip ./*
-              popd
-          done
-          popd
-          for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip");do
-              echo "$(md5 -q $package)  $package  md5" >> $package.dgst
-              echo "$(shasum -a 1 $package)""  sha1" >> $package.dgst
-              echo "$(shasum -a 256 $package)""  sha256" >> $package.dgst
-              echo "$(shasum -a 512 $package)""  sha512" >> $package.dgst
-          done
+
+          # Create zip archives in parallel
+          create_zip() {
+              local dir="$1"
+              zip -9r "../${dir}.zip" "${dir}/*" && echo "✓ Created ${dir}.zip"
+          }
+          cd release
+          dirs=$(ls -d daed-linux* web)
+          parallel_exec create_zip $dirs
+          cd ..
+
+          # Verify all zip files
+          verify_zip() {
+              local dir="$1"
+              if [[ ! -f "${dir}.zip" ]]; then
+                  echo "✗ Failed to create ${dir}.zip" && exit 1
+              fi
+              unzip -t "${dir}.zip" > /dev/null 2>&1 || { echo "✗ ${dir}.zip is corrupted"; exit 1; }
+              echo "✓ Verified ${dir}.zip"
+          }
+          parallel_exec verify_zip $dirs
+
+          # Generate checksums in parallel
+          generate_dgst() {
+              local package="$1"
+              echo "$(md5 -q "$package")  $package  md5" >> "$package.dgst"
+              echo "$(shasum -a 1 "$package")  sha1" >> "$package.dgst"
+              echo "$(shasum -a 256 "$package")  sha256" >> "$package.dgst"
+              echo "$(shasum -a 512 "$package")  sha512" >> "$package.dgst"
+              echo "✓ Generated checksums for $package"
+          }
+          packages=$(ls | grep -E "\.deb$|\.pkg\.tar\.zst$|\.rpm$|\.zip$")
+          parallel_exec generate_dgst $packages
+
           echo "Show files are going to upload..."
           ls -lh | grep -E ".deb|.pkg.tar.zst|.rpm|.zip"
 
@@ -382,8 +413,25 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG_NAME: ${{ needs.release-please.outputs.tag_name }}
         run: |
-          # Upload files in parallel (8 concurrent uploads)
-          ls | grep -E "\.deb$|\.pkg\.tar\.zst$|\.rpm$|\.zip$|\.dgst$" | xargs -P 8 -I {} gh release upload "$TAG_NAME" {} --clobber
+          set -euo pipefail
+
+          # Parallel execution helper function
+          parallel_exec() {
+              local func_name="$1"
+              shift
+              export -f "$func_name"
+              echo "$@" | tr ' ' '\n' | xargs -P 8 -I {} bash -c 'set -e; '"$func_name"' "$@"' _ {}
+          }
+
+          upload_file() {
+              local file="$1"
+              gh release upload "$TAG_NAME" "$file" --clobber
+              echo "✓ Uploaded $file"
+          }
+          export TAG_NAME
+
+          files=$(ls | grep -E "\.deb$|\.pkg\.tar\.zst$|\.rpm$|\.zip$|\.dgst$")
+          parallel_exec upload_file $files
 
   # Publish container image when release is created
   publish-container-image:
