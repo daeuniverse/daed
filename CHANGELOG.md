@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/daeuniverse/daed/compare/v1.2.0...v1.3.0) (2025-11-30)
+
+
+### Features
+
+* change workflow runners from ubuntu to macos ([b676ac4](https://github.com/daeuniverse/daed/commit/b676ac4e59f50b6e3256f69aa8997b124c331fae))
+
 ## [1.2.0](https://github.com/daeuniverse/daed/compare/v1.1.0...v1.2.0) (2025-11-30)
 
 
