@@ -69,7 +69,7 @@ export function DraggableResourceCard({
 
             {/* Actions - visible on hover */}
             <div
-              className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+              className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0"
               onClick={(e) => e.stopPropagation()}
               onPointerDown={(e) => e.stopPropagation()}
             >

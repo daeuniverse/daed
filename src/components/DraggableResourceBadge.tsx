@@ -61,7 +61,7 @@ export function DraggableResourceBadge({
         <Button
           variant="ghost"
           size="xs"
-          className="h-4 w-4 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          className="h-4 w-4 p-0 rounded-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
           onClick={(e) => {
             e.stopPropagation()
             onRemove()

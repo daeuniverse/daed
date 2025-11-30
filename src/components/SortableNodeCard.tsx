@@ -75,8 +75,8 @@ export function SortableNodeCard({
               <h4 className="font-semibold text-sm truncate">{name}</h4>
             </div>
 
-            {/* Actions - visible on hover */}
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+            {/* Actions - always visible on mobile, hover on desktop */}
+            <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
               {actions}
               <Button
                 variant="ghost"
