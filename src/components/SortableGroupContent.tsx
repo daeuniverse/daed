@@ -1,9 +1,6 @@
-import type { DragEndEvent } from '@dnd-kit/core'
-import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useStore } from '@nanostores/react'
-import { GripVertical } from 'lucide-react'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
@@ -53,34 +50,6 @@ export function SortableGroupContent({
   const nodeSortOrder = groupSortOrder.nodes
   const subSortOrder = groupSortOrder.subscriptions
 
-  const setNodeSortOrder = useCallback(
-    (order: string[]) => {
-      groupSortOrdersAtom.set({
-        ...groupSortOrdersAtom.get(),
-        [groupId]: {
-          ...groupSortOrdersAtom.get()[groupId],
-          nodes: order,
-          subscriptions: groupSortOrdersAtom.get()[groupId]?.subscriptions || [],
-        },
-      })
-    },
-    [groupId],
-  )
-
-  const setSubSortOrder = useCallback(
-    (order: string[]) => {
-      groupSortOrdersAtom.set({
-        ...groupSortOrdersAtom.get(),
-        [groupId]: {
-          nodes: groupSortOrdersAtom.get()[groupId]?.nodes || [],
-          subscriptions: order,
-        },
-      })
-    },
-    [groupId],
-  )
-
-  const [draggingItem, setDraggingItem] = useState<{ id: string; name: string } | null>(null)
   const [expandedSections, setExpandedSections] = useState<string[]>(['node', 'subscription'])
 
   // Get sorted node IDs - merge custom sort with current data
@@ -139,139 +108,64 @@ export function SortableGroupContent({
     return sortedSubscriptionIds.map((id) => subMap.get(id)).filter(Boolean) as GroupSubscription[]
   }, [subscriptions, sortedSubscriptionIds])
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    }),
-  )
-
-  const handleDragStart = (event: { active: { id: string | number } }) => {
-    const activeId = String(event.active.id)
-
-    // Find the item being dragged
-    const node = nodes.find((n) => `${groupId}-node-${n.id}` === activeId)
-    if (node) {
-      setDraggingItem({ id: activeId, name: node.tag || node.name })
-      return
-    }
-
-    const subscription = subscriptions.find((s) => `${groupId}-sub-${s.id}` === activeId)
-    if (subscription) {
-      setDraggingItem({ id: activeId, name: subscription.tag || subscription.link })
-    }
-  }
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-    setDraggingItem(null)
-
-    if (!over || active.id === over.id) return
-
-    const activeId = String(active.id)
-    const overId = String(over.id)
-
-    // Check if sorting nodes
-    if (activeId.includes('-node-') && overId.includes('-node-')) {
-      const activeNodeId = activeId.replace(`${groupId}-node-`, '')
-      const overNodeId = overId.replace(`${groupId}-node-`, '')
-
-      const oldIndex = sortedNodeIds.indexOf(activeNodeId)
-      const newIndex = sortedNodeIds.indexOf(overNodeId)
-      setNodeSortOrder(arrayMove(sortedNodeIds, oldIndex, newIndex))
-    }
-
-    // Check if sorting subscriptions
-    if (activeId.includes('-sub-') && overId.includes('-sub-')) {
-      const activeSubId = activeId.replace(`${groupId}-sub-`, '')
-      const overSubId = overId.replace(`${groupId}-sub-`, '')
-
-      const oldIndex = sortedSubscriptionIds.indexOf(activeSubId)
-      const newIndex = sortedSubscriptionIds.indexOf(overSubId)
-      setSubSortOrder(arrayMove(sortedSubscriptionIds, oldIndex, newIndex))
-    }
-  }
-
   const nodeIds = sortedNodes.map((n) => `${groupId}-node-${n.id}`)
   const subscriptionIds = sortedSubscriptions.map((s) => `${groupId}-sub-${s.id}`)
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <Accordion
-        type="multiple"
-        className="w-full"
-        value={effectiveExpandedSections}
-        onValueChange={setExpandedSections}
-      >
-        <AccordionItem value="node" className="border-none">
-          <AccordionTrigger className="text-xs py-2 hover:no-underline">
-            {t('node')} ({nodes.length})
-          </AccordionTrigger>
+    <Accordion type="multiple" className="w-full" value={effectiveExpandedSections} onValueChange={setExpandedSections}>
+      <AccordionItem value="node" className="border-none">
+        <AccordionTrigger className="text-xs py-2 hover:no-underline">
+          {t('node')} ({nodes.length})
+        </AccordionTrigger>
 
-          <AccordionContent>
-            <SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
-              <div className="flex flex-col gap-1.5">
-                {sortedNodes.map(({ id: nodeId, tag, name, subscriptionID }) => (
-                  <SortableResourceBadge
-                    key={nodeId}
-                    id={`${groupId}-node-${nodeId}`}
-                    nodeID={nodeId}
-                    groupID={groupId}
-                    type={DraggableResourceType.groupNode}
-                    name={tag || name}
-                    onRemove={() => onDelNode(nodeId)}
-                  >
-                    {subscriptionID && allSubscriptions?.find((s) => s.id === subscriptionID)?.tag}
-                  </SortableResourceBadge>
-                ))}
-                {nodes.length === 0 && <p className="text-xs text-muted-foreground text-center py-2">{t('empty')}</p>}
-              </div>
-            </SortableContext>
-          </AccordionContent>
-        </AccordionItem>
+        <AccordionContent>
+          <SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
+            <div className="flex flex-col gap-1.5">
+              {sortedNodes.map(({ id: nodeId, tag, name, subscriptionID }) => (
+                <SortableResourceBadge
+                  key={nodeId}
+                  id={`${groupId}-node-${nodeId}`}
+                  nodeID={nodeId}
+                  groupID={groupId}
+                  type={DraggableResourceType.groupNode}
+                  name={tag || name}
+                  onRemove={() => onDelNode(nodeId)}
+                >
+                  {subscriptionID && allSubscriptions?.find((s) => s.id === subscriptionID)?.tag}
+                </SortableResourceBadge>
+              ))}
+              {nodes.length === 0 && <p className="text-xs text-muted-foreground text-center py-2">{t('empty')}</p>}
+            </div>
+          </SortableContext>
+        </AccordionContent>
+      </AccordionItem>
 
-        <AccordionItem value="subscription" className="border-none">
-          <AccordionTrigger className="text-xs py-2 hover:no-underline">
-            {t('subscription')} ({subscriptions.length})
-          </AccordionTrigger>
+      <AccordionItem value="subscription" className="border-none">
+        <AccordionTrigger className="text-xs py-2 hover:no-underline">
+          {t('subscription')} ({subscriptions.length})
+        </AccordionTrigger>
 
-          <AccordionContent>
-            <SortableContext items={subscriptionIds} strategy={verticalListSortingStrategy}>
-              <div className="flex flex-col gap-1.5">
-                {sortedSubscriptions.map(({ id: subscriptionId, tag, link }) => (
-                  <SortableResourceBadge
-                    key={subscriptionId}
-                    id={`${groupId}-sub-${subscriptionId}`}
-                    groupID={groupId}
-                    subscriptionID={subscriptionId}
-                    type={DraggableResourceType.groupSubscription}
-                    name={tag || link}
-                    onRemove={() => onDelSubscription(subscriptionId)}
-                  />
-                ))}
-                {subscriptions.length === 0 && (
-                  <p className="text-xs text-muted-foreground text-center py-2">{t('empty')}</p>
-                )}
-              </div>
-            </SortableContext>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <DragOverlay>
-        {draggingItem && (
-          <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg border bg-card shadow-lg cursor-grabbing">
-            <GripVertical className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
-            <span className="text-sm font-medium truncate max-w-[200px]">{draggingItem.name}</span>
-          </div>
-        )}
-      </DragOverlay>
-    </DndContext>
+        <AccordionContent>
+          <SortableContext items={subscriptionIds} strategy={verticalListSortingStrategy}>
+            <div className="flex flex-col gap-1.5">
+              {sortedSubscriptions.map(({ id: subscriptionId, tag, link }) => (
+                <SortableResourceBadge
+                  key={subscriptionId}
+                  id={`${groupId}-sub-${subscriptionId}`}
+                  groupID={groupId}
+                  subscriptionID={subscriptionId}
+                  type={DraggableResourceType.groupSubscription}
+                  name={tag || link}
+                  onRemove={() => onDelSubscription(subscriptionId)}
+                />
+              ))}
+              {subscriptions.length === 0 && (
+                <p className="text-xs text-muted-foreground text-center py-2">{t('empty')}</p>
+              )}
+            </div>
+          </SortableContext>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   )
 }
