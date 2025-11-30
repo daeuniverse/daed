@@ -374,7 +374,7 @@ jobs:
           # Create zip archives in parallel
           create_zip() {
               local dir="$1"
-              zip -9r "../${dir}.zip" "${dir}/*" && echo "✓ Created ${dir}.zip"
+              zip -9r "../${dir}.zip" "$dir" && echo "✓ Created ${dir}.zip"
           }
           cd release
           dirs=$(ls -d daed-linux* web)
