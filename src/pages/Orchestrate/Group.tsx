@@ -1,5 +1,6 @@
 import type { GroupFormModalRef } from '~/components/GroupFormModal'
 import type { DraggingResource } from '~/constants'
+import type { GroupsQuery } from '~/schemas/gql/graphql'
 import { useStore } from '@nanostores/react'
 import { Settings2, Table2 } from 'lucide-react'
 
@@ -70,7 +71,13 @@ export function GroupResource({
       bordered
     >
       {groupsQuery?.groups.map(
-        ({ id: groupId, name, policy, nodes: groupNodes, subscriptions: groupSubscriptions }) => (
+        ({
+          id: groupId,
+          name,
+          policy,
+          nodes: groupNodes,
+          subscriptions: groupSubscriptions,
+        }: GroupsQuery['groups'][number]) => (
           <DroppableGroupCard
             key={groupId}
             id={groupId}

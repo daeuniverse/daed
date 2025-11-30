@@ -124,7 +124,7 @@ export function SubscriptionResource({
 
               <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
 
-              <Accordion type="single" collapsible className="w-full mt-2">
+              <Accordion type="single" collapsible defaultValue="node" className="w-full mt-2">
                 <AccordionItem value="node" className="border-none">
                   <AccordionTrigger className="text-xs py-1 hover:no-underline">
                     {t('actions.show content')}

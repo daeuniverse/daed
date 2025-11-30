@@ -12,20 +12,20 @@ import { groupSortOrdersAtom } from '~/store'
 
 interface GroupNode {
   id: string
-  tag: string
+  tag?: string | null
   name: string
   subscriptionID?: string | null
 }
 
 interface GroupSubscription {
   id: string
-  tag: string
+  tag?: string | null
   link: string
 }
 
 interface Subscription {
   id: string
-  tag: string
+  tag?: string | null
 }
 
 export function SortableGroupContent({
@@ -81,7 +81,7 @@ export function SortableGroupContent({
   )
 
   const [draggingItem, setDraggingItem] = useState<{ id: string; name: string } | null>(null)
-  const [expandedSections, setExpandedSections] = useState<string[]>([])
+  const [expandedSections, setExpandedSections] = useState<string[]>(['node', 'subscription'])
 
   // Get sorted node IDs - merge custom sort with current data
   const sortedNodeIds = useMemo(() => {

@@ -25,6 +25,7 @@ import {
   MODE,
 } from '~/constants'
 import { useGQLQueryClient } from '~/contexts'
+import { isMockMode, MOCK_DEFAULT_IDS } from '~/mocks'
 import { defaultResourcesAtom, modeAtom } from '~/store'
 
 export function useInitialize() {
@@ -42,6 +43,13 @@ export function useInitialize() {
   const getDefaults = getDefaultsRequest(gqlClient)
 
   return useCallback(async () => {
+    // In mock mode, use mock default IDs directly
+    if (isMockMode()) {
+      modeAtom.set(MODE.rule)
+      defaultResourcesAtom.set(MOCK_DEFAULT_IDS)
+      return
+    }
+
     const lanInterfaces = (await getInterfaces()).general.interfaces
       .filter(({ flag }) => !!flag.default)
       .map(({ name }) => name)

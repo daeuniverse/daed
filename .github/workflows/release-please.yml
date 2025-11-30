@@ -23,6 +23,43 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  # Update screenshots when a new release is created
+  update-screenshots:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: pnpm/action-setup@v4.2.0
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v6
+        with:
+          cache: pnpm
+          node-version: latest
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Generate screenshots
+        run: pnpm screenshot
+
+      - name: Commit and push screenshots
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/screenshots/
+          git diff --staged --quiet || git commit -m "chore: update screenshots [skip ci]"
+          git push
+
   # Publish GitHub Pages when a new release is created
   publish-gh-pages:
     needs: release-please

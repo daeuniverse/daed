@@ -21,6 +21,28 @@
 
 ---
 
+## 📸 Screenshots
+
+<details open>
+<summary><b>Desktop Screenshots</b></summary>
+
+|                                Setup                                |                                   Orchestrate                                   |
+| :-----------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
+| <img src="docs/screenshots/pc/setup.png" alt="setup" width="400" /> | <img src="docs/screenshots/pc/orchestrate.png" alt="orchestrate" width="400" /> |
+
+</details>
+
+<details>
+<summary><b>Mobile Screenshots</b></summary>
+
+|                                  Setup                                  |                                     Orchestrate                                     |
+| :---------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+| <img src="docs/screenshots/mobile/setup.png" alt="setup" width="200" /> | <img src="docs/screenshots/mobile/orchestrate.png" alt="orchestrate" width="200" /> |
+
+</details>
+
+---
+
 ## ✨ Features
 
 - 🎨 **Beautiful UI** — Modern, intuitive interface with light/dark mode support

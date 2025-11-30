@@ -199,7 +199,7 @@ export function SetupPage() {
         <div className="mb-8 flex items-center justify-center">
           {steps.map((step, index) => (
             <div key={index} className="flex items-center">
-              <div className="flex w-28 flex-col items-center">
+              <div className="flex w-24 flex-col items-center sm:w-32">
                 <div
                   className={cn(
                     'flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium',
@@ -212,11 +212,11 @@ export function SetupPage() {
                 </div>
                 <div className="mt-2 text-center">
                   <div className="text-xs font-medium">{step.label}</div>
-                  <div className="h-4 text-xs text-muted-foreground">{step.description}</div>
+                  <div className="min-h-4 text-xs text-muted-foreground">{step.description}</div>
                 </div>
               </div>
               {index < steps.length - 1 && (
-                <div className={cn('mb-8 h-0.5 w-8', index < active ? 'bg-primary' : 'bg-muted')} />
+                <div className={cn('mb-8 h-0.5 w-4 sm:w-8', index < active ? 'bg-primary' : 'bg-muted')} />
               )}
             </div>
           ))}

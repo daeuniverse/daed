@@ -1,5 +1,6 @@
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import type { DraggingResource } from '~/constants'
+import type { GroupsQuery, NodesQuery, SubscriptionsQuery } from '~/schemas/gql/graphql'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { snapCenterToCursor } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
@@ -61,7 +62,7 @@ export function OrchestratePage() {
   // Get sorted node IDs
   const sortedNodeIds = useMemo(() => {
     if (nodes.length === 0) return []
-    const currentIds = nodes.map((n) => n.id)
+    const currentIds = nodes.map((n: NodesQuery['nodes']['edges'][number]) => n.id)
     const currentIdSet = new Set(currentIds)
 
     const result = nodeSortOrder.filter((id) => currentIdSet.has(id))
@@ -79,14 +80,14 @@ export function OrchestratePage() {
   // Get sorted nodes
   const sortedNodes = useMemo(() => {
     if (nodes.length === 0) return []
-    const nodeMap = new Map(nodes.map((n) => [n.id, n]))
+    const nodeMap = new Map(nodes.map((n: NodesQuery['nodes']['edges'][number]) => [n.id, n]))
     return sortedNodeIds.map((id) => nodeMap.get(id)).filter(Boolean) as typeof nodes
   }, [nodes, sortedNodeIds])
 
   // Get sorted subscription IDs
   const sortedSubscriptionIds = useMemo(() => {
     if (subscriptions.length === 0) return []
-    const currentIds = subscriptions.map((s) => s.id)
+    const currentIds = subscriptions.map((s: SubscriptionsQuery['subscriptions'][number]) => s.id)
     const currentIdSet = new Set(currentIds)
 
     const result = subscriptionSortOrder.filter((id) => currentIdSet.has(id))
@@ -104,7 +105,7 @@ export function OrchestratePage() {
   // Get sorted subscriptions
   const sortedSubscriptions = useMemo(() => {
     if (subscriptions.length === 0) return []
-    const subMap = new Map(subscriptions.map((s) => [s.id, s]))
+    const subMap = new Map(subscriptions.map((s: SubscriptionsQuery['subscriptions'][number]) => [s.id, s]))
     return sortedSubscriptionIds.map((id) => subMap.get(id)).filter(Boolean) as typeof subscriptions
   }, [subscriptions, sortedSubscriptionIds])
 
@@ -113,36 +114,44 @@ export function OrchestratePage() {
       const { type, nodeID, groupID, subscriptionID } = draggingResource
 
       if (type === DraggableResourceType.node) {
-        const node = nodes.find((node) => node.id === nodeID)
+        const node = nodes.find((n: NodesQuery['nodes']['edges'][number]) => n.id === nodeID)
 
         return node?.tag || node?.name
       }
 
       if (type === DraggableResourceType.subscription) {
-        const subscription = subscriptions.find((subscription) => subscription.id === subscriptionID)
+        const subscription = subscriptions.find(
+          (s: SubscriptionsQuery['subscriptions'][number]) => s.id === subscriptionID,
+        )
 
         return subscription?.tag || subscription?.link
       }
 
       if (type === DraggableResourceType.subscription_node) {
-        const subscription = subscriptions.find((subscription) => subscription.id === subscriptionID)
-        const node = subscription?.nodes.edges.find((node) => node.id === nodeID)
+        const subscription = subscriptions.find(
+          (s: SubscriptionsQuery['subscriptions'][number]) => s.id === subscriptionID,
+        )
+        const node = subscription?.nodes.edges.find(
+          (n: SubscriptionsQuery['subscriptions'][number]['nodes']['edges'][number]) => n.id === nodeID,
+        )
 
         return node?.name
       }
 
       if (type === DraggableResourceType.groupNode) {
-        const group = groupsQuery?.groups.find((group) => group.id === groupID)
+        const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === groupID)
 
-        const node = group?.nodes.find((node) => node.id === nodeID)
+        const node = group?.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === nodeID)
 
         return node?.tag || node?.name
       }
 
       if (type === DraggableResourceType.groupSubscription) {
-        const group = groupsQuery?.groups.find((group) => group.id === groupID)
+        const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === groupID)
 
-        const subscription = group?.subscriptions.find((subscription) => subscription.id === subscriptionID)
+        const subscription = group?.subscriptions.find(
+          (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === subscriptionID,
+        )
 
         return subscription?.tag
       }
@@ -209,12 +218,12 @@ export function OrchestratePage() {
       }
 
       // Handle dropping to group
-      const group = groupsQuery?.groups.find((group) => group.id === over.id)
+      const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === over.id)
 
       if (
         [DraggableResourceType.node, DraggableResourceType.groupNode].includes(draggingResource.type) &&
         draggingResource?.nodeID &&
-        !group?.nodes.find((node) => node.id === draggingResource.nodeID)
+        !group?.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === draggingResource.nodeID)
       ) {
         groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.nodeID] })
       }
@@ -222,7 +231,9 @@ export function OrchestratePage() {
       if (
         [DraggableResourceType.subscription, DraggableResourceType.groupSubscription].includes(draggingResource.type) &&
         draggingResource.subscriptionID &&
-        !group?.subscriptions.find((subscription) => subscription.id === draggingResource.subscriptionID)
+        !group?.subscriptions.find(
+          (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === draggingResource.subscriptionID,
+        )
       ) {
         groupAddSubscriptionsMutation.mutate({
           id: over.id as string,
@@ -233,7 +244,7 @@ export function OrchestratePage() {
       if (
         draggingResource.type === DraggableResourceType.subscription_node &&
         draggingResource.nodeID &&
-        !group?.nodes.find((node) => node.id === draggingResource.nodeID)
+        !group?.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === draggingResource.nodeID)
       ) {
         groupAddNodesMutation.mutate({ id: over.id as string, nodeIDs: [draggingResource.nodeID] })
       }

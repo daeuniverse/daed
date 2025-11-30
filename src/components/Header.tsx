@@ -139,11 +139,11 @@ export function HeaderWithActions() {
       return
     }
 
-    if (formData.name !== userQuery?.user.name) {
+    if (formData.name !== userQuery?.user?.name) {
       await updateNameMutation.mutateAsync(formData.name)
     }
 
-    if (uploadingAvatarBase64 && uploadingAvatarBase64 !== userQuery?.user.avatar) {
+    if (uploadingAvatarBase64 && uploadingAvatarBase64 !== userQuery?.user?.avatar) {
       await updateAvatarMutation.mutateAsync(uploadingAvatarBase64)
     }
 
@@ -222,12 +222,12 @@ export function HeaderWithActions() {
                 )}
               >
                 <Avatar
-                  src={userQuery?.user.avatar || 'https://avatars.githubusercontent.com/u/126714249?s=200&v=4'}
+                  src={userQuery?.user?.avatar || 'https://avatars.githubusercontent.com/u/126714249?s=200&v=4'}
                   alt="avatar"
                   size={20}
                 />
                 <span className="text-sm font-medium leading-none">
-                  {userQuery?.user.name || userQuery?.user.username || 'unknown'}
+                  {userQuery?.user?.name || userQuery?.user?.username || 'unknown'}
                 </span>
                 <ChevronDown className="h-3 w-3" />
               </button>
@@ -243,7 +243,7 @@ export function HeaderWithActions() {
               <DropdownMenuLabel>{t('settings')}</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  setFormData({ name: userQuery?.user.name || '' })
+                  setFormData({ name: userQuery?.user?.name || '' })
                   setFormErrors({})
                   openAccountSettingsFormModal()
                 }}
@@ -398,9 +398,9 @@ export function HeaderWithActions() {
                   className="w-[100px] h-[100px] rounded-full overflow-hidden border-2 border-dashed border-muted-foreground hover:border-primary transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  {uploadingAvatarBase64 || userQuery?.user.avatar ? (
+                  {uploadingAvatarBase64 || userQuery?.user?.avatar ? (
                     <img
-                      src={uploadingAvatarBase64 || userQuery?.user.avatar || undefined}
+                      src={uploadingAvatarBase64 || userQuery?.user?.avatar || undefined}
                       alt={t('avatar')}
                       className="w-full h-full object-cover"
                     />
@@ -413,15 +413,15 @@ export function HeaderWithActions() {
               <FormActions
                 reset={() => {
                   setUploadingAvatarBase64(null)
-                  setFormData({ name: userQuery?.user.name || '' })
+                  setFormData({ name: userQuery?.user?.name || '' })
 
                   if (fileInputRef.current) {
                     fileInputRef.current.value = ''
                   }
                 }}
                 isDirty={
-                  formData.name !== (userQuery?.user.name || '') ||
-                  (uploadingAvatarBase64 !== null && uploadingAvatarBase64 !== userQuery?.user.avatar)
+                  formData.name !== (userQuery?.user?.name || '') ||
+                  (uploadingAvatarBase64 !== null && uploadingAvatarBase64 !== userQuery?.user?.avatar)
                 }
                 isValid={formData.name.length >= 1}
               />

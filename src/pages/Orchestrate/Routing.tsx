@@ -1,4 +1,5 @@
 import type { PlainTextFormModalRef } from '~/components/PlainTextFormModal'
+import type { RoutingsQuery } from '~/schemas/gql/graphql'
 import { useStore } from '@nanostores/react'
 import { Map, Settings2 } from 'lucide-react'
 import { useRef } from 'react'
@@ -36,7 +37,7 @@ export function Routing() {
 
   return (
     <Section title={t('routing')} icon={<Map className="h-5 w-5" />} onCreate={openCreateRoutingFormModal} bordered>
-      {routingsQuery?.routings.map((routing) => (
+      {routingsQuery?.routings.map((routing: RoutingsQuery['routings'][number]) => (
         <SimpleCard
           key={routing.id}
           name={routing.name}

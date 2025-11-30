@@ -5,11 +5,15 @@ import { GraphQLClient } from 'graphql-request'
 import { createContext, use, useMemo } from 'react'
 import { toast } from 'sonner'
 
+import { isMockMode, MockGraphQLClient } from '~/mocks'
 import { endpointURLAtom, tokenAtom } from '~/store'
 
-export const GQLClientContext = createContext<GraphQLClient>(null as unknown as GraphQLClient)
+// Use a union type to support both real and mock clients
+type GQLClient = GraphQLClient | MockGraphQLClient
 
-export function GQLQueryClientProvider({ client, children }: { client: GraphQLClient; children: React.ReactNode }) {
+export const GQLClientContext = createContext<GQLClient>(null as unknown as GQLClient)
+
+export function GQLQueryClientProvider({ client, children }: { client: GQLClient; children: React.ReactNode }) {
   return <GQLClientContext value={client}>{children}</GQLClientContext>
 }
 
@@ -45,26 +49,29 @@ export function QueryProvider({ children, colorScheme, themeMode, setThemeMode }
 
   const queryClient = useMemo(() => new QueryClient(), [])
 
-  const gqlClient = useMemo(
-    () =>
-      new GraphQLClient(endpointURL, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-        responseMiddleware: (response) => {
-          const error = (response as ClientError).response?.errors?.[0]
+  const gqlClient = useMemo<GQLClient>(() => {
+    // Use mock client in mock mode
+    if (isMockMode()) {
+      return new MockGraphQLClient('mock://localhost')
+    }
 
-          if (error) {
-            toast.error(error.message)
+    return new GraphQLClient(endpointURL, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+      responseMiddleware: (response) => {
+        const error = (response as ClientError).response?.errors?.[0]
 
-            if (error.message === 'access denied') {
-              tokenAtom.set('')
-            }
+        if (error) {
+          toast.error(error.message)
+
+          if (error.message === 'access denied') {
+            tokenAtom.set('')
           }
-        },
-      }),
-    [endpointURL, token],
-  )
+        }
+      },
+    })
+  }, [endpointURL, token])
 
   const colorSchemeContextValue = useMemo(
     () => ({ colorScheme, themeMode, setThemeMode }),

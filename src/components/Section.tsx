@@ -24,6 +24,7 @@ export function Section({
 }) {
   return (
     <div
+      data-testid="section"
       className={cn(
         'flex flex-col gap-2',
         bordered && 'border rounded-sm p-2 shadow-md transition-colors',

@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 
 import { HeaderWithActions } from '~/components/Header'
 import { useInitialize } from '~/initialize'
+import { isMockMode } from '~/mocks'
 import { endpointURLAtom, tokenAtom } from '~/store'
 
 export function MainLayout() {
@@ -18,6 +19,9 @@ export function MainLayout() {
   }, [])
 
   useEffect(() => {
+    // Skip authentication check in mock mode
+    if (isMockMode()) return
+
     if (!endpointURL || !token) {
       navigate('/setup')
     }
