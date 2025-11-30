@@ -1,6 +1,26 @@
 {
   "account settings": "Account Settings",
   "empty": "Empty",
+  "profile": {
+    "title": "Profiles",
+    "current": "Current Profile",
+    "default": "Default",
+    "create": "Create Profile",
+    "save": "Save as Profile",
+    "switch": "Switch Profile",
+    "delete": "Delete Profile",
+    "rename": "Rename Profile",
+    "update": "Update Profile",
+    "name": "Profile Name",
+    "namePlaceholder": "Enter profile name",
+    "noProfiles": "No profiles saved",
+    "saveCurrentAs": "Save current settings as profile",
+    "confirmDelete": "Are you sure you want to delete this profile?",
+    "switchSuccess": "Profile switched successfully",
+    "saveSuccess": "Profile saved successfully",
+    "deleteSuccess": "Profile deleted successfully",
+    "updateSuccess": "Profile updated successfully"
+  },
   "actions": {
     "add": "Add",
     "advanced mode": "Advanced Mode",

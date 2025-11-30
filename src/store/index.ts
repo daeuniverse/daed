@@ -25,6 +25,22 @@ export interface GroupSortOrder {
 
 export type GroupSortOrders = Record<string, GroupSortOrder>
 
+// Profile/Preset type for saving and restoring configurations
+export interface Profile {
+  id: string
+  name: string
+  configID: string
+  routingID: string
+  dnsID: string
+  createdAt: number
+  updatedAt: number
+}
+
+export interface ProfilesState {
+  profiles: Profile[]
+  currentProfileID: string | null
+}
+
 export type AppState = {
   themeMode: ThemeMode
   colsPerRow: number
@@ -71,6 +87,19 @@ export const colorSchemeAtom = atom<ColorScheme>('dark')
 export const groupSortOrdersAtom = persistentAtom<GroupSortOrders>(
   'GROUP_SORT_ORDERS',
   {},
+  {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+  },
+)
+
+// Persistent storage for profiles/presets
+export const profilesAtom = persistentAtom<ProfilesState>(
+  'PROFILES',
+  {
+    profiles: [],
+    currentProfileID: null,
+  },
   {
     encode: JSON.stringify,
     decode: JSON.parse,

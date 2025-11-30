@@ -1,6 +1,26 @@
 {
   "account settings": "账户设置",
   "empty": "暂无内容",
+  "profile": {
+    "title": "配置预设",
+    "current": "当前预设",
+    "default": "默认",
+    "create": "创建预设",
+    "save": "保存为预设",
+    "switch": "切换预设",
+    "delete": "删除预设",
+    "rename": "重命名预设",
+    "update": "更新预设",
+    "name": "预设名称",
+    "namePlaceholder": "请输入预设名称",
+    "noProfiles": "暂无保存的预设",
+    "saveCurrentAs": "将当前设置保存为预设",
+    "confirmDelete": "确定要删除这个预设吗？",
+    "switchSuccess": "预设切换成功",
+    "saveSuccess": "预设保存成功",
+    "deleteSuccess": "预设删除成功",
+    "updateSuccess": "预设更新成功"
+  },
   "actions": {
     "add": "添加",
     "advanced mode": "进阶模式",

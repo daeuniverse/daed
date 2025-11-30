@@ -50,6 +50,7 @@ import { endpointURLAtom, tokenAtom } from '~/store'
 import { fileToBase64 } from '~/utils'
 
 import { FormActions } from './FormActions'
+import { ProfileSwitcher } from './ProfileSwitcher'
 
 const accountSettingsSchema = z.object({
   name: z.string().min(1),
@@ -212,6 +213,8 @@ export function HeaderWithActions() {
         </div>
 
         <div className={cn('flex items-center', matchSmallScreen ? 'gap-1' : 'gap-3')}>
+          {!matchSmallScreen && <ProfileSwitcher />}
+
           <DropdownMenu open={userMenuOpened} onOpenChange={setUserMenuOpened}>
             <DropdownMenuTrigger asChild>
               <button
@@ -340,6 +343,10 @@ export function HeaderWithActions() {
             <SheetTitle>Menu</SheetTitle>
           </SheetHeader>
           <div className="flex flex-col gap-3 px-4 mt-8">
+            <div className="mb-2">
+              <ProfileSwitcher />
+            </div>
+
             <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="w-full justify-start gap-3">
                 <Github className="h-5 w-5" />
