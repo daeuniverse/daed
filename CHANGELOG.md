@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0](https://github.com/daeuniverse/daed/compare/v0.19.0...v1.0.0) (2025-11-30)
+
+
+### Features
+
+* add ConfigDetailView component for detailed configuration display ([00323ec](https://github.com/daeuniverse/daed/commit/00323ec19503f71b2f301c4c42b47b415b52c008))
+* add mock mode support and update screenshot generation process ([ad732a0](https://github.com/daeuniverse/daed/commit/ad732a0347e7df969f1cd7ccb91eb09545fbb944))
+
 ## [0.19.0](https://github.com/daeuniverse/daed/compare/v0.18.0...v0.19.0) (2025-11-30)
 
 
