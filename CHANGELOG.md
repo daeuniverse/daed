@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/daeuniverse/daed/compare/v1.3.0...v1.4.0) (2025-11-30)
+
+
+### Features
+
+* improve file upload process in release workflow ([e9c3a4f](https://github.com/daeuniverse/daed/commit/e9c3a4fbe5e79f303c683e7471320dac0b6ed879))
+
 ## [1.3.0](https://github.com/daeuniverse/daed/compare/v1.2.0...v1.3.0) (2025-11-30)
 
 
