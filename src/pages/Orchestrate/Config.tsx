@@ -5,11 +5,11 @@ import { Settings, Settings2 } from 'lucide-react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useConfigsQuery, useRemoveConfigMutation, useRenameConfigMutation, useSelectConfigMutation } from '~/apis'
+import { ConfigDetailView } from '~/components/ConfigDetailView'
 import { ConfigFormDrawer } from '~/components/ConfigFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
-import { Code } from '~/components/ui/code'
 import { GET_LOG_LEVEL_STEPS } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
@@ -69,7 +69,7 @@ export function Config() {
           onRemove={config.id !== defaultConfigID ? () => removeConfigMutation.mutate(config.id) : undefined}
           onRename={(newName) => renameConfigMutation.mutate({ id: config.id, name: newName })}
         >
-          <Code block>{JSON.stringify(config, null, 2)}</Code>
+          <ConfigDetailView config={config} />
         </SimpleCard>
       ))}
 

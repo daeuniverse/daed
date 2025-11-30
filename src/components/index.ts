@@ -1,3 +1,4 @@
+export * from './ConfigDetailView'
 export * from './ConfigFormModal'
 export * from './ConfigureNodeFormModal'
 export * from './DraggableResourceBadge'
