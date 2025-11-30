@@ -54,7 +54,7 @@ jobs:
         with:
           commit-message: 'chore: update screenshots'
           title: 'chore: update screenshots'
-          body: 'Auto-generated screenshots update for ${{ needs.release-please.outputs.tag_name }}'
+          body: 'Auto-generated screenshots update for ${{ needs.release-please.outputs.tag_name }} [skip ci]'
           branch: chore/update-screenshots
           delete-branch: true
           add-paths: docs/screenshots/
