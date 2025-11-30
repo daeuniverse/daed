@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/daeuniverse/daed/compare/v1.5.0...v1.5.1) (2025-11-30)
+
+
+### Bug Fixes
+
+* correct zip command in release workflow to include directory path ([172c9f8](https://github.com/daeuniverse/daed/commit/172c9f876396a6b968c351177c9262e67f68f7e5))
+
 ## [1.5.0](https://github.com/daeuniverse/daed/compare/v1.4.0...v1.5.0) (2025-11-30)
 
 
