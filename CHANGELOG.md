@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/daeuniverse/daed/compare/v1.1.0...v1.2.0) (2025-11-30)
+
+
+### Features
+
+* add ProfileSwitcher component for managing user profiles and integrate it into the Header ([70a1ebd](https://github.com/daeuniverse/daed/commit/70a1ebde6898ab2fe811371c78c724c489fd02b9))
+
 ## [1.1.0](https://github.com/daeuniverse/daed/compare/v1.0.0...v1.1.0) (2025-11-30)
 
 
