@@ -30,9 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: pnpm/action-setup@v4.2.0
         with:
@@ -52,13 +49,15 @@ jobs:
       - name: Generate screenshots
         run: pnpm screenshot
 
-      - name: Commit and push screenshots
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add docs/screenshots/
-          git diff --staged --quiet || git commit -m "chore: update screenshots [skip ci]"
-          git push
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'chore: update screenshots'
+          title: 'chore: update screenshots'
+          body: 'Auto-generated screenshots update for ${{ needs.release-please.outputs.tag_name }}'
+          branch: chore/update-screenshots
+          delete-branch: true
+          add-paths: docs/screenshots/
 
   # Publish GitHub Pages when a new release is created
   publish-gh-pages:
