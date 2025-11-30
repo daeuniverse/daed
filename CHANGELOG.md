@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/daeuniverse/daed/compare/v1.4.0...v1.5.0) (2025-11-30)
+
+
+### Features
+
+* enhance release workflow with parallel processing ([80cca6b](https://github.com/daeuniverse/daed/commit/80cca6be80a2eba2ed9657627bb95367441764d3))
+
 ## [1.4.0](https://github.com/daeuniverse/daed/compare/v1.3.0...v1.4.0) (2025-11-30)
 
 
