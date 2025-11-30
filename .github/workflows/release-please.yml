@@ -368,7 +368,7 @@ jobs:
           done
           popd
           for package in $(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip");do
-              echo "$(md5sum $package)""  md5" >> $package.dgst
+              echo "$(md5 -q $package)  $package  md5" >> $package.dgst
               echo "$(shasum -a 1 $package)""  sha1" >> $package.dgst
               echo "$(shasum -a 256 $package)""  sha256" >> $package.dgst
               echo "$(shasum -a 512 $package)""  sha512" >> $package.dgst
@@ -382,8 +382,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG_NAME: ${{ needs.release-please.outputs.tag_name }}
         run: |
-          files=$(ls | grep -E ".deb|.pkg.tar.zst|.rpm|.zip")
-          gh release upload $TAG_NAME $files
+          # Upload files in parallel (8 concurrent uploads)
+          ls | grep -E "\.deb$|\.pkg\.tar\.zst$|\.rpm$|\.zip$|\.dgst$" | xargs -P 8 -I {} gh release upload "$TAG_NAME" {} --clobber
 
   # Publish container image when release is created
   publish-container-image:
