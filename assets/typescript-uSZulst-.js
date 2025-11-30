@@ -1,1 +1,0 @@
-import{n as e,t}from"./typescript-Du2ALULA.js";export{t as conf,e as language};
