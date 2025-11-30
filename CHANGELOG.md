@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/daeuniverse/daed/compare/v1.0.0...v1.1.0) (2025-11-30)
+
+
+### Features
+
+* enhance group sorting functionality ([daa1ce5](https://github.com/daeuniverse/daed/commit/daa1ce57fbc2c38174ea257166bb07a70aabf4a7))
+
 ## [1.0.0](https://github.com/daeuniverse/daed/compare/v0.19.0...v1.0.0) (2025-11-30)
 
 
