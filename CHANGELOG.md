@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.0](https://github.com/daeuniverse/daed/compare/v0.18.0...v0.19.0) (2025-11-30)
+
+
+### Features
+
+* responsive design in resource and card components ([a7acf34](https://github.com/daeuniverse/daed/commit/a7acf34d211c522950c66c12a29fe0fbe04147ef))
+
 ## [0.18.0](https://github.com/daeuniverse/daed/compare/v0.17.0...v0.18.0) (2025-11-29)
 
 
