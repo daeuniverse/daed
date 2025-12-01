@@ -95,7 +95,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
-    "execa": "^9.6.0",
+    "execa": "^9.6.1",
     "framer-motion": "^12.23.24",
     "globals": "^16.5.0",
     "graphiql": "^5.2.1",
