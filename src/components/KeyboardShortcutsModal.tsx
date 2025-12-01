@@ -4,13 +4,26 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/u
 import { Kbd, KbdGroup } from '~/components/ui/kbd'
 import { Separator } from '~/components/ui/separator'
 
+// Use specific translation keys for type safety
+type ShortcutTitleKey =
+  | 'shortcuts.categories.general'
+  | 'shortcuts.categories.appearance'
+  | 'shortcuts.categories.actions'
+type ShortcutDescriptionKey =
+  | 'shortcuts.help'
+  | 'shortcuts.commandPalette'
+  | 'shortcuts.toggleTheme'
+  | 'shortcuts.toggleLanguage'
+  | 'shortcuts.toggleRunning'
+  | 'shortcuts.reload'
+
 export interface ShortcutItem {
   keys: string[]
-  descriptionKey: string
+  descriptionKey: ShortcutDescriptionKey
 }
 
 export interface ShortcutGroup {
-  titleKey: string
+  titleKey: ShortcutTitleKey
   items: ShortcutItem[]
 }
 
@@ -19,7 +32,7 @@ const shortcutGroups: ShortcutGroup[] = [
     titleKey: 'shortcuts.categories.general',
     items: [
       { keys: ['?'], descriptionKey: 'shortcuts.help' },
-      { keys: ['Ctrl/⌘', 'K'], descriptionKey: 'shortcuts.commandPalette' },
+      { keys: ['Ctrl/⌘', 'P'], descriptionKey: 'shortcuts.commandPalette' },
     ],
   },
   {

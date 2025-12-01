@@ -57,8 +57,14 @@ export function useKeyboardShortcuts({ shortcuts, enabled = true }: UseKeyboardS
         if (shortcut.disabled) continue
 
         const keyMatch = event.key.toLowerCase() === shortcut.key.toLowerCase()
-        const shiftMatch = shortcut.shift ? event.shiftKey : !event.shiftKey
         const altMatch = shortcut.alt ? event.altKey : !event.altKey
+
+        // For shift key: if shortcut.shift is explicitly set, require shift to be pressed
+        // If shortcut.shift is not set, we need to be smarter:
+        // - For special characters like '?', '!', '@', etc., shift is naturally required
+        // - For regular letters/numbers, shift should NOT be pressed
+        const isSpecialCharKey = /^[?!@#$%^&*()_+{}|:"<>~]$/.test(shortcut.key)
+        const shiftMatch = shortcut.shift ? event.shiftKey : isSpecialCharKey ? true : !event.shiftKey
 
         // For shortcuts that need Ctrl/Cmd, accept either modifier (cross-platform support)
         if (shortcut.ctrl || shortcut.meta) {

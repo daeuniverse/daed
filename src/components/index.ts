@@ -1,3 +1,4 @@
+export * from './CommandPalette'
 export * from './ConfigDetailView'
 export * from './ConfigFormModal'
 export * from './ConfigureNodeFormModal'

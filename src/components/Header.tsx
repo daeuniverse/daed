@@ -50,6 +50,7 @@ import { cn } from '~/lib/utils'
 import { endpointURLAtom, tokenAtom } from '~/store'
 import { fileToBase64 } from '~/utils'
 
+import { CommandPalette, useCommandPaletteActions } from './CommandPalette'
 import { FormActions } from './FormActions'
 import { KeyboardShortcutsModal } from './KeyboardShortcutsModal'
 import { ProfileSwitcher } from './ProfileSwitcher'
@@ -109,6 +110,7 @@ export function HeaderWithActions() {
   const [openedPasswordChangeModal, { open: openPasswordChangeModal, close: closePasswordChangeModal }] =
     useDisclosure(false)
   const [openedShortcutsModal, { open: openShortcutsModal, close: closeShortcutsModal }] = useDisclosure(false)
+  const [openedCommandPalette, { open: openCommandPalette, close: closeCommandPalette }] = useDisclosure(false)
   const { data: userQuery } = useUserQuery()
   const { data: generalQuery } = useGeneralQuery()
   const runMutation = useRunMutation()
@@ -155,19 +157,24 @@ export function HeaderWithActions() {
     }
   }, [generalQuery, runMutation])
 
-  // Keyboard shortcuts
+  // Command palette actions
+  const commandPaletteActions = useCommandPaletteActions({
+    cycleThemeMode,
+    toggleLanguage,
+    toggleRunning,
+    reloadConfig,
+    openShortcutsModal,
+    themeMode,
+    isModified: generalQuery?.general.dae.modified ?? false,
+  })
+
+  // Keyboard shortcuts (only for non-command palette shortcuts)
   useKeyboardShortcuts({
     shortcuts: [
       {
         key: '?',
         action: openShortcutsModal,
         description: 'Show keyboard shortcuts',
-      },
-      {
-        key: 'k',
-        ctrl: true,
-        action: openShortcutsModal,
-        description: 'Open command palette',
       },
       {
         key: 'd',
@@ -198,6 +205,7 @@ export function HeaderWithActions() {
         key: 'Escape',
         action: () => {
           closeShortcutsModal()
+          closeCommandPalette()
           closeAccountSettingsFormModal()
           closePasswordChangeModal()
           closeBurger()
@@ -552,6 +560,12 @@ export function HeaderWithActions() {
       </Dialog>
 
       <KeyboardShortcutsModal opened={openedShortcutsModal} onClose={closeShortcutsModal} />
+
+      <CommandPalette
+        open={openedCommandPalette}
+        onOpenChange={(open) => (open ? openCommandPalette() : closeCommandPalette())}
+        actions={commandPaletteActions}
+      />
     </header>
   )
 }
