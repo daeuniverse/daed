@@ -59,34 +59,6 @@ jobs:
           delete-branch: true
           add-paths: docs/screenshots/
 
-  # Publish GitHub Pages when a new release is created
-  publish-gh-pages:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4.2.0
-        with:
-          version: latest
-
-      - uses: actions/setup-node@v6
-        with:
-          cache: pnpm
-          node-version: latest
-
-      - name: Build
-        run: |
-          pnpm install
-          pnpm build
-
-      - name: Publish Github Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-
   checkout-full-src:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
@@ -153,6 +125,24 @@ jobs:
         with:
           name: web
           path: dist
+
+  # Publish GitHub Pages when a new release is created
+  publish-gh-pages:
+    needs: [release-please, build-web]
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: macos-latest
+    steps:
+      - name: Download artifact - web
+        uses: actions/download-artifact@v6
+        with:
+          name: web
+          path: dist/
+
+      - name: Publish Github Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
 
   build-bundle:
     needs: [release-please, build-web]

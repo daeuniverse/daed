@@ -1,4 +1,4 @@
-import type { Profile} from '~/store';
+import type { Profile } from '~/store'
 import { useStore } from '@nanostores/react'
 import { BookmarkPlus, Check, ChevronDown, Layers, Pencil, RefreshCw, Save, Trash2 } from 'lucide-react'
 import { useState } from 'react'

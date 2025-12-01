@@ -2,176 +2,153 @@
 
 ## [1.6.0](https://github.com/daeuniverse/daed/compare/v1.5.1...v1.6.0) (2025-12-01)
 
-
 ### Features
 
-* enable multi-selection for LAN/WAN interfaces ([#601](https://github.com/daeuniverse/daed/issues/601)) ([e652417](https://github.com/daeuniverse/daed/commit/e652417060feb461a3556c066f62ab4fd34cde6c))
+- enable multi-selection for LAN/WAN interfaces ([#601](https://github.com/daeuniverse/daed/issues/601)) ([e652417](https://github.com/daeuniverse/daed/commit/e652417060feb461a3556c066f62ab4fd34cde6c))
 
 ## [1.5.1](https://github.com/daeuniverse/daed/compare/v1.5.0...v1.5.1) (2025-11-30)
 
-
 ### Bug Fixes
 
-* correct zip command in release workflow to include directory path ([172c9f8](https://github.com/daeuniverse/daed/commit/172c9f876396a6b968c351177c9262e67f68f7e5))
+- correct zip command in release workflow to include directory path ([172c9f8](https://github.com/daeuniverse/daed/commit/172c9f876396a6b968c351177c9262e67f68f7e5))
 
 ## [1.5.0](https://github.com/daeuniverse/daed/compare/v1.4.0...v1.5.0) (2025-11-30)
 
-
 ### Features
 
-* enhance release workflow with parallel processing ([80cca6b](https://github.com/daeuniverse/daed/commit/80cca6be80a2eba2ed9657627bb95367441764d3))
+- enhance release workflow with parallel processing ([80cca6b](https://github.com/daeuniverse/daed/commit/80cca6be80a2eba2ed9657627bb95367441764d3))
 
 ## [1.4.0](https://github.com/daeuniverse/daed/compare/v1.3.0...v1.4.0) (2025-11-30)
 
-
 ### Features
 
-* improve file upload process in release workflow ([e9c3a4f](https://github.com/daeuniverse/daed/commit/e9c3a4fbe5e79f303c683e7471320dac0b6ed879))
+- improve file upload process in release workflow ([e9c3a4f](https://github.com/daeuniverse/daed/commit/e9c3a4fbe5e79f303c683e7471320dac0b6ed879))
 
 ## [1.3.0](https://github.com/daeuniverse/daed/compare/v1.2.0...v1.3.0) (2025-11-30)
 
-
 ### Features
 
-* change workflow runners from ubuntu to macos ([b676ac4](https://github.com/daeuniverse/daed/commit/b676ac4e59f50b6e3256f69aa8997b124c331fae))
+- change workflow runners from ubuntu to macos ([b676ac4](https://github.com/daeuniverse/daed/commit/b676ac4e59f50b6e3256f69aa8997b124c331fae))
 
 ## [1.2.0](https://github.com/daeuniverse/daed/compare/v1.1.0...v1.2.0) (2025-11-30)
 
-
 ### Features
 
-* add ProfileSwitcher component for managing user profiles and integrate it into the Header ([70a1ebd](https://github.com/daeuniverse/daed/commit/70a1ebde6898ab2fe811371c78c724c489fd02b9))
+- add ProfileSwitcher component for managing user profiles and integrate it into the Header ([70a1ebd](https://github.com/daeuniverse/daed/commit/70a1ebde6898ab2fe811371c78c724c489fd02b9))
 
 ## [1.1.0](https://github.com/daeuniverse/daed/compare/v1.0.0...v1.1.0) (2025-11-30)
 
-
 ### Features
 
-* enhance group sorting functionality ([daa1ce5](https://github.com/daeuniverse/daed/commit/daa1ce57fbc2c38174ea257166bb07a70aabf4a7))
+- enhance group sorting functionality ([daa1ce5](https://github.com/daeuniverse/daed/commit/daa1ce57fbc2c38174ea257166bb07a70aabf4a7))
 
 ## [1.0.0](https://github.com/daeuniverse/daed/compare/v0.19.0...v1.0.0) (2025-11-30)
 
-
 ### Features
 
-* add ConfigDetailView component for detailed configuration display ([00323ec](https://github.com/daeuniverse/daed/commit/00323ec19503f71b2f301c4c42b47b415b52c008))
-* add mock mode support and update screenshot generation process ([ad732a0](https://github.com/daeuniverse/daed/commit/ad732a0347e7df969f1cd7ccb91eb09545fbb944))
+- add ConfigDetailView component for detailed configuration display ([00323ec](https://github.com/daeuniverse/daed/commit/00323ec19503f71b2f301c4c42b47b415b52c008))
+- add mock mode support and update screenshot generation process ([ad732a0](https://github.com/daeuniverse/daed/commit/ad732a0347e7df969f1cd7ccb91eb09545fbb944))
 
 ## [0.19.0](https://github.com/daeuniverse/daed/compare/v0.18.0...v0.19.0) (2025-11-30)
 
-
 ### Features
 
-* responsive design in resource and card components ([a7acf34](https://github.com/daeuniverse/daed/commit/a7acf34d211c522950c66c12a29fe0fbe04147ef))
+- responsive design in resource and card components ([a7acf34](https://github.com/daeuniverse/daed/commit/a7acf34d211c522950c66c12a29fe0fbe04147ef))
 
 ## [0.18.0](https://github.com/daeuniverse/daed/compare/v0.17.0...v0.18.0) (2025-11-29)
 
-
 ### Features
 
-* implement drag-and-drop functionality for input list items ([23a3a29](https://github.com/daeuniverse/daed/commit/23a3a291a19e182eb56b984d6380f64e7769c609))
+- implement drag-and-drop functionality for input list items ([23a3a29](https://github.com/daeuniverse/daed/commit/23a3a291a19e182eb56b984d6380f64e7769c609))
 
 ## [0.17.0](https://github.com/daeuniverse/daed/compare/v0.16.0...v0.17.0) (2025-11-29)
 
-
 ### Features
 
-* make children prop optional and conditionally render button for details modal ([8809a2e](https://github.com/daeuniverse/daed/commit/8809a2e97f7c086334e1f3bd6e4ebecb2e412a2e))
+- make children prop optional and conditionally render button for details modal ([8809a2e](https://github.com/daeuniverse/daed/commit/8809a2e97f7c086334e1f3bd6e4ebecb2e412a2e))
 
 ## [0.16.0](https://github.com/daeuniverse/daed/compare/v0.15.1...v0.16.0) (2025-11-29)
 
-
 ### Features
 
-* enhance form structure and integrate actions portal for improved footer management ([1a94040](https://github.com/daeuniverse/daed/commit/1a940404631314545f1dbc827457c9ae43c0dece))
+- enhance form structure and integrate actions portal for improved footer management ([1a94040](https://github.com/daeuniverse/daed/commit/1a940404631314545f1dbc827457c9ae43c0dece))
 
 ## [0.15.1](https://github.com/daeuniverse/daed/compare/v0.15.0...v0.15.1) (2025-11-29)
 
-
 ### Bug Fixes
 
-* **i18n:** update labels for sensitive content visibility in English and Chinese locales ([b86188e](https://github.com/daeuniverse/daed/commit/b86188ecbcb1a99fc2efa2634a00dd3cadc5eef1))
+- **i18n:** update labels for sensitive content visibility in English and Chinese locales ([b86188e](https://github.com/daeuniverse/daed/commit/b86188ecbcb1a99fc2efa2634a00dd3cadc5eef1))
 
 ## [0.15.0](https://github.com/daeuniverse/daed/compare/v0.14.0...v0.15.0) (2025-11-29)
 
-
 ### Features
 
-* add sortable components for nodes and subscriptions ([f98f784](https://github.com/daeuniverse/daed/commit/f98f784008953eaa82bf4a8d9529fa06b722f4e8))
-* enhance draggable components with grip handles ([77552d7](https://github.com/daeuniverse/daed/commit/77552d71f2744bdab653a71f50213f1c4ba0d89b))
-* **monaco:** integrate Shiki for enhanced syntax highlighting and theme support ([02510f9](https://github.com/daeuniverse/daed/commit/02510f915921faa6a77e2082f92e2ba42f609cc6))
+- add sortable components for nodes and subscriptions ([f98f784](https://github.com/daeuniverse/daed/commit/f98f784008953eaa82bf4a8d9529fa06b722f4e8))
+- enhance draggable components with grip handles ([77552d7](https://github.com/daeuniverse/daed/commit/77552d71f2744bdab653a71f50213f1c4ba0d89b))
+- **monaco:** integrate Shiki for enhanced syntax highlighting and theme support ([02510f9](https://github.com/daeuniverse/daed/commit/02510f915921faa6a77e2082f92e2ba42f609cc6))
 
 ## [0.14.0](https://github.com/daeuniverse/daed/compare/v0.13.0...v0.14.0) (2025-11-29)
 
-
 ### Features
 
-* add rename functionality to various components ([df74727](https://github.com/daeuniverse/daed/commit/df747275a14729475dc70d65fe9e4c8d52243724))
-* **EditNodeFormModal:** refactor to support edit node configurations ([ff8e77e](https://github.com/daeuniverse/daed/commit/ff8e77e0ce2223be7a80ac00b899deb4df2c2ca4))
-* **forms:** implement useNodeForm hook for streamlined form handling ([655220a](https://github.com/daeuniverse/daed/commit/655220ab39a30e6d550114667a9cfe6f07d18f52))
-* **styles:** update color scheme for light and dark modes ([141d3db](https://github.com/daeuniverse/daed/commit/141d3db833c894e6c3608c1e52ae6f86840816c2))
-* **theme:** refactor color scheme handling to support theme modes ([639c82c](https://github.com/daeuniverse/daed/commit/639c82c144e847fc6f9b8e6d08cc737bcab5c707))
-
+- add rename functionality to various components ([df74727](https://github.com/daeuniverse/daed/commit/df747275a14729475dc70d65fe9e4c8d52243724))
+- **EditNodeFormModal:** refactor to support edit node configurations ([ff8e77e](https://github.com/daeuniverse/daed/commit/ff8e77e0ce2223be7a80ac00b899deb4df2c2ca4))
+- **forms:** implement useNodeForm hook for streamlined form handling ([655220a](https://github.com/daeuniverse/daed/commit/655220ab39a30e6d550114667a9cfe6f07d18f52))
+- **styles:** update color scheme for light and dark modes ([141d3db](https://github.com/daeuniverse/daed/commit/141d3db833c894e6c3608c1e52ae6f86840816c2))
+- **theme:** refactor color scheme handling to support theme modes ([639c82c](https://github.com/daeuniverse/daed/commit/639c82c144e847fc6f9b8e6d08cc737bcab5c707))
 
 ### Bug Fixes
 
-* **SimpleCard:** adjust border styles and class names for improved layout ([bbb1d4b](https://github.com/daeuniverse/daed/commit/bbb1d4ba46f803f584d3841c9f59a77bc984e979))
+- **SimpleCard:** adjust border styles and class names for improved layout ([bbb1d4b](https://github.com/daeuniverse/daed/commit/bbb1d4ba46f803f584d3841c9f59a77bc984e979))
 
 ## [0.13.0](https://github.com/daeuniverse/daed/compare/v0.12.0...v0.13.0) (2025-11-29)
 
-
 ### Features
 
-* **dependabot:** add daily update schedules for GitHub Actions and Git submodules ([dc03f56](https://github.com/daeuniverse/daed/commit/dc03f56400805fdf6461268ab4fd5ea5f920e9f8))
-* **docs:** update build, commit message guide, and getting started documentation ([5b70612](https://github.com/daeuniverse/daed/commit/5b70612abaea61bca0522352457d43252892dcbd))
-* enhance README with Docker deployment instructions and online demo section ([d78a38c](https://github.com/daeuniverse/daed/commit/d78a38c969905c9a78748a8e7bb73c85cedcfe19))
-* **forms:** extract setValue logic into useSetValue hook and enhance form validation ([84810c5](https://github.com/daeuniverse/daed/commit/84810c5f8f2ed573bc436ce4e9b88eeeaf20c5e3))
-* **Header:** enhance header component with new Sheet elements and improve button styles ([010119e](https://github.com/daeuniverse/daed/commit/010119ece8c87252e1388067eeb091020037b6ac))
-
+- **dependabot:** add daily update schedules for GitHub Actions and Git submodules ([dc03f56](https://github.com/daeuniverse/daed/commit/dc03f56400805fdf6461268ab4fd5ea5f920e9f8))
+- **docs:** update build, commit message guide, and getting started documentation ([5b70612](https://github.com/daeuniverse/daed/commit/5b70612abaea61bca0522352457d43252892dcbd))
+- enhance README with Docker deployment instructions and online demo section ([d78a38c](https://github.com/daeuniverse/daed/commit/d78a38c969905c9a78748a8e7bb73c85cedcfe19))
+- **forms:** extract setValue logic into useSetValue hook and enhance form validation ([84810c5](https://github.com/daeuniverse/daed/commit/84810c5f8f2ed573bc436ce4e9b88eeeaf20c5e3))
+- **Header:** enhance header component with new Sheet elements and improve button styles ([010119e](https://github.com/daeuniverse/daed/commit/010119ece8c87252e1388067eeb091020037b6ac))
 
 ### Bug Fixes
 
-* **i18n:** refine endpoint setup messages for clarity and consistency ([02f5bc4](https://github.com/daeuniverse/daed/commit/02f5bc4defb51cfd0bbd0bf6c327c714c10ff522))
+- **i18n:** refine endpoint setup messages for clarity and consistency ([02f5bc4](https://github.com/daeuniverse/daed/commit/02f5bc4defb51cfd0bbd0bf6c327c714c10ff522))
 
 ## [0.12.0](https://github.com/daeuniverse/daed/compare/v0.11.0...v0.12.0) (2025-11-29)
 
-
 ### Features
 
-* refactor forms to use react-hook-form with zod validation ([0a13447](https://github.com/daeuniverse/daed/commit/0a13447f397fb3a75d996a594f376e58fc2b67bf))
-* update Header component to handle avatar display and add APP_VERSION type definitions ([4c19631](https://github.com/daeuniverse/daed/commit/4c1963129ef8a697c70f08744aa8426a6336eb48))
+- refactor forms to use react-hook-form with zod validation ([0a13447](https://github.com/daeuniverse/daed/commit/0a13447f397fb3a75d996a594f376e58fc2b67bf))
+- update Header component to handle avatar display and add APP_VERSION type definitions ([4c19631](https://github.com/daeuniverse/daed/commit/4c1963129ef8a697c70f08744aa8426a6336eb48))
 
 ## [0.11.0](https://github.com/daeuniverse/daed/compare/v0.10.0...v0.11.0) (2025-11-29)
 
-
 ### Features
 
-* update Header component to use APP_VERSION from environment variables ([45866d5](https://github.com/daeuniverse/daed/commit/45866d58604c3ead4dbc709307e925491ac571e1))
+- update Header component to use APP_VERSION from environment variables ([45866d5](https://github.com/daeuniverse/daed/commit/45866d58604c3ead4dbc709307e925491ac571e1))
 
 ## [0.10.0](https://github.com/daeuniverse/daed/compare/v0.9.3...v0.10.0) (2025-11-29)
 
-
 ### Features
 
-* enhance ConfigureNodeFormModal with scrollable dialog components ([36d4d1e](https://github.com/daeuniverse/daed/commit/36d4d1efb08b7fdeff98b59a93a4f28f6fe66ed2))
-* implement scrollable dialog components and update existing dialogs to use them ([e9d5b90](https://github.com/daeuniverse/daed/commit/e9d5b90dbae05e7d5afebf2efdd231176a080779))
-* improve code formatting and enhance drag overlay behavior ([9448abd](https://github.com/daeuniverse/daed/commit/9448abd1a605d6922400c507c13380dd6617a28c))
-* refactor modal components to improve type safety and props structure ([266282b](https://github.com/daeuniverse/daed/commit/266282b05f1834ac0571719260c483bb594b131f))
+- enhance ConfigureNodeFormModal with scrollable dialog components ([36d4d1e](https://github.com/daeuniverse/daed/commit/36d4d1efb08b7fdeff98b59a93a4f28f6fe66ed2))
+- implement scrollable dialog components and update existing dialogs to use them ([e9d5b90](https://github.com/daeuniverse/daed/commit/e9d5b90dbae05e7d5afebf2efdd231176a080779))
+- improve code formatting and enhance drag overlay behavior ([9448abd](https://github.com/daeuniverse/daed/commit/9448abd1a605d6922400c507c13380dd6617a28c))
+- refactor modal components to improve type safety and props structure ([266282b](https://github.com/daeuniverse/daed/commit/266282b05f1834ac0571719260c483bb594b131f))
 
 ## [0.9.3](https://github.com/daeuniverse/daed/compare/v0.9.2...v0.9.3) (2025-11-29)
 
-
 ### Bug Fixes
 
-* standardize formatting and improve readability across multiple files ([62e5be8](https://github.com/daeuniverse/daed/commit/62e5be8ad2f90a0f71ebd45d0899785f39ad09cf))
-* update husky scripts to use pnpm for consistency ([f1637a4](https://github.com/daeuniverse/daed/commit/f1637a4b20764f80c0ed62a45c6463314089e00c))
+- standardize formatting and improve readability across multiple files ([62e5be8](https://github.com/daeuniverse/daed/commit/62e5be8ad2f90a0f71ebd45d0899785f39ad09cf))
+- update husky scripts to use pnpm for consistency ([f1637a4](https://github.com/daeuniverse/daed/commit/f1637a4b20764f80c0ed62a45c6463314089e00c))
 
 ## [0.9.2](https://github.com/daeuniverse/daed/compare/v0.9.1...v0.9.2) (2025-11-29)
 
-
 ### Bug Fixes
 
-* update Dockerfile to streamline build process and remove unnecessary platforms ([deee5c1](https://github.com/daeuniverse/daed/commit/deee5c1357f2cee07ce4e4d326f58233bfb0e0f8))
+- update Dockerfile to streamline build process and remove unnecessary platforms ([deee5c1](https://github.com/daeuniverse/daed/commit/deee5c1357f2cee07ce4e4d326f58233bfb0e0f8))
 
 ## [0.9.1](https://github.com/daeuniverse/daed/compare/v0.9.0...v0.9.1) (2025-11-29)
 
