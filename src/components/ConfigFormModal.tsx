@@ -12,6 +12,7 @@ import { Dialog, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { InputList } from '~/components/ui/input-list'
 import { Label } from '~/components/ui/label'
+import { MultiSelect } from '~/components/ui/multi-select'
 import { NumberInput } from '~/components/ui/number-input'
 import { Radio, RadioGroup } from '~/components/ui/radio-group'
 import {
@@ -332,20 +333,20 @@ export function ConfigFormDrawer({
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="space-y-4 pt-2">
-                      <Select
+                      <MultiSelect
                         label={t('lanInterface')}
                         description={t('descriptions.config.lanInterface')}
                         data={lanInterfacesData}
-                        value={formValues.lanInterface?.[0] || ''}
-                        onChange={(val) => setValue('lanInterface', val ? [val] : [])}
+                        values={formValues.lanInterface || []}
+                        onChange={(vals) => setValue('lanInterface', vals)}
                       />
 
-                      <Select
+                      <MultiSelect
                         label={t('wanInterface')}
                         description={t('descriptions.config.wanInterface')}
                         data={wanInterfacesData}
-                        value={formValues.wanInterface?.[0] || ''}
-                        onChange={(val) => setValue('wanInterface', val ? [val] : [])}
+                        values={formValues.wanInterface || []}
+                        onChange={(vals) => setValue('wanInterface', vals)}
                       />
 
                       <Checkbox
