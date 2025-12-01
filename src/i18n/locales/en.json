@@ -247,5 +247,20 @@
   "warn": "warn",
   "welcome back": "Welcome Back!",
   "welcome to": "Welcome to {{ name }}",
-  "what for": "A modern web dashboard for"
+  "what for": "A modern web dashboard for",
+  "shortcuts": {
+    "title": "Keyboard Shortcuts",
+    "categories": {
+      "general": "General",
+      "appearance": "Appearance",
+      "actions": "Actions"
+    },
+    "help": "Show keyboard shortcuts",
+    "commandPalette": "Open command palette",
+    "toggleTheme": "Toggle theme",
+    "toggleLanguage": "Toggle language",
+    "toggleRunning": "Toggle running state",
+    "reload": "Reload configuration",
+    "tip": "Press ? anywhere to show this dialog"
+  }
 }
