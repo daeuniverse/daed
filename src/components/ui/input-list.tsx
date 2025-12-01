@@ -56,7 +56,6 @@ function SortableInputItem({
         <div
           className="flex items-center justify-center h-8 w-6 cursor-grab active:cursor-grabbing touch-none shrink-0"
           aria-label={dragLabel}
-          role="button"
           {...listeners}
           {...attributes}
         >
