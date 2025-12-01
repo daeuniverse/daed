@@ -1,4 +1,12 @@
 {
+  "a11y": {
+    "addItem": "添加项目",
+    "removeItem": "删除项目",
+    "dragToReorder": "拖动以重新排序",
+    "removeSelected": "移除 {{ label }}",
+    "incrementValue": "增加数值",
+    "decrementValue": "减少数值"
+  },
   "account settings": "账户设置",
   "empty": "暂无内容",
   "profile": {

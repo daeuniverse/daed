@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/lib/utils'
 
@@ -39,6 +40,7 @@ function NumberInput({
   disabled,
   ...props
 }: NumberInputProps & { ref?: React.RefObject<HTMLInputElement | null> }) {
+  const { t } = useTranslation()
   const id = React.useId()
 
   const sizeClasses = {
@@ -141,6 +143,7 @@ function NumberInput({
               onClick={increment}
               disabled={disabled || (max !== undefined && typeof value === 'number' && value >= max)}
               tabIndex={-1}
+              aria-label={t('a11y.incrementValue')}
             >
               <ChevronUp className="h-3 w-3" />
             </button>
@@ -150,6 +153,7 @@ function NumberInput({
               onClick={decrement}
               disabled={disabled || (min !== undefined && typeof value === 'number' && value <= min)}
               tabIndex={-1}
+              aria-label={t('a11y.decrementValue')}
             >
               <ChevronDown className="h-3 w-3" />
             </button>
