@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+export * from './useKeyboardShortcuts'
 export * from './useNodeForm'
 export * from './useSetValue'
 

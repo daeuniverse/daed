@@ -3,6 +3,7 @@ import {
   ChevronDown,
   CloudOff,
   Github,
+  Keyboard,
   KeyRound,
   Languages,
   LogOut,
@@ -14,7 +15,7 @@ import {
   UserPen,
   Wifi,
 } from 'lucide-react'
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
@@ -43,13 +44,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '~/components/ui/sh
 import { Switch } from '~/components/ui/switch'
 import { SimpleTooltip } from '~/components/ui/tooltip'
 import { useColorScheme } from '~/contexts'
-import { useDisclosure, useMediaQuery } from '~/hooks'
+import { useDisclosure, useKeyboardShortcuts, useMediaQuery } from '~/hooks'
 import { i18n } from '~/i18n'
 import { cn } from '~/lib/utils'
 import { endpointURLAtom, tokenAtom } from '~/store'
 import { fileToBase64 } from '~/utils'
 
 import { FormActions } from './FormActions'
+import { KeyboardShortcutsModal } from './KeyboardShortcutsModal'
 import { ProfileSwitcher } from './ProfileSwitcher'
 
 const accountSettingsSchema = z.object({
@@ -106,6 +108,7 @@ export function HeaderWithActions() {
     useDisclosure(false)
   const [openedPasswordChangeModal, { open: openPasswordChangeModal, close: closePasswordChangeModal }] =
     useDisclosure(false)
+  const [openedShortcutsModal, { open: openShortcutsModal, close: closeShortcutsModal }] = useDisclosure(false)
   const { data: userQuery } = useUserQuery()
   const { data: generalQuery } = useGeneralQuery()
   const runMutation = useRunMutation()
@@ -128,6 +131,81 @@ export function HeaderWithActions() {
   }>({})
 
   const matchSmallScreen = useMediaQuery('(max-width: 640px)')
+
+  // Toggle language function
+  const toggleLanguage = useCallback(() => {
+    if (i18n.language.startsWith('zh')) {
+      i18n.changeLanguage('en')
+    } else {
+      i18n.changeLanguage('zh-Hans')
+    }
+  }, [])
+
+  // Toggle running state function
+  const toggleRunning = useCallback(() => {
+    if (generalQuery?.general.dae.running !== undefined) {
+      runMutation.mutate(!generalQuery.general.dae.running)
+    }
+  }, [generalQuery, runMutation])
+
+  // Reload configuration function
+  const reloadConfig = useCallback(() => {
+    if (generalQuery?.general.dae.modified) {
+      runMutation.mutate(false)
+    }
+  }, [generalQuery, runMutation])
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    shortcuts: [
+      {
+        key: '?',
+        action: openShortcutsModal,
+        description: 'Show keyboard shortcuts',
+      },
+      {
+        key: 'k',
+        ctrl: true,
+        action: openShortcutsModal,
+        description: 'Open command palette',
+      },
+      {
+        key: 'd',
+        ctrl: true,
+        action: cycleThemeMode,
+        description: 'Toggle theme',
+      },
+      {
+        key: 'l',
+        ctrl: true,
+        action: toggleLanguage,
+        description: 'Toggle language',
+      },
+      {
+        key: 's',
+        ctrl: true,
+        action: toggleRunning,
+        description: 'Toggle running state',
+      },
+      {
+        key: 'r',
+        ctrl: true,
+        action: reloadConfig,
+        description: 'Reload configuration',
+        disabled: !generalQuery?.general.dae.modified,
+      },
+      {
+        key: 'Escape',
+        action: () => {
+          closeShortcutsModal()
+          closeAccountSettingsFormModal()
+          closePasswordChangeModal()
+          closeBurger()
+        },
+        description: 'Close modals',
+      },
+    ],
+  })
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -285,18 +363,13 @@ export function HeaderWithActions() {
                 </Button>
               </a>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full"
-                onClick={() => {
-                  if (i18n.language.startsWith('zh')) {
-                    i18n.changeLanguage('en')
-                  } else {
-                    i18n.changeLanguage('zh-Hans')
-                  }
-                }}
-              >
+              <SimpleTooltip label={t('shortcuts.title')}>
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={openShortcutsModal}>
+                  <Keyboard className="h-5 w-5" />
+                </Button>
+              </SimpleTooltip>
+
+              <Button variant="ghost" size="icon" className="rounded-full" onClick={toggleLanguage}>
                 <Languages className="h-5 w-5" />
               </Button>
 
@@ -358,13 +431,15 @@ export function HeaderWithActions() {
               variant="outline"
               className="w-full justify-start gap-3"
               onClick={() => {
-                if (i18n.language.startsWith('zh')) {
-                  i18n.changeLanguage('en')
-                } else {
-                  i18n.changeLanguage('zh-Hans')
-                }
+                openShortcutsModal()
+                closeBurger()
               }}
             >
+              <Keyboard className="h-5 w-5" />
+              {t('shortcuts.title')}
+            </Button>
+
+            <Button variant="outline" className="w-full justify-start gap-3" onClick={toggleLanguage}>
               <Languages className="h-5 w-5" />
               {t('actions.switchLanguage')}
             </Button>
@@ -475,6 +550,8 @@ export function HeaderWithActions() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <KeyboardShortcutsModal opened={openedShortcutsModal} onClose={closeShortcutsModal} />
     </header>
   )
 }

@@ -239,5 +239,20 @@
   "warn": "警告",
   "welcome back": "欢迎回来！",
   "welcome to": "欢迎来到 {{ name }}",
-  "what for": "现代化控制面板"
+  "what for": "现代化控制面板",
+  "shortcuts": {
+    "title": "快捷键",
+    "categories": {
+      "general": "通用",
+      "appearance": "外观",
+      "actions": "操作"
+    },
+    "help": "显示快捷键帮助",
+    "commandPalette": "打开命令面板",
+    "toggleTheme": "切换主题",
+    "toggleLanguage": "切换语言",
+    "toggleRunning": "切换运行状态",
+    "reload": "重载配置",
+    "tip": "在任意位置按 ? 键显示此对话框"
+  }
 }
