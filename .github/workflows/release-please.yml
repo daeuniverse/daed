@@ -53,7 +53,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: 'chore: update screenshots [skip ci]'
-          title: 'chore: update screenshots'
+          title: 'chore: update screenshots [skip ci]'
           body: 'Auto-generated screenshots update for ${{ needs.release-please.outputs.tag_name }}'
           branch: chore/update-screenshots
           delete-branch: true
