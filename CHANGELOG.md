@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/daeuniverse/daed/compare/v1.7.0...v1.8.0) (2025-12-01)
+
+
+### Features
+
+* implement command palette with keyboard shortcuts support ([d32de53](https://github.com/daeuniverse/daed/commit/d32de5320ecd1bdb377da76bd99725a1bdb41ae2))
+
 ## [1.7.0](https://github.com/daeuniverse/daed/compare/v1.6.0...v1.7.0) (2025-12-01)
 
 
