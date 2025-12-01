@@ -1,4 +1,12 @@
 {
+  "a11y": {
+    "addItem": "Add item",
+    "removeItem": "Remove item",
+    "dragToReorder": "Drag to reorder",
+    "removeSelected": "Remove {{ label }}",
+    "incrementValue": "Increment value",
+    "decrementValue": "Decrement value"
+  },
   "account settings": "Account Settings",
   "empty": "Empty",
   "profile": {

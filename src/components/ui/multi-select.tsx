@@ -3,6 +3,7 @@
 import { Command as CommandPrimitive } from 'cmdk'
 import { CheckIcon, ChevronDownIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/lib/utils'
 import { Badge } from './badge'
@@ -38,6 +39,7 @@ function MultiSelect({
   description,
   withAsterisk,
 }: MultiSelectProps) {
+  const { t } = useTranslation()
   const [open, setOpen] = React.useState(false)
 
   const handleSelect = (value: string) => {
@@ -82,13 +84,17 @@ function MultiSelect({
               {values.length === 0 ? (
                 <span className="text-muted-foreground">{placeholder}</span>
               ) : (
-                selectedLabels.map((label, index) => (
+                selectedLabels.map((selectedLabel, index) => (
                   <Badge key={values[index]} variant="secondary" className="gap-1 pr-1">
-                    {label}
-                    <XIcon
-                      className="size-3 cursor-pointer hover:text-destructive"
+                    {selectedLabel}
+                    <button
+                      type="button"
+                      className="inline-flex items-center justify-center"
                       onClick={(e) => handleRemove(values[index], e)}
-                    />
+                      aria-label={t('a11y.removeSelected', { label: selectedLabel })}
+                    >
+                      <XIcon className="size-3 cursor-pointer hover:text-destructive" />
+                    </button>
                   </Badge>
                 ))
               )}

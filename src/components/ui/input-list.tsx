@@ -4,6 +4,7 @@ import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } 
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, Minus, Plus } from 'lucide-react'
 import { useCallback, useId, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
@@ -28,9 +29,20 @@ interface SortableInputItemProps {
   error?: string
   onChange: (value: string) => void
   onRemove: () => void
+  removeLabel: string
+  dragLabel: string
 }
 
-function SortableInputItem({ id, value, placeholder, error, onChange, onRemove }: SortableInputItemProps) {
+function SortableInputItem({
+  id,
+  value,
+  placeholder,
+  error,
+  onChange,
+  onRemove,
+  removeLabel,
+  dragLabel,
+}: SortableInputItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
   const style = {
@@ -43,6 +55,7 @@ function SortableInputItem({ id, value, placeholder, error, onChange, onRemove }
       <div className={cn('flex items-center gap-2 rounded-lg transition-all', isDragging && 'opacity-50 z-10')}>
         <div
           className="flex items-center justify-center h-8 w-6 cursor-grab active:cursor-grabbing touch-none shrink-0"
+          aria-label={dragLabel}
           {...listeners}
           {...attributes}
         >
@@ -58,7 +71,14 @@ function SortableInputItem({ id, value, placeholder, error, onChange, onRemove }
           />
         </div>
 
-        <Button type="button" variant="destructive" size="icon" className="h-8 w-8 shrink-0" onClick={onRemove}>
+        <Button
+          type="button"
+          variant="destructive"
+          size="icon"
+          className="h-8 w-8 shrink-0"
+          onClick={onRemove}
+          aria-label={removeLabel}
+        >
           <Minus className="h-3 w-3" />
         </Button>
       </div>
@@ -77,6 +97,7 @@ export function InputList({
   error,
   errors,
 }: InputListProps) {
+  const { t } = useTranslation()
   const baseId = useId()
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -144,6 +165,7 @@ export function InputList({
           size="icon"
           className="h-5 w-5 bg-green-600 hover:bg-green-700"
           onClick={handleAdd}
+          aria-label={t('a11y.addItem')}
         >
           <Plus className="h-3 w-3" />
         </Button>
@@ -166,6 +188,8 @@ export function InputList({
                 onChange(newValues)
               }}
               onRemove={() => handleRemove(index)}
+              removeLabel={t('a11y.removeItem')}
+              dragLabel={t('a11y.dragToReorder')}
             />
           ))}
         </SortableContext>
