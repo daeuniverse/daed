@@ -9,8 +9,14 @@ import { Badge } from './badge'
 import { Label } from './label'
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
 
+interface MultiSelectItem {
+  label: string
+  value: string
+  description?: string
+}
+
 interface MultiSelectProps {
-  data: Array<{ label: string; value: string }>
+  data: Array<MultiSelectItem>
   values?: string[]
   onChange?: (values: string[]) => void
   placeholder?: string
@@ -107,13 +113,18 @@ function MultiSelect({
                   >
                     <div
                       className={cn(
-                        'flex size-4 items-center justify-center rounded-sm border',
+                        'flex size-4 items-center justify-center rounded-sm border shrink-0',
                         isSelected ? 'bg-primary border-primary text-primary-foreground' : 'border-input',
                       )}
                     >
                       {isSelected && <CheckIcon className="size-3" />}
                     </div>
-                    <span>{item.label}</span>
+                    <div className="flex flex-col min-w-0">
+                      <span>{item.label}</span>
+                      {item.description && (
+                        <span className="text-xs text-muted-foreground truncate">{item.description}</span>
+                      )}
+                    </div>
                   </CommandPrimitive.Item>
                 )
               })}

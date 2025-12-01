@@ -187,7 +187,13 @@ export function ConfigFormDrawer({
     if (interfaces) {
       return [
         { label: t('autoDetect'), value: 'auto' },
-        ...interfaces.filter(({ flag }) => !!flag.default).map(({ name }) => ({ label: name, value: name })),
+        ...interfaces
+          .filter(({ flag }) => !!flag.default)
+          .map(({ name, ip }) => ({
+            label: name,
+            value: name,
+            description: ip.length > 0 ? ip.join(', ') : undefined,
+          })),
       ]
     }
 
@@ -198,7 +204,11 @@ export function ConfigFormDrawer({
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
-      return interfaces.map(({ name }) => ({ label: name, value: name }))
+      return interfaces.map(({ name, ip }) => ({
+        label: name,
+        value: name,
+        description: ip.length > 0 ? ip.join(', ') : undefined,
+      }))
     }
 
     return []
