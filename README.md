@@ -4,10 +4,10 @@
   <p><strong>A modern web dashboard for dae</strong></p>
 
   <p>
-    <a href="https://github.com/daeuniverse/daed/actions/workflows/release-please.yml"><img src="https://github.com/daeuniverse/daed/actions/workflows/release-please.yml/badge.svg" alt="Build Status" /></a>
-    <a href="https://github.com/daeuniverse/daed/releases"><img src="https://img.shields.io/github/v/release/daeuniverse/daed?logo=github" alt="Release" /></a>
-    <a href="https://github.com/daeuniverse/daed/blob/main/LICENSE"><img src="https://img.shields.io/github/license/daeuniverse/daed" alt="License" /></a>
-    <a href="https://github.com/daeuniverse/daed/pulls"><img src="https://img.shields.io/github/issues-pr-closed/daeuniverse/daed?color=blueviolet" alt="Pull Requests" /></a>
+    <a href="https://github.com/daeuniverse/daed/actions/workflows/release-please.yml"><img src="https://img.shields.io/github/actions/workflow/status/daeuniverse/daed/release-please.yml?style=for-the-badge" alt="Build Status" /></a>
+    <a href="https://github.com/daeuniverse/daed/releases"><img src="https://img.shields.io/github/v/release/daeuniverse/daed?style=for-the-badge" alt="Release" /></a>
+    <a href="https://github.com/daeuniverse/daed/blob/main/LICENSE"><img src="https://img.shields.io/github/license/daeuniverse/daed?style=for-the-badge" alt="License" /></a>
+    <a href="https://github.com/daeuniverse/daed/pulls"><img src="https://img.shields.io/github/issues-pr-closed/daeuniverse/daed?style=for-the-badge" alt="Pull Requests" /></a>
   </p>
 
   <p>
