@@ -495,7 +495,7 @@ jobs:
           password: ${{ secrets.QUAY_PASS }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
