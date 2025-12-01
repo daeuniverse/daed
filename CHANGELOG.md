@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/daeuniverse/daed/compare/v1.5.1...v1.6.0) (2025-12-01)
+
+
+### Features
+
+* enable multi-selection for LAN/WAN interfaces ([#601](https://github.com/daeuniverse/daed/issues/601)) ([e652417](https://github.com/daeuniverse/daed/commit/e652417060feb461a3556c066f62ab4fd34cde6c))
+
 ## [1.5.1](https://github.com/daeuniverse/daed/compare/v1.5.0...v1.5.1) (2025-11-30)
 
 
