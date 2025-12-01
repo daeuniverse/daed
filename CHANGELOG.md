@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/daeuniverse/daed/compare/v1.6.0...v1.7.0) (2025-12-01)
+
+
+### Features
+
+* add aria-labels for accessibility in UI components ([#610](https://github.com/daeuniverse/daed/issues/610)) ([2147d0e](https://github.com/daeuniverse/daed/commit/2147d0e379a676b399d07a511030578e149603e7))
+* add comprehensive keyboard shortcuts support with help modal ([#614](https://github.com/daeuniverse/daed/issues/614)) ([ba62867](https://github.com/daeuniverse/daed/commit/ba62867847b09eafc75ba6a3021baf3b426298d0))
+
 ## [1.6.0](https://github.com/daeuniverse/daed/compare/v1.5.1...v1.6.0) (2025-12-01)
 
 ### Features
