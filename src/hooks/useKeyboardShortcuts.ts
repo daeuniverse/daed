@@ -22,6 +22,21 @@ function isInputElement(element: EventTarget | null): boolean {
   return tagName === 'input' || tagName === 'textarea' || tagName === 'select' || element.isContentEditable
 }
 
+// Helper to check if Ctrl or Cmd modifier is pressed (cross-platform)
+function hasCtrlOrCmdModifier(event: KeyboardEvent): boolean {
+  return event.ctrlKey || event.metaKey
+}
+
+// Helper to detect Mac platform
+function isMacPlatform(): boolean {
+  if (typeof navigator === 'undefined') return false
+  // Use userAgentData if available, fallback to userAgent
+  if ('userAgentData' in navigator && navigator.userAgentData) {
+    return navigator.userAgentData.platform === 'macOS'
+  }
+  return /Mac|iPod|iPhone|iPad/.test(navigator.userAgent)
+}
+
 export function useKeyboardShortcuts({ shortcuts, enabled = true }: UseKeyboardShortcutsOptions) {
   const shortcutsRef = useRef(shortcuts)
 
@@ -42,22 +57,24 @@ export function useKeyboardShortcuts({ shortcuts, enabled = true }: UseKeyboardS
         if (shortcut.disabled) continue
 
         const keyMatch = event.key.toLowerCase() === shortcut.key.toLowerCase()
-        const ctrlMatch = shortcut.ctrl ? event.ctrlKey || event.metaKey : !(event.ctrlKey || event.metaKey)
         const shiftMatch = shortcut.shift ? event.shiftKey : !event.shiftKey
         const altMatch = shortcut.alt ? event.altKey : !event.altKey
 
-        // For shortcuts that need Ctrl/Cmd, accept either
+        // For shortcuts that need Ctrl/Cmd, accept either modifier (cross-platform support)
         if (shortcut.ctrl || shortcut.meta) {
-          const modifierMatch = event.ctrlKey || event.metaKey
-          if (keyMatch && modifierMatch && shiftMatch && altMatch) {
+          if (keyMatch && hasCtrlOrCmdModifier(event) && shiftMatch && altMatch) {
             event.preventDefault()
             shortcut.action()
             return
           }
-        } else if (keyMatch && ctrlMatch && shiftMatch && altMatch) {
-          event.preventDefault()
-          shortcut.action()
-          return
+        } else {
+          // For shortcuts without Ctrl/Cmd, ensure neither is pressed
+          const noCtrlOrCmd = !hasCtrlOrCmdModifier(event)
+          if (keyMatch && noCtrlOrCmd && shiftMatch && altMatch) {
+            event.preventDefault()
+            shortcut.action()
+            return
+          }
         }
       }
     },
@@ -73,7 +90,7 @@ export function useKeyboardShortcuts({ shortcuts, enabled = true }: UseKeyboardS
 // Helper to format shortcut keys for display
 export function formatShortcutKey(shortcut: KeyboardShortcut): string {
   const parts: string[] = []
-  const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform)
+  const isMac = isMacPlatform()
 
   if (shortcut.ctrl || shortcut.meta) {
     parts.push(isMac ? '⌘' : 'Ctrl')
