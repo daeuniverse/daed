@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/daeuniverse/daed/compare/v1.9.0...v1.10.0) (2025-12-02)
+
+
+### Features
+
+* add subscription cron update functionality and enhance related components ([554a8a4](https://github.com/daeuniverse/daed/commit/554a8a4ca1cf1e1676c0835e5208f89723195607))
+
 ## [1.9.0](https://github.com/daeuniverse/daed/compare/v1.8.0...v1.9.0) (2025-12-02)
 
 
