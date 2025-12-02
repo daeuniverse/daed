@@ -9,11 +9,13 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   error?: string
   withAsterisk?: boolean
   icon?: React.ReactNode
+  wrapperClassName?: string
 }
 
 function Input({
   ref,
   className,
+  wrapperClassName,
   type,
   label,
   description,
@@ -27,7 +29,7 @@ function Input({
   const inputId = id || generatedId
 
   return (
-    <div className="space-y-2">
+    <div className={cn('space-y-2', wrapperClassName)}>
       {label && (
         <Label htmlFor={inputId}>
           {label}

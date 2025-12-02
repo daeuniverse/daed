@@ -93,35 +93,37 @@ export function ImportResourceFormModal({
             <div className="flex flex-col gap-5">
               {fields.map((field, i) => (
                 <div key={field.id} className="flex gap-2.5">
-                  <div className="flex-1 flex items-start gap-2.5">
-                    <Input
-                      className="flex-1"
-                      withAsterisk
-                      label={t('link')}
-                      value={resources[i]?.link || ''}
-                      onChange={(e) => setValue(`resources.${i}.link`, e.target.value)}
-                      error={errors.resources?.[i]?.link?.message}
-                    />
-                    <Input
-                      className="w-24"
-                      withAsterisk
-                      label={t('tag')}
-                      value={resources[i]?.tag || ''}
-                      onChange={(e) => setValue(`resources.${i}.tag`, e.target.value)}
-                      error={errors.resources?.[i]?.tag?.message}
-                    />
-                  </div>
+                  <Input
+                    wrapperClassName="flex-1"
+                    withAsterisk
+                    label={t('link')}
+                    value={resources[i]?.link || ''}
+                    onChange={(e) => setValue(`resources.${i}.link`, e.target.value)}
+                    error={errors.resources?.[i]?.link?.message}
+                  />
+                  <Input
+                    wrapperClassName="w-24"
+                    withAsterisk
+                    label={t('tag')}
+                    value={resources[i]?.tag || ''}
+                    onChange={(e) => setValue(`resources.${i}.tag`, e.target.value)}
+                    error={errors.resources?.[i]?.tag?.message}
+                  />
 
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="mt-8 h-8 w-8"
-                    onClick={() => remove(i)}
-                    disabled={fields.length === 1}
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
+                  <div className="flex flex-col">
+                    {/* Spacer for label height */}
+                    <div className="h-[22px]" />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="h-9 w-9 shrink-0"
+                      onClick={() => remove(i)}
+                      disabled={fields.length === 1}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
