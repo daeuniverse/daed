@@ -106,7 +106,7 @@ catalog:
   react-router: ^7.9.6
   react-router-dom: ^7.9.6
   recharts: 3.5.1
-  shiki: ^3.17.0
+  shiki: ^3.17.1
   simple-git: ^3.30.0
   sonner: ^2.0.7
   sort-package-json: ^3.5.0
