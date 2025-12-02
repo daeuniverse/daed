@@ -8,10 +8,7 @@ import {
   Languages,
   LogOut,
   Menu,
-  Monitor,
-  Moon,
   RefreshCw,
-  Sun,
   UserPen,
   Wifi,
 } from 'lucide-react'
@@ -26,6 +23,7 @@ import {
   useUpdateAvatarMutation,
   useUpdateNameMutation,
   useUpdatePasswordMutation,
+  useUpdateUsernameMutation,
   useUserQuery,
 } from '~/apis'
 import { Avatar } from '~/components/ui/avatar'
@@ -54,8 +52,10 @@ import { CommandPalette, useCommandPaletteActions } from './CommandPalette'
 import { FormActions } from './FormActions'
 import { KeyboardShortcutsModal } from './KeyboardShortcutsModal'
 import { ProfileSwitcher } from './ProfileSwitcher'
+import { ThemePicker } from './ThemePicker'
 
 const accountSettingsSchema = z.object({
+  username: z.string().min(1, 'Username is required'),
   name: z.string().min(1),
 })
 
@@ -82,27 +82,6 @@ export function HeaderWithActions() {
     setThemeMode(modes[nextIndex])
   }
 
-  const getThemeIcon = () => {
-    switch (themeMode) {
-      case 'system':
-        return <Monitor className="h-5 w-5" />
-      case 'light':
-        return <Sun className="h-5 w-5" />
-      case 'dark':
-        return <Moon className="h-5 w-5" />
-    }
-  }
-
-  const getThemeLabel = () => {
-    switch (themeMode) {
-      case 'system':
-        return t('theme.system')
-      case 'light':
-        return t('theme.light')
-      case 'dark':
-        return t('theme.dark')
-    }
-  }
   const [userMenuOpened, setUserMenuOpened] = useState(false)
   const [openedBurger, { toggle: toggleBurger, close: closeBurger }] = useDisclosure(false)
   const [openedAccountSettingsFormModal, { open: openAccountSettingsFormModal, close: closeAccountSettingsFormModal }] =
@@ -116,11 +95,12 @@ export function HeaderWithActions() {
   const runMutation = useRunMutation()
   const updateNameMutation = useUpdateNameMutation()
   const updatePasswordMutation = useUpdatePasswordMutation()
+  const updateUsernameMutation = useUpdateUsernameMutation()
   const updateAvatarMutation = useUpdateAvatarMutation()
   const [uploadingAvatarBase64, setUploadingAvatarBase64] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [formData, setFormData] = useState({ name: '' })
-  const [formErrors, setFormErrors] = useState<{ name?: string }>({})
+  const [formData, setFormData] = useState({ username: '', name: '' })
+  const [formErrors, setFormErrors] = useState<{ username?: string; name?: string }>({})
   const [passwordFormData, setPasswordFormData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -221,9 +201,18 @@ export function HeaderWithActions() {
     const result = accountSettingsSchema.safeParse(formData)
 
     if (!result.success) {
-      setFormErrors({ name: result.error.issues[0]?.message })
+      const errors: typeof formErrors = {}
+      result.error.issues.forEach((issue) => {
+        const path = issue.path[0] as keyof typeof formErrors
+        errors[path] = issue.message
+      })
+      setFormErrors(errors)
 
       return
+    }
+
+    if (formData.username !== userQuery?.user?.username) {
+      await updateUsernameMutation.mutateAsync(formData.username)
     }
 
     if (formData.name !== userQuery?.user?.name) {
@@ -332,7 +321,10 @@ export function HeaderWithActions() {
               <DropdownMenuLabel>{t('settings')}</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  setFormData({ name: userQuery?.user?.name || '' })
+                  setFormData({
+                    username: userQuery?.user?.username || '',
+                    name: userQuery?.user?.name || '',
+                  })
                   setFormErrors({})
                   openAccountSettingsFormModal()
                 }}
@@ -365,11 +357,13 @@ export function HeaderWithActions() {
             </Button>
           ) : (
             <Fragment>
-              <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Github className="h-5 w-5" />
-                </Button>
-              </a>
+              <SimpleTooltip label="GitHub">
+                <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <Github className="h-5 w-5" />
+                  </Button>
+                </a>
+              </SimpleTooltip>
 
               <SimpleTooltip label={t('shortcuts.title')}>
                 <Button variant="ghost" size="icon" className="rounded-full" onClick={openShortcutsModal}>
@@ -377,15 +371,13 @@ export function HeaderWithActions() {
                 </Button>
               </SimpleTooltip>
 
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={toggleLanguage}>
-                <Languages className="h-5 w-5" />
-              </Button>
-
-              <SimpleTooltip label={getThemeLabel()}>
-                <Button variant="ghost" size="icon" className="rounded-full" onClick={cycleThemeMode}>
-                  {getThemeIcon()}
+              <SimpleTooltip label={t('actions.switchLanguage')}>
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={toggleLanguage}>
+                  <Languages className="h-5 w-5" />
                 </Button>
               </SimpleTooltip>
+
+              <ThemePicker />
             </Fragment>
           )}
 
@@ -452,10 +444,7 @@ export function HeaderWithActions() {
               {t('actions.switchLanguage')}
             </Button>
 
-            <Button variant="outline" className="w-full justify-start gap-3" onClick={cycleThemeMode}>
-              {getThemeIcon()}
-              {getThemeLabel()}
-            </Button>
+            <ThemePicker variant="button" />
           </div>
         </SheetContent>
       </Sheet>
@@ -467,6 +456,14 @@ export function HeaderWithActions() {
           </DialogHeader>
           <form onSubmit={handleFormSubmit}>
             <div className="space-y-4">
+              <Input
+                label={t('username')}
+                withAsterisk
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                error={formErrors.username}
+              />
+
               <Input
                 label={t('display name')}
                 withAsterisk
@@ -503,17 +500,21 @@ export function HeaderWithActions() {
               <FormActions
                 reset={() => {
                   setUploadingAvatarBase64(null)
-                  setFormData({ name: userQuery?.user?.name || '' })
+                  setFormData({
+                    username: userQuery?.user?.username || '',
+                    name: userQuery?.user?.name || '',
+                  })
 
                   if (fileInputRef.current) {
                     fileInputRef.current.value = ''
                   }
                 }}
                 isDirty={
+                  formData.username !== (userQuery?.user?.username || '') ||
                   formData.name !== (userQuery?.user?.name || '') ||
                   (uploadingAvatarBase64 !== null && uploadingAvatarBase64 !== userQuery?.user?.avatar)
                 }
-                isValid={formData.name.length >= 1}
+                isValid={formData.username.length >= 1 && formData.name.length >= 1}
               />
             </div>
           </form>

@@ -902,3 +902,105 @@ export function useUpdatePasswordMutation() {
     },
   })
 }
+
+export function useUpdateUsernameMutation() {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (username: string) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateUsername($username: String!) {
+            updateUsername(username: $username)
+          }
+        `),
+        {
+          username,
+        },
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_USER })
+    },
+  })
+}
+
+export function useTagNodeMutation() {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, tag }: { id: string; tag: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation TagNode($id: ID!, $tag: String!) {
+            tagNode(id: $id, tag: $tag)
+          }
+        `),
+        {
+          id,
+          tag,
+        },
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
+export function useTagSubscriptionMutation() {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, tag }: { id: string; tag: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation TagSubscription($id: ID!, $tag: String!) {
+            tagSubscription(id: $id, tag: $tag)
+          }
+        `),
+        {
+          id,
+          tag,
+        },
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}
+
+export function useUpdateSubscriptionLinkMutation() {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, link }: { id: string; link: string }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateSubscriptionLink($id: ID!, $link: String!) {
+            updateSubscriptionLink(id: $id, link: $link) {
+              id
+              link
+              tag
+            }
+          }
+        `),
+        {
+          id,
+          link,
+        },
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
+    },
+  })
+}

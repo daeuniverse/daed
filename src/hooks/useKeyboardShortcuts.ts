@@ -32,7 +32,7 @@ function isMacPlatform(): boolean {
   if (typeof navigator === 'undefined') return false
   // Use userAgentData if available, fallback to userAgent
   if ('userAgentData' in navigator && navigator.userAgentData) {
-    return navigator.userAgentData.platform === 'macOS'
+    return (navigator.userAgentData as { platform: string }).platform === 'macOS'
   }
   return /Mac|iPod|iPhone|iPad/.test(navigator.userAgent)
 }

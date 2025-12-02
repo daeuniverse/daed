@@ -1,4 +1,4 @@
-import { Check, Eye, Trash2, Type, X } from 'lucide-react'
+import { Check, Copy, Eye, Trash2, Type, X } from 'lucide-react'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -11,6 +11,7 @@ import {
   ScrollableDialogContent,
   ScrollableDialogHeader,
 } from '~/components/ui/scrollable-dialog'
+import { SimpleTooltip } from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
 
 export function SimpleCard({
@@ -19,6 +20,7 @@ export function SimpleCard({
   onSelect,
   onRemove,
   onRename,
+  onDuplicate,
   actions,
   children,
 }: {
@@ -27,6 +29,7 @@ export function SimpleCard({
   onSelect?: () => void
   onRemove?: () => void
   onRename?: (newName: string) => void
+  onDuplicate?: () => void
   actions?: React.ReactNode
   children?: React.ReactNode
 }) {
@@ -98,18 +101,22 @@ export function SimpleCard({
                 onBlur={handleSaveEdit}
                 className="h-8 text-sm font-semibold"
               />
-              <Button variant="ghost" size="xs" onClick={handleSaveEdit} className="shrink-0">
-                <Check className="h-4 w-4 text-primary" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={handleCancelEdit}
-                onMouseDown={(e) => e.preventDefault()}
-                className="shrink-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <SimpleTooltip label={t('actions.confirm')}>
+                <Button variant="ghost" size="xs" onClick={handleSaveEdit} className="shrink-0">
+                  <Check className="h-4 w-4 text-primary" />
+                </Button>
+              </SimpleTooltip>
+              <SimpleTooltip label={t('actions.cancel')}>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  onClick={handleCancelEdit}
+                  onMouseDown={(e) => e.preventDefault()}
+                  className="shrink-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </SimpleTooltip>
             </div>
           ) : (
             <button
@@ -133,27 +140,42 @@ export function SimpleCard({
 
           <div className="flex items-center gap-2 p-3">
             {!isEditing && onRename && (
-              <Button variant="ghost" size="xs" onClick={handleStartEdit}>
-                <Type className="h-4 w-4" />
-              </Button>
+              <SimpleTooltip label={t('actions.rename')}>
+                <Button variant="ghost" size="xs" onClick={handleStartEdit}>
+                  <Type className="h-4 w-4" />
+                </Button>
+              </SimpleTooltip>
             )}
+
+            {onDuplicate && (
+              <SimpleTooltip label={t('actions.duplicate')}>
+                <Button variant="ghost" size="xs" onClick={onDuplicate}>
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </SimpleTooltip>
+            )}
+
             {actions}
 
             {children && (
-              <Button variant="ghost" size="xs" onClick={() => setOpenedDetailsModal(true)}>
-                <Eye className="h-4 w-4" />
-              </Button>
+              <SimpleTooltip label={t('actions.viewDetails')}>
+                <Button variant="ghost" size="xs" onClick={() => setOpenedDetailsModal(true)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+              </SimpleTooltip>
             )}
 
             {!selected && onRemove && (
-              <Button
-                variant="ghost"
-                size="xs"
-                className="text-destructive hover:text-destructive"
-                onClick={() => setOpenedConfirmModal(true)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <SimpleTooltip label={t('actions.remove')}>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => setOpenedConfirmModal(true)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </SimpleTooltip>
             )}
           </div>
         </div>

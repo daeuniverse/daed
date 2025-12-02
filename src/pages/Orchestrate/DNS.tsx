@@ -15,6 +15,7 @@ import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
+import { SimpleTooltip } from '~/components/ui/tooltip'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
@@ -42,27 +43,35 @@ export function DNS() {
           key={dns.id}
           name={dns.name}
           actions={
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => {
-                updateDNSFormModalRef.current?.setEditingID(dns.id)
+            <SimpleTooltip label={t('actions.settings')}>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => {
+                  updateDNSFormModalRef.current?.setEditingID(dns.id)
 
-                updateDNSFormModalRef.current?.initOrigins({
-                  name: dns.name,
-                  text: dns.dns.string,
-                })
+                  updateDNSFormModalRef.current?.initOrigins({
+                    name: dns.name,
+                    text: dns.dns.string,
+                  })
 
-                openUpdateDNSFormModal()
-              }}
-            >
-              <Settings2 className="h-4 w-4" />
-            </Button>
+                  openUpdateDNSFormModal()
+                }}
+              >
+                <Settings2 className="h-4 w-4" />
+              </Button>
+            </SimpleTooltip>
           }
           selected={dns.selected}
           onSelect={() => selectDNSMutation.mutate({ id: dns.id })}
           onRemove={dns.id !== defaultDNSID ? () => removeDNSMutation.mutate(dns.id) : undefined}
           onRename={(newName) => renameDNSMutation.mutate({ id: dns.id, name: newName })}
+          onDuplicate={async () => {
+            await createDNSMutation.mutateAsync({
+              name: `${dns.name} (Copy)`,
+              dns: dns.dns.string,
+            })
+          }}
         />
       ))}
 

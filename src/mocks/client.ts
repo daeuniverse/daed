@@ -114,11 +114,41 @@ const mockHandlers: Record<string, (variables?: Variables) => unknown> = {
  * Mock GraphQL Client class that mimics graphql-request's GraphQLClient
  */
 export class MockGraphQLClient {
+  url: string
+  requestConfig: Record<string, unknown> = {}
+
   constructor(
-    _endpoint: string,
+    endpoint: string,
     _options?: { headers?: Record<string, string>; responseMiddleware?: (response: unknown) => void },
   ) {
-    // Mock client doesn't need endpoint or options
+    // Mock client stores endpoint for compatibility
+    this.url = endpoint
+  }
+
+  // Mock rawRequest to match GraphQLClient interface
+  async rawRequest<T>(): Promise<{ data: T; extensions?: unknown; headers: Headers; status: number }> {
+    throw new Error('rawRequest not implemented in mock client')
+  }
+
+  // Mock batchRequests to match GraphQLClient interface
+  async batchRequests(): Promise<unknown[]> {
+    throw new Error('batchRequests not implemented in mock client')
+  }
+
+  // Mock setEndpoint to match GraphQLClient interface
+  setEndpoint(value: string): this {
+    this.url = value
+    return this
+  }
+
+  // Mock setHeader to match GraphQLClient interface
+  setHeader(_key: string, _value: string): this {
+    return this
+  }
+
+  // Mock setHeaders to match GraphQLClient interface
+  setHeaders(_headers: Record<string, string>): this {
+    return this
   }
 
   async request<T>(document: RequestDocument, variables?: Variables): Promise<T> {

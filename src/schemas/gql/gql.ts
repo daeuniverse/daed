@@ -48,6 +48,10 @@ type Documents = {
   '\n          mutation Run($dry: Boolean!) {\n            run(dry: $dry)\n          }\n        ': typeof types.RunDocument
   '\n          mutation UpdateAvatar($avatar: String) {\n            updateAvatar(avatar: $avatar)\n          }\n        ': typeof types.UpdateAvatarDocument
   '\n          mutation UpdateName($name: String) {\n            updateName(name: $name)\n          }\n        ': typeof types.UpdateNameDocument
+  '\n          mutation UpdateUsername($username: String!) {\n            updateUsername(username: $username)\n          }\n        ': typeof types.UpdateUsernameDocument
+  '\n          mutation TagNode($id: ID!, $tag: String!) {\n            tagNode(id: $id, tag: $tag)\n          }\n        ': typeof types.TagNodeDocument
+  '\n          mutation TagSubscription($id: ID!, $tag: String!) {\n            tagSubscription(id: $id, tag: $tag)\n          }\n        ': typeof types.TagSubscriptionDocument
+  '\n          mutation UpdateSubscriptionLink($id: ID!, $link: String!) {\n            updateSubscriptionLink(id: $id, link: $link) {\n              id\n              link\n              tag\n            }\n          }\n        ': typeof types.UpdateSubscriptionLinkDocument
   '\n        query Mode($paths: [String!]) {\n          jsonStorage(paths: $paths)\n        }\n      ': typeof types.ModeDocument
   '\n        query Defaults($paths: [String!]) {\n          jsonStorage(paths: $paths)\n        }\n      ': typeof types.DefaultsDocument
   '\n        query Interfaces($up: Boolean) {\n          general {\n            interfaces(up: $up) {\n              name\n              ifindex\n              ip\n              flag {\n                default {\n                  gateway\n                }\n              }\n            }\n          }\n        }\n      ': typeof types.InterfacesDocument
@@ -132,6 +136,14 @@ const documents: Documents = {
     types.UpdateAvatarDocument,
   '\n          mutation UpdateName($name: String) {\n            updateName(name: $name)\n          }\n        ':
     types.UpdateNameDocument,
+  '\n          mutation UpdateUsername($username: String!) {\n            updateUsername(username: $username)\n          }\n        ':
+    types.UpdateUsernameDocument,
+  '\n          mutation TagNode($id: ID!, $tag: String!) {\n            tagNode(id: $id, tag: $tag)\n          }\n        ':
+    types.TagNodeDocument,
+  '\n          mutation TagSubscription($id: ID!, $tag: String!) {\n            tagSubscription(id: $id, tag: $tag)\n          }\n        ':
+    types.TagSubscriptionDocument,
+  '\n          mutation UpdateSubscriptionLink($id: ID!, $link: String!) {\n            updateSubscriptionLink(id: $id, link: $link) {\n              id\n              link\n              tag\n            }\n          }\n        ':
+    types.UpdateSubscriptionLinkDocument,
   '\n        query Mode($paths: [String!]) {\n          jsonStorage(paths: $paths)\n        }\n      ':
     types.ModeDocument,
   '\n        query Defaults($paths: [String!]) {\n          jsonStorage(paths: $paths)\n        }\n      ':
@@ -381,6 +393,30 @@ export function graphql(
 export function graphql(
   source: '\n          mutation UpdateName($name: String) {\n            updateName(name: $name)\n          }\n        ',
 ): (typeof documents)['\n          mutation UpdateName($name: String) {\n            updateName(name: $name)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation UpdateUsername($username: String!) {\n            updateUsername(username: $username)\n          }\n        ',
+): (typeof documents)['\n          mutation UpdateUsername($username: String!) {\n            updateUsername(username: $username)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation TagNode($id: ID!, $tag: String!) {\n            tagNode(id: $id, tag: $tag)\n          }\n        ',
+): (typeof documents)['\n          mutation TagNode($id: ID!, $tag: String!) {\n            tagNode(id: $id, tag: $tag)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation TagSubscription($id: ID!, $tag: String!) {\n            tagSubscription(id: $id, tag: $tag)\n          }\n        ',
+): (typeof documents)['\n          mutation TagSubscription($id: ID!, $tag: String!) {\n            tagSubscription(id: $id, tag: $tag)\n          }\n        ']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n          mutation UpdateSubscriptionLink($id: ID!, $link: String!) {\n            updateSubscriptionLink(id: $id, link: $link) {\n              id\n              link\n              tag\n            }\n          }\n        ',
+): (typeof documents)['\n          mutation UpdateSubscriptionLink($id: ID!, $link: String!) {\n            updateSubscriptionLink(id: $id, link: $link) {\n              id\n              link\n              tag\n            }\n          }\n        ']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

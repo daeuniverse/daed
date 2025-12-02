@@ -10,13 +10,18 @@ export const v2raySchema = z.object({
   type: z.enum(['none', 'http', 'srtp', 'utp', 'wechat-video', 'dtls', 'wireguard']),
   host: z.string(),
   path: z.string(),
-  tls: z.enum(['none', 'tls']),
+  tls: z.enum(['none', 'tls', 'xtls', 'reality']),
   flow: z.enum(['none', 'xtls-rprx-origin', 'xtls-rprx-origin-udp443', 'xtls-rprx-vision', 'xtls-rprx-vision-udp443']),
   alpn: z.string(),
   scy: z.enum(['auto', 'aes-128-gcm', 'chacha20-poly1305', 'none', 'zero']),
   v: z.literal(''),
   allowInsecure: z.boolean(),
   sni: z.string(),
+  // Reality-specific fields
+  pbk: z.string(), // public key
+  fp: z.string(), // fingerprint
+  sid: z.string(), // short ID
+  spx: z.string(), // spider x (path)
 })
 
 export const ssSchema = z.object({

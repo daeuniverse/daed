@@ -16,6 +16,7 @@ import { PlainTextFormModal } from '~/components/PlainTextFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
+import { SimpleTooltip } from '~/components/ui/tooltip'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
 
@@ -42,27 +43,35 @@ export function Routing() {
           key={routing.id}
           name={routing.name}
           actions={
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => {
-                updateRoutingFormModalRef.current?.setEditingID(routing.id)
+            <SimpleTooltip label={t('actions.settings')}>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => {
+                  updateRoutingFormModalRef.current?.setEditingID(routing.id)
 
-                updateRoutingFormModalRef.current?.initOrigins({
-                  name: routing.name,
-                  text: routing.routing.string,
-                })
+                  updateRoutingFormModalRef.current?.initOrigins({
+                    name: routing.name,
+                    text: routing.routing.string,
+                  })
 
-                openUpdateRoutingFormModal()
-              }}
-            >
-              <Settings2 className="h-4 w-4" />
-            </Button>
+                  openUpdateRoutingFormModal()
+                }}
+              >
+                <Settings2 className="h-4 w-4" />
+              </Button>
+            </SimpleTooltip>
           }
           selected={routing.selected}
           onSelect={() => selectRoutingMutation.mutate({ id: routing.id })}
           onRemove={routing.id !== defaultRoutingID ? () => removeRoutingMutation.mutate(routing.id) : undefined}
           onRename={(newName) => renameRoutingMutation.mutate({ id: routing.id, name: newName })}
+          onDuplicate={async () => {
+            await createRoutingMutation.mutateAsync({
+              name: `${routing.name} (Copy)`,
+              routing: routing.routing.string,
+            })
+          }}
         />
       ))}
 

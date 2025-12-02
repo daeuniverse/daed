@@ -12,6 +12,7 @@ import { ConfigureNodeFormModal, SortableNodeCard } from '~/components/index.ts'
 import { QRCodeModal } from '~/components/QRCodeModal.tsx'
 import { Section } from '~/components/Section.tsx'
 import { Button } from '~/components/ui/button.tsx'
+import { SimpleTooltip } from '~/components/ui/tooltip.tsx'
 import { DraggableResourceType } from '~/constants/index.ts'
 import { cn } from '~/lib/utils'
 
@@ -52,9 +53,11 @@ export function NodeResource({
         iconPlus={<CloudUpload className="h-4 w-4" />}
         onCreate={() => setOpenedImportNodeFormModal(true)}
         actions={
-          <Button variant="ghost" size="icon" onClick={() => setOpenedConfigureNodeFormModal(true)}>
-            <FileInput className="h-4 w-4" />
-          </Button>
+          <SimpleTooltip label={t('actions.configureNode')}>
+            <Button variant="ghost" size="icon" onClick={() => setOpenedConfigureNodeFormModal(true)}>
+              <FileInput className="h-4 w-4" />
+            </Button>
+          </SimpleTooltip>
         }
         bordered
         highlight={highlight}
@@ -71,36 +74,40 @@ export function NodeResource({
                 leftSection={protocol}
                 actions={
                   <Fragment>
-                    <Button
-                      variant="ghost"
-                      size="xs"
-                      className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                      onClick={() => {
-                        setEditingNode({
-                          id,
-                          link,
-                          tag: tag || '',
-                          name: name || '',
-                        })
-                        setOpenedEditNodeFormModal(true)
-                      }}
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="xs"
-                      className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                      onClick={() => {
-                        qrCodeModalRef.current?.setProps({
-                          name: tag || name!,
-                          link,
-                        })
-                        setOpenedQRCodeModal(true)
-                      }}
-                    >
-                      <Eye className="h-3.5 w-3.5" />
-                    </Button>
+                    <SimpleTooltip label={t('actions.edit')}>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                        onClick={() => {
+                          setEditingNode({
+                            id,
+                            link,
+                            tag: tag || '',
+                            name: name || '',
+                          })
+                          setOpenedEditNodeFormModal(true)
+                        }}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                    </SimpleTooltip>
+                    <SimpleTooltip label={t('actions.viewQRCode')}>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                        onClick={() => {
+                          qrCodeModalRef.current?.setProps({
+                            name: tag || name!,
+                            link,
+                          })
+                          setOpenedQRCodeModal(true)
+                        }}
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                      </Button>
+                    </SimpleTooltip>
                   </Fragment>
                 }
                 onRemove={() => removeNodesMutation.mutate([id])}

@@ -9,6 +9,8 @@ import {
   useImportSubscriptionsMutation,
   useRemoveSubscriptionsMutation,
   useSubscriptionsQuery,
+  useTagSubscriptionMutation,
+  useUpdateSubscriptionLinkMutation,
   useUpdateSubscriptionsMutation,
 } from '~/apis'
 import { DraggableResourceBadge } from '~/components/DraggableResourceBadge'
@@ -19,6 +21,7 @@ import { Section } from '~/components/Section'
 import { SortableSubscriptionCard } from '~/components/SortableSubscriptionCard'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
 import { Button } from '~/components/ui/button'
+import { SimpleTooltip } from '~/components/ui/tooltip'
 import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
@@ -49,6 +52,8 @@ export function SubscriptionResource({
   const removeSubscriptionsMutation = useRemoveSubscriptionsMutation()
   const importSubscriptionsMutation = useImportSubscriptionsMutation()
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
+  const updateSubscriptionLinkMutation = useUpdateSubscriptionLinkMutation()
+  const tagSubscriptionMutation = useTagSubscriptionMutation()
 
   const subscriptionIds = sortedSubscriptions.map((s) => `subscription-${s.id}`)
 
@@ -61,16 +66,18 @@ export function SubscriptionResource({
       bordered
       actions={
         sortedSubscriptions.length > 2 && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              updateSubscriptionsMutation.mutate(sortedSubscriptions.map(({ id }) => id))
-            }}
-            loading={updateSubscriptionsMutation.isPending}
-          >
-            <Download className="h-4 w-4" />
-          </Button>
+          <SimpleTooltip label={t('actions.updateAll')}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                updateSubscriptionsMutation.mutate(sortedSubscriptions.map(({ id }) => id))
+              }}
+              loading={updateSubscriptionsMutation.isPending}
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+          </SimpleTooltip>
         )
       }
     >
@@ -86,35 +93,39 @@ export function SubscriptionResource({
               leftSection={`${nodes.edges.length} ${t('node')}`}
               actions={
                 <Fragment>
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                    onClick={() => {
-                      setEditingSubscription({
-                        id: subscriptionID,
-                        link,
-                        tag: tag || '',
-                      })
-                      openEditSubscriptionFormModal()
-                    }}
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                    onClick={() => {
-                      qrCodeModalRef.current?.setProps({
-                        name: tag!,
-                        link,
-                      })
-                      openQRCodeModal()
-                    }}
-                  >
-                    <Eye className="h-3.5 w-3.5" />
-                  </Button>
+                  <SimpleTooltip label={t('actions.edit')}>
+                    <Button
+                      variant="ghost"
+                      size="xs"
+                      className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                      onClick={() => {
+                        setEditingSubscription({
+                          id: subscriptionID,
+                          link,
+                          tag: tag || '',
+                        })
+                        openEditSubscriptionFormModal()
+                      }}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                  </SimpleTooltip>
+                  <SimpleTooltip label={t('actions.viewQRCode')}>
+                    <Button
+                      variant="ghost"
+                      size="xs"
+                      className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                      onClick={() => {
+                        qrCodeModalRef.current?.setProps({
+                          name: tag!,
+                          link,
+                        })
+                        openQRCodeModal()
+                      }}
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                    </Button>
+                  </SimpleTooltip>
                   <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
                 </Fragment>
               }
@@ -168,9 +179,22 @@ export function SubscriptionResource({
         onClose={closeEditSubscriptionFormModal}
         subscription={editingSubscription}
         onSubmit={async (values) => {
-          // Remove the old subscription and re-import with new URL
-          await removeSubscriptionsMutation.mutateAsync([values.id])
-          await importSubscriptionsMutation.mutateAsync([{ link: values.link, tag: values.tag }])
+          // Update subscription link if changed
+          if (values.link !== editingSubscription?.link) {
+            await updateSubscriptionLinkMutation.mutateAsync({
+              id: values.id,
+              link: values.link,
+            })
+          }
+
+          // Update subscription tag if changed
+          if (values.tag !== editingSubscription?.tag) {
+            await tagSubscriptionMutation.mutateAsync({
+              id: values.id,
+              tag: values.tag,
+            })
+          }
+
           await refetchSubscriptions()
           closeEditSubscriptionFormModal()
         }}

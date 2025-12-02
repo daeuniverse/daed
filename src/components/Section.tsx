@@ -1,6 +1,8 @@
 import { Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
+import { SimpleTooltip } from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
 
 export function Section({
@@ -22,6 +24,8 @@ export function Section({
   highlight?: boolean
   children: React.ReactNode
 }) {
+  const { t } = useTranslation()
+
   return (
     <div
       data-testid="section"
@@ -39,9 +43,11 @@ export function Section({
 
         <div className="flex items-center gap-2">
           {actions}
-          <Button variant="ghost" size="icon" onClick={onCreate}>
-            {iconPlus || <Plus className="h-4 w-4" />}
-          </Button>
+          <SimpleTooltip label={t('actions.add')}>
+            <Button variant="ghost" size="icon" onClick={onCreate}>
+              {iconPlus || <Plus className="h-4 w-4" />}
+            </Button>
+          </SimpleTooltip>
         </div>
       </div>
 

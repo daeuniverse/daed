@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { Toaster } from '~/components/ui/sonner'
 import { TooltipProvider } from '~/components/ui/tooltip'
+import { getThemeById, themeColorsToCSSVars } from '~/constants'
 import { QueryProvider } from '~/contexts'
 import { Router } from '~/Router'
 import { appStateAtom, colorSchemeAtom } from '~/store'
@@ -34,6 +35,7 @@ export function App() {
   const appState = useStore(appStateAtom)
   const systemColorScheme = useSystemColorScheme()
   const themeMode = appState.themeMode || 'system'
+  const colorTheme = appState.colorTheme || 'amber'
 
   // Derive actual colorScheme from themeMode
   const colorScheme: ColorScheme = themeMode === 'system' ? systemColorScheme : themeMode
@@ -54,6 +56,20 @@ export function App() {
       document.documentElement.classList.remove('dark')
     }
   }, [colorScheme])
+
+  // Apply theme colors to CSS variables
+  useEffect(() => {
+    const theme = getThemeById(colorTheme)
+
+    if (!theme) return
+
+    const colors = colorScheme === 'dark' ? theme.dark : theme.light
+    const cssVars = themeColorsToCSSVars(colors)
+
+    Object.entries(cssVars).forEach(([key, value]) => {
+      document.documentElement.style.setProperty(key, value)
+    })
+  }, [colorTheme, colorScheme])
 
   return (
     <QueryProvider colorScheme={colorScheme} themeMode={themeMode} setThemeMode={setThemeMode}>

@@ -85,6 +85,7 @@ export function GET_LOG_LEVEL_STEPS(t: TFunction) {
 export enum MODE {
   simple = 'simple',
   advanced = 'advanced',
+  rule = 'rule',
 }
 
 export const COLS_PER_ROW = 3

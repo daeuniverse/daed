@@ -239,7 +239,7 @@ export function ProfileSwitcher() {
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" className="w-[240px]">
+        <DropdownMenuContent align="end" className="w-60">
           <DropdownMenuLabel className="flex items-center gap-2">
             <Layers className="h-4 w-4" />
             {t('profile.title')}

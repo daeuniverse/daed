@@ -1,9 +1,9 @@
 import type { UniqueIdentifier } from '@dnd-kit/core'
-import type { MODE } from '~/constants'
+import type { MODE, ThemeId } from '~/constants'
 import { persistentAtom, persistentMap } from '@nanostores/persistent'
-
 import { atom, map } from 'nanostores'
-import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL } from '~/constants'
+
+import { COLS_PER_ROW, DEFAULT_ENDPOINT_URL, DEFAULT_THEME_ID } from '~/constants'
 
 export type ColorScheme = 'light' | 'dark'
 export type ThemeMode = 'system' | 'light' | 'dark'
@@ -43,6 +43,7 @@ export interface ProfilesState {
 
 export type AppState = {
   themeMode: ThemeMode
+  colorTheme: ThemeId
   colsPerRow: number
 } & PersistentSortableKeys
 
@@ -53,6 +54,7 @@ export const appStateAtom = persistentMap<AppState>(
   'APP_STATE',
   {
     themeMode: 'system',
+    colorTheme: DEFAULT_THEME_ID,
     colsPerRow: COLS_PER_ROW,
     nodeSortableKeys: [],
     subscriptionSortableKeys: [],

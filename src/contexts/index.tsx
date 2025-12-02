@@ -1,4 +1,5 @@
-import type { ClientError } from 'graphql-request'
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
+import type { ClientError, RequestDocument, Variables } from 'graphql-request'
 import { useStore } from '@nanostores/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GraphQLClient } from 'graphql-request'
@@ -8,8 +9,16 @@ import { toast } from 'sonner'
 import { isMockMode, MockGraphQLClient } from '~/mocks'
 import { endpointURLAtom, tokenAtom } from '~/store'
 
-// Use a union type to support both real and mock clients
-type GQLClient = GraphQLClient | MockGraphQLClient
+// Define a common interface for GraphQL clients
+export interface GQLClientInterface {
+  request: <T, V extends Variables = Variables>(
+    document: RequestDocument | TypedDocumentNode<T, V>,
+    variables?: V,
+  ) => Promise<T>
+}
+
+// Use an interface type to support both real and mock clients
+export type GQLClient = GQLClientInterface
 
 export const GQLClientContext = createContext<GQLClient>(null as unknown as GQLClient)
 

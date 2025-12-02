@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { SimpleTooltip } from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
 
 export function SortableSubscriptionCard({
@@ -76,14 +77,16 @@ export function SortableSubscriptionCard({
             {/* Actions - visible on hover */}
             <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
               {actions}
-              <Button
-                variant="ghost"
-                size="xs"
-                className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
-                onClick={() => setConfirmOpen(true)}
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
+              <SimpleTooltip label={t('actions.remove')}>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                  onClick={() => setConfirmOpen(true)}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </SimpleTooltip>
             </div>
           </div>
 

@@ -7,6 +7,7 @@ import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
+import { SimpleTooltip } from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
 
 export function DroppableGroupCard({
@@ -85,18 +86,22 @@ export function DroppableGroupCard({
                   onBlur={handleSaveEdit}
                   className="h-7 text-sm font-semibold"
                 />
-                <Button variant="ghost" size="xs" onClick={handleSaveEdit} className="shrink-0">
-                  <Check className="h-4 w-4 text-primary" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="xs"
-                  onClick={handleCancelEdit}
-                  onMouseDown={(e) => e.preventDefault()}
-                  className="shrink-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                <SimpleTooltip label={t('actions.confirm')}>
+                  <Button variant="ghost" size="xs" onClick={handleSaveEdit} className="shrink-0">
+                    <Check className="h-4 w-4 text-primary" />
+                  </Button>
+                </SimpleTooltip>
+                <SimpleTooltip label={t('actions.cancel')}>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    onClick={handleCancelEdit}
+                    onMouseDown={(e) => e.preventDefault()}
+                    className="shrink-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </SimpleTooltip>
               </div>
             ) : (
               <h5 className="font-semibold">{name}</h5>
@@ -104,21 +109,25 @@ export function DroppableGroupCard({
 
             <div className="flex items-center gap-2">
               {!isEditing && onRename && (
-                <Button variant="ghost" size="xs" onClick={handleStartEdit}>
-                  <Type className="h-4 w-4" />
-                </Button>
+                <SimpleTooltip label={t('actions.rename')}>
+                  <Button variant="ghost" size="xs" onClick={handleStartEdit}>
+                    <Type className="h-4 w-4" />
+                  </Button>
+                </SimpleTooltip>
               )}
               {actions}
 
               {onRemove && (
-                <Button
-                  variant="ghost"
-                  size="xs"
-                  className="text-destructive hover:text-destructive"
-                  onClick={() => setConfirmOpen(true)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <SimpleTooltip label={t('actions.remove')}>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => setConfirmOpen(true)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </SimpleTooltip>
               )}
             </div>
           </div>

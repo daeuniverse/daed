@@ -1,4 +1,4 @@
-import type { GraphQLClient } from 'graphql-request'
+import type { GQLClientInterface } from '~/contexts'
 import { useQuery } from '@tanstack/react-query'
 
 import {
@@ -15,7 +15,7 @@ import {
 import { useGQLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
 
-export function getModeRequest(gqlClient: GraphQLClient) {
+export function getModeRequest(gqlClient: GQLClientInterface) {
   return async () => {
     const { jsonStorage } = await gqlClient.request(
       graphql(`
@@ -32,7 +32,7 @@ export function getModeRequest(gqlClient: GraphQLClient) {
   }
 }
 
-export function getDefaultsRequest(gqlClient: GraphQLClient) {
+export function getDefaultsRequest(gqlClient: GQLClientInterface) {
   return async () => {
     const data = await gqlClient.request(
       graphql(`
@@ -56,7 +56,7 @@ export function getDefaultsRequest(gqlClient: GraphQLClient) {
   }
 }
 
-export function getInterfacesRequest(gqlClient: GraphQLClient) {
+export function getInterfacesRequest(gqlClient: GQLClientInterface) {
   return () =>
     gqlClient.request(
       graphql(`

@@ -472,6 +472,11 @@ export function parseVLessUrl(url: string): (Partial<V2rayFormValues> & { protoc
       type: (params.get('headerType') || 'none') as V2rayFormValues['type'],
       flow: (params.get('flow') || 'none') as V2rayFormValues['flow'],
       allowInsecure: params.get('allowInsecure') === '1' || params.get('allowInsecure') === 'true',
+      // Reality-specific fields
+      pbk: params.get('pbk') || '',
+      fp: params.get('fp') || '',
+      sid: params.get('sid') || '',
+      spx: params.get('spx') || '',
       // Defaults for vmess-only fields
       aid: 0,
       scy: 'auto',

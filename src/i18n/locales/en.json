@@ -36,9 +36,11 @@
     "cancel": "Cancel",
     "change endpoint": "Change Endpoint",
     "confirm": "Confirm",
+    "configureNode": "Configure Node",
     "continue": "Continue",
     "create": "New",
     "create account": "Create Account",
+    "duplicate": "Duplicate",
     "edit": "Edit",
     "hide": "Hide",
     "import": "Import",
@@ -51,6 +53,7 @@
     "rename": "Rename",
     "reset": "Reset",
     "save dae": "Save dae",
+    "settings": "Settings",
     "show content": "Show content",
     "show sensitive": "Click to reveal",
     "simple mode": "Simple Mode",
@@ -59,7 +62,12 @@
     "submit": "Submit",
     "switchLanguage": "Switch Language",
     "switchRunning": "Switch Running",
-    "switchTheme": "Switch Theme"
+    "switchTheme": "Switch Theme",
+    "update": "Update",
+    "updateAll": "Update All",
+    "viewDetails": "View Details",
+    "viewQRCode": "View QR Code",
+    "viewSource": "View Source"
   },
   "address": "address",
   "allowInsecure": "Allow Insecure",
@@ -104,7 +112,11 @@
     "websocketHost": "WebSocket Host",
     "websocketPath": "WebSocket Path",
     "wechatVideoObfuscation": "Obfuscated as WeChat Video Calls",
-    "wireguardObfuscation": "Obfuscated as WireGuard Packets"
+    "wireguardObfuscation": "Obfuscated as WireGuard Packets",
+    "publicKey": "Public Key",
+    "fingerprint": "Fingerprint",
+    "shortId": "Short ID",
+    "spiderX": "Spider X"
   },
   "confirmModal": {
     "cancel": "No, It's a mistake",
@@ -223,6 +235,9 @@
   "tcpCheckHttpMethod": "TCP Check HTTP Method",
   "tcpCheckUrl": "TCP Check URL",
   "theme": {
+    "title": "Theme",
+    "mode": "Appearance Mode",
+    "color": "Color Theme",
     "system": "System",
     "light": "Light",
     "dark": "Dark"

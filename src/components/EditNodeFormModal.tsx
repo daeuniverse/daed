@@ -10,7 +10,7 @@ import type { TuicFormValues } from './ConfigureNodeFormModal/TuicForm.tsx'
 import type { V2rayFormValues } from './ConfigureNodeFormModal/V2rayForm.tsx'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useUpdateNodeMutation } from '../apis/index.ts'
+import { useTagNodeMutation, useUpdateNodeMutation } from '../apis/index.ts'
 import { parseNodeUrl } from '../utils/node-parser.ts'
 import { HTTPForm } from './ConfigureNodeFormModal/HTTPForm.tsx'
 import { Hysteria2Form } from './ConfigureNodeFormModal/Hysteria2Form.tsx'
@@ -65,7 +65,9 @@ function parseNode(link: string | undefined): { nodeType: NodeType; initialValue
 export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalProps) {
   const { t } = useTranslation()
   const updateNodeMutation = useUpdateNodeMutation()
+  const tagNodeMutation = useTagNodeMutation()
   const [actionsPortal, setActionsPortal] = useState<HTMLDivElement | null>(null)
+  const [currentTag, setCurrentTag] = useState('')
 
   // Parse the node link to detect protocol and get initial values
   const { nodeType, initialValues } = useMemo(() => parseNode(node?.link), [node?.link])
@@ -82,7 +84,11 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
+      setCurrentTag('')
       onClose()
+    } else if (node) {
+      // Initialize tag when opening
+      setCurrentTag(node.tag || '')
     }
   }
 
@@ -92,6 +98,16 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
         id: node.id,
         newLink: link,
       })
+
+      // Update tag if it changed
+      if (currentTag !== node.tag) {
+        await tagNodeMutation.mutateAsync({
+          id: node.id,
+          tag: currentTag,
+        })
+      }
+
+      setCurrentTag('')
       onClose()
     }
   }
@@ -106,7 +122,12 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
         </ScrollableDialogHeader>
         <div className="flex-1 flex flex-col min-h-0">
           <ScrollableDialogBody className="flex-1 space-y-4">
-            <Input label={t('tag')} value={node.tag} disabled />
+            <Input
+              label={t('tag')}
+              value={currentTag}
+              onChange={(e) => setCurrentTag(e.target.value)}
+              placeholder={node.name}
+            />
 
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full min-w-0">
               <div className="overflow-x-auto -mx-1 px-1">

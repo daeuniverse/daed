@@ -188,8 +188,8 @@ export function ConfigFormDrawer({
       return [
         { label: t('autoDetect'), value: 'auto' },
         ...interfaces
-          .filter(({ flag }) => !!flag.default)
-          .map(({ name, ip }) => ({
+          .filter(({ flag }: { flag: { default?: unknown } }) => !!flag.default)
+          .map(({ name, ip }: { name: string; ip: string[] }) => ({
             label: name,
             value: name,
             description: ip.length > 0 ? ip.join(', ') : undefined,
@@ -204,7 +204,7 @@ export function ConfigFormDrawer({
     const interfaces = generalQuery?.general.interfaces
 
     if (interfaces) {
-      return interfaces.map(({ name, ip }) => ({
+      return interfaces.map(({ name, ip }: { name: string; ip: string[] }) => ({
         label: name,
         value: name,
         description: ip.length > 0 ? ip.join(', ') : undefined,

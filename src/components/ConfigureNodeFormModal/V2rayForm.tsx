@@ -24,7 +24,8 @@ const defaultValues: V2rayFormValues = {
 }
 
 function generateV2rayLink(data: V2rayFormValues): string {
-  const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps } = data
+  const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps, pbk, fp, sid, spx } =
+    data
 
   if (protocol === 'vless') {
     const params: Record<string, unknown> = {
@@ -43,6 +44,14 @@ function generateV2rayLink(data: V2rayFormValues): string {
     if (net === 'grpc') params.serviceName = path
 
     if (net === 'kcp') params.seed = path
+
+    // Reality-specific parameters
+    if (tls === 'reality') {
+      params.pbk = pbk
+      params.fp = fp
+      if (sid) params.sid = sid
+      if (spx) params.spx = spx
+    }
 
     return generateURL({
       protocol,
@@ -163,6 +172,7 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
             { label: 'off', value: 'none' },
             { label: 'tls', value: 'tls' },
             { label: 'xtls', value: 'xtls' },
+            { label: 'reality', value: 'reality' },
           ]}
           value={formValues.tls}
           onChange={(val) => setValue('tls', (val || 'none') as V2rayFormValues['tls'])}
@@ -171,6 +181,42 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
 
       {formValues.tls !== 'none' && (
         <Input label="SNI" value={formValues.sni} onChange={(e) => setValue('sni', e.target.value)} />
+      )}
+
+      {formValues.tls === 'reality' && (
+        <>
+          <Input
+            label={t('configureNode.publicKey')}
+            withAsterisk
+            value={formValues.pbk}
+            onChange={(e) => setValue('pbk', e.target.value)}
+          />
+          <Select
+            label={t('configureNode.fingerprint')}
+            data={[
+              { label: 'chrome', value: 'chrome' },
+              { label: 'firefox', value: 'firefox' },
+              { label: 'safari', value: 'safari' },
+              { label: 'edge', value: 'edge' },
+              { label: 'ios', value: 'ios' },
+              { label: 'android', value: 'android' },
+              { label: 'random', value: 'random' },
+              { label: 'randomized', value: 'randomized' },
+            ]}
+            value={formValues.fp || 'chrome'}
+            onChange={(val) => setValue('fp', val || 'chrome')}
+          />
+          <Input
+            label={t('configureNode.shortId')}
+            value={formValues.sid}
+            onChange={(e) => setValue('sid', e.target.value)}
+          />
+          <Input
+            label={t('configureNode.spiderX')}
+            value={formValues.spx}
+            onChange={(e) => setValue('spx', e.target.value)}
+          />
+        </>
       )}
 
       <Select

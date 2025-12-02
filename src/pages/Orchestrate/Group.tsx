@@ -19,6 +19,7 @@ import { GroupFormModal } from '~/components/GroupFormModal'
 import { Section } from '~/components/Section'
 import { SortableGroupContent } from '~/components/SortableGroupContent'
 import { Button } from '~/components/ui/button'
+import { SimpleTooltip } from '~/components/ui/tooltip'
 import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { defaultResourcesAtom } from '~/store'
@@ -85,22 +86,24 @@ export function GroupResource({
             onRemove={defaultGroupID !== groupId ? () => removeGroupMutation.mutate(groupId) : undefined}
             onRename={(newName) => renameGroupMutation.mutate({ id: groupId, name: newName })}
             actions={
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => {
-                  updateGroupFormModalRef.current?.setEditingID(groupId)
+              <SimpleTooltip label={t('actions.settings')}>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  onClick={() => {
+                    updateGroupFormModalRef.current?.setEditingID(groupId)
 
-                  updateGroupFormModalRef.current?.initOrigins({
-                    name,
-                    policy,
-                  })
+                    updateGroupFormModalRef.current?.initOrigins({
+                      name,
+                      policy,
+                    })
 
-                  openUpdateGroupFormModal()
-                }}
-              >
-                <Settings2 className="h-4 w-4" />
-              </Button>
+                    openUpdateGroupFormModal()
+                  }}
+                >
+                  <Settings2 className="h-4 w-4" />
+                </Button>
+              </SimpleTooltip>
             }
           >
             <p className="text-sm font-semibold">{policy}</p>

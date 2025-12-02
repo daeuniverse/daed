@@ -36,9 +36,11 @@
     "cancel": "取消",
     "change endpoint": "切换后台",
     "confirm": "确定",
+    "configureNode": "配置节点",
     "continue": "继续",
     "create": "新建",
     "create account": "创建账户",
+    "duplicate": "复制",
     "edit": "编辑",
     "hide": "隐藏",
     "import": "导入",
@@ -51,6 +53,7 @@
     "rename": "重命名",
     "reset": "重置",
     "save dae": "救起大鹅",
+    "settings": "设置",
     "show content": "显示内容",
     "show sensitive": "点击查看",
     "simple mode": "简单模式",
@@ -59,7 +62,12 @@
     "submit": "提交",
     "switchLanguage": "切换语言",
     "switchRunning": "运行开关",
-    "switchTheme": "切换主题"
+    "switchTheme": "切换主题",
+    "update": "更新",
+    "updateAll": "更新全部",
+    "viewDetails": "查看详情",
+    "viewQRCode": "查看二维码",
+    "viewSource": "查看源代码"
   },
   "address": "地址",
   "allowInsecure": "允许不安全",
@@ -104,7 +112,11 @@
     "websocketHost": "WebSocket 地址",
     "websocketPath": "WebSocket 路径",
     "wechatVideoObfuscation": "伪装为微信视频通话",
-    "wireguardObfuscation": "伪装为 WireGuard 数据包"
+    "wireguardObfuscation": "伪装为 WireGuard 数据包",
+    "publicKey": "公钥",
+    "fingerprint": "指纹",
+    "shortId": "短 ID",
+    "spiderX": "Spider X"
   },
   "confirmModal": {
     "cancel": "不， 我点错了",
@@ -223,6 +235,9 @@
   "tcpCheckHttpMethod": "TCP 检测 HTTP 方式",
   "tcpCheckUrl": "TCP 检测链接",
   "theme": {
+    "title": "主题",
+    "mode": "外观模式",
+    "color": "配色主题",
     "system": "跟随系统",
     "light": "浅色",
     "dark": "深色"
