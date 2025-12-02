@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.9.0](https://github.com/daeuniverse/daed/compare/v1.8.0...v1.9.0) (2025-12-02)
+
+
+### Features
+
+* enhance GraphQL client and add new mutations for tagging and updating subscriptions ([540b68c](https://github.com/daeuniverse/daed/commit/540b68c381bb49e2ab09a4ad56a1e46828be7ced))
+* enhance Input component with wrapperClassName prop and update dialog components ([bf44c0d](https://github.com/daeuniverse/daed/commit/bf44c0d3f646f098eac3c73ab4dbbe26104f6f47))
+* update Header and ThemePicker components with new user settings and dialog enhancements ([bb4df27](https://github.com/daeuniverse/daed/commit/bb4df2730dfc42d5cc6f60dccc195f2f78ed0191))
+
 ## [1.8.0](https://github.com/daeuniverse/daed/compare/v1.7.0...v1.8.0) (2025-12-01)
 
 
