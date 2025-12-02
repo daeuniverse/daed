@@ -251,6 +251,8 @@ export type Mutation = {
   updateRouting: Routing
   /** updateSubscription is to re-fetch subscription and resolve subscription into nodes. Old nodes that independently belong to any groups will not be removed. */
   updateSubscription: Subscription
+  /** updateSubscriptionCron is to update the subscription cron settings. */
+  updateSubscriptionCron: Subscription
   /** updateSubscriptionLink is to update the subscription link without re-fetching nodes. */
   updateSubscriptionLink: Subscription
   /** updateUsername update username for current user. */
@@ -432,6 +434,12 @@ export type MutationUpdateRoutingArgs = {
 }
 
 export type MutationUpdateSubscriptionArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationUpdateSubscriptionCronArgs = {
+  cronEnable: Scalars['Boolean']['input']
+  cronExp: Scalars['String']['input']
   id: Scalars['ID']['input']
 }
 
@@ -939,6 +947,17 @@ export type UpdateSubscriptionLinkMutation = {
   updateSubscriptionLink: { __typename?: 'Subscription'; id: string; link: string; tag?: string | null }
 }
 
+export type UpdateSubscriptionCronMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+  cronExp: Scalars['String']['input']
+  cronEnable: Scalars['Boolean']['input']
+}>
+
+export type UpdateSubscriptionCronMutation = {
+  __typename?: 'Mutation'
+  updateSubscriptionCron: { __typename?: 'Subscription'; id: string; cronExp: string; cronEnable: boolean }
+}
+
 export type ModeQueryVariables = Exact<{
   paths?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
 }>
@@ -1030,6 +1049,8 @@ export type SubscriptionsQuery = {
     link: string
     info: string
     updatedAt: any
+    cronExp: string
+    cronEnable: boolean
     nodes: {
       __typename?: 'NodesConnection'
       edges: Array<{ __typename?: 'Node'; id: string; name: string; protocol: string; link: string }>
@@ -2864,6 +2885,67 @@ export const UpdateSubscriptionLinkDocument = {
     },
   ],
 } as unknown as DocumentNode<UpdateSubscriptionLinkMutation, UpdateSubscriptionLinkMutationVariables>
+export const UpdateSubscriptionCronDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateSubscriptionCron' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'cronExp' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'cronEnable' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateSubscriptionCron' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'cronExp' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'cronExp' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'cronEnable' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'cronEnable' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'cronExp' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'cronEnable' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateSubscriptionCronMutation, UpdateSubscriptionCronMutationVariables>
 export const ModeDocument = {
   kind: 'Document',
   definitions: [
@@ -3179,6 +3261,8 @@ export const SubscriptionsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'link' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'info' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'cronExp' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'cronEnable' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'nodes' },

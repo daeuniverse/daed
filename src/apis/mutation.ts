@@ -1004,3 +1004,32 @@ export function useUpdateSubscriptionLinkMutation() {
     },
   })
 }
+
+export function useUpdateSubscriptionCronMutation() {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, cronExp, cronEnable }: { id: string; cronExp: string; cronEnable: boolean }) => {
+      return gqlClient.request(
+        graphql(`
+          mutation UpdateSubscriptionCron($id: ID!, $cronExp: String!, $cronEnable: Boolean!) {
+            updateSubscriptionCron(id: $id, cronExp: $cronExp, cronEnable: $cronEnable) {
+              id
+              cronExp
+              cronEnable
+            }
+          }
+        `) as any,
+        {
+          id,
+          cronExp,
+          cronEnable,
+        },
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
+    },
+  })
+}

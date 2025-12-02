@@ -10,6 +10,7 @@ import {
   useRemoveSubscriptionsMutation,
   useSubscriptionsQuery,
   useTagSubscriptionMutation,
+  useUpdateSubscriptionCronMutation,
   useUpdateSubscriptionLinkMutation,
   useUpdateSubscriptionsMutation,
 } from '~/apis'
@@ -46,6 +47,8 @@ export function SubscriptionResource({
     id: string
     link: string
     tag: string
+    cronExp: string
+    cronEnable: boolean
   }>()
   const qrCodeModalRef = useRef<QRCodeModalRef>(null)
   const { refetch: refetchSubscriptions } = useSubscriptionsQuery()
@@ -54,6 +57,8 @@ export function SubscriptionResource({
   const updateSubscriptionsMutation = useUpdateSubscriptionsMutation()
   const updateSubscriptionLinkMutation = useUpdateSubscriptionLinkMutation()
   const tagSubscriptionMutation = useTagSubscriptionMutation()
+
+  const updateSubscriptionCronMutation = useUpdateSubscriptionCronMutation()
 
   const subscriptionIds = sortedSubscriptions.map((s) => `subscription-${s.id}`)
 
@@ -83,7 +88,7 @@ export function SubscriptionResource({
     >
       <SortableContext items={subscriptionIds} strategy={verticalListSortingStrategy}>
         <div className="flex flex-col gap-3">
-          {sortedSubscriptions.map(({ id: subscriptionID, tag, link, updatedAt, nodes }) => (
+          {sortedSubscriptions.map(({ id: subscriptionID, tag, link, updatedAt, cronExp, cronEnable, nodes }) => (
             <SortableSubscriptionCard
               key={subscriptionID}
               id={`subscription-${subscriptionID}`}
@@ -103,6 +108,8 @@ export function SubscriptionResource({
                           id: subscriptionID,
                           link,
                           tag: tag || '',
+                          cronExp,
+                          cronEnable,
                         })
                         openEditSubscriptionFormModal()
                       }}
@@ -131,7 +138,15 @@ export function SubscriptionResource({
               }
               onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
             >
-              <p className="text-xs opacity-70">{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
+              <div className="flex flex-wrap items-center gap-2 text-xs opacity-70">
+                <span>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+                {cronEnable && (
+                  <span className="inline-flex items-center gap-1 text-primary">
+                    <span>⏱</span>
+                    <span>{cronExp}</span>
+                  </span>
+                )}
+              </div>
 
               <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
 
@@ -192,6 +207,18 @@ export function SubscriptionResource({
             await tagSubscriptionMutation.mutateAsync({
               id: values.id,
               tag: values.tag,
+            })
+          }
+
+          // Update subscription cron if changed
+          if (
+            values.cronExp !== editingSubscription?.cronExp ||
+            values.cronEnable !== editingSubscription?.cronEnable
+          ) {
+            await updateSubscriptionCronMutation.mutateAsync({
+              id: values.id,
+              cronExp: values.cronExp,
+              cronEnable: values.cronEnable,
             })
           }
 

@@ -9,10 +9,14 @@ import { useSetValue } from '~/hooks/useSetValue'
 import { FormActions } from './FormActions.tsx'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog.tsx'
 import { Input } from './ui/input.tsx'
+import { Label } from './ui/label.tsx'
+import { Switch } from './ui/switch.tsx'
 
 const schema = z.object({
   link: z.string().min(1, 'Link is required'),
   tag: z.string().min(1, 'Tag is required'),
+  cronExp: z.string().min(1, 'Cron expression is required'),
+  cronEnable: z.boolean(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -24,6 +28,8 @@ export interface EditSubscriptionFormModalProps {
     id: string
     link: string
     tag: string
+    cronExp: string
+    cronEnable: boolean
   }
   onSubmit: (values: FormValues & { id: string }) => Promise<void>
 }
@@ -33,7 +39,7 @@ export function EditSubscriptionFormModal({ opened, onClose, subscription, onSub
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { link: '', tag: '' },
+    defaultValues: { link: '', tag: '', cronExp: '10 */6 * * *', cronEnable: true },
     mode: 'onChange',
   })
 
@@ -51,7 +57,12 @@ export function EditSubscriptionFormModal({ opened, onClose, subscription, onSub
   // Initialize form when modal opens with subscription data
   useEffect(() => {
     if (opened && subscription) {
-      reset({ link: subscription.link, tag: subscription.tag })
+      reset({
+        link: subscription.link,
+        tag: subscription.tag,
+        cronExp: subscription.cronExp,
+        cronEnable: subscription.cronEnable,
+      })
     }
   }, [opened, subscription, reset])
 
@@ -60,7 +71,7 @@ export function EditSubscriptionFormModal({ opened, onClose, subscription, onSub
       if (!open) {
         onClose()
         setTimeout(() => {
-          reset({ link: '', tag: '' })
+          reset({ link: '', tag: '', cronExp: '10 */6 * * *', cronEnable: true })
         }, 200)
       }
     },
@@ -95,7 +106,31 @@ export function EditSubscriptionFormModal({ opened, onClose, subscription, onSub
             onChange={(e) => setValue('tag', e.target.value)}
             error={errors.tag?.message}
           />
-          <FormActions reset={() => reset({ link: '', tag: '' })} isDirty={isDirty} errors={errors} />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="cronEnable">{t('autoUpdate')}</Label>
+              <Switch
+                id="cronEnable"
+                checked={formValues.cronEnable}
+                onCheckedChange={(checked) => setValue('cronEnable', checked)}
+              />
+            </div>
+            {formValues.cronEnable && (
+              <Input
+                label={t('cronExpression')}
+                withAsterisk
+                value={formValues.cronExp}
+                onChange={(e) => setValue('cronExp', e.target.value)}
+                error={errors.cronExp?.message}
+                placeholder="10 */6 * * *"
+              />
+            )}
+          </div>
+          <FormActions
+            reset={() => reset({ link: '', tag: '', cronExp: '10 */6 * * *', cronEnable: true })}
+            isDirty={isDirty}
+            errors={errors}
+          />
         </form>
       </DialogContent>
     </Dialog>

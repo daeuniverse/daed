@@ -189,6 +189,8 @@ export function useSubscriptionsQuery() {
               link
               info
               updatedAt
+              cronExp
+              cronEnable
               nodes {
                 edges {
                   id
@@ -199,7 +201,7 @@ export function useSubscriptionsQuery() {
               }
             }
           }
-        `),
+        `) as any,
       ),
   })
 }
