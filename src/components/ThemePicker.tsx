@@ -5,7 +5,7 @@ import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 import { themes } from '~/constants'
 import { useColorScheme } from '~/contexts'
@@ -174,17 +174,24 @@ export function ThemePicker({ variant = 'icon' }: ThemePickerProps) {
   if (variant === 'button') {
     return (
       <Fragment>
-        <Button variant="outline" className="w-full justify-start gap-3" onClick={() => setOpen(true)}>
-          <Palette className="h-5 w-5" style={{ color: currentColors.primary }} />
-          {t('theme.title')}
+        <Button variant="ghost" className="w-full justify-start gap-2 h-9 px-2" onClick={() => setOpen(true)}>
+          <Palette className="h-4 w-4" style={{ color: currentColors.primary }} />
+          <span className="text-sm">{t('theme.title')}</span>
         </Button>
 
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
             <DialogHeader>
               <DialogTitle>{t('theme.title')}</DialogTitle>
             </DialogHeader>
-            {content}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">{content}</div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" className="w-full">
+                  {t('actions.cancel')}
+                </Button>
+              </DialogClose>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </Fragment>
@@ -208,11 +215,18 @@ export function ThemePicker({ variant = 'icon' }: ThemePickerProps) {
         </Button>
 
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
             <DialogHeader>
               <DialogTitle>{t('theme.title')}</DialogTitle>
             </DialogHeader>
-            {content}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">{content}</div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" className="w-full">
+                  {t('actions.cancel')}
+                </Button>
+              </DialogClose>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </Fragment>

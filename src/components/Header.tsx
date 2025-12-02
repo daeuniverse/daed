@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   RefreshCw,
+  Terminal,
   UserPen,
   Wifi,
 } from 'lucide-react'
@@ -38,6 +39,7 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
+import { Separator } from '~/components/ui/separator'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '~/components/ui/sheet'
 import { Switch } from '~/components/ui/switch'
 import { SimpleTooltip } from '~/components/ui/tooltip'
@@ -411,40 +413,123 @@ export function HeaderWithActions() {
       </div>
 
       <Sheet open={openedBurger} onOpenChange={closeBurger}>
-        <SheetContent side="right" size="full">
+        <SheetContent side="right" size="default">
           <SheetHeader className="sr-only">
             <SheetTitle>Menu</SheetTitle>
           </SheetHeader>
-          <div className="flex flex-col gap-3 px-4 mt-8">
-            <div className="mb-2">
+          <div className="flex flex-col gap-1 px-2 mt-6">
+            {/* Profile Switcher */}
+            <div className="mb-1">
               <ProfileSwitcher />
             </div>
 
-            <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="w-full justify-start gap-3">
-                <Github className="h-5 w-5" />
-                GitHub
+            {/* User Settings Section */}
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2 py-1">
+                {t('settings')}
+              </span>
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 h-9 px-2"
+                onClick={() => {
+                  setFormData({
+                    username: userQuery?.user?.username || '',
+                    name: userQuery?.user?.name || '',
+                  })
+                  setFormErrors({})
+                  openAccountSettingsFormModal()
+                  closeBurger()
+                }}
+              >
+                <UserPen className="h-4 w-4" />
+                <span className="text-sm">{t('account settings')}</span>
               </Button>
-            </a>
 
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 h-9 px-2"
+                onClick={() => {
+                  setPasswordFormData({ currentPassword: '', newPassword: '', confirmPassword: '' })
+                  setPasswordFormErrors({})
+                  openPasswordChangeModal()
+                  closeBurger()
+                }}
+              >
+                <KeyRound className="h-4 w-4" />
+                <span className="text-sm">{t('password.change')}</span>
+              </Button>
+            </div>
+
+            <Separator className="my-1" />
+
+            {/* Appearance Section */}
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2 py-1">
+                {t('theme.title')}
+              </span>
+              <ThemePicker variant="button" />
+
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 h-9 px-2"
+                onClick={() => {
+                  toggleLanguage()
+                  closeBurger()
+                }}
+              >
+                <Languages className="h-4 w-4" />
+                <span className="text-sm">{t('actions.switchLanguage')}</span>
+              </Button>
+            </div>
+
+            <Separator className="my-1" />
+
+            {/* Debug & Tools Section */}
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2 py-1">
+                {t('debug')}
+              </span>
+              <Link to="/graphiql" target="_blank" onClick={closeBurger}>
+                <Button variant="ghost" className="w-full justify-start gap-2 h-9 px-2">
+                  <Terminal className="h-4 w-4" />
+                  <span className="text-sm">GraphiQL</span>
+                </Button>
+              </Link>
+
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 h-9 px-2"
+                onClick={() => {
+                  openShortcutsModal()
+                  closeBurger()
+                }}
+              >
+                <Keyboard className="h-4 w-4" />
+                <span className="text-sm">{t('shortcuts.title')}</span>
+              </Button>
+
+              <a href="https://github.com/daeuniverse/daed" target="_blank" rel="noopener noreferrer">
+                <Button variant="ghost" className="w-full justify-start gap-2 h-9 px-2">
+                  <Github className="h-4 w-4" />
+                  <span className="text-sm">GitHub</span>
+                </Button>
+              </a>
+            </div>
+
+            <Separator className="my-1" />
+
+            {/* Logout */}
             <Button
-              variant="outline"
-              className="w-full justify-start gap-3"
+              variant="ghost"
+              className="w-full justify-start gap-2 h-9 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
               onClick={() => {
-                openShortcutsModal()
+                tokenAtom.set('')
                 closeBurger()
               }}
             >
-              <Keyboard className="h-5 w-5" />
-              {t('shortcuts.title')}
+              <LogOut className="h-4 w-4" />
+              <span className="text-sm">{t('actions.logout')}</span>
             </Button>
-
-            <Button variant="outline" className="w-full justify-start gap-3" onClick={toggleLanguage}>
-              <Languages className="h-5 w-5" />
-              {t('actions.switchLanguage')}
-            </Button>
-
-            <ThemePicker variant="button" />
           </div>
         </SheetContent>
       </Sheet>
