@@ -226,8 +226,8 @@ catalogs:
       specifier: ^9.6.1
       version: 9.6.1
     framer-motion:
-      specifier: ^12.23.24
-      version: 12.23.24
+      specifier: ^12.23.25
+      version: 12.23.25
     globals:
       specifier: ^16.5.0
       version: 16.5.0
@@ -583,7 +583,7 @@ importers:
         version: 9.6.1
       framer-motion:
         specifier: 'catalog:'
-        version: 12.23.24(@emotion/is-prop-valid@0.8.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 12.23.25(@emotion/is-prop-valid@0.8.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       globals:
         specifier: 'catalog:'
         version: 16.5.0
@@ -4443,8 +4443,8 @@ packages:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
     engines: {node: '>=12.20.0'}
 
-  framer-motion@12.23.24:
-    resolution: {integrity: sha512-HMi5HRoRCTou+3fb3h9oTLyJGBxHfW+HnNE25tAXOvVx/IvwMHK0cx7IR4a2ZU6sh3IX1Z+4ts32PcYBOqka8w==}
+  framer-motion@12.23.25:
+    resolution: {integrity: sha512-gUHGl2e4VG66jOcH0JHhuJQr6ZNwrET9g31ZG0xdXzT0CznP7fHX4P8Bcvuc4MiUB90ysNnWX2ukHRIggkl6hQ==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -7359,7 +7359,7 @@ snapshots:
       '@radix-ui/react-tooltip': 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@radix-ui/react-visually-hidden': 1.2.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       clsx: 1.2.1
-      framer-motion: 12.23.24(@emotion/is-prop-valid@0.8.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      framer-motion: 12.23.25(@emotion/is-prop-valid@0.8.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       get-value: 3.0.1
       graphql: 16.12.0
       graphql-language-service: 5.5.0(graphql@16.12.0)
@@ -10757,7 +10757,7 @@ snapshots:
     dependencies:
       fetch-blob: 3.2.0
 
-  framer-motion@12.23.24(@emotion/is-prop-valid@0.8.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  framer-motion@12.23.25(@emotion/is-prop-valid@0.8.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       motion-dom: 12.23.23
       motion-utils: 12.23.6
