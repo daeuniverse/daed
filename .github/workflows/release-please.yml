@@ -107,13 +107,13 @@ jobs:
 
             | Setup | Orchestrate |
             |-------|-------------|
-            | ![Setup](docs/screenshots/pc/setup.png) | ![Orchestrate](docs/screenshots/pc/orchestrate.png) |
+            | ![Setup](https://raw.githubusercontent.com/${{ github.repository }}/chore/update-screenshots/docs/screenshots/pc/setup.png) | ![Orchestrate](https://raw.githubusercontent.com/${{ github.repository }}/chore/update-screenshots/docs/screenshots/pc/orchestrate.png) |
 
             ## Mobile Screenshots
 
             | Setup | Orchestrate |
             |-------|-------------|
-            | <img src="docs/screenshots/mobile/setup.png" width="300" /> | <img src="docs/screenshots/mobile/orchestrate.png" width="300" /> |
+            | <img src="https://raw.githubusercontent.com/${{ github.repository }}/chore/update-screenshots/docs/screenshots/mobile/setup.png" width="300" /> | <img src="https://raw.githubusercontent.com/${{ github.repository }}/chore/update-screenshots/docs/screenshots/mobile/orchestrate.png" width="300" /> |
           branch: chore/update-screenshots
           delete-branch: true
           add-paths: docs/screenshots/
