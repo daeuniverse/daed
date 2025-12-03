@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/daeuniverse/daed/compare/dae-node-parser-v1.14.0...dae-node-parser-v1.15.0) (2025-12-03)
+
+
+### Features
+
+* re-trigger release-please ([4febcf7](https://github.com/daeuniverse/daed/commit/4febcf7ebba807474e8215510669e0a756c31585))
+
 ## [1.14.0](https://github.com/daeuniverse/daed/compare/dae-node-parser-v1.13.1...dae-node-parser-v1.14.0) (2025-12-03)
 
 
