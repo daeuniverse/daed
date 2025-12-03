@@ -1,32 +1,22 @@
-import type { z } from 'zod'
 import type {
-  httpSchema,
-  hysteria2Schema,
-  juicitySchema,
-  socks5Schema,
-  ssrSchema,
-  ssSchema,
-  trojanSchema,
-  tuicSchema,
-  v2raySchema,
-} from '~/constants/schema'
-import { Base64 } from 'js-base64'
+  HTTPConfig,
+  Hysteria2Config,
+  JuicityConfig,
+  Socks5Config,
+  SSConfig,
+  SSRConfig,
+  TrojanConfig,
+  TuicConfig,
+  V2rayConfig,
+} from './types'
 
-type HTTPFormValues = z.infer<typeof httpSchema>
-type Socks5FormValues = z.infer<typeof socks5Schema>
-type SSFormValues = z.infer<typeof ssSchema>
-type SSRFormValues = z.infer<typeof ssrSchema>
-type TrojanFormValues = z.infer<typeof trojanSchema>
-type TuicFormValues = z.infer<typeof tuicSchema>
-type JuicityFormValues = z.infer<typeof juicitySchema>
-type Hysteria2FormValues = z.infer<typeof hysteria2Schema>
-type V2rayFormValues = z.infer<typeof v2raySchema>
+import { Base64 } from 'js-base64'
 
 /**
  * Parse HTTP/HTTPS protocol URL
  * Format: http://[username:password@]host:port#name
  */
-export function parseHTTPUrl(url: string): (Partial<HTTPFormValues> & { protocol: 'http' | 'https' }) | null {
+export function parseHTTPUrl(url: string): (Partial<HTTPConfig> & { protocol: 'http' | 'https' }) | null {
   try {
     const parsed = new URL(url)
 
@@ -51,7 +41,7 @@ export function parseHTTPUrl(url: string): (Partial<HTTPFormValues> & { protocol
  * Parse SOCKS5 protocol URL
  * Format: socks5://[username:password@]host:port#name
  */
-export function parseSocks5Url(url: string): Partial<Socks5FormValues> | null {
+export function parseSocks5Url(url: string): Partial<Socks5Config> | null {
   try {
     const parsed = new URL(url)
 
@@ -76,7 +66,7 @@ export function parseSocks5Url(url: string): Partial<Socks5FormValues> | null {
  * Format: ss://BASE64(method:password)@server:port#name
  * Alternative: ss://BASE64(method:password@server:port)#name
  */
-export function parseSSUrl(url: string): Partial<SSFormValues> | null {
+export function parseSSUrl(url: string): Partial<SSConfig> | null {
   try {
     if (!url.startsWith('ss://')) {
       return null
@@ -181,13 +171,13 @@ export function parseSSUrl(url: string): Partial<SSFormValues> | null {
       port = Number.parseInt(hostPort.slice(colonIndex + 1), 10)
     }
 
-    const result: Partial<SSFormValues> = {
-      method: method as SSFormValues['method'],
+    const result: Partial<SSConfig> = {
+      method: method as SSConfig['method'],
       password,
       server,
       port,
       name,
-      plugin: plugin as SSFormValues['plugin'],
+      plugin: plugin as SSConfig['plugin'],
     }
 
     // Parse plugin options
@@ -196,12 +186,12 @@ export function parseSSUrl(url: string): Partial<SSFormValues> | null {
       result.mode = pluginOpts.mode || 'websocket'
       result.host = pluginOpts.host || ''
       result.path = pluginOpts.path || ''
-      result.impl = (pluginOpts.impl || '') as SSFormValues['impl']
+      result.impl = (pluginOpts.impl || '') as SSConfig['impl']
     } else if (plugin === 'simple-obfs') {
-      result.obfs = (pluginOpts.obfs || 'http') as SSFormValues['obfs']
+      result.obfs = (pluginOpts.obfs || 'http') as SSConfig['obfs']
       result.host = pluginOpts['obfs-host'] || ''
       result.path = pluginOpts['obfs-path'] || ''
-      result.impl = (pluginOpts.impl || '') as SSFormValues['impl']
+      result.impl = (pluginOpts.impl || '') as SSConfig['impl']
     }
 
     return result
@@ -214,7 +204,7 @@ export function parseSSUrl(url: string): Partial<SSFormValues> | null {
  * Parse ShadowsocksR (SSR) protocol URL
  * Format: ssr://BASE64(server:port:proto:method:obfs:BASE64(password)/?remarks=BASE64(remarks)&...)
  */
-export function parseSSRUrl(url: string): Partial<SSRFormValues> | null {
+export function parseSSRUrl(url: string): Partial<SSRConfig> | null {
   try {
     if (!url.startsWith('ssr://')) {
       return null
@@ -249,9 +239,9 @@ export function parseSSRUrl(url: string): Partial<SSRFormValues> | null {
     return {
       server,
       port,
-      proto: proto as SSRFormValues['proto'],
-      method: method as SSRFormValues['method'],
-      obfs: obfs as SSRFormValues['obfs'],
+      proto: proto as SSRConfig['proto'],
+      method: method as SSRConfig['method'],
+      obfs: obfs as SSRConfig['obfs'],
       password,
       name,
       protoParam,
@@ -266,7 +256,7 @@ export function parseSSRUrl(url: string): Partial<SSRFormValues> | null {
  * Parse Trojan/Trojan-Go protocol URL
  * Format: trojan://password@server:port?sni=...&allowInsecure=...#name
  */
-export function parseTrojanUrl(url: string): Partial<TrojanFormValues> | null {
+export function parseTrojanUrl(url: string): Partial<TrojanConfig> | null {
   try {
     const isTrojanGo = url.startsWith('trojan-go://')
     const isTrojan = url.startsWith('trojan://')
@@ -278,7 +268,7 @@ export function parseTrojanUrl(url: string): Partial<TrojanFormValues> | null {
     const parsed = new URL(url)
     const params = parsed.searchParams
 
-    const result: Partial<TrojanFormValues> = {
+    const result: Partial<TrojanConfig> = {
       password: decodeURIComponent(parsed.username),
       server: parsed.hostname,
       port: parsed.port ? Number.parseInt(parsed.port, 10) : 443,
@@ -302,7 +292,7 @@ export function parseTrojanUrl(url: string): Partial<TrojanFormValues> | null {
       if (encryption && encryption.startsWith('ss;')) {
         const encParts = encryption.split(';')
         result.method = 'shadowsocks'
-        result.ssCipher = (encParts[1] || 'aes-128-gcm') as TrojanFormValues['ssCipher']
+        result.ssCipher = (encParts[1] || 'aes-128-gcm') as TrojanConfig['ssCipher']
         result.ssPassword = encParts[2] || ''
       } else {
         result.method = 'origin'
@@ -322,7 +312,7 @@ export function parseTrojanUrl(url: string): Partial<TrojanFormValues> | null {
  * Parse TUIC protocol URL
  * Format: tuic://uuid:password@server:port?...#name
  */
-export function parseTuicUrl(url: string): Partial<TuicFormValues> | null {
+export function parseTuicUrl(url: string): Partial<TuicConfig> | null {
   try {
     if (!url.startsWith('tuic://')) {
       return null
@@ -353,7 +343,7 @@ export function parseTuicUrl(url: string): Partial<TuicFormValues> | null {
  * Parse Juicity protocol URL
  * Format: juicity://uuid:password@server:port?...#name
  */
-export function parseJuicityUrl(url: string): Partial<JuicityFormValues> | null {
+export function parseJuicityUrl(url: string): Partial<JuicityConfig> | null {
   try {
     if (!url.startsWith('juicity://')) {
       return null
@@ -382,7 +372,7 @@ export function parseJuicityUrl(url: string): Partial<JuicityFormValues> | null 
  * Parse Hysteria2 protocol URL
  * Format: hysteria2://auth@hostname:port/?...
  */
-export function parseHysteria2Url(url: string): Partial<Hysteria2FormValues> | null {
+export function parseHysteria2Url(url: string): Partial<Hysteria2Config> | null {
   try {
     if (!url.startsWith('hysteria2://') && !url.startsWith('hy2://')) {
       return null
@@ -411,7 +401,7 @@ export function parseHysteria2Url(url: string): Partial<Hysteria2FormValues> | n
  * Parse VMess protocol URL
  * Format: vmess://BASE64(JSON)
  */
-export function parseVMessUrl(url: string): (Partial<V2rayFormValues> & { protocol: 'vmess' }) | null {
+export function parseVMessUrl(url: string): (Partial<V2rayConfig> & { protocol: 'vmess' }) | null {
   try {
     if (!url.startsWith('vmess://')) {
       return null
@@ -448,7 +438,7 @@ export function parseVMessUrl(url: string): (Partial<V2rayFormValues> & { protoc
  * Parse VLESS protocol URL
  * Format: vless://uuid@server:port?...#name
  */
-export function parseVLessUrl(url: string): (Partial<V2rayFormValues> & { protocol: 'vless' }) | null {
+export function parseVLessUrl(url: string): (Partial<V2rayConfig> & { protocol: 'vless' }) | null {
   try {
     if (!url.startsWith('vless://')) {
       return null
@@ -463,14 +453,14 @@ export function parseVLessUrl(url: string): (Partial<V2rayFormValues> & { protoc
       add: parsed.hostname,
       port: parsed.port ? Number.parseInt(parsed.port, 10) : 443,
       ps: decodeURIComponent(parsed.hash.slice(1) || ''),
-      net: (params.get('type') || 'tcp') as V2rayFormValues['net'],
-      tls: (params.get('security') || 'none') as V2rayFormValues['tls'],
+      net: (params.get('type') || 'tcp') as V2rayConfig['net'],
+      tls: (params.get('security') || 'none') as V2rayConfig['tls'],
       sni: params.get('sni') || '',
       alpn: params.get('alpn') || '',
       host: params.get('host') || '',
       path: params.get('path') || params.get('serviceName') || params.get('seed') || '',
-      type: (params.get('headerType') || 'none') as V2rayFormValues['type'],
-      flow: (params.get('flow') || 'none') as V2rayFormValues['flow'],
+      type: (params.get('headerType') || 'none') as V2rayConfig['type'],
+      flow: (params.get('flow') || 'none') as V2rayConfig['flow'],
       allowInsecure: params.get('allowInsecure') === '1' || params.get('allowInsecure') === 'true',
       // Reality-specific fields
       pbk: params.get('pbk') || '',
@@ -490,7 +480,7 @@ export function parseVLessUrl(url: string): (Partial<V2rayFormValues> & { protoc
 /**
  * Parse V2Ray (VMess/VLESS) protocol URL
  */
-export function parseV2rayUrl(url: string): (Partial<V2rayFormValues> & { protocol: 'vmess' | 'vless' }) | null {
+export function parseV2rayUrl(url: string): (Partial<V2rayConfig> & { protocol: 'vmess' | 'vless' }) | null {
   if (url.startsWith('vmess://')) {
     return parseVMessUrl(url)
   }

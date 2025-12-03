@@ -1,5 +1,6 @@
+import type { GenerateURLParams } from '@daeuniverse/dae-node-parser'
 import type { NodeFormProps } from './types'
-import type { GenerateURLParams } from '~/utils'
+import { generateURL, parseHTTPUrl } from '@daeuniverse/dae-node-parser'
 import { createPortal } from 'react-dom'
 import { z } from 'zod'
 
@@ -9,7 +10,6 @@ import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_HTTP_FORM_VALUES, httpSchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
-import { generateURL, parseHTTPUrl } from '~/utils'
 
 const formSchema = httpSchema.extend({
   protocol: z.enum(['http', 'https']),

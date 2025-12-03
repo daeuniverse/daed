@@ -1,0 +1,53 @@
+{
+  "name": "@daeuniverse/dae-editor",
+  "type": "module",
+  "version": "1.11.0",
+  "description": "Monaco editor configuration and RoutingA language support for dae",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daeuniverse/daed.git",
+    "directory": "packages/dae-editor"
+  },
+  "keywords": [
+    "monaco-editor",
+    "dae",
+    "routingA",
+    "syntax-highlighting"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "peerDependencies": {
+    "@monaco-editor/react": ">=4.0.0",
+    "monaco-editor": ">=0.40.0",
+    "shiki": ">=1.0.0"
+  },
+  "dependencies": {
+    "@shikijs/monaco": "catalog:"
+  },
+  "devDependencies": {
+    "@monaco-editor/react": "catalog:",
+    "@types/node": "catalog:",
+    "monaco-editor": "catalog:",
+    "shiki": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
+}

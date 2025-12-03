@@ -1,6 +1,7 @@
+import type { GenerateURLParams } from '@daeuniverse/dae-node-parser'
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
-import type { GenerateURLParams } from '~/utils'
+import { generateURL, parseSocks5Url } from '@daeuniverse/dae-node-parser'
 import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
@@ -8,7 +9,6 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { DEFAULT_SOCKS5_FORM_VALUES, socks5Schema } from '~/constants'
 import { useNodeForm } from '~/hooks'
-import { generateURL, parseSocks5Url } from '~/utils'
 
 export type Socks5FormValues = z.infer<typeof socks5Schema>
 

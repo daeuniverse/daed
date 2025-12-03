@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
+import { generateURL, parseTuicUrl } from '@daeuniverse/dae-node-parser'
 import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
@@ -9,7 +10,6 @@ import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_TUIC_FORM_VALUES, tuicSchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
-import { generateURL, parseTuicUrl } from '~/utils'
 
 export type TuicFormValues = z.infer<typeof tuicSchema>
 

@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
+import { parseSSUrl } from '@daeuniverse/dae-node-parser'
 import { Base64 } from 'js-base64'
 import { createPortal } from 'react-dom'
 
@@ -9,7 +10,6 @@ import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_SS_FORM_VALUES, ssSchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
-import { parseSSUrl } from '~/utils'
 
 export type SSFormValues = z.infer<typeof ssSchema>
 

@@ -1,4 +1,5 @@
 import type { NodeFormProps } from './types'
+import { generateURL, parseV2rayUrl } from '@daeuniverse/dae-node-parser'
 import { Base64 } from 'js-base64'
 import { createPortal } from 'react-dom'
 import { z } from 'zod'
@@ -10,7 +11,6 @@ import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_V2RAY_FORM_VALUES, v2raySchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
-import { generateURL, parseV2rayUrl } from '~/utils'
 
 const formSchema = v2raySchema.extend({
   protocol: z.enum(['vmess', 'vless']),

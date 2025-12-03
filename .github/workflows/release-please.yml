@@ -15,13 +15,51 @@ jobs:
   release-please:
     runs-on: macos-latest
     outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
+      release_created: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Publish workspace packages to GitHub Packages when a release is created
+  publish-packages:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - uses: pnpm/action-setup@v4.2.0
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: latest
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@daeuniverse'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm --filter "@daeuniverse/*" build
+
+      - name: Publish dae-editor
+        working-directory: packages/dae-editor
+        run: pnpm publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish dae-node-parser
+        working-directory: packages/dae-node-parser
+        run: pnpm publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Update screenshots when a new release is created
   update-screenshots:
@@ -49,8 +87,7 @@ jobs:
       - name: Generate screenshots
         run: pnpm screenshot
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v7
         with:
           commit-message: 'chore: update screenshots [skip ci]'
           title: 'chore: update screenshots [skip ci]'
@@ -69,8 +106,7 @@ jobs:
           submodules: recursive
           ref: ${{ needs.release-please.outputs.tag_name }}
 
-      - name: Set up Go
-        uses: actions/setup-go@v6
+      - uses: actions/setup-go@v6
         with:
           go-version: ^1.22
           cache: false
@@ -91,8 +127,7 @@ jobs:
         run: |
           zip -9vr daed-full-src.zip . -x .git/\*
 
-      - name: Upload artifact - full source
-        uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v5
         with:
           name: daed-full-src.zip
           path: daed-full-src.zip
@@ -120,8 +155,7 @@ jobs:
           pnpm install
           pnpm build
 
-      - name: Upload artifact - web
-        uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v5
         with:
           name: web
           path: dist
@@ -132,14 +166,12 @@ jobs:
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: macos-latest
     steps:
-      - name: Download artifact - web
-        uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v6
         with:
           name: web
           path: dist/
 
-      - name: Publish Github Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
@@ -206,8 +238,7 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Set up Go
-        uses: actions/setup-go@v6
+      - uses: actions/setup-go@v6
         with:
           go-version: ^1.22
           cache: false
@@ -240,8 +271,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-mips64-linux-gnuabi64 gcc-mips64el-linux-gnuabi64 gcc-mips-linux-gnu gcc-mipsel-linux-gnu
 
-      - name: Download artifact - web
-        uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v6
         with:
           name: web
           path: dist/
@@ -323,8 +353,7 @@ jobs:
           fi
           ls ./output_packages/ | grep -E ".deb|.rpm|.pkg.tar.zst"
 
-      - name: Upload Linux packages
-        if: ${{ env.GOARCH != 'mips' && env.GOARCH != 'mipsle' && env.GOARCH != 'mips64' && env.GOARCH != 'mips64le' }}
+      - if: ${{ env.GOARCH != 'mips' && env.GOARCH != 'mipsle' && env.GOARCH != 'mips64' && env.GOARCH != 'mips64le' }}
         uses: nanoufo/action-upload-artifacts-and-release-assets@v2.0
         with:
           path: |
@@ -338,8 +367,8 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: ${{ needs.release-please.outputs.tag_name }}
-      - name: Download all artifacts
-        uses: actions/download-artifact@v6
+
+      - uses: actions/download-artifact@v6
         with:
           path: release/
 
@@ -434,8 +463,7 @@ jobs:
           submodules: recursive
           ref: ${{ needs.release-please.outputs.tag_name }}
 
-      - name: Download artifact - web
-        uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v6
         with:
           name: web
           path: dist/
@@ -456,11 +484,9 @@ jobs:
           echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
           echo "TAG=$tag" >> $GITHUB_OUTPUT
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker
-        uses: docker/setup-docker-action@v4
+      - uses: docker/setup-docker-action@v4
         with:
           daemon-config: |
             {
@@ -470,32 +496,27 @@ jobs:
               }
             }
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v3
         id: buildx
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to ghcr.io
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to quay.io
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: quay.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.QUAY_PASS }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v6
         with:
           context: .
           build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}

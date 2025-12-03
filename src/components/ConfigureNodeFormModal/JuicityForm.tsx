@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
+import { generateURL, parseJuicityUrl } from '@daeuniverse/dae-node-parser'
 import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
@@ -9,7 +10,6 @@ import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_JUICITY_FORM_VALUES, juicitySchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
-import { generateURL, parseJuicityUrl } from '~/utils'
 
 export type JuicityFormValues = z.infer<typeof juicitySchema>
 

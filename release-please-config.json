@@ -1,11 +1,27 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
   "packages": {
     ".": {
+      "component": "daed",
       "changelog-path": "CHANGELOG.md",
       "include-component-in-tag": false,
       "include-v-in-tag": true
+    },
+    "packages/dae-editor": {
+      "component": "dae-editor",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/dae-node-parser": {
+      "component": "dae-node-parser",
+      "changelog-path": "CHANGELOG.md"
     }
   },
-  "release-type": "node"
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "daed",
+      "components": ["daed", "dae-editor", "dae-node-parser"]
+    }
+  ]
 }

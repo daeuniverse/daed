@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
+import { generateHysteria2URL, parseHysteria2Url } from '@daeuniverse/dae-node-parser'
 import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
@@ -8,7 +9,6 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { DEFAULT_HYSTERIA2_FORM_VALUES, hysteria2Schema } from '~/constants'
 import { useNodeForm } from '~/hooks'
-import { generateHysteria2URL, parseHysteria2Url } from '~/utils'
 
 export type Hysteria2FormValues = z.infer<typeof hysteria2Schema>
 

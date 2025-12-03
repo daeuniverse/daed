@@ -201,7 +201,7 @@ export function useSubscriptionsQuery() {
               }
             }
           }
-        `) as any,
+        `),
       ),
   })
 }
