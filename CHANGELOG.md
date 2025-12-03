@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/daeuniverse/daed/compare/v1.15.1...v1.16.0) (2025-12-03)
+
+
+### Features
+
+* enhance V2Ray URL parsing and configuration options ([3829c0f](https://github.com/daeuniverse/daed/commit/3829c0f402fea80b74fc1263220de4276699b1a1))
+
 ## [1.15.1](https://github.com/daeuniverse/daed/compare/v1.15.0...v1.15.1) (2025-12-03)
 
 
