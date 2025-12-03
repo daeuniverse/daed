@@ -1,7 +1,7 @@
 {
   "name": "@daeuniverse/dae-editor",
   "type": "module",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "description": "Monaco editor configuration and RoutingA language support for dae",
   "license": "MIT",
   "repository": {
