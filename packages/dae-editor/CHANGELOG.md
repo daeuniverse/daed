@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/daeuniverse/daed/compare/dae-editor-v1.15.0...dae-editor-v1.16.0) (2025-12-03)
+
+
+### Features
+
+* add RoutingA language formatter and integrate with Monaco editor ([8b40e9b](https://github.com/daeuniverse/daed/commit/8b40e9b4f8a76f83033f99a9ed58779c00381643))
+
 ## [1.15.0](https://github.com/daeuniverse/daed/compare/dae-editor-v1.14.0...dae-editor-v1.15.0) (2025-12-03)
 
 
