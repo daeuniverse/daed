@@ -1,1 +1,0 @@
-import{n as e,t}from"./typescript-BKCJHPXs.js";export{t as conf,e as language};
