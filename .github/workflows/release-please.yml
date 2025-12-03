@@ -98,9 +98,22 @@ jobs:
 
       - uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: 'chore: update screenshots [skip ci]'
-          title: 'chore: update screenshots [skip ci]'
-          body: 'Auto-generated screenshots update for ${{ needs.release-please.outputs.tag_name }}'
+          commit-message: 'chore: update screenshots for ${{ needs.release-please.outputs.tag_name }} [skip ci]'
+          title: 'chore: update screenshots for ${{ needs.release-please.outputs.tag_name }} [skip ci]'
+          body: |
+            Auto-generated screenshots update for ${{ needs.release-please.outputs.tag_name }}
+
+            ## Desktop Screenshots
+
+            | Setup | Orchestrate |
+            |-------|-------------|
+            | ![Setup](docs/screenshots/pc/setup.png) | ![Orchestrate](docs/screenshots/pc/orchestrate.png) |
+
+            ## Mobile Screenshots
+
+            | Setup | Orchestrate |
+            |-------|-------------|
+            | <img src="docs/screenshots/mobile/setup.png" width="300" /> | <img src="docs/screenshots/mobile/orchestrate.png" width="300" /> |
           branch: chore/update-screenshots
           delete-branch: true
           add-paths: docs/screenshots/
