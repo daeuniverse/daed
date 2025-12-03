@@ -10,6 +10,10 @@ export {
 } from './constants'
 export type { RoutingACompletionItem } from './constants'
 
+// Formatter
+export { formatRoutingA } from './formatter'
+
+export type { FormatOptions } from './formatter'
 // Monaco utilities
 export {
   applyShikiThemes,

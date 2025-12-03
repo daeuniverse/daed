@@ -2,6 +2,7 @@ import type { RoutingACompletionItem } from '@daeuniverse/dae-editor'
 import type { Monaco } from '@monaco-editor/react'
 import {
   applyShikiThemes as applyShikiThemesBase,
+  formatRoutingA,
   GITHUB_THEMES,
   handleEditorBeforeMount as handleEditorBeforeMountBase,
   initShikiHighlighter,
@@ -39,7 +40,7 @@ globalThis.MonacoEnvironment = {
 loader.config({ monaco })
 
 // Re-export from @daeuniverse/dae-editor
-export { GITHUB_THEMES, initShikiHighlighter, isShikiReady, SHIKI_THEMES }
+export { formatRoutingA, GITHUB_THEMES, initShikiHighlighter, isShikiReady, SHIKI_THEMES }
 
 // Handler for beforeMount prop in Editor component
 export function handleEditorBeforeMount(monacoInstance: Monaco) {

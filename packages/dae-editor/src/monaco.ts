@@ -5,6 +5,7 @@ import { shikiToMonaco } from '@shikijs/monaco'
 
 import { createHighlighter } from 'shiki'
 import { EDITOR_LANGUAGE_ROUTINGA, ROUTINGA_COMPLETION_ITEMS } from './constants'
+import { formatRoutingA } from './formatter'
 
 // Shiki highlighter instance
 let shikiHighlighter: Awaited<ReturnType<typeof createHighlighter>> | null = null
@@ -104,6 +105,26 @@ export function handleEditorBeforeMount(monacoInstance: Monaco): void {
       }))
 
       return { suggestions }
+    },
+  })
+
+  // Register document formatting provider for routingA language
+  monacoInstance.languages.registerDocumentFormattingEditProvider('routingA', {
+    displayName: 'RoutingA Formatter',
+    provideDocumentFormattingEdits: (model: monaco.editor.ITextModel, options: monaco.languages.FormattingOptions) => {
+      const text = model.getValue()
+      const formatted = formatRoutingA(text, {
+        tabSize: options.tabSize,
+        insertSpaces: options.insertSpaces,
+      })
+
+      // Return a single edit that replaces the entire document
+      return [
+        {
+          range: model.getFullModelRange(),
+          text: formatted,
+        },
+      ]
     },
   })
 }
