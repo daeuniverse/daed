@@ -49,14 +49,37 @@ const v2rayFormSchema = v2raySchema.extend({
 type V2rayFormValues = z.infer<typeof v2rayFormSchema>
 
 function generateV2rayLink(data: V2rayFormValues): string {
-  const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps, pbk, fp, sid, spx } =
-    data
+  const {
+    protocol,
+    net,
+    tls,
+    path,
+    host,
+    type,
+    sni,
+    flow,
+    allowInsecure,
+    alpn,
+    ech,
+    id,
+    add,
+    port,
+    ps,
+    pbk,
+    fp,
+    sid,
+    spx,
+    pqv,
+    grpcMode,
+    grpcAuthority,
+    xhttpMode,
+    xhttpExtra,
+  } = data
 
   if (protocol === 'vless') {
     const params: Record<string, unknown> = {
       type: net,
       security: tls,
-      path,
       host,
       headerType: type,
       sni,
@@ -64,15 +87,31 @@ function generateV2rayLink(data: V2rayFormValues): string {
       allowInsecure,
     }
 
-    if (alpn !== '') params.alpn = alpn
-    if (net === 'grpc') params.serviceName = path
-    if (net === 'kcp') params.seed = path
+    // Path handling based on network type
+    if (net === 'grpc') {
+      params.serviceName = path
+      if (grpcMode !== 'gun') params.mode = grpcMode
+      if (grpcAuthority) params.authority = grpcAuthority
+    } else if (net === 'kcp') {
+      params.seed = path
+    } else if (net === 'xhttp') {
+      params.path = path
+      if (xhttpMode) params.mode = xhttpMode
+      if (xhttpExtra) params.extra = xhttpExtra
+    } else {
+      params.path = path
+    }
 
+    if (alpn !== '') params.alpn = alpn
+    if (ech !== '') params.ech = ech
+
+    // Reality-specific parameters
     if (tls === 'reality') {
       params.pbk = pbk
       params.fp = fp
       if (sid) params.sid = sid
       if (spx) params.spx = spx
+      if (pqv) params.pqv = pqv
     }
 
     return generateURL({
@@ -97,6 +136,8 @@ function generateV2rayLink(data: V2rayFormValues): string {
 
     switch (body.net) {
       case 'ws':
+      case 'httpupgrade':
+      case 'xhttp':
         break
       case 'h2':
       case 'grpc':
@@ -108,9 +149,7 @@ function generateV2rayLink(data: V2rayFormValues): string {
         body.path = ''
     }
 
-    if (!(body.protocol === 'vless' && body.tls === 'xtls')) {
-      delete body.flow
-    }
+    delete body.flow
 
     return `vmess://${Base64.encode(JSON.stringify(body))}`
   }

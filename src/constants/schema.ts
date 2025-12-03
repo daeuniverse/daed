@@ -6,13 +6,21 @@ export const v2raySchema = z.object({
   port: z.number().min(0).max(65535),
   id: z.string().nonempty(),
   aid: z.number().min(0).max(65535),
-  net: z.enum(['tcp', 'kcp', 'ws', 'h2', 'grpc']),
+  net: z.enum(['tcp', 'kcp', 'ws', 'h2', 'grpc', 'httpupgrade', 'xhttp']),
   type: z.enum(['none', 'http', 'srtp', 'utp', 'wechat-video', 'dtls', 'wireguard']),
   host: z.string(),
   path: z.string(),
-  tls: z.enum(['none', 'tls', 'xtls', 'reality']),
-  flow: z.enum(['none', 'xtls-rprx-origin', 'xtls-rprx-origin-udp443', 'xtls-rprx-vision', 'xtls-rprx-vision-udp443']),
+  // gRPC specific
+  grpcMode: z.enum(['gun', 'multi', 'guna']),
+  grpcAuthority: z.string(),
+  // XHTTP specific
+  xhttpMode: z.string(),
+  xhttpExtra: z.string(),
+  // TLS fields (xtls is deprecated, use reality instead)
+  tls: z.enum(['none', 'tls', 'reality']),
+  flow: z.enum(['none', 'xtls-rprx-vision', 'xtls-rprx-vision-udp443']),
   alpn: z.string(),
+  ech: z.string(), // Encrypted Client Hello
   scy: z.enum(['auto', 'aes-128-gcm', 'chacha20-poly1305', 'none', 'zero']),
   v: z.string(),
   allowInsecure: z.boolean(),
@@ -22,6 +30,7 @@ export const v2raySchema = z.object({
   fp: z.string(), // fingerprint
   sid: z.string(), // short ID
   spx: z.string(), // spider x (path)
+  pqv: z.string(), // ML-DSA-65 public key (mldsa65Verify)
 })
 
 export const ssSchema = z.object({

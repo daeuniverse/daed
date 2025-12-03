@@ -399,7 +399,10 @@ export function parseHysteria2Url(url: string): Partial<Hysteria2Config> | null 
 
 /**
  * Parse VMess protocol URL
- * Format: vmess://BASE64(JSON)
+ * Supports two formats:
+ * 1. Legacy: vmess://BASE64(JSON) - v2rayN format
+ * 2. Standard: vmess://uuid@server:port?params#name - XTLS proposal format
+ * Reference: https://github.com/XTLS/Xray-core/discussions/716
  */
 export function parseVMessUrl(url: string): (Partial<V2rayConfig> & { protocol: 'vmess' }) | null {
   try {
@@ -407,26 +410,114 @@ export function parseVMessUrl(url: string): (Partial<V2rayConfig> & { protocol: 
       return null
     }
 
-    const decoded = Base64.decode(url.slice(8))
-    const config = JSON.parse(decoded)
+    const content = url.slice(8)
+
+    // Try to detect if it's standard URL format (contains @ for uuid@host)
+    // by checking if it starts with a valid UUID pattern or can be parsed as URL
+    const hashIndex = content.indexOf('#')
+    const mainContent = hashIndex !== -1 ? content.slice(0, hashIndex) : content
+
+    // If content contains @ and doesn't look like base64, try URL format first
+    if (mainContent.includes('@') && !mainContent.match(/^[A-Z0-9+/=]+$/i)) {
+      const result = parseVMessStandardUrl(url)
+
+      if (result) {
+        return result
+      }
+    }
+
+    // Try legacy base64 JSON format
+    const decoded = Base64.decode(mainContent.includes('@') ? mainContent : content.split('#')[0])
+
+    try {
+      const config = JSON.parse(decoded)
+
+      return {
+        protocol: 'vmess',
+        ps: config.ps || '',
+        add: config.add || '',
+        port: Number(config.port) || 0,
+        id: config.id || '',
+        aid: Number(config.aid) || 0,
+        net: normalizeNetworkType(config.net || 'tcp'),
+        type: config.type || 'none',
+        host: config.host || '',
+        path: config.path || '',
+        tls: config.tls || 'none',
+        sni: config.sni || '',
+        alpn: config.alpn || '',
+        fp: config.fp || '',
+        scy: config.scy || 'auto',
+        allowInsecure: config.allowInsecure === true || config.allowInsecure === 1,
+        flow: config.flow || 'none',
+        v: config.v || '',
+        // Reality fields (usually not in legacy format but support anyway)
+        pbk: config.pbk || '',
+        sid: config.sid || '',
+        spx: config.spx || '',
+        pqv: '',
+        ech: '',
+        grpcMode: 'gun',
+        grpcAuthority: '',
+        xhttpMode: '',
+        xhttpExtra: '',
+      }
+    } catch {
+      // If JSON parse fails, try standard URL format
+      return parseVMessStandardUrl(url)
+    }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Parse VMess standard URL format (XTLS proposal)
+ * Format: vmess://uuid@server:port?params#name
+ */
+function parseVMessStandardUrl(url: string): (Partial<V2rayConfig> & { protocol: 'vmess' }) | null {
+  try {
+    const parsed = new URL(url)
+    const params = parsed.searchParams
+
+    // Normalize network type: http -> h2 for HTTP/2
+    const netType = params.get('type') || 'tcp'
 
     return {
       protocol: 'vmess',
-      ps: config.ps || '',
-      add: config.add || '',
-      port: Number(config.port) || 0,
-      id: config.id || '',
-      aid: Number(config.aid) || 0,
-      net: config.net || 'tcp',
-      type: config.type || 'none',
-      host: config.host || '',
-      path: config.path || '',
-      tls: config.tls || 'none',
-      sni: config.sni || '',
-      alpn: config.alpn || '',
-      scy: config.scy || 'auto',
-      allowInsecure: config.allowInsecure === true || config.allowInsecure === 1,
-      flow: config.flow || 'none',
+      id: decodeURIComponent(parsed.username),
+      add: parsed.hostname,
+      port: parsed.port ? Number.parseInt(parsed.port, 10) : 443,
+      ps: decodeURIComponent(parsed.hash.slice(1) || ''),
+      // Protocol fields
+      scy: (params.get('encryption') || 'auto') as V2rayConfig['scy'],
+      aid: 0, // AEAD VMess doesn't use alterId
+      // Transport fields
+      net: normalizeNetworkType(netType),
+      type: (params.get('headerType') || 'none') as V2rayConfig['type'],
+      host: params.get('host') || '',
+      path: getPathValue(params, netType),
+      // gRPC specific
+      grpcMode: (params.get('mode') || 'gun') as V2rayConfig['grpcMode'],
+      grpcAuthority: params.get('authority') || '',
+      // XHTTP specific
+      xhttpMode: netType === 'xhttp' ? params.get('mode') || '' : '',
+      xhttpExtra: params.get('extra') || '',
+      // TLS fields
+      tls: (params.get('security') || 'none') as V2rayConfig['tls'],
+      fp: params.get('fp') || '',
+      sni: params.get('sni') || '',
+      alpn: params.get('alpn') || '',
+      ech: params.get('ech') || '',
+      // XTLS flow (VMess doesn't use this but include for completeness)
+      flow: 'none',
+      // Reality fields
+      pbk: params.get('pbk') || '',
+      sid: params.get('sid') || '',
+      spx: params.get('spx') || '',
+      pqv: params.get('pqv') || '',
+      // Other
+      allowInsecure: false, // Not allowed in standard proposal
       v: '',
     }
   } catch {
@@ -435,8 +526,42 @@ export function parseVMessUrl(url: string): (Partial<V2rayConfig> & { protocol: 
 }
 
 /**
+ * Normalize network type to internal representation
+ * Handles 'http' -> 'h2' mapping per proposal
+ */
+function normalizeNetworkType(type: string): V2rayConfig['net'] {
+  const typeMap: Record<string, V2rayConfig['net']> = {
+    tcp: 'tcp',
+    kcp: 'kcp',
+    ws: 'ws',
+    http: 'h2', // HTTP/2/3 uses 'http' in share link but 'h2' internally
+    h2: 'h2',
+    grpc: 'grpc',
+    httpupgrade: 'httpupgrade',
+    xhttp: 'xhttp',
+  }
+  return typeMap[type.toLowerCase()] || 'tcp'
+}
+
+/**
+ * Get path value based on network type
+ * Different transports use different field names
+ */
+function getPathValue(params: URLSearchParams, netType: string): string {
+  switch (netType.toLowerCase()) {
+    case 'grpc':
+      return params.get('serviceName') || ''
+    case 'kcp':
+      return params.get('seed') || ''
+    default:
+      return params.get('path') || ''
+  }
+}
+
+/**
  * Parse VLESS protocol URL
- * Format: vless://uuid@server:port?...#name
+ * Format: vless://uuid@server:port?params#name
+ * Reference: https://github.com/XTLS/Xray-core/discussions/716
  */
 export function parseVLessUrl(url: string): (Partial<V2rayConfig> & { protocol: 'vless' }) | null {
   try {
@@ -447,29 +572,44 @@ export function parseVLessUrl(url: string): (Partial<V2rayConfig> & { protocol: 
     const parsed = new URL(url)
     const params = parsed.searchParams
 
+    // Get network type
+    const netType = params.get('type') || 'tcp'
+
     return {
       protocol: 'vless',
       id: decodeURIComponent(parsed.username),
       add: parsed.hostname,
       port: parsed.port ? Number.parseInt(parsed.port, 10) : 443,
       ps: decodeURIComponent(parsed.hash.slice(1) || ''),
-      net: (params.get('type') || 'tcp') as V2rayConfig['net'],
+      // Protocol fields
+      scy: 'none', // VLESS encryption is always 'none'
+      aid: 0,
+      // Transport fields (4.3)
+      net: normalizeNetworkType(netType),
+      type: (params.get('headerType') || 'none') as V2rayConfig['type'],
+      host: params.get('host') || '',
+      path: getPathValue(params, netType),
+      // gRPC specific
+      grpcMode: (params.get('mode') || 'gun') as V2rayConfig['grpcMode'],
+      grpcAuthority: params.get('authority') || '',
+      // XHTTP specific
+      xhttpMode: netType === 'xhttp' ? params.get('mode') || '' : '',
+      xhttpExtra: params.get('extra') || '',
+      // TLS fields (4.4)
       tls: (params.get('security') || 'none') as V2rayConfig['tls'],
+      fp: params.get('fp') || '',
       sni: params.get('sni') || '',
       alpn: params.get('alpn') || '',
-      host: params.get('host') || '',
-      path: params.get('path') || params.get('serviceName') || params.get('seed') || '',
-      type: (params.get('headerType') || 'none') as V2rayConfig['type'],
+      ech: params.get('ech') || '',
+      // XTLS flow
       flow: (params.get('flow') || 'none') as V2rayConfig['flow'],
-      allowInsecure: params.get('allowInsecure') === '1' || params.get('allowInsecure') === 'true',
-      // Reality-specific fields
+      // Reality fields
       pbk: params.get('pbk') || '',
-      fp: params.get('fp') || '',
       sid: params.get('sid') || '',
       spx: params.get('spx') || '',
-      // Defaults for vmess-only fields
-      aid: 0,
-      scy: 'auto',
+      pqv: params.get('pqv') || '',
+      // Other
+      allowInsecure: false, // Not allowed in standard proposal for security
       v: '',
     }
   } catch {

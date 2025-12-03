@@ -24,14 +24,37 @@ const defaultValues: V2rayFormValues = {
 }
 
 function generateV2rayLink(data: V2rayFormValues): string {
-  const { protocol, net, tls, path, host, type, sni, flow, allowInsecure, alpn, id, add, port, ps, pbk, fp, sid, spx } =
-    data
+  const {
+    protocol,
+    net,
+    tls,
+    path,
+    host,
+    type,
+    sni,
+    flow,
+    allowInsecure,
+    alpn,
+    ech,
+    id,
+    add,
+    port,
+    ps,
+    pbk,
+    fp,
+    sid,
+    spx,
+    pqv,
+    grpcMode,
+    grpcAuthority,
+    xhttpMode,
+    xhttpExtra,
+  } = data
 
   if (protocol === 'vless') {
     const params: Record<string, unknown> = {
       type: net,
       security: tls,
-      path,
       host,
       headerType: type,
       sni,
@@ -39,11 +62,23 @@ function generateV2rayLink(data: V2rayFormValues): string {
       allowInsecure,
     }
 
+    // Path handling based on network type
+    if (net === 'grpc') {
+      params.serviceName = path
+      if (grpcMode !== 'gun') params.mode = grpcMode
+      if (grpcAuthority) params.authority = grpcAuthority
+    } else if (net === 'kcp') {
+      params.seed = path
+    } else if (net === 'xhttp') {
+      params.path = path
+      if (xhttpMode) params.mode = xhttpMode
+      if (xhttpExtra) params.extra = xhttpExtra
+    } else {
+      params.path = path
+    }
+
     if (alpn !== '') params.alpn = alpn
-
-    if (net === 'grpc') params.serviceName = path
-
-    if (net === 'kcp') params.seed = path
+    if (ech !== '') params.ech = ech
 
     // Reality-specific parameters
     if (tls === 'reality') {
@@ -51,6 +86,7 @@ function generateV2rayLink(data: V2rayFormValues): string {
       params.fp = fp
       if (sid) params.sid = sid
       if (spx) params.spx = spx
+      if (pqv) params.pqv = pqv
     }
 
     return generateURL({
@@ -171,7 +207,6 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
           data={[
             { label: 'off', value: 'none' },
             { label: 'tls', value: 'tls' },
-            { label: 'xtls', value: 'xtls' },
             { label: 'reality', value: 'reality' },
           ]}
           value={formValues.tls}
@@ -216,6 +251,7 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
             value={formValues.spx}
             onChange={(e) => setValue('spx', e.target.value)}
           />
+          <Input label="PQV (ML-DSA-65)" value={formValues.pqv} onChange={(e) => setValue('pqv', e.target.value)} />
         </>
       )}
 
@@ -223,9 +259,8 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
         label="Flow"
         data={[
           { label: 'none', value: 'none' },
-          { label: 'xtls-rprx-origin', value: 'xtls-rprx-origin' },
-          { label: 'xtls-rprx-origin-udp443', value: 'xtls-rprx-origin-udp443' },
-          { label: 'xtls-rprx-vision', value: 'xtls-rprx-vision-udp443' },
+          { label: 'xtls-rprx-vision', value: 'xtls-rprx-vision' },
+          { label: 'xtls-rprx-vision-udp443', value: 'xtls-rprx-vision-udp443' },
         ]}
         value={formValues.flow}
         onChange={(val) => setValue('flow', (val || 'none') as V2rayFormValues['flow'])}
@@ -247,6 +282,8 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
           { label: 'WebSocket', value: 'ws' },
           { label: 'HTTP/2', value: 'h2' },
           { label: 'gRPC', value: 'grpc' },
+          { label: 'HTTPUpgrade', value: 'httpupgrade' },
+          { label: 'XHTTP', value: 'xhttp' },
         ]}
         value={formValues.net}
         onChange={(val) => setValue('net', (val || 'tcp') as V2rayFormValues['net'])}
@@ -282,6 +319,8 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
 
       {(formValues.net === 'ws' ||
         formValues.net === 'h2' ||
+        formValues.net === 'httpupgrade' ||
+        formValues.net === 'xhttp' ||
         formValues.tls === 'tls' ||
         (formValues.net === 'tcp' && formValues.type === 'http')) && (
         <Input
@@ -292,11 +331,21 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
       )}
 
       {formValues.tls === 'tls' && (
-        <Input label="Alpn" value={formValues.alpn} onChange={(e) => setValue('alpn', e.target.value)} />
+        <>
+          <Input label="ALPN" value={formValues.alpn} onChange={(e) => setValue('alpn', e.target.value)} />
+          <Input
+            label="ECH"
+            placeholder="Encrypted Client Hello"
+            value={formValues.ech}
+            onChange={(e) => setValue('ech', e.target.value)}
+          />
+        </>
       )}
 
       {(formValues.net === 'ws' ||
         formValues.net === 'h2' ||
+        formValues.net === 'httpupgrade' ||
+        formValues.net === 'xhttp' ||
         (formValues.net === 'tcp' && formValues.type === 'http')) && (
         <Input
           label={t('configureNode.path')}
@@ -310,7 +359,39 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
       )}
 
       {formValues.net === 'grpc' && (
-        <Input label="ServiceName" value={formValues.path} onChange={(e) => setValue('path', e.target.value)} />
+        <>
+          <Input label="ServiceName" value={formValues.path} onChange={(e) => setValue('path', e.target.value)} />
+          <Select
+            label="gRPC Mode"
+            data={[
+              { label: 'gun', value: 'gun' },
+              { label: 'multi', value: 'multi' },
+              { label: 'guna', value: 'guna' },
+            ]}
+            value={formValues.grpcMode}
+            onChange={(val) => setValue('grpcMode', (val || 'gun') as V2rayFormValues['grpcMode'])}
+          />
+          <Input
+            label="Authority"
+            value={formValues.grpcAuthority}
+            onChange={(e) => setValue('grpcAuthority', e.target.value)}
+          />
+        </>
+      )}
+
+      {formValues.net === 'xhttp' && (
+        <>
+          <Input
+            label="XHTTP Mode"
+            value={formValues.xhttpMode}
+            onChange={(e) => setValue('xhttpMode', e.target.value)}
+          />
+          <Input
+            label="XHTTP Extra"
+            value={formValues.xhttpExtra}
+            onChange={(e) => setValue('xhttpExtra', e.target.value)}
+          />
+        </>
       )}
 
       {actionsPortal ? (

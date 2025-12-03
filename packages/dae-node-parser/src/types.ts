@@ -17,30 +17,46 @@ export type ProxyProtocol =
 
 /**
  * V2Ray schema (VMess/VLESS)
+ * Based on XTLS/Xray-core share link standard proposal:
+ * https://github.com/XTLS/Xray-core/discussions/716
  */
 export interface V2rayConfig {
   protocol?: 'vmess' | 'vless'
-  ps: string
-  add: string
-  port: number
-  id: string
-  aid: number
-  net: 'tcp' | 'kcp' | 'ws' | 'h2' | 'grpc'
-  type: 'none' | 'http' | 'srtp' | 'utp' | 'wechat-video' | 'dtls' | 'wireguard'
-  host: string
-  path: string
-  tls: 'none' | 'tls' | 'xtls' | 'reality'
-  flow: 'none' | 'xtls-rprx-origin' | 'xtls-rprx-origin-udp443' | 'xtls-rprx-vision' | 'xtls-rprx-vision-udp443'
-  alpn: string
-  scy: 'auto' | 'aes-128-gcm' | 'chacha20-poly1305' | 'none' | 'zero'
-  v: string
+  // Basic info (4.1)
+  ps: string // descriptive-text
+  add: string // remote-host
+  port: number // remote-port
+  id: string // uuid
+  // Protocol fields (4.2)
+  aid: number // alterId (VMess only, deprecated for AEAD)
+  scy: 'auto' | 'aes-128-gcm' | 'chacha20-poly1305' | 'none' | 'zero' // encryption
+  // Transport fields (4.3)
+  net: 'tcp' | 'kcp' | 'ws' | 'http' | 'h2' | 'grpc' | 'httpupgrade' | 'xhttp' // type
+  type: 'none' | 'http' | 'srtp' | 'utp' | 'wechat-video' | 'dtls' | 'wireguard' // headerType (mKCP/TCP)
+  host: string // host (WebSocket/HTTP/2/3/HTTPUpgrade/XHTTP)
+  path: string // path (WebSocket/HTTP/2/3/HTTPUpgrade/XHTTP) or serviceName (gRPC) or seed (mKCP)
+  // gRPC specific
+  grpcMode: 'gun' | 'multi' | 'guna' // mode
+  grpcAuthority: string // authority
+  // XHTTP specific
+  xhttpMode: string // mode
+  xhttpExtra: string // extra
+  // TLS fields (4.4)
+  tls: 'none' | 'tls' | 'reality' // security (removed 'xtls' as deprecated)
+  fp: string // fingerprint
+  sni: string // serverName
+  alpn: string // alpn (comma-separated)
+  ech: string // Encrypted Client Hello (echConfigList)
+  // XTLS/VLESS flow
+  flow: 'none' | 'xtls-rprx-vision' | 'xtls-rprx-vision-udp443' | string
+  // Reality fields
+  pbk: string // REALITY password (publicKey alias)
+  sid: string // REALITY shortId
+  spx: string // REALITY spiderX
+  pqv: string // REALITY ML-DSA-65 public key (mldsa65Verify)
+  // Other
   allowInsecure: boolean
-  sni: string
-  // Reality-specific fields
-  pbk: string
-  fp: string
-  sid: string
-  spx: string
+  v: string // version (legacy)
 }
 
 /**

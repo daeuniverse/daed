@@ -107,6 +107,7 @@ export const DEFAULT_V2RAY_FORM_VALUES: z.infer<typeof v2raySchema> = {
   aid: 0,
   allowInsecure: false,
   alpn: '',
+  ech: '',
   flow: 'none',
   host: '',
   id: '',
@@ -115,11 +116,18 @@ export const DEFAULT_V2RAY_FORM_VALUES: z.infer<typeof v2raySchema> = {
   ps: '',
   v: '',
   sni: '',
+  // gRPC specific
+  grpcMode: 'gun',
+  grpcAuthority: '',
+  // XHTTP specific
+  xhttpMode: '',
+  xhttpExtra: '',
   // Reality-specific fields
   pbk: '',
   fp: '',
   sid: '',
   spx: '',
+  pqv: '',
 }
 
 export const DEFAULT_SS_FORM_VALUES: z.infer<typeof ssSchema> = {

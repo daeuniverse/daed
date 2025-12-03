@@ -117,6 +117,145 @@ describe('parseV2rayUrl', () => {
       tls: 'tls',
     })
   })
+
+  it('should parse VLESS URL with WebSocket', () => {
+    const result = parseV2rayUrl(
+      'vless://uuid@example.com:443?type=ws&security=tls&host=example.com&path=%2Fws#ws-vless',
+    )
+    expect(result).toMatchObject({
+      protocol: 'vless',
+      id: 'uuid',
+      net: 'ws',
+      tls: 'tls',
+      host: 'example.com',
+      path: '/ws',
+    })
+  })
+
+  it('should parse VLESS URL with gRPC', () => {
+    const result = parseV2rayUrl(
+      'vless://uuid@example.com:443?type=grpc&security=tls&serviceName=myservice&mode=gun#grpc-vless',
+    )
+    expect(result).toMatchObject({
+      protocol: 'vless',
+      net: 'grpc',
+      path: 'myservice',
+      grpcMode: 'gun',
+    })
+  })
+
+  it('should parse VLESS URL with REALITY', () => {
+    const result = parseV2rayUrl(
+      'vless://uuid@example.com:443?type=tcp&security=reality&pbk=publickey&sid=shortid&fp=chrome&sni=sni.example.com&flow=xtls-rprx-vision#reality-vless',
+    )
+    expect(result).toMatchObject({
+      protocol: 'vless',
+      tls: 'reality',
+      pbk: 'publickey',
+      sid: 'shortid',
+      fp: 'chrome',
+      sni: 'sni.example.com',
+      flow: 'xtls-rprx-vision',
+    })
+  })
+
+  it('should parse VLESS URL with mKCP and seed', () => {
+    const result = parseV2rayUrl('vless://uuid@example.com:443?type=kcp&headerType=wireguard&seed=myseed#kcp-vless')
+    expect(result).toMatchObject({
+      protocol: 'vless',
+      net: 'kcp',
+      type: 'wireguard',
+      path: 'myseed',
+    })
+  })
+
+  it('should parse VLESS URL with HTTP/2 (http type)', () => {
+    const result = parseV2rayUrl(
+      'vless://uuid@example.com:443?type=http&security=tls&host=example.com&path=%2Fh2#h2-vless',
+    )
+    expect(result).toMatchObject({
+      protocol: 'vless',
+      net: 'h2', // normalized from 'http'
+      tls: 'tls',
+      host: 'example.com',
+      path: '/h2',
+    })
+  })
+
+  it('should parse legacy VMess base64 JSON format', () => {
+    const vmessConfig = btoa(
+      JSON.stringify({
+        ps: 'test-vmess',
+        add: 'example.com',
+        port: 443,
+        id: 'uuid-test',
+        aid: 0,
+        net: 'tcp',
+        tls: 'tls',
+        scy: 'auto',
+      }),
+    )
+    const result = parseV2rayUrl(`vmess://${vmessConfig}`)
+    expect(result).toMatchObject({
+      protocol: 'vmess',
+      ps: 'test-vmess',
+      add: 'example.com',
+      port: 443,
+      id: 'uuid-test',
+      net: 'tcp',
+      tls: 'tls',
+      scy: 'auto',
+    })
+  })
+
+  it('should parse VMess standard URL format', () => {
+    const result = parseV2rayUrl(
+      'vmess://uuid-here@example.com:443?type=ws&security=tls&host=example.com&path=%2Fws&encryption=auto#standard-vmess',
+    )
+    expect(result).toMatchObject({
+      protocol: 'vmess',
+      id: 'uuid-here',
+      add: 'example.com',
+      port: 443,
+      ps: 'standard-vmess',
+      net: 'ws',
+      tls: 'tls',
+      host: 'example.com',
+      path: '/ws',
+      scy: 'auto',
+    })
+  })
+
+  it('should parse VMess without TLS (naked)', () => {
+    const result = parseV2rayUrl('vmess://uuid@example.com:31415?encryption=none#VMessTCPNaked')
+    expect(result).toMatchObject({
+      protocol: 'vmess',
+      id: 'uuid',
+      add: 'example.com',
+      port: 31415,
+      scy: 'none',
+      tls: 'none',
+    })
+  })
+
+  it('should parse VLESS with HTTPUpgrade', () => {
+    const result = parseV2rayUrl(
+      'vless://uuid@example.com:443?type=httpupgrade&security=tls&host=example.com&path=%2Fupgrade#httpupgrade-vless',
+    )
+    expect(result).toMatchObject({
+      protocol: 'vless',
+      net: 'httpupgrade',
+      host: 'example.com',
+      path: '/upgrade',
+    })
+  })
+
+  it('should handle ALPN correctly', () => {
+    const result = parseV2rayUrl('vless://uuid@example.com:443?type=tcp&security=tls&alpn=h2%2Chttp%2F1.1#alpn-test')
+    expect(result).toMatchObject({
+      alpn: 'h2,http/1.1',
+    })
+  })
 })
 
 describe('parseNodeUrl', () => {
