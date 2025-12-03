@@ -12,8 +12,8 @@
   "homepage": "https://daeuniverse.github.io/daed",
   "repository": "https://github.com/daeuniverse/daed",
   "scripts": {
-    "build": "vite build",
-    "build:mock": "VITE_MOCK_MODE=true vite build",
+    "build": "pnpm -r --filter \"@daeuniverse/*\" build && vite build",
+    "build:mock": "pnpm -r --filter \"@daeuniverse/*\" build && VITE_MOCK_MODE=true vite build",
     "codegen": "graphql-codegen",
     "dev": "vite dev",
     "dev:mock": "VITE_MOCK_MODE=true vite dev",

@@ -88,9 +88,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build workspace packages
-        run: pnpm --filter "@daeuniverse/*" build
-
       - name: Install Playwright browsers
         run: npx playwright install chromium
 
@@ -163,7 +160,6 @@ jobs:
       - name: Build
         run: |
           pnpm install
-          pnpm --filter "@daeuniverse/*" build
           pnpm build
 
       - uses: actions/upload-artifact@v5
