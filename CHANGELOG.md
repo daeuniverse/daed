@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/daeuniverse/daed/compare/v1.12.0...v1.13.0) (2025-12-03)
+
+
+### Features
+
+* add build step for workspace packages in release workflow ([7d345b0](https://github.com/daeuniverse/daed/commit/7d345b0b91406b673c098e7a080d6f002be76249))
+
 ## [1.12.0](https://github.com/daeuniverse/daed/compare/v1.11.0...v1.12.0) (2025-12-03)
 
 
