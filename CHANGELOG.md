@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/daeuniverse/daed/compare/v1.10.0...v1.11.0) (2025-12-03)
+
+
+### Features
+
+* add routingA language completion items and provider to Monaco editor ([1211880](https://github.com/daeuniverse/daed/commit/121188037e8706935cf84a162cfa73873572a248))
+
 ## [1.10.0](https://github.com/daeuniverse/daed/compare/v1.9.0...v1.10.0) (2025-12-02)
 
 
