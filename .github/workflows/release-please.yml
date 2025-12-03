@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag name (e.g., v1.13.0)'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -15,18 +21,19 @@ jobs:
   release-please:
     runs-on: macos-latest
     outputs:
-      tag_name: ${{ steps.release.outputs.tag_name }}
-      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name || inputs.tag_name }}
+      release_created: ${{ steps.release.outputs.release_created || (inputs.tag_name != '') }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
+        if: ${{ github.event_name == 'push' }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   # Publish workspace packages to GitHub Packages when a release is created
   publish-packages:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -64,7 +71,7 @@ jobs:
   # Update screenshots when a new release is created
   update-screenshots:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -101,7 +108,7 @@ jobs:
 
   checkout-full-src:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -137,7 +144,7 @@ jobs:
 
   build-web:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
@@ -167,7 +174,7 @@ jobs:
   # Publish GitHub Pages when a new release is created
   publish-gh-pages:
     needs: [release-please, build-web]
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: macos-latest
     steps:
       - uses: actions/download-artifact@v6
@@ -182,7 +189,7 @@ jobs:
 
   build-bundle:
     needs: [release-please, build-web]
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -365,7 +372,7 @@ jobs:
 
   upload-release:
     needs: [release-please, checkout-full-src, build-bundle]
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
@@ -459,7 +466,7 @@ jobs:
   # Publish container image when release is created
   publish-container-image:
     needs: [release-please, build-web]
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
