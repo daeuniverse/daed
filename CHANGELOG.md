@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/daeuniverse/daed/compare/v1.15.0...v1.15.1) (2025-12-03)
+
+
+### Bug Fixes
+
+* **ci:** use main branch for publish-packages to get updated workspace versions ([14cca77](https://github.com/daeuniverse/daed/commit/14cca774759f4f2cb476c0371e6cc9e617fc6118))
+
 ## [1.15.0](https://github.com/daeuniverse/daed/compare/v1.14.0...v1.15.0) (2025-12-03)
 
 
