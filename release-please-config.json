@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "release-type": "node",
-  "group-pull-request-title-pattern": "chore: release${component} ${version}",
+  "separate-pull-requests": true,
   "packages": {
     ".": {
       "component": "daed",
@@ -17,12 +17,5 @@
       "component": "dae-node-parser",
       "changelog-path": "CHANGELOG.md"
     }
-  },
-  "plugins": [
-    {
-      "type": "linked-versions",
-      "groupName": "daed",
-      "components": ["daed", "dae-editor", "dae-node-parser"]
-    }
-  ]
+  }
 }

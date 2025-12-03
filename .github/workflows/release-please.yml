@@ -21,8 +21,16 @@ jobs:
   release-please:
     runs-on: macos-latest
     outputs:
+      # Root package (daed)
       tag_name: ${{ steps.release.outputs.tag_name || inputs.tag_name }}
       release_created: ${{ steps.release.outputs.release_created || (inputs.tag_name != '') }}
+      # Workspace packages
+      dae-editor--release_created: ${{ steps.release.outputs['packages/dae-editor--release_created'] }}
+      dae-editor--tag_name: ${{ steps.release.outputs['packages/dae-editor--tag_name'] }}
+      dae-node-parser--release_created: ${{ steps.release.outputs['packages/dae-node-parser--release_created'] }}
+      dae-node-parser--tag_name: ${{ steps.release.outputs['packages/dae-node-parser--tag_name'] }}
+      # Any release created
+      any_release_created: ${{ steps.release.outputs.releases_created || (inputs.tag_name != '') }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
@@ -30,13 +38,12 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  # Publish workspace packages to GitHub Packages when a release is created
+  # Publish workspace packages to GitHub Packages when their releases are created
   publish-packages:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: ${{ needs.release-please.outputs.dae-editor--release_created == 'true' || needs.release-please.outputs.dae-node-parser--release_created == 'true' || inputs.tag_name != '' }}
     runs-on: ubuntu-latest
     steps:
-      # Use main branch to get the latest merged release PR with updated workspace package versions
       - uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4.2.0
@@ -56,12 +63,14 @@ jobs:
         run: pnpm --filter "@daeuniverse/*" build
 
       - name: Publish dae-editor
+        if: ${{ needs.release-please.outputs.dae-editor--release_created == 'true' || inputs.tag_name != '' }}
         working-directory: packages/dae-editor
         run: pnpm publish --access public --no-git-checks || echo "Package may already be published, continuing..."
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish dae-node-parser
+        if: ${{ needs.release-please.outputs.dae-node-parser--release_created == 'true' || inputs.tag_name != '' }}
         working-directory: packages/dae-node-parser
         run: pnpm publish --access public --no-git-checks || echo "Package may already be published, continuing..."
         env:
