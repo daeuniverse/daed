@@ -151,8 +151,8 @@ catalogs:
       specifier: ^1.2.8
       version: 1.2.8
     '@shikijs/monaco':
-      specifier: ^3.17.1
-      version: 3.17.1
+      specifier: ^3.18.0
+      version: 3.18.0
     '@tailwindcss/vite':
       specifier: ^4.1.17
       version: 4.1.17
@@ -508,7 +508,7 @@ importers:
         version: 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@shikijs/monaco':
         specifier: 'catalog:'
-        version: 3.17.1
+        version: 3.18.0
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.1.17(rolldown-vite@7.2.9(@types/node@24.10.1)(esbuild@0.25.12)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.1))
@@ -2965,6 +2965,9 @@ packages:
   '@shikijs/core@3.17.1':
     resolution: {integrity: sha512-VWsduykcibGU0WMi66PflThDWyqEeTOiWdCRa3wmsZuishh+1PDSOh5gGxHdSrOtS+v1pmYaxodk/JNzwusElA==}
 
+  '@shikijs/core@3.18.0':
+    resolution: {integrity: sha512-qxBrX2G4ctCgpvFNWMhFvbBnsWTOmwJgSqywQm0gtamp/OXSaHBjtrBomNIY5WJGXgGCPPvI7O+Y9pH/dr/p0w==}
+
   '@shikijs/engine-javascript@3.17.1':
     resolution: {integrity: sha512-Ars0DVJITQrkOl5Swwy+94NL/BlOi/w1NSFbPGkcsln7Dv+M2qHaVpNHwdtWCC4/arzvjuHbyWBUsWExDHPDLw==}
 
@@ -2974,14 +2977,17 @@ packages:
   '@shikijs/langs@3.17.1':
     resolution: {integrity: sha512-YTBVN+L2j7zBuOVjNZ2XiSNQEkm/7wZ1TSc5UO77GJPcg7Rk25WSscWA7y8pW7Bo25JIU0EWchUkq/UQjOJlJA==}
 
-  '@shikijs/monaco@3.17.1':
-    resolution: {integrity: sha512-A/vwsSAL6FIfEfFt5cC5RDb0i4fo+0c/uOJNhxclTUQntx6UvLubsusUQ4T6bVZwCEuo27hCU3qYLFiabCiERw==}
+  '@shikijs/monaco@3.18.0':
+    resolution: {integrity: sha512-ws82xyPt+119BXAmUHxaqVQq41h3d1vg0u+UxrF197ZR2xesvlBzVmu6vQVlO5HyfS3lUVxsbieXmdoqs/HyIQ==}
 
   '@shikijs/themes@3.17.1':
     resolution: {integrity: sha512-aohwwqNUB5h2ATfgrqYRPl8vyazqCiQ2wIV4xq+UzaBRHpqLMGSemkasK+vIEpl0YaendoaKUsDfpwhCqyHIaQ==}
 
   '@shikijs/types@3.17.1':
     resolution: {integrity: sha512-yUFLiCnZHHJ16KbVbt3B1EzBUadU3OVpq0PEyb301m5BbuFKApQYBzJGhrK48hH/tYWSjzwcj7BSmYbBc0zntQ==}
+
+  '@shikijs/types@3.18.0':
+    resolution: {integrity: sha512-YLmpuroH06TpvqRXKR0YqlI0nQ56c8+BO/m9A9ht36WRdxmML4ivUsnpXuJU7PiClLRD2M66ilY2YJ0KE+8q7A==}
 
   '@shikijs/vscode-textmate@10.0.2':
     resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
@@ -9030,6 +9036,13 @@ snapshots:
       '@types/hast': 3.0.4
       hast-util-to-html: 9.0.5
 
+  '@shikijs/core@3.18.0':
+    dependencies:
+      '@shikijs/types': 3.18.0
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
+      hast-util-to-html: 9.0.5
+
   '@shikijs/engine-javascript@3.17.1':
     dependencies:
       '@shikijs/types': 3.17.1
@@ -9045,10 +9058,10 @@ snapshots:
     dependencies:
       '@shikijs/types': 3.17.1
 
-  '@shikijs/monaco@3.17.1':
+  '@shikijs/monaco@3.18.0':
     dependencies:
-      '@shikijs/core': 3.17.1
-      '@shikijs/types': 3.17.1
+      '@shikijs/core': 3.18.0
+      '@shikijs/types': 3.18.0
       '@shikijs/vscode-textmate': 10.0.2
 
   '@shikijs/themes@3.17.1':
@@ -9056,6 +9069,11 @@ snapshots:
       '@shikijs/types': 3.17.1
 
   '@shikijs/types@3.17.1':
+    dependencies:
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
+
+  '@shikijs/types@3.18.0':
     dependencies:
       '@shikijs/vscode-textmate': 10.0.2
       '@types/hast': 3.0.4
