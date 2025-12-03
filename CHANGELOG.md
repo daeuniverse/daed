@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/daeuniverse/daed/compare/v1.13.1...v1.14.0) (2025-12-03)
+
+
+### Features
+
+* refactor ConfigureNodeFormModal to support dynamic protocol forms ([b628165](https://github.com/daeuniverse/daed/commit/b628165d12271941bc0b9a0cdd733c4b9d9f454e))
+
 ## [1.13.1](https://github.com/daeuniverse/daed/compare/v1.13.0...v1.13.1) (2025-12-03)
 
 
