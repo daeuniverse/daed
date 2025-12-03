@@ -8,7 +8,7 @@ import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import { createHighlighter } from 'shiki'
 
-import { EDITOR_LANGUAGE_ROUTINGA } from '~/constants/editor'
+import { EDITOR_LANGUAGE_ROUTINGA, ROUTINGA_COMPLETION_ITEMS } from '~/constants/editor'
 
 // Configure Monaco workers for Vite
 globalThis.MonacoEnvironment = {
@@ -60,6 +60,43 @@ export function handleEditorBeforeMount(monacoInstance: Monaco) {
   // Register custom routingA language
   monacoInstance.languages.register({ id: 'routingA', extensions: ['dae'] })
   monacoInstance.languages.setMonarchTokensProvider('routingA', EDITOR_LANGUAGE_ROUTINGA)
+
+  // Register completion provider for routingA language
+  monacoInstance.languages.registerCompletionItemProvider('routingA', {
+    provideCompletionItems: (model: monaco.editor.ITextModel, position: monaco.Position) => {
+      const word = model.getWordUntilPosition(position)
+      const range = {
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+        startColumn: word.startColumn,
+        endColumn: word.endColumn,
+      }
+
+      // Map completion item kinds from string to Monaco enum
+      const kindMap: Record<string, monaco.languages.CompletionItemKind> = {
+        keyword: monacoInstance.languages.CompletionItemKind.Keyword,
+        function: monacoInstance.languages.CompletionItemKind.Function,
+        constant: monacoInstance.languages.CompletionItemKind.Constant,
+        type: monacoInstance.languages.CompletionItemKind.TypeParameter,
+        variable: monacoInstance.languages.CompletionItemKind.Variable,
+        snippet: monacoInstance.languages.CompletionItemKind.Snippet,
+      }
+
+      const suggestions = ROUTINGA_COMPLETION_ITEMS.map((item) => ({
+        label: item.label,
+        kind: kindMap[item.kind] ?? monacoInstance.languages.CompletionItemKind.Text,
+        detail: item.detail,
+        documentation: item.documentation,
+        insertText: item.insertText,
+        insertTextRules: item.insertTextRules
+          ? monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet
+          : undefined,
+        range,
+      }))
+
+      return { suggestions }
+    },
+  })
 }
 
 // Apply Shiki themes to Monaco (call after editor is mounted)
