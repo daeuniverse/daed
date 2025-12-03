@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/daeuniverse/daed/compare/v1.13.0...v1.13.1) (2025-12-03)
+
+
+### Bug Fixes
+
+* add workflow_dispatch trigger and fix release_created condition ([dc70a1d](https://github.com/daeuniverse/daed/commit/dc70a1d11b0c7fa7b2ea0d447bcd9e61b5c7be00))
+
 ## [1.13.0](https://github.com/daeuniverse/daed/compare/v1.12.0...v1.13.0) (2025-12-03)
 
 
