@@ -1,0 +1,86 @@
+{
+  "publisher": "daeuniverse",
+  "name": "dae-routinga",
+  "displayName": "dae RoutingA",
+  "version": "0.0.1",
+  "description": "Language support for dae RoutingA configuration - syntax highlighting, IntelliSense, and formatting",
+  "license": "MIT",
+  "homepage": "https://github.com/daeuniverse/daed/tree/main/packages/dae-vscode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daeuniverse/daed.git",
+    "directory": "packages/dae-vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/daeuniverse/daed/issues"
+  },
+  "keywords": [
+    "dae",
+    "routingA",
+    "proxy",
+    "routing",
+    "syntax-highlighting",
+    "formatter"
+  ],
+  "categories": [
+    "Programming Languages",
+    "Formatters",
+    "Snippets"
+  ],
+  "main": "./dist/extension.js",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "dae",
+        "aliases": [
+          "dae",
+          "DAE"
+        ],
+        "extensions": [
+          ".dae"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "dae",
+        "scopeName": "source.dae",
+        "path": "./syntaxes/dae.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "dae",
+        "path": "./snippets/dae.json"
+      }
+    ],
+    "configurationDefaults": {
+      "[dae]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.comments.insertSpace": false
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run build",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "package": "vsce package --no-dependencies",
+    "publish:vsce": "vsce publish --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.2",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
+}

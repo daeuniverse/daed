@@ -1,0 +1,457 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "dae",
+  "scopeName": "source.dae",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#section-blocks"
+    },
+    {
+      "include": "#key-value"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#rules"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#functions"
+    },
+    {
+      "include": "#types"
+    },
+    {
+      "include": "#constants"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#identifiers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.dae",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "section-blocks": {
+      "patterns": [
+        {
+          "name": "meta.section.dae",
+          "begin": "\\b(global|subscription|node|dns|group|routing)\\s*(\\{)",
+          "end": "\\}",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.section.dae"
+            },
+            "2": {
+              "name": "punctuation.definition.block.begin.dae"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.block.end.dae"
+            }
+          },
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
+        },
+        {
+          "name": "meta.subsection.dae",
+          "begin": "\\b(upstream|routing|request|response|fixed_domain_ttl)\\s*(\\{)",
+          "end": "\\}",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.tag.dae"
+            },
+            "2": {
+              "name": "punctuation.definition.block.begin.dae"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.block.end.dae"
+            }
+          },
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
+        },
+        {
+          "name": "meta.group.dae",
+          "begin": "\\b([a-zA-Z_][a-zA-Z0-9_-]*)\\s*(\\{)",
+          "end": "\\}",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.function.dae"
+            },
+            "2": {
+              "name": "punctuation.definition.block.begin.dae"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.block.end.dae"
+            }
+          },
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
+        }
+      ]
+    },
+    "key-value": {
+      "patterns": [
+        {
+          "match": "\\b(tproxy_port|tproxy_port_protect|pprof_port|so_mark_from_dae|log_level|disable_waiting_network|enable_local_tcp_fast_redirect|lan_interface|wan_interface|auto_config_kernel_parameter|tcp_check_url|tcp_check_http_method|udp_check_dns|check_interval|check_tolerance|dial_mode|allow_insecure|sniffing_timeout|tls_implementation|utls_imitate|tls_fragment|tls_fragment_length|tls_fragment_interval|mptcp|bandwidth_max_tx|bandwidth_max_rx|fallback_resolver|ipversion_prefer|bind)(:)",
+          "captures": {
+            "1": {
+              "name": "variable.parameter.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.colon.dae"
+            }
+          }
+        },
+        {
+          "match": "\\b(policy|filter|fallback)(:)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.colon.dae"
+            }
+          }
+        },
+        {
+          "comment": "Named node/subscription definition with string value",
+          "match": "^\\s*([a-zA-Z_][a-zA-Z0-9_]*)(:)\\s*(?='|\")",
+          "captures": {
+            "1": {
+              "name": "variable.other.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.colon.dae"
+            }
+          }
+        }
+      ]
+    },
+    "rules": {
+      "patterns": [
+        {
+          "name": "meta.rule.dae",
+          "match": "^\\s*([^#'\"\\n]+?)\\s*(->)\\s*(\\w+)\\s*$",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "include": "#functions"
+                },
+                {
+                  "include": "#operators"
+                },
+                {
+                  "include": "#types"
+                },
+                {
+                  "include": "#strings"
+                },
+                {
+                  "include": "#identifiers"
+                }
+              ]
+            },
+            "2": {
+              "name": "keyword.operator.arrow.dae"
+            },
+            "3": {
+              "name": "variable.other.outbound.dae"
+            }
+          }
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "meta.function-call.dae",
+          "begin": "\\b(domain|ip|source|port|sourcePort|inboundTag|network|protocol|user|dip|dport|sip|sport|ipversion|l4proto|mac|pname|qname|qtype|upstream|subtag|name|tag)\\s*(\\()",
+          "end": "\\)",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.function.dae"
+            },
+            "2": {
+              "name": "punctuation.definition.arguments.begin.dae"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.arguments.end.dae"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#types"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#modifiers"
+            },
+            {
+              "include": "#identifiers"
+            },
+            {
+              "name": "punctuation.separator.comma.dae",
+              "match": ","
+            }
+          ]
+        },
+        {
+          "name": "meta.policy.dae",
+          "begin": "\\b(random|fixed|min|min_moving_avg|min_avg10)\\s*(\\()?",
+          "end": "\\)|(?=$|\\s)",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.policy.dae"
+            },
+            "2": {
+              "name": "punctuation.definition.arguments.begin.dae"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#numbers"
+            }
+          ]
+        }
+      ]
+    },
+    "modifiers": {
+      "patterns": [
+        {
+          "match": "\\[(add_latency):\\s*(-?\\d+[a-z]+)\\]",
+          "captures": {
+            "1": {
+              "name": "keyword.other.modifier.dae"
+            },
+            "2": {
+              "name": "constant.numeric.duration.dae"
+            }
+          }
+        },
+        {
+          "name": "keyword.other.dae",
+          "match": "\\b(keyword|regex)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "match": "(geosite|geoip)(:)([\\w!-]+)",
+          "captures": {
+            "1": {
+              "name": "support.type.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.colon.dae"
+            },
+            "3": {
+              "name": "string.unquoted.tag.dae"
+            }
+          }
+        },
+        {
+          "match": "(full|contains|regexp|keyword|regex)(:)([^,\\)\\s\\]]+)",
+          "captures": {
+            "1": {
+              "name": "support.type.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.colon.dae"
+            },
+            "3": {
+              "name": "string.unquoted.pattern.dae"
+            }
+          }
+        },
+        {
+          "match": "(ext)(:)",
+          "captures": {
+            "1": {
+              "name": "support.type.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.colon.dae"
+            }
+          }
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.outbound.dae",
+          "match": "\\b(proxy|block|direct|must_direct|must_proxy|accept)\\b"
+        },
+        {
+          "name": "constant.language.boolean.dae",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.language.loglevel.dae",
+          "match": "\\b(error|warn|info|debug|trace)\\b"
+        },
+        {
+          "name": "constant.language.dialmode.dae",
+          "match": "\\b(ip|domain|domain\\+|domain\\+\\+)\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "entity.name.section.dae",
+          "match": "\\b(global|subscription|node|dns|group|routing)\\b"
+        },
+        {
+          "name": "keyword.control.dae",
+          "match": "\\b(fallback|must_rules|request|response|upstream|filter|policy)\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.arrow.dae",
+          "match": "->"
+        },
+        {
+          "name": "keyword.operator.logical.and.dae",
+          "match": "&&"
+        },
+        {
+          "name": "keyword.operator.logical.not.dae",
+          "match": "!"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.dae",
+          "begin": "\"",
+          "end": "\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.dae"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.dae"
+            }
+          },
+          "patterns": [
+            {
+              "name": "constant.character.escape.dae",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.dae",
+          "begin": "'",
+          "end": "'",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.dae"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.dae"
+            }
+          },
+          "patterns": [
+            {
+              "name": "constant.character.escape.dae",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.duration.dae",
+          "match": "\\b\\d+[munsh]+\\b"
+        },
+        {
+          "name": "constant.numeric.bandwidth.dae",
+          "match": "\\b\\d+\\s*(b|kb|mb|gb|tb|mbps|gbps)\\b",
+          "captures": {
+            "1": {
+              "name": "keyword.other.unit.dae"
+            }
+          }
+        },
+        {
+          "name": "constant.numeric.ip.dae",
+          "match": "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(/\\d{1,2})?\\b"
+        },
+        {
+          "name": "constant.numeric.ipv6.dae",
+          "match": "'?\\[?[\\da-fA-F:]+::[\\da-fA-F:]*\\]?(:\\d+)?'?"
+        },
+        {
+          "name": "constant.numeric.range.dae",
+          "match": "\\b\\d+-\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.dae",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.dae",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_-]*\\b"
+        }
+      ]
+    }
+  }
+}
