@@ -1,5 +1,5 @@
 {
-  ".": "1.14.0",
-  "packages/dae-editor": "1.13.1",
-  "packages/dae-node-parser": "1.13.1"
+  ".": "1.15.0",
+  "packages/dae-editor": "1.14.0",
+  "packages/dae-node-parser": "1.14.0"
 }
