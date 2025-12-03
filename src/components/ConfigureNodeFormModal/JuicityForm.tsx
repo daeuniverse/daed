@@ -33,7 +33,7 @@ function generateJuicityLink(data: JuicityFormValues): string {
 }
 
 export function JuicityForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<JuicityFormValues>) {
-  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+  const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: juicitySchema,
     defaultValues: DEFAULT_JUICITY_FORM_VALUES,
     initialValues,
@@ -102,7 +102,14 @@ export function JuicityForm({ onLinkGeneration, initialValues, actionsPortal }: 
 
       {actionsPortal ? (
         createPortal(
-          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          <FormActions
+            reset={resetForm}
+            onSubmit={submit}
+            isDirty={isDirty}
+            isValid={isValid}
+            errors={errors}
+            requireDirty={false}
+          />,
           actionsPortal,
         )
       ) : (

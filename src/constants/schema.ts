@@ -14,7 +14,7 @@ export const v2raySchema = z.object({
   flow: z.enum(['none', 'xtls-rprx-origin', 'xtls-rprx-origin-udp443', 'xtls-rprx-vision', 'xtls-rprx-vision-udp443']),
   alpn: z.string(),
   scy: z.enum(['auto', 'aes-128-gcm', 'chacha20-poly1305', 'none', 'zero']),
-  v: z.literal(''),
+  v: z.string(),
   allowInsecure: z.boolean(),
   sni: z.string(),
   // Reality-specific fields

@@ -68,7 +68,7 @@ function generateSSLink(data: SSFormValues): string {
 }
 
 export function SSForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<SSFormValues>) {
-  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+  const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: ssSchema,
     defaultValues: DEFAULT_SS_FORM_VALUES,
     initialValues,
@@ -192,7 +192,14 @@ export function SSForm({ onLinkGeneration, initialValues, actionsPortal }: NodeF
 
       {actionsPortal ? (
         createPortal(
-          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          <FormActions
+            reset={resetForm}
+            onSubmit={submit}
+            isDirty={isDirty}
+            isValid={isValid}
+            errors={errors}
+            requireDirty={false}
+          />,
           actionsPortal,
         )
       ) : (

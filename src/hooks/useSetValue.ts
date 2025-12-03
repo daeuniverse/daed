@@ -2,13 +2,13 @@ import type { FieldValues, Path, PathValue, UseFormSetValue } from 'react-hook-f
 import { useCallback } from 'react'
 
 /**
- * Wraps the react-hook-form setValue function to automatically set shouldDirty: true
- * This ensures that isDirty state is properly updated when using controlled components
+ * Wraps the react-hook-form setValue function to automatically set shouldDirty and shouldValidate to true
+ * This ensures that isDirty state is properly updated and validation is triggered when using controlled components
  */
 export function useSetValue<TFieldValues extends FieldValues>(setValue: UseFormSetValue<TFieldValues>) {
   return useCallback(
     <TFieldName extends Path<TFieldValues>>(name: TFieldName, value: PathValue<TFieldValues, TFieldName>) => {
-      setValue(name, value, { shouldDirty: true })
+      setValue(name, value, { shouldDirty: true, shouldValidate: true })
     },
     [setValue],
   )

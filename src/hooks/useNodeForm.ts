@@ -1,4 +1,4 @@
-import type { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form'
+import type { FieldErrors, FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form'
 import type { ZodType } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback, useMemo } from 'react'
@@ -31,6 +31,8 @@ export interface UseNodeFormReturn<TFormValues extends FieldValues> {
   handleSubmit: UseFormReturn<TFormValues>['handleSubmit']
   /** Submit handler to use with form onSubmit */
   onSubmit: (data: TFormValues) => void
+  /** Directly trigger form submission (use when submit button is outside the form) */
+  submit: () => void
   /** Reset form to default values */
   resetForm: () => void
   /** Whether form has been modified */
@@ -99,11 +101,31 @@ export function useNodeForm<TFormValues extends FieldValues>({
   const setValue = useSetValue(setValueOriginal)
   const formValues = useWatch({ control }) as Partial<TFormValues>
 
-  // Validate formValues against schema to get accurate isValid state
-  const isValid = useMemo(() => {
+  // Validate formValues against schema to get accurate isValid state and errors
+  const { isValid, schemaErrors } = useMemo(() => {
     const result = schema.safeParse(formValues)
-    return result.success
+    if (result.success) {
+      return { isValid: true, schemaErrors: {} as FieldErrors<TFormValues> }
+    }
+
+    // Convert Zod errors to react-hook-form format
+    const fieldErrors: FieldErrors<TFormValues> = {}
+    for (const issue of result.error.issues) {
+      const path = issue.path.join('.') as Path<TFormValues>
+      if (!fieldErrors[path as keyof typeof fieldErrors]) {
+        ;(fieldErrors as Record<string, unknown>)[path] = {
+          type: issue.code,
+          message: issue.message,
+        }
+      }
+    }
+    return { isValid: false, schemaErrors: fieldErrors }
   }, [schema, formValues])
+
+  // Merge react-hook-form errors with schema validation errors
+  const mergedErrors = useMemo(() => {
+    return { ...schemaErrors, ...errors } as UseFormReturn<TFormValues>['formState']['errors']
+  }, [errors, schemaErrors])
 
   const onSubmit = useCallback(
     (data: TFormValues) => {
@@ -112,6 +134,22 @@ export function useNodeForm<TFormValues extends FieldValues>({
     },
     [generateLink, onLinkGeneration],
   )
+
+  // Wrap handleSubmit to log errors when validation fails
+  const wrappedHandleSubmit = useCallback(
+    (onValid: (data: TFormValues) => void) => {
+      return handleSubmit(onValid, (validationErrors) => {
+        // Log validation errors for debugging
+        console.error('Form validation failed:', validationErrors)
+      })
+    },
+    [handleSubmit],
+  )
+
+  // Direct submit function for use when button is outside form (portal)
+  const submit = useCallback(() => {
+    wrappedHandleSubmit(onSubmit)()
+  }, [wrappedHandleSubmit, onSubmit])
 
   const resetForm = useCallback(() => {
     reset(mergedDefaults as TFormValues)
@@ -150,17 +188,32 @@ export function useNodeForm<TFormValues extends FieldValues>({
     () => ({
       formValues,
       setValue,
-      handleSubmit: handleSubmit as any,
+      handleSubmit: wrappedHandleSubmit,
       onSubmit,
+      submit,
       resetForm,
       isDirty,
       isValid,
-      errors,
+      errors: mergedErrors,
       control,
       t,
       loadFromURL,
       form,
     }),
-    [formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, control, t, loadFromURL, form],
+    [
+      formValues,
+      setValue,
+      wrappedHandleSubmit,
+      onSubmit,
+      submit,
+      resetForm,
+      isDirty,
+      isValid,
+      mergedErrors,
+      control,
+      t,
+      loadFromURL,
+      form,
+    ],
   )
 }

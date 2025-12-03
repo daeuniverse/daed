@@ -41,7 +41,7 @@ function generateHTTPLink(data: HTTPFormValues): string {
 }
 
 export function HTTPForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<HTTPFormValues>) {
-  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+  const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: formSchema,
     defaultValues,
     initialValues,
@@ -98,7 +98,14 @@ export function HTTPForm({ onLinkGeneration, initialValues, actionsPortal }: Nod
 
       {actionsPortal ? (
         createPortal(
-          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          <FormActions
+            reset={resetForm}
+            onSubmit={submit}
+            isDirty={isDirty}
+            isValid={isValid}
+            errors={errors}
+            requireDirty={false}
+          />,
           actionsPortal,
         )
       ) : (

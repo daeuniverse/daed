@@ -31,7 +31,7 @@ function generateSocks5Link(data: Socks5FormValues): string {
 }
 
 export function Socks5Form({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<Socks5FormValues>) {
-  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+  const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: socks5Schema,
     defaultValues: DEFAULT_SOCKS5_FORM_VALUES,
     initialValues,
@@ -78,7 +78,14 @@ export function Socks5Form({ onLinkGeneration, initialValues, actionsPortal }: N
 
       {actionsPortal ? (
         createPortal(
-          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          <FormActions
+            reset={resetForm}
+            onSubmit={submit}
+            isDirty={isDirty}
+            isValid={isValid}
+            errors={errors}
+            requireDirty={false}
+          />,
           actionsPortal,
         )
       ) : (

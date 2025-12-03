@@ -32,7 +32,7 @@ function generateHysteria2Link(data: Hysteria2FormValues): string {
 }
 
 export function Hysteria2Form({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<Hysteria2FormValues>) {
-  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+  const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: hysteria2Schema,
     defaultValues: DEFAULT_HYSTERIA2_FORM_VALUES,
     initialValues,
@@ -72,7 +72,14 @@ export function Hysteria2Form({ onLinkGeneration, initialValues, actionsPortal }
       />
       {actionsPortal ? (
         createPortal(
-          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          <FormActions
+            reset={resetForm}
+            onSubmit={submit}
+            isDirty={isDirty}
+            isValid={isValid}
+            errors={errors}
+            requireDirty={false}
+          />,
           actionsPortal,
         )
       ) : (

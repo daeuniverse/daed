@@ -25,7 +25,7 @@ function generateSSRLink(data: SSRFormValues): string {
 }
 
 export function SSRForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<SSRFormValues>) {
-  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+  const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: ssrSchema,
     defaultValues: DEFAULT_SSR_FORM_VALUES,
     initialValues,
@@ -145,7 +145,14 @@ export function SSRForm({ onLinkGeneration, initialValues, actionsPortal }: Node
 
       {actionsPortal ? (
         createPortal(
-          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          <FormActions
+            reset={resetForm}
+            onSubmit={submit}
+            isDirty={isDirty}
+            isValid={isValid}
+            errors={errors}
+            requireDirty={false}
+          />,
           actionsPortal,
         )
       ) : (

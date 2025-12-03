@@ -51,7 +51,7 @@ function generateTrojanLink(data: TrojanFormValues): string {
 }
 
 export function TrojanForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<TrojanFormValues>) {
-  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+  const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: trojanSchema,
     defaultValues: DEFAULT_TROJAN_FORM_VALUES,
     initialValues,
@@ -163,7 +163,14 @@ export function TrojanForm({ onLinkGeneration, initialValues, actionsPortal }: N
 
       {actionsPortal ? (
         createPortal(
-          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          <FormActions
+            reset={resetForm}
+            onSubmit={submit}
+            isDirty={isDirty}
+            isValid={isValid}
+            errors={errors}
+            requireDirty={false}
+          />,
           actionsPortal,
         )
       ) : (

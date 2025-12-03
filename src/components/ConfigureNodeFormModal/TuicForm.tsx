@@ -35,7 +35,7 @@ function generateTuicLink(data: TuicFormValues): string {
 }
 
 export function TuicForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<TuicFormValues>) {
-  const { formValues, setValue, handleSubmit, onSubmit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
+  const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
     schema: tuicSchema,
     defaultValues: DEFAULT_TUIC_FORM_VALUES,
     initialValues,
@@ -115,7 +115,14 @@ export function TuicForm({ onLinkGeneration, initialValues, actionsPortal }: Nod
 
       {actionsPortal ? (
         createPortal(
-          <FormActions reset={resetForm} isDirty={isDirty} isValid={isValid} errors={errors} requireDirty={false} />,
+          <FormActions
+            reset={resetForm}
+            onSubmit={submit}
+            isDirty={isDirty}
+            isValid={isValid}
+            errors={errors}
+            requireDirty={false}
+          />,
           actionsPortal,
         )
       ) : (

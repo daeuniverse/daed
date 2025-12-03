@@ -203,6 +203,8 @@ export const mockSubscriptions: SubscriptionsQuery = {
       link: 'https://example.com/api/v1/client/subscribe?token=xxxxx',
       info: 'upload=10737418240; download=53687091200; total=107374182400; expire=1735689600',
       updatedAt: '2024-11-28T10:30:00Z',
+      cronExp: '0 0 * * *',
+      cronEnable: true,
       nodes: {
         __typename: 'NodesConnection',
         edges: [
@@ -252,6 +254,8 @@ export const mockSubscriptions: SubscriptionsQuery = {
       link: 'https://backup.example.com/subscribe/token',
       info: 'upload=1073741824; download=5368709120; total=10737418240; expire=1738368000',
       updatedAt: '2024-11-27T15:45:00Z',
+      cronExp: '0 12 * * 1',
+      cronEnable: false,
       nodes: {
         __typename: 'NodesConnection',
         edges: [
