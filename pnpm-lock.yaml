@@ -283,8 +283,8 @@ catalogs:
       specifier: ^19.2.0
       version: 19.2.0
     react-hook-form:
-      specifier: ^7.67.0
-      version: 7.67.0
+      specifier: ^7.68.0
+      version: 7.68.0
     react-i18next:
       specifier: ^16.3.5
       version: 16.3.5
@@ -460,7 +460,7 @@ importers:
         version: 3.2.0(graphql@16.12.0)
       '@hookform/resolvers':
         specifier: 'catalog:'
-        version: 5.2.2(react-hook-form@7.67.0(react@19.2.0))
+        version: 5.2.2(react-hook-form@7.68.0(react@19.2.0))
       '@monaco-editor/react':
         specifier: 'catalog:'
         version: 4.8.0-rc.3(monaco-editor@0.55.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -631,7 +631,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       react-hook-form:
         specifier: 'catalog:'
-        version: 7.67.0(react@19.2.0)
+        version: 7.68.0(react@19.2.0)
       react-i18next:
         specifier: 'catalog:'
         version: 16.3.5(i18next@25.7.1(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
@@ -6214,8 +6214,8 @@ packages:
     peerDependencies:
       react: ^19.2.0
 
-  react-hook-form@7.67.0:
-    resolution: {integrity: sha512-E55EOwKJHHIT/I6J9DmQbCWToAYSw9nN5R57MZw9rMtjh+YQreMDxRLfdjfxQbiJ3/qbg3Z02wGzBX4M+5fMtQ==}
+  react-hook-form@7.68.0:
+    resolution: {integrity: sha512-oNN3fjrZ/Xo40SWlHf1yCjlMK417JxoSJVUXQjGdvdRCU07NTFei1i1f8ApUAts+IVh14e4EdakeLEA+BEAs/Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -8870,10 +8870,10 @@ snapshots:
       react-dom: 19.2.0(react@19.2.0)
       use-sync-external-store: 1.6.0(react@19.2.0)
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.67.0(react@19.2.0))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.68.0(react@19.2.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.67.0(react@19.2.0)
+      react-hook-form: 7.68.0(react@19.2.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -13517,7 +13517,7 @@ snapshots:
       react: 19.2.0
       scheduler: 0.27.0
 
-  react-hook-form@7.67.0(react@19.2.0):
+  react-hook-form@7.68.0(react@19.2.0):
     dependencies:
       react: 19.2.0
 
