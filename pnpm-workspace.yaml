@@ -10,7 +10,7 @@ overrides:
 catalog:
   '@antfu/eslint-config': ^6.3.0
   '@commitlint/cli': ^20.1.0
-  tsdown: ^0.17.0-beta.5
+  tsdown: ^0.17.0-beta.6
   turbo: ^2.5.3
   '@commitlint/config-conventional': ^20.0.0
   '@dnd-kit/core': ^6.3.1
