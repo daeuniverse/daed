@@ -261,5 +261,45 @@
       "}"
     ],
     "description": "Create a complete dae configuration example"
+  },
+  "Persist Subscription": {
+    "prefix": "subscription-persist",
+    "body": ["${1:persist_sub}: 'https-file://${2:www.example.com/persist_sub/link}'"],
+    "description": "Create a persist subscription that saves to local file"
+  },
+  "Node Chain": {
+    "prefix": "node-chain",
+    "body": ["${1:chain_name}: '${2:tuic://LINK} -> ${3:vmess://LINK}'"],
+    "description": "Create a chained node proxy configuration"
+  },
+  "DNS Bind": {
+    "prefix": "dns-bind",
+    "body": ["bind: '${1|tcp+udp,tcp,udp|}://${2:127.0.0.1}:${3:5353}'"],
+    "description": "Configure local DNS listening address"
+  },
+  "Fixed Domain TTL": {
+    "prefix": "fixed-domain-ttl",
+    "body": ["fixed_domain_ttl {", "  ${1:ddns.example.org}: ${2:10}", "  ${0}", "}"],
+    "description": "Set fixed TTL for specific domains"
+  },
+  "Filter with Add Latency": {
+    "prefix": "filter-latency",
+    "body": ["filter: name(${1:US_node}) [add_latency: ${2:-500ms}]"],
+    "description": "Filter nodes with latency offset for failover"
+  },
+  "Hysteria2 Node": {
+    "prefix": "node-hysteria2",
+    "body": ["${1:hysteria2}: 'hysteria2://${2:password}@${3:server-ip}:${4:port}/?sni=${5:domain}'"],
+    "description": "Create a Hysteria2 node configuration"
+  },
+  "DSCP Rule": {
+    "prefix": "rule-dscp",
+    "body": ["dscp(${1:0x04}) -> ${2|proxy,direct,block|}"],
+    "description": "Create a DSCP matching rule"
+  },
+  "MAC Address Rule": {
+    "prefix": "rule-mac",
+    "body": ["mac(${1:00:00:00:00:00:00}) -> ${2|proxy,direct,block|}"],
+    "description": "Create a MAC address matching rule"
   }
 }

@@ -10,5 +10,5 @@ export default defineConfig({
   external: ['vscode'],
   platform: 'node',
   target: 'node18',
-  outExtensions: () => ({ js: '.js' }),
+  outExtensions: () => ({ js: '.cjs' }),
 })

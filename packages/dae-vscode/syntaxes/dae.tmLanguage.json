@@ -125,7 +125,7 @@
     "key-value": {
       "patterns": [
         {
-          "match": "\\b(tproxy_port|tproxy_port_protect|pprof_port|so_mark_from_dae|log_level|disable_waiting_network|enable_local_tcp_fast_redirect|lan_interface|wan_interface|auto_config_kernel_parameter|tcp_check_url|tcp_check_http_method|udp_check_dns|check_interval|check_tolerance|dial_mode|allow_insecure|sniffing_timeout|tls_implementation|utls_imitate|tls_fragment|tls_fragment_length|tls_fragment_interval|mptcp|bandwidth_max_tx|bandwidth_max_rx|fallback_resolver|ipversion_prefer|bind)(:)",
+          "match": "\\b(tproxy_port|tproxy_port_protect|pprof_port|so_mark_from_dae|log_level|disable_waiting_network|enable_local_tcp_fast_redirect|lan_interface|wan_interface|auto_config_kernel_parameter|auto_config_firewall_rule|tcp_check_url|tcp_check_http_method|udp_check_dns|check_interval|check_tolerance|dial_mode|allow_insecure|sniffing_timeout|tls_implementation|utls_imitate|tls_fragment|tls_fragment_length|tls_fragment_interval|mptcp|bandwidth_max_tx|bandwidth_max_rx|fallback_resolver|ipversion_prefer|bind|dns_upstream|pprofHttp)(:)",
           "captures": {
             "1": {
               "name": "variable.parameter.dae"
@@ -136,7 +136,60 @@
           }
         },
         {
-          "match": "\\b(policy|filter|fallback)(:)",
+          "comment": "Policy declaration with value - policy: min_moving_avg or policy: fixed(0)",
+          "begin": "\\b(policy)(:)\\s*",
+          "end": "$",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.colon.dae"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#functions"
+            },
+            {
+              "comment": "Policy values - order matters: min_moving_avg and min_avg10 must be before min",
+              "name": "support.function.policy.dae",
+              "match": "\\b(min_moving_avg|min_avg10|random|min)\\b"
+            }
+          ]
+        },
+        {
+          "comment": "Filter declaration with complex expression",
+          "begin": "\\b(filter)(:)\\s*",
+          "end": "$",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.colon.dae"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#functions"
+            },
+            {
+              "include": "#operators"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#modifiers"
+            },
+            {
+              "include": "#identifiers"
+            }
+          ]
+        },
+        {
+          "match": "\\b(fallback)(:)",
           "captures": {
             "1": {
               "name": "keyword.control.dae"
@@ -199,7 +252,7 @@
       "patterns": [
         {
           "name": "meta.function-call.dae",
-          "begin": "\\b(domain|ip|source|port|sourcePort|inboundTag|network|protocol|user|dip|dport|sip|sport|ipversion|l4proto|mac|pname|qname|qtype|upstream|subtag|name|tag)\\s*(\\()",
+          "begin": "\\b(domain|ip|source|port|sourcePort|inboundTag|network|protocol|user|dip|dport|sip|sport|ipversion|l4proto|mac|pname|qname|qtype|upstream|subtag|name|tag|dscp|must)\\s*(\\()",
           "end": "\\)",
           "beginCaptures": {
             "1": {
@@ -237,8 +290,9 @@
           ]
         },
         {
+          "comment": "Policy values - order matters: min_moving_avg and min_avg10 must be before min",
           "name": "meta.policy.dae",
-          "begin": "\\b(random|fixed|min|min_moving_avg|min_avg10)\\s*(\\()?",
+          "begin": "\\b(min_moving_avg|min_avg10|random|fixed|min)\\s*(\\()?",
           "end": "\\)|(?=$|\\s)",
           "beginCaptures": {
             "1": {
@@ -315,6 +369,30 @@
               "name": "punctuation.separator.colon.dae"
             }
           }
+        },
+        {
+          "comment": "Subscription URL schemes - must be before DNS schemes",
+          "match": "(https-file|file)(://)",
+          "captures": {
+            "1": {
+              "name": "support.type.scheme.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.scheme.dae"
+            }
+          }
+        },
+        {
+          "comment": "DNS upstream URL schemes",
+          "match": "(tcp|udp|tcp\\+udp|h3|http3|quic|https(?!-file)|tls)(://)",
+          "captures": {
+            "1": {
+              "name": "support.type.scheme.dae"
+            },
+            "2": {
+              "name": "punctuation.separator.scheme.dae"
+            }
+          }
         }
       ]
     },
@@ -335,6 +413,31 @@
         {
           "name": "constant.language.dialmode.dae",
           "match": "\\b(ip|domain|domain\\+|domain\\+\\+)\\b"
+        },
+        {
+          "comment": "TLS implementation values",
+          "name": "constant.language.tls.dae",
+          "match": "\\b(tls|utls)\\b"
+        },
+        {
+          "comment": "HTTP method values",
+          "name": "constant.language.httpmethod.dae",
+          "match": "\\b(HEAD|GET|POST|PUT|DELETE)\\b"
+        },
+        {
+          "comment": "uTLS imitate values",
+          "name": "constant.language.utls.dae",
+          "match": "\\b(chrome_auto|chrome_58|chrome_62|chrome_70|chrome_72|chrome_83|chrome_87|chrome_96|chrome_100|chrome_102|firefox_auto|firefox_55|firefox_56|firefox_63|firefox_65|firefox_99|firefox_102|firefox_105|safari_auto|safari_16_0|edge_auto|edge_85|edge_106|ios_auto|ios_11_1|ios_12_1|ios_13|ios_14|android_11_okhttp|360_auto|360_7_5|360_11_0|qq_auto|qq_11_1|randomized|randomizedalpn|randomizednoalpn)\\b"
+        },
+        {
+          "comment": "L4 protocol values",
+          "name": "constant.language.l4proto.dae",
+          "match": "\\b(tcp|udp)\\b"
+        },
+        {
+          "comment": "Auto keyword",
+          "name": "constant.language.auto.dae",
+          "match": "\\bauto\\b"
         }
       ]
     },
@@ -407,6 +510,47 @@
             {
               "name": "constant.character.escape.dae",
               "match": "\\\\."
+            },
+            {
+              "comment": "Subscription URL schemes inside strings",
+              "match": "(https-file|file)(://)",
+              "captures": {
+                "1": {
+                  "name": "support.type.scheme.dae"
+                },
+                "2": {
+                  "name": "punctuation.separator.scheme.dae"
+                }
+              }
+            },
+            {
+              "comment": "DNS upstream URL schemes inside strings",
+              "match": "(tcp|udp|tcp\\+udp|h3|http3|quic|https(?!-file)|tls)(://)",
+              "captures": {
+                "1": {
+                  "name": "support.type.scheme.dae"
+                },
+                "2": {
+                  "name": "punctuation.separator.scheme.dae"
+                }
+              }
+            },
+            {
+              "comment": "Proxy protocol schemes inside strings",
+              "match": "(ss|ssr|vmess|vless|trojan|tuic|juicity|hysteria2|hysteria|socks5|socks|http)(://)",
+              "captures": {
+                "1": {
+                  "name": "support.type.protocol.dae"
+                },
+                "2": {
+                  "name": "punctuation.separator.scheme.dae"
+                }
+              }
+            },
+            {
+              "comment": "Node chain operator inside strings",
+              "name": "keyword.operator.chain.dae",
+              "match": "\\s->\\s"
             }
           ]
         }

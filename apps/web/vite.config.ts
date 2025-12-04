@@ -12,6 +12,9 @@ export default defineConfig(() => {
     plugins: [react(), tailwindcss()],
     build: {
       chunkSizeWarningLimit: 10 * 1024 * 1024,
+      rolldownOptions: {
+        external: ['zod/v4/core'],
+      },
     },
     define: {
       'import.meta.env.APP_VERSION': JSON.stringify(version),

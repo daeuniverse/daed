@@ -54,7 +54,8 @@ function formatRoutingA(text: string, options: FormatOptions): string {
     // Format the line with proper indentation
     const indentStr = indent.repeat(currentIndent)
     const formattedContent = formatLineContent(parsed.content)
-    const commentPart = parsed.comment ? ` ${parsed.comment}` : ''
+    // Only add space before comment if there's content before it
+    const commentPart = parsed.comment ? (formattedContent ? ` ${parsed.comment}` : parsed.comment) : ''
     formattedLines.push(`${indentStr}${formattedContent}${commentPart}`)
 
     // Increase indent after opening brace (if not also closing on same line)
