@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/daeuniverse/daed/compare/dae-node-parser-v1.16.0...dae-node-parser-v1.17.0) (2025-12-04)
+
+
+### Features
+
+* update pnpm workspace and add turbo configuration ([4484dc4](https://github.com/daeuniverse/daed/commit/4484dc43be6f1d229053bcc7bd589c528707024f))
+
 ## [1.16.0](https://github.com/daeuniverse/daed/compare/dae-node-parser-v1.15.0...dae-node-parser-v1.16.0) (2025-12-03)
 
 
