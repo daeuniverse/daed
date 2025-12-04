@@ -10,6 +10,9 @@ export default defineConfig(() => {
     base: './',
     resolve: { alias: { '~': path.resolve('src') } },
     plugins: [react(), tailwindcss()],
+    build: {
+      chunkSizeWarningLimit: 10 * 1024 * 1024,
+    },
     define: {
       'import.meta.env.APP_VERSION': JSON.stringify(version),
     },

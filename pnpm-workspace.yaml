@@ -4,9 +4,6 @@ packages:
 
 neverBuiltDependencies: []
 
-overrides:
-  vite: 'npm:rolldown-vite@latest'
-
 catalog:
   '@antfu/eslint-config': ^6.4.1
   '@commitlint/cli': ^20.1.0
@@ -119,7 +116,7 @@ catalog:
   typescript: ^5.9.3
   urijs: ^1.19.11
   vaul: ^1.1.2
-  vite: ^7.2.6
+  vite: ^8.0.0-beta.0
   vite-plugin-environment: ^1.1.3
   vitest: ^4.0.15
   zod: ^4.1.13
