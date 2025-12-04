@@ -22,7 +22,7 @@ ENV CGO_ENABLED=0
 ENV CLANG=clang-15
 ARG DAED_VERSION=self-build
 
-COPY --from=build-web /build/dist /build/web
+COPY --from=build-web /build/apps/web/dist /build/web
 COPY --from=build-web /build/wing /build/wing
 
 WORKDIR /build/wing

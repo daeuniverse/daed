@@ -3,19 +3,11 @@
   "release-type": "node",
   "separate-pull-requests": true,
   "packages": {
-    ".": {
-      "component": "daed",
-      "changelog-path": "CHANGELOG.md",
+    "apps/web": {
       "include-component-in-tag": false,
       "include-v-in-tag": true
     },
-    "packages/dae-editor": {
-      "component": "dae-editor",
-      "changelog-path": "CHANGELOG.md"
-    },
-    "packages/dae-node-parser": {
-      "component": "dae-node-parser",
-      "changelog-path": "CHANGELOG.md"
-    }
+    "packages/dae-editor": {},
+    "packages/dae-node-parser": {}
   }
 }

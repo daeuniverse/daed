@@ -16,7 +16,7 @@ ARG DAED_VERSION
 
 WORKDIR /build
 
-COPY ./dist/ ./web/
+COPY ./apps/web/dist/ ./web/
 COPY ./wing/ ./wing/
 
 WORKDIR /build/wing

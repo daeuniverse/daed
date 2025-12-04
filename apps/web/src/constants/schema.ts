@@ -6,7 +6,7 @@ export const v2raySchema = z.object({
   port: z.number().min(0).max(65535),
   id: z.string().nonempty(),
   aid: z.number().min(0).max(65535),
-  net: z.enum(['tcp', 'kcp', 'ws', 'h2', 'grpc', 'httpupgrade', 'xhttp']),
+  net: z.enum(['tcp', 'kcp', 'ws', 'http', 'h2', 'grpc', 'httpupgrade', 'xhttp']),
   type: z.enum(['none', 'http', 'srtp', 'utp', 'wechat-video', 'dtls', 'wireguard']),
   host: z.string(),
   path: z.string(),

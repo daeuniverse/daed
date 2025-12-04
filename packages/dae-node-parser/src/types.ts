@@ -48,7 +48,7 @@ export interface V2rayConfig {
   alpn: string // alpn (comma-separated)
   ech: string // Encrypted Client Hello (echConfigList)
   // XTLS/VLESS flow
-  flow: 'none' | 'xtls-rprx-vision' | 'xtls-rprx-vision-udp443' | string
+  flow: 'none' | 'xtls-rprx-vision' | 'xtls-rprx-vision-udp443'
   // Reality fields
   pbk: string // REALITY password (publicKey alias)
   sid: string // REALITY shortId

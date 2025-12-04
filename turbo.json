@@ -1,0 +1,28 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "tui",
+  "globalDependencies": ["tsconfig.json"],
+  "globalPassThroughEnv": ["CI", "VERCEL", "NODE_ENV", "VITE_MOCK_MODE", "SCHEMA_PATH"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "outputLogs": "new-only"
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true,
+      "interruptible": true
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "cache": true
+    },
+    "check-types": {
+      "dependsOn": ["^build"],
+      "cache": true
+    }
+  }
+}

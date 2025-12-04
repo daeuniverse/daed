@@ -2,97 +2,84 @@
 
 ## [1.17.0](https://github.com/daeuniverse/daed/compare/v1.16.0...v1.17.0) (2025-12-03)
 
-
 ### Features
 
-* add RoutingA language formatter and integrate with Monaco editor ([8b40e9b](https://github.com/daeuniverse/daed/commit/8b40e9b4f8a76f83033f99a9ed58779c00381643))
+- add RoutingA language formatter and integrate with Monaco editor ([8b40e9b](https://github.com/daeuniverse/daed/commit/8b40e9b4f8a76f83033f99a9ed58779c00381643))
 
 ## [1.16.0](https://github.com/daeuniverse/daed/compare/v1.15.1...v1.16.0) (2025-12-03)
 
-
 ### Features
 
-* enhance V2Ray URL parsing and configuration options ([3829c0f](https://github.com/daeuniverse/daed/commit/3829c0f402fea80b74fc1263220de4276699b1a1))
+- enhance V2Ray URL parsing and configuration options ([3829c0f](https://github.com/daeuniverse/daed/commit/3829c0f402fea80b74fc1263220de4276699b1a1))
 
 ## [1.15.1](https://github.com/daeuniverse/daed/compare/v1.15.0...v1.15.1) (2025-12-03)
 
-
 ### Bug Fixes
 
-* **ci:** use main branch for publish-packages to get updated workspace versions ([14cca77](https://github.com/daeuniverse/daed/commit/14cca774759f4f2cb476c0371e6cc9e617fc6118))
+- **ci:** use main branch for publish-packages to get updated workspace versions ([14cca77](https://github.com/daeuniverse/daed/commit/14cca774759f4f2cb476c0371e6cc9e617fc6118))
 
 ## [1.15.0](https://github.com/daeuniverse/daed/compare/v1.14.0...v1.15.0) (2025-12-03)
 
-
 ### Features
 
-* re-trigger release-please ([4febcf7](https://github.com/daeuniverse/daed/commit/4febcf7ebba807474e8215510669e0a756c31585))
+- re-trigger release-please ([4febcf7](https://github.com/daeuniverse/daed/commit/4febcf7ebba807474e8215510669e0a756c31585))
 
 ## [1.14.0](https://github.com/daeuniverse/daed/compare/v1.13.1...v1.14.0) (2025-12-03)
 
-
 ### Features
 
-* refactor ConfigureNodeFormModal to support dynamic protocol forms ([b628165](https://github.com/daeuniverse/daed/commit/b628165d12271941bc0b9a0cdd733c4b9d9f454e))
+- refactor ConfigureNodeFormModal to support dynamic protocol forms ([b628165](https://github.com/daeuniverse/daed/commit/b628165d12271941bc0b9a0cdd733c4b9d9f454e))
 
 ## [1.13.1](https://github.com/daeuniverse/daed/compare/v1.13.0...v1.13.1) (2025-12-03)
 
-
 ### Bug Fixes
 
-* add workflow_dispatch trigger and fix release_created condition ([dc70a1d](https://github.com/daeuniverse/daed/commit/dc70a1d11b0c7fa7b2ea0d447bcd9e61b5c7be00))
+- add workflow_dispatch trigger and fix release_created condition ([dc70a1d](https://github.com/daeuniverse/daed/commit/dc70a1d11b0c7fa7b2ea0d447bcd9e61b5c7be00))
 
 ## [1.13.0](https://github.com/daeuniverse/daed/compare/v1.12.0...v1.13.0) (2025-12-03)
 
-
 ### Features
 
-* add build step for workspace packages in release workflow ([7d345b0](https://github.com/daeuniverse/daed/commit/7d345b0b91406b673c098e7a080d6f002be76249))
+- add build step for workspace packages in release workflow ([7d345b0](https://github.com/daeuniverse/daed/commit/7d345b0b91406b673c098e7a080d6f002be76249))
 
 ## [1.12.0](https://github.com/daeuniverse/daed/compare/v1.11.0...v1.12.0) (2025-12-03)
 
-
 ### Features
 
-* split dae-editor and dae-node-parser into its own package ([08d7d80](https://github.com/daeuniverse/daed/commit/08d7d805f21eca5abc16b2f61111e374d2413c0b))
+- split dae-editor and dae-node-parser into its own package ([08d7d80](https://github.com/daeuniverse/daed/commit/08d7d805f21eca5abc16b2f61111e374d2413c0b))
 
 ## [1.11.0](https://github.com/daeuniverse/daed/compare/v1.10.0...v1.11.0) (2025-12-03)
 
-
 ### Features
 
-* add routingA language completion items and provider to Monaco editor ([1211880](https://github.com/daeuniverse/daed/commit/121188037e8706935cf84a162cfa73873572a248))
+- add routingA language completion items and provider to Monaco editor ([1211880](https://github.com/daeuniverse/daed/commit/121188037e8706935cf84a162cfa73873572a248))
 
 ## [1.10.0](https://github.com/daeuniverse/daed/compare/v1.9.0...v1.10.0) (2025-12-02)
 
-
 ### Features
 
-* add subscription cron update functionality and enhance related components ([554a8a4](https://github.com/daeuniverse/daed/commit/554a8a4ca1cf1e1676c0835e5208f89723195607))
+- add subscription cron update functionality and enhance related components ([554a8a4](https://github.com/daeuniverse/daed/commit/554a8a4ca1cf1e1676c0835e5208f89723195607))
 
 ## [1.9.0](https://github.com/daeuniverse/daed/compare/v1.8.0...v1.9.0) (2025-12-02)
 
-
 ### Features
 
-* enhance GraphQL client and add new mutations for tagging and updating subscriptions ([540b68c](https://github.com/daeuniverse/daed/commit/540b68c381bb49e2ab09a4ad56a1e46828be7ced))
-* enhance Input component with wrapperClassName prop and update dialog components ([bf44c0d](https://github.com/daeuniverse/daed/commit/bf44c0d3f646f098eac3c73ab4dbbe26104f6f47))
-* update Header and ThemePicker components with new user settings and dialog enhancements ([bb4df27](https://github.com/daeuniverse/daed/commit/bb4df2730dfc42d5cc6f60dccc195f2f78ed0191))
+- enhance GraphQL client and add new mutations for tagging and updating subscriptions ([540b68c](https://github.com/daeuniverse/daed/commit/540b68c381bb49e2ab09a4ad56a1e46828be7ced))
+- enhance Input component with wrapperClassName prop and update dialog components ([bf44c0d](https://github.com/daeuniverse/daed/commit/bf44c0d3f646f098eac3c73ab4dbbe26104f6f47))
+- update Header and ThemePicker components with new user settings and dialog enhancements ([bb4df27](https://github.com/daeuniverse/daed/commit/bb4df2730dfc42d5cc6f60dccc195f2f78ed0191))
 
 ## [1.8.0](https://github.com/daeuniverse/daed/compare/v1.7.0...v1.8.0) (2025-12-01)
 
-
 ### Features
 
-* implement command palette with keyboard shortcuts support ([d32de53](https://github.com/daeuniverse/daed/commit/d32de5320ecd1bdb377da76bd99725a1bdb41ae2))
+- implement command palette with keyboard shortcuts support ([d32de53](https://github.com/daeuniverse/daed/commit/d32de5320ecd1bdb377da76bd99725a1bdb41ae2))
 
 ## [1.7.0](https://github.com/daeuniverse/daed/compare/v1.6.0...v1.7.0) (2025-12-01)
 
-
 ### Features
 
-* add aria-labels for accessibility in UI components ([#610](https://github.com/daeuniverse/daed/issues/610)) ([2147d0e](https://github.com/daeuniverse/daed/commit/2147d0e379a676b399d07a511030578e149603e7))
-* add comprehensive keyboard shortcuts support with help modal ([#614](https://github.com/daeuniverse/daed/issues/614)) ([ba62867](https://github.com/daeuniverse/daed/commit/ba62867847b09eafc75ba6a3021baf3b426298d0))
+- add aria-labels for accessibility in UI components ([#610](https://github.com/daeuniverse/daed/issues/610)) ([2147d0e](https://github.com/daeuniverse/daed/commit/2147d0e379a676b399d07a511030578e149603e7))
+- add comprehensive keyboard shortcuts support with help modal ([#614](https://github.com/daeuniverse/daed/issues/614)) ([ba62867](https://github.com/daeuniverse/daed/commit/ba62867847b09eafc75ba6a3021baf3b426298d0))
 
 ## [1.6.0](https://github.com/daeuniverse/daed/compare/v1.5.1...v1.6.0) (2025-12-01)
 

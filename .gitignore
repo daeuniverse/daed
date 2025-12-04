@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Turbo
+.turbo
+
 # Editor directories and files
 .idea
 .DS_Store

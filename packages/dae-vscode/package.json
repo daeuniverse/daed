@@ -2,6 +2,7 @@
   "publisher": "daeuniverse",
   "name": "dae-routinga",
   "displayName": "dae RoutingA",
+  "type": "module",
   "version": "0.0.1",
   "description": "Language support for dae RoutingA configuration - syntax highlighting, IntelliSense, and formatting",
   "license": "MIT",

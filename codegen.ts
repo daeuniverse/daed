@@ -4,9 +4,9 @@ import process from 'node:process'
 export default {
   overwrite: true,
   schema: process.env.SCHEMA_PATH,
-  documents: 'src/**/*',
+  documents: 'apps/web/src/**/*',
   generates: {
-    'src/schemas/gql/': {
+    'apps/web/src/schemas/gql/': {
       preset: 'client',
     },
   },

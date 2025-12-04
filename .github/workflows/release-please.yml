@@ -54,7 +54,7 @@ jobs:
         run: pnpm install
 
       - name: Build packages
-        run: pnpm --filter "@daeuniverse/*" build
+        run: pnpm build --filter "@daeuniverse/*"
 
       - name: Publish dae-editor
         if: ${{ needs.release-please.outputs.dae-editor--release_created == 'true' }}
@@ -175,12 +175,12 @@ jobs:
       - name: Build
         run: |
           pnpm install
-          pnpm build
+          pnpm build --filter daed
 
       - uses: actions/upload-artifact@v5
         with:
           name: web
-          path: dist
+          path: apps/web/dist
 
   # Publish GitHub Pages when a new release is created
   publish-gh-pages:
@@ -488,20 +488,13 @@ jobs:
       - uses: actions/download-artifact@v6
         with:
           name: web
-          path: dist/
+          path: apps/web/dist/
 
       - name: Prepare Tag
         id: prep
         env:
           REF: ${{ needs.release-please.outputs.tag_name }}
         run: |
-          DIR="$(pwd)/dist/"
-          if [ -d "$DIR" ]; then
-            echo "Installing config files in ${DIR}..."
-          else
-            echo "Error: ${DIR} not found. Can not continue."
-            exit 1
-          fi
           tag=${REF:1}
           echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
           echo "TAG=$tag" >> $GITHUB_OUTPUT

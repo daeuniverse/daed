@@ -65,6 +65,7 @@ function startServer(): ChildProcess {
     stdio: 'inherit',
     shell: true,
     detached: false,
+    cwd: 'apps/web',
     env: {
       ...process.env,
       VITE_MOCK_MODE: 'true',

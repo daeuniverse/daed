@@ -1,5 +1,5 @@
 {
-  ".": "1.17.0",
+  "apps/web": "1.17.0",
   "packages/dae-editor": "1.16.0",
   "packages/dae-node-parser": "1.16.0"
 }

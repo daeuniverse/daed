@@ -1,15 +1,11 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "target": "ESNext",
-    "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "baseUrl": "./",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "paths": { "~/*": ["src/*"] },
     "resolveJsonModule": true,
-    "types": ["vitest/globals"],
-    "allowImportingTsExtensions": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
@@ -17,7 +13,5 @@
     "noEmit": true,
     "isolatedModules": true,
     "skipLibCheck": true
-  },
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "include": ["src"]
+  }
 }
