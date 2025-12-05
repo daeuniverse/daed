@@ -177,12 +177,18 @@ catalogs:
     '@types/urijs':
       specifier: ^1.19.26
       version: 1.19.26
+    '@types/vscode':
+      specifier: ^1.106.1
+      version: 1.106.1
     '@vitejs/plugin-react':
       specifier: ^5.1.1
       version: 5.1.1
     '@vitest/ui':
       specifier: ^4.0.15
       version: 4.0.15
+    '@vscode/vsce':
+      specifier: ^3.7.1
+      version: 3.7.1
     class-variance-authority:
       specifier: ^0.7.1
       version: 0.7.1
@@ -762,10 +768,10 @@ importers:
         specifier: 'catalog:'
         version: 24.10.1
       '@types/vscode':
-        specifier: ^1.85.0
+        specifier: 'catalog:'
         version: 1.106.1
       '@vscode/vsce':
-        specifier: ^3.2.2
+        specifier: 'catalog:'
         version: 3.7.1
       tsdown:
         specifier: 'catalog:'
