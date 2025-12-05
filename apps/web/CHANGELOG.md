@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/daeuniverse/daed/compare/v1.18.0...v1.19.0) (2025-12-05)
+
+
+### Features
+
+* **parser:** add parser for dae language with AST and symbol information ([12b5754](https://github.com/daeuniverse/daed/commit/12b5754b8f53b5dbac00b9aac0839f5d52113736))
+
 ## [1.18.0](https://github.com/daeuniverse/daed/compare/v1.17.0...v1.18.0) (2025-12-04)
 
 
