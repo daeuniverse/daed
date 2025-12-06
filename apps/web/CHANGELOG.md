@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/daeuniverse/daed/compare/v1.19.0...v1.20.0) (2025-12-06)
+
+
+### Features
+
+* trigger release ([e6618d5](https://github.com/daeuniverse/daed/commit/e6618d5cfb721dec3633278018e2f254c23daff9))
+
 ## [1.19.0](https://github.com/daeuniverse/daed/compare/v1.18.0...v1.19.0) (2025-12-05)
 
 
