@@ -15,9 +15,9 @@ jobs:
   release-please:
     runs-on: macos-latest
     outputs:
-      # Root package (daed)
-      tag_name: ${{ steps.release.outputs.tag_name }}
-      release_created: ${{ steps.release.outputs.release_created }}
+      # Main package (apps/web - daed)
+      tag_name: ${{ steps.release.outputs['apps/web--tag_name'] }}
+      release_created: ${{ steps.release.outputs['apps/web--release_created'] }}
       # Workspace packages
       dae-editor--release_created: ${{ steps.release.outputs['packages/dae-editor--release_created'] }}
       dae-editor--tag_name: ${{ steps.release.outputs['packages/dae-editor--tag_name'] }}
