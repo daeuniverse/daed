@@ -8,7 +8,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  packages: write
   pages: write
 
 jobs:
@@ -18,55 +17,12 @@ jobs:
       # Main package (apps/web - daed)
       tag_name: ${{ steps.release.outputs['apps/web--tag_name'] }}
       release_created: ${{ steps.release.outputs['apps/web--release_created'] }}
-      # Workspace packages
-      dae-editor--release_created: ${{ steps.release.outputs['packages/dae-editor--release_created'] }}
-      dae-editor--tag_name: ${{ steps.release.outputs['packages/dae-editor--tag_name'] }}
-      dae-node-parser--release_created: ${{ steps.release.outputs['packages/dae-node-parser--release_created'] }}
-      dae-node-parser--tag_name: ${{ steps.release.outputs['packages/dae-node-parser--tag_name'] }}
-      # Any release created
-      any_release_created: ${{ steps.release.outputs.releases_created }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
         if: ${{ github.event_name == 'push' }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-  # Publish workspace packages to GitHub Packages when their releases are created
-  publish-packages:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.dae-editor--release_created == 'true' || needs.release-please.outputs.dae-node-parser--release_created == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: pnpm/action-setup@v4.2.0
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: latest
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@daeuniverse'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build packages
-        run: pnpm build --filter "@daeuniverse/*"
-
-      - name: Publish dae-editor
-        if: ${{ needs.release-please.outputs.dae-editor--release_created == 'true' }}
-        working-directory: packages/dae-editor
-        run: pnpm publish --access public --no-git-checks || echo "Package may already be published, continuing..."
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish dae-node-parser
-        if: ${{ needs.release-please.outputs.dae-node-parser--release_created == 'true' }}
-        working-directory: packages/dae-node-parser
-        run: pnpm publish --access public --no-git-checks || echo "Package may already be published, continuing..."
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Update screenshots when a new release is created
   update-screenshots:
@@ -77,8 +33,6 @@ jobs:
       - uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4.2.0
-        with:
-          version: latest
 
       - uses: actions/setup-node@v6
         with:
@@ -162,8 +116,6 @@ jobs:
           ref: ${{ needs.release-please.outputs.tag_name }}
 
       - uses: pnpm/action-setup@v4.2.0
-        with:
-          version: latest
 
       - uses: actions/setup-node@v6
         with:

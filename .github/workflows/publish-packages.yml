@@ -1,0 +1,45 @@
+name: Publish Packages
+
+on:
+  push:
+    tags:
+      - 'dae-editor-v*'
+      - 'dae-node-parser-v*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4.2.0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: latest
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@daeuniverse'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build --filter "@daeuniverse/*"
+
+      - name: Publish dae-editor
+        if: startsWith(github.ref, 'refs/tags/dae-editor-v')
+        working-directory: packages/dae-editor
+        run: pnpm publish --access public --no-git-checks || echo "Package may already be published, continuing..."
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish dae-node-parser
+        if: startsWith(github.ref, 'refs/tags/dae-node-parser-v')
+        working-directory: packages/dae-node-parser
+        run: pnpm publish --access public --no-git-checks || echo "Package may already be published, continuing..."
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
