@@ -1,77 +1,103 @@
-import * as vscode from 'vscode'
+/**
+ * DAE Language Extension for VS Code
+ *
+ * This extension provides language support for DAE configuration files
+ * by connecting to the dae-lsp language server.
+ */
 
-import { DaeCompletionProvider } from './completion'
-import { DaeDefinitionProvider } from './definition'
-import { createDiagnosticsManager } from './diagnostics'
-import { DaeFormattingProvider } from './formatter'
-import { DaeHoverProvider } from './hover'
-import { DocumentParser } from './parser'
-import { DaeReferenceProvider } from './references'
-import { DaeRenameProvider } from './rename'
-import { DaeSemanticTokensProvider, SEMANTIC_TOKENS_LEGEND } from './semanticTokens'
+import type { LanguageClientOptions, ServerOptions } from 'vscode-languageclient/node'
+import * as path from 'node:path'
+import * as vscode from 'vscode'
+import { LanguageClient, TransportKind } from 'vscode-languageclient/node'
 
 const LANGUAGE_ID = 'dae'
+let client: LanguageClient | undefined
 
-export function activate(context: vscode.ExtensionContext) {
-  // Create shared parser instance
-  const parser = new DocumentParser()
+export async function activate(context: vscode.ExtensionContext) {
+  const serverModule = path.join(context.extensionPath, 'dist', 'server', 'server.cjs')
 
-  // Register completion provider
-  const completionProvider = vscode.languages.registerCompletionItemProvider(
-    LANGUAGE_ID,
-    new DaeCompletionProvider(),
-    '.', // Trigger on dot for type prefixes like geosite:
-    ':', // Trigger on colon for type prefixes
-  )
+  const serverOptions: ServerOptions = {
+    run: {
+      module: serverModule,
+      transport: TransportKind.ipc,
+    },
+    debug: {
+      module: serverModule,
+      transport: TransportKind.ipc,
+      options: {
+        execArgv: ['--nolazy', '--inspect=6009'],
+      },
+    },
+  }
 
-  // Register document formatting provider
-  const formattingProvider = vscode.languages.registerDocumentFormattingEditProvider(
-    LANGUAGE_ID,
-    new DaeFormattingProvider(),
-  )
+  const clientOptions: LanguageClientOptions = {
+    documentSelector: [
+      { scheme: 'file', language: LANGUAGE_ID },
+      { scheme: 'untitled', language: LANGUAGE_ID },
+    ],
+    synchronize: {
+      fileEvents: vscode.workspace.createFileSystemWatcher('**/*.dae'),
+    },
+  }
 
-  // Register range formatting provider
-  const rangeFormattingProvider = vscode.languages.registerDocumentRangeFormattingEditProvider(
-    LANGUAGE_ID,
-    new DaeFormattingProvider(),
-  )
+  client = new LanguageClient('dae-language-server', 'DAE Language Server', serverOptions, clientOptions)
 
-  // Register hover provider
-  const hoverProvider = vscode.languages.registerHoverProvider(LANGUAGE_ID, new DaeHoverProvider(parser))
+  try {
+    await client.start()
+  } catch (error) {
+    vscode.window.showErrorMessage(`Failed to start DAE Language Server: ${error}`)
+    return
+  }
 
-  // Register definition provider
-  const definitionProvider = vscode.languages.registerDefinitionProvider(LANGUAGE_ID, new DaeDefinitionProvider(parser))
+  context.subscriptions.push(client)
 
-  // Register reference provider
-  const referenceProvider = vscode.languages.registerReferenceProvider(LANGUAGE_ID, new DaeReferenceProvider(parser))
+  // Register document formatting provider (required because LSP client doesn't auto-register it)
+  const createFormattingProvider = (scheme: string) =>
+    vscode.languages.registerDocumentFormattingEditProvider(
+      { language: LANGUAGE_ID, scheme },
+      {
+        async provideDocumentFormattingEdits(document, options) {
+          if (!client) return []
 
-  // Register rename provider
-  const renameProvider = vscode.languages.registerRenameProvider(LANGUAGE_ID, new DaeRenameProvider(parser))
+          try {
+            const result = await client.sendRequest('textDocument/formatting', {
+              textDocument: { uri: document.uri.toString() },
+              options: {
+                tabSize: options.tabSize,
+                insertSpaces: options.insertSpaces,
+              },
+            })
 
-  // Register semantic tokens provider
-  const semanticTokensProvider = vscode.languages.registerDocumentSemanticTokensProvider(
-    LANGUAGE_ID,
-    new DaeSemanticTokensProvider(parser),
-    SEMANTIC_TOKENS_LEGEND,
-  )
+            if (Array.isArray(result)) {
+              return result.map(
+                (edit: {
+                  range: { start: { line: number; character: number }; end: { line: number; character: number } }
+                  newText: string
+                }) =>
+                  new vscode.TextEdit(
+                    new vscode.Range(
+                      edit.range.start.line,
+                      edit.range.start.character,
+                      edit.range.end.line,
+                      edit.range.end.character,
+                    ),
+                    edit.newText,
+                  ),
+              )
+            }
+          } catch {
+            // Formatting failed silently
+          }
+          return []
+        },
+      },
+    )
 
-  // Setup diagnostics
-  const { provider: diagnosticsProvider, disposables: diagnosticsDisposables } = createDiagnosticsManager(parser)
-
-  context.subscriptions.push(
-    completionProvider,
-    formattingProvider,
-    rangeFormattingProvider,
-    hoverProvider,
-    definitionProvider,
-    referenceProvider,
-    renameProvider,
-    semanticTokensProvider,
-    ...diagnosticsDisposables,
-    { dispose: () => diagnosticsProvider.dispose() },
-  )
+  context.subscriptions.push(createFormattingProvider('file'), createFormattingProvider('untitled'))
 }
 
-export function deactivate() {
-  // Cleanup if needed
+export async function deactivate(): Promise<void> {
+  if (client) {
+    await client.stop()
+  }
 }

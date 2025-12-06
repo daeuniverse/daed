@@ -1,10 +1,13 @@
-/* eslint-disable no-template-curly-in-string */
-import * as vscode from 'vscode'
+/**
+ * Completion data for dae language
+ *
+ * Contains all completion items for sections, parameters, functions, and snippets
+ */
 
 /**
  * Completion item definition for dae language
  */
-interface DaeCompletionItem {
+export interface DaeCompletionItem {
   label: string
   kind: 'keyword' | 'function' | 'constant' | 'type' | 'variable' | 'snippet' | 'property'
   detail?: string
@@ -16,7 +19,7 @@ interface DaeCompletionItem {
 /**
  * Completion items for dae language autocomplete
  */
-const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
+export const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
   // Section blocks
   {
     label: 'global',
@@ -81,7 +84,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'Log Level',
     documentation: 'Logging level for dae output.\n\n**Values:** `error`, `warn`, `info`, `debug`, `trace`',
-    insertText: 'log_level: ${|info,warn,error,debug,trace|}',
+    insertText: 'log_level: ${1|info,warn,error,debug,trace|}',
     isSnippet: true,
   },
   {
@@ -106,7 +109,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     detail: 'Check Interval',
     documentation:
       'Interval between health checks.\n\n**Go duration format:** ns, us/µs, ms, s, m, h\n\nExamples: `30s`, `1m`, `500ms`',
-    insertText: 'check_interval: ${|30s,1m,15s,45s,2m|}',
+    insertText: 'check_interval: ${1|30s,1m,15s,45s,2m|}',
     isSnippet: true,
   },
   {
@@ -115,7 +118,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     detail: 'Check Tolerance',
     documentation:
       'Group will switch node only when `new_latency <= old_latency - tolerance`.\n\n**Go duration format:** ns, us/µs, ms, s, m, h\n\nExamples: `50ms`, `100ms`, `200ms`',
-    insertText: 'check_tolerance: ${|50ms,100ms,150ms,200ms|}',
+    insertText: 'check_tolerance: ${1|50ms,100ms,150ms,200ms|}',
     isSnippet: true,
   },
   {
@@ -124,7 +127,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     detail: 'Dial Mode',
     documentation:
       'Dialing mode for proxy connections.\n\n**Values:**\n- `ip`: Dial using IP directly\n- `domain`: Dial using sniffed domain\n- `domain+`: domain mode without domain reality check\n- `domain++`: domain+ with re-routing',
-    insertText: 'dial_mode: ${|domain,ip,domain\\+,domain\\+\\+|}',
+    insertText: 'dial_mode: ${1|domain,ip,domain\\+,domain\\+\\+|}',
     isSnippet: true,
   },
   {
@@ -148,7 +151,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'Auto Config Kernel',
     documentation: 'Automatically configure Linux kernel parameters like ip_forward and send_redirects.',
-    insertText: 'auto_config_kernel_parameter: ${|true,false|}',
+    insertText: 'auto_config_kernel_parameter: ${1|true,false|}',
     isSnippet: true,
   },
   {
@@ -156,7 +159,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'Auto Config Firewall',
     documentation: 'Automatically configure firewall rules.',
-    insertText: 'auto_config_firewall_rule: ${|true,false|}',
+    insertText: 'auto_config_firewall_rule: ${1|true,false|}',
     isSnippet: true,
   },
   {
@@ -165,7 +168,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     detail: 'Sniffing Timeout',
     documentation:
       'Timeout for waiting first data for sniffing. It is always 0 if dial_mode is ip.\n\n**Go duration format:** ns, us/µs, ms, s, m, h\n\nExamples: `100ms`, `200ms`, `300ms`',
-    insertText: 'sniffing_timeout: ${|100ms,200ms,300ms,500ms|}',
+    insertText: 'sniffing_timeout: ${1|100ms,200ms,300ms,500ms|}',
     isSnippet: true,
   },
   {
@@ -173,7 +176,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'TLS Implementation',
     documentation: 'TLS implementation to use',
-    insertText: 'tls_implementation: ${|tls,utls|}',
+    insertText: 'tls_implementation: ${1|tls,utls|}',
     isSnippet: true,
   },
   {
@@ -183,7 +186,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     documentation:
       'Browser fingerprint to imitate when tls_implementation is utls. See: https://github.com/daeuniverse/dae/blob/main/component/outbound/transport/tls/utls.go',
     insertText:
-      'utls_imitate: ${|chrome_auto,firefox_auto,safari_auto,edge_auto,ios_auto,randomized,chrome_58,chrome_62,chrome_70,chrome_72,chrome_83,chrome_87,chrome_96,chrome_100,chrome_102,firefox_55,firefox_56,firefox_63,firefox_65,firefox_99,firefox_102,firefox_105,safari_16_0,edge_85,edge_106,ios_11_1,ios_12_1,ios_13,ios_14,android_11_okhttp,360_auto,360_7_5,360_11_0,qq_auto,qq_11_1,randomizedalpn,randomizednoalpn|}',
+      'utls_imitate: ${1|chrome_auto,firefox_auto,safari_auto,edge_auto,ios_auto,randomized,chrome_58,chrome_62,chrome_70,chrome_72,chrome_83,chrome_87,chrome_96,chrome_100,chrome_102,firefox_55,firefox_56,firefox_63,firefox_65,firefox_99,firefox_102,firefox_105,safari_16_0,edge_85,edge_106,ios_11_1,ios_12_1,ios_13,ios_14,android_11_okhttp,360_auto,360_7_5,360_11_0,qq_auto,qq_11_1,randomizedalpn,randomizednoalpn|}',
     isSnippet: true,
   },
   {
@@ -191,7 +194,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'TProxy Port Protect',
     documentation: 'Protect tproxy port from unsolicited traffic',
-    insertText: 'tproxy_port_protect: ${|true,false|}',
+    insertText: 'tproxy_port_protect: ${1|true,false|}',
     isSnippet: true,
   },
   {
@@ -215,7 +218,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'Disable Waiting Network',
     documentation: 'Disable waiting for network before pulling subscriptions',
-    insertText: 'disable_waiting_network: ${|true,false|}',
+    insertText: 'disable_waiting_network: ${1|true,false|}',
     isSnippet: true,
   },
   {
@@ -223,7 +226,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'Enable Local TCP Fast Redirect',
     documentation: 'Enable fast redirect for local TCP connections (experimental)',
-    insertText: 'enable_local_tcp_fast_redirect: ${|true,false|}',
+    insertText: 'enable_local_tcp_fast_redirect: ${1|true,false|}',
     isSnippet: true,
   },
   {
@@ -231,7 +234,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'TCP Check HTTP Method',
     documentation: 'HTTP method for tcp_check_url (HEAD bypasses traffic accounting)',
-    insertText: 'tcp_check_http_method: ${|HEAD,GET|}',
+    insertText: 'tcp_check_http_method: ${1|HEAD,GET|}',
     isSnippet: true,
   },
   {
@@ -239,7 +242,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'Allow Insecure TLS',
     documentation: 'Allow insecure TLS certificates (not recommended)',
-    insertText: 'allow_insecure: ${|true,false|}',
+    insertText: 'allow_insecure: ${1|true,false|}',
     isSnippet: true,
   },
   {
@@ -247,7 +250,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'TLS Fragment',
     documentation: 'Enable TLS fragmentation to bypass SNI blocking',
-    insertText: 'tls_fragment: ${|true,false|}',
+    insertText: 'tls_fragment: ${1|true,false|}',
     isSnippet: true,
   },
   {
@@ -271,7 +274,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'Multipath TCP',
     documentation: 'Enable MPTCP for load balance and failover',
-    insertText: 'mptcp: ${|true,false|}',
+    insertText: 'mptcp: ${1|true,false|}',
     isSnippet: true,
   },
   {
@@ -306,7 +309,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     detail: 'IP Version Prefer',
     documentation:
       'Prefer IPv4 (4) or IPv6 (6) responses. If set to 4 and the domain has both A and AAAA records, dae will only respond to type A queries.',
-    insertText: 'ipversion_prefer: ${|4,6|}',
+    insertText: 'ipversion_prefer: ${1|4,6|}',
     isSnippet: true,
   },
   {
@@ -314,7 +317,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'DNS Bind Address',
     documentation: 'Local address for DNS queries (e.g., 127.0.0.1:5353)',
-    insertText: "bind: '${|tcp+udp,tcp,udp|}://${2:127.0.0.1}:${3:5353}'",
+    insertText: "bind: '${1|tcp+udp,tcp,udp|}://${2:127.0.0.1}:${3:5353}'",
     isSnippet: true,
   },
 
@@ -340,7 +343,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'property',
     detail: 'Policy',
     documentation: 'Load balancing policy',
-    insertText: 'policy: ${|min_moving_avg,min,min_avg10,random,fixed(0)|}',
+    insertText: 'policy: ${1|min_moving_avg,min,min_avg10,random,fixed(0)|}',
     isSnippet: true,
   },
 
@@ -396,7 +399,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'function',
     detail: 'Name Filter',
     documentation: 'Filter nodes by name pattern',
-    insertText: "name(${|keyword,regex|}: '${2:pattern}')",
+    insertText: "name(${1|keyword,regex|}: '${2:pattern}')",
     isSnippet: true,
   },
 
@@ -438,7 +441,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'function',
     detail: 'IP Version',
     documentation: 'Match IP version (4 or 6)',
-    insertText: 'ipversion(${|4,6|})',
+    insertText: 'ipversion(${1|4,6|})',
     isSnippet: true,
   },
   {
@@ -446,7 +449,7 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
     kind: 'function',
     detail: 'L4 Protocol',
     documentation: 'Match Layer 4 protocol (tcp/udp)',
-    insertText: 'l4proto(${|tcp,udp|})',
+    insertText: 'l4proto(${1|tcp,udp|})',
     isSnippet: true,
   },
   {
@@ -747,52 +750,70 @@ const DAE_COMPLETION_ITEMS: DaeCompletionItem[] = [
 ]
 
 /**
- * Map completion item kind from string to VS Code enum
+ * Property value options for context-aware completion
  */
-function getCompletionItemKind(kind: DaeCompletionItem['kind']): vscode.CompletionItemKind {
-  switch (kind) {
-    case 'keyword':
-      return vscode.CompletionItemKind.Keyword
-    case 'function':
-      return vscode.CompletionItemKind.Function
-    case 'constant':
-      return vscode.CompletionItemKind.Constant
-    case 'type':
-      return vscode.CompletionItemKind.TypeParameter
-    case 'variable':
-      return vscode.CompletionItemKind.Variable
-    case 'snippet':
-      return vscode.CompletionItemKind.Snippet
-    case 'property':
-      return vscode.CompletionItemKind.Property
-    default:
-      return vscode.CompletionItemKind.Text
-  }
-}
+export const PROPERTY_VALUES: Record<string, { values: string[]; type: 'boolean' | 'enum' | 'duration' }> = {
+  // Boolean properties
+  auto_config_kernel_parameter: { values: ['true', 'false'], type: 'boolean' },
+  auto_config_firewall_rule: { values: ['true', 'false'], type: 'boolean' },
+  tproxy_port_protect: { values: ['true', 'false'], type: 'boolean' },
+  disable_waiting_network: { values: ['true', 'false'], type: 'boolean' },
+  enable_local_tcp_fast_redirect: { values: ['true', 'false'], type: 'boolean' },
+  allow_insecure: { values: ['true', 'false'], type: 'boolean' },
+  tls_fragment: { values: ['true', 'false'], type: 'boolean' },
+  mptcp: { values: ['true', 'false'], type: 'boolean' },
 
-/**
- * Completion provider for dae language
- */
-export class DaeCompletionProvider implements vscode.CompletionItemProvider {
-  provideCompletionItems(
-    _document: vscode.TextDocument,
-    _position: vscode.Position,
-    _token: vscode.CancellationToken,
-    _context: vscode.CompletionContext,
-  ): vscode.ProviderResult<vscode.CompletionItem[]> {
-    return DAE_COMPLETION_ITEMS.map((item) => {
-      const completionItem = new vscode.CompletionItem(item.label, getCompletionItemKind(item.kind))
+  // Enum properties
+  log_level: { values: ['info', 'warn', 'error', 'debug', 'trace'], type: 'enum' },
+  dial_mode: { values: ['domain', 'ip', 'domain+', 'domain++'], type: 'enum' },
+  tls_implementation: { values: ['tls', 'utls'], type: 'enum' },
+  tcp_check_http_method: { values: ['HEAD', 'GET'], type: 'enum' },
+  ipversion_prefer: { values: ['4', '6'], type: 'enum' },
+  utls_imitate: {
+    values: [
+      'chrome_auto',
+      'firefox_auto',
+      'safari_auto',
+      'edge_auto',
+      'ios_auto',
+      'randomized',
+      'chrome_58',
+      'chrome_62',
+      'chrome_70',
+      'chrome_72',
+      'chrome_83',
+      'chrome_87',
+      'chrome_96',
+      'chrome_100',
+      'chrome_102',
+      'firefox_55',
+      'firefox_56',
+      'firefox_63',
+      'firefox_65',
+      'firefox_99',
+      'firefox_102',
+      'firefox_105',
+      'safari_16_0',
+      'edge_85',
+      'edge_106',
+      'ios_11_1',
+      'ios_12_1',
+      'ios_13',
+      'ios_14',
+      'android_11_okhttp',
+      '360_auto',
+      '360_7_5',
+      '360_11_0',
+      'qq_auto',
+      'qq_11_1',
+      'randomizedalpn',
+      'randomizednoalpn',
+    ],
+    type: 'enum',
+  },
 
-      completionItem.detail = item.detail
-      completionItem.documentation = new vscode.MarkdownString(item.documentation)
-
-      if (item.isSnippet) {
-        completionItem.insertText = new vscode.SnippetString(item.insertText)
-      } else {
-        completionItem.insertText = item.insertText
-      }
-
-      return completionItem
-    })
-  }
+  // Duration properties
+  check_interval: { values: ['15s', '30s', '45s', '1m', '2m'], type: 'duration' },
+  check_tolerance: { values: ['50ms', '100ms', '150ms', '200ms'], type: 'duration' },
+  sniffing_timeout: { values: ['100ms', '200ms', '300ms', '500ms'], type: 'duration' },
 }

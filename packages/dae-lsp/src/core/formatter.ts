@@ -1,13 +1,11 @@
-import * as vscode from 'vscode'
-
 /**
  * RoutingA language formatter
  *
- * This module provides formatting functionality for the RoutingA DSL used in dae.
- * It handles proper indentation, whitespace normalization, and code structure.
+ * Platform-agnostic formatting functionality for the DAE configuration language.
+ * Handles proper indentation, whitespace normalization, and code structure.
  */
 
-interface FormatOptions {
+export interface FormatOptions {
   tabSize: number
   insertSpaces: boolean
 }
@@ -23,7 +21,7 @@ interface ParsedLine {
 /**
  * Format RoutingA code
  */
-function formatRoutingA(text: string, options: FormatOptions): string {
+export function formatDocument(text: string, options: FormatOptions): string {
   const { tabSize = 2, insertSpaces = true } = options
   const indent = insertSpaces ? ' '.repeat(tabSize) : '\t'
 
@@ -167,7 +165,7 @@ function formatLineContent(content: string): string {
   // But preserve colons in type prefixes like geosite:cn, geoip:private
   formatted = formatted.replace(/(\w+):\s+(\w+)/g, (_match, key: string, value: string) => {
     // Check if this is a type prefix (followed by value, not a block)
-    const typeKeywords = ['geosite', 'geoip', 'full', 'contains', 'regexp', 'ext']
+    const typeKeywords = ['geosite', 'geoip', 'full', 'contains', 'regexp', 'ext', 'keyword', 'regex']
 
     if (typeKeywords.includes(key.toLowerCase())) {
       return `${key}:${value}`
@@ -192,47 +190,4 @@ function formatLineContent(content: string): string {
   formatted = formatted.trim()
 
   return formatted
-}
-
-/**
- * Document formatting provider for dae language
- */
-export class DaeFormattingProvider
-  implements vscode.DocumentFormattingEditProvider, vscode.DocumentRangeFormattingEditProvider
-{
-  provideDocumentFormattingEdits(
-    document: vscode.TextDocument,
-    options: vscode.FormattingOptions,
-    _token: vscode.CancellationToken,
-  ): vscode.ProviderResult<vscode.TextEdit[]> {
-    const text = document.getText()
-    const formatted = formatRoutingA(text, {
-      tabSize: options.tabSize,
-      insertSpaces: options.insertSpaces,
-    })
-
-    // Return a single edit that replaces the entire document
-    const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(text.length))
-
-    return [vscode.TextEdit.replace(fullRange, formatted)]
-  }
-
-  provideDocumentRangeFormattingEdits(
-    document: vscode.TextDocument,
-    range: vscode.Range,
-    options: vscode.FormattingOptions,
-    _token: vscode.CancellationToken,
-  ): vscode.ProviderResult<vscode.TextEdit[]> {
-    // For range formatting, format only the selected range content
-    const rangeText = document.getText(range)
-    const rangeFormatted = formatRoutingA(rangeText, {
-      tabSize: options.tabSize,
-      insertSpaces: options.insertSpaces,
-    })
-
-    // Remove trailing newline if original didn't have one
-    const finalText = rangeText.endsWith('\n') ? rangeFormatted : rangeFormatted.trimEnd()
-
-    return [vscode.TextEdit.replace(range, finalText)]
-  }
 }

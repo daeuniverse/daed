@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run dae-vscode Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/dae-vscode"],
+      "outFiles": ["${workspaceFolder}/packages/dae-vscode/dist/**/*.cjs"],
+      "preLaunchTask": "build: dae-vscode"
+    },
+    {
+      "name": "Run dae-vscode Extension (Watch)",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/dae-vscode"],
+      "outFiles": ["${workspaceFolder}/packages/dae-vscode/dist/**/*.cjs"],
+      "preLaunchTask": "watch: dae-vscode"
+    },
+    {
+      "name": "Debug dae-lsp Server",
+      "type": "node",
+      "request": "attach",
+      "port": 6009,
+      "restart": true,
+      "outFiles": ["${workspaceFolder}/packages/dae-lsp/dist/**/*.cjs"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Extension + LSP Server",
+      "configurations": ["Run dae-vscode Extension", "Debug dae-lsp Server"]
+    }
+  ]
+}

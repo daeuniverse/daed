@@ -1,15 +1,11 @@
 /**
- * Hover provider for dae language
+ * Documentation data for dae language
  *
- * Shows documentation when hovering over keywords, functions, and symbols
+ * Contains all documentation strings for sections, parameters, functions, and outbounds
  */
 
-import type { DocumentParser } from './parser'
-import * as vscode from 'vscode'
-import { findReferenceAtPosition, findSymbolAtPosition, findSymbolByName, RULE_FUNCTIONS } from './parser'
-
 // Documentation for sections
-const SECTION_DOCS: Record<string, string> = {
+export const SECTION_DOCS: Record<string, string> = {
   global: `**Global Section**
 
 Global configuration options for dae.
@@ -109,7 +105,7 @@ See: https://github.com/daeuniverse/dae/blob/main/docs/en/configuration/routing.
 }
 
 // Documentation for global parameters
-const PARAM_DOCS: Record<string, string> = {
+export const PARAM_DOCS: Record<string, string> = {
   // Software options
   tproxy_port:
     'TProxy port to listen on. It is NOT a HTTP/SOCKS port, and is just used by eBPF program.\nIn normal case, you do not need to use it.\n\nDefault: `12345`',
@@ -206,7 +202,7 @@ Default: \`chrome_auto\``,
 }
 
 // Documentation for rule functions
-const FUNCTION_DOCS: Record<string, string> = {
+export const FUNCTION_DOCS: Record<string, string> = {
   domain:
     'Match by domain (suffix match).\n\n**Prefixes:**\n- `geosite:tag` - Match using geosite database\n- `full:domain` - Full domain match (exact)\n- `keyword:word` - Domain contains keyword\n- `regexp:pattern` - Match using regular expression\n\nExample: `domain(example.com)` or `domain(geosite:cn)`',
   dip: 'Match by destination IP address.\n\n**Prefixes:**\n- `geoip:tag` - Match using geoip database\n\nExample: `dip(geoip:cn)` or `dip(192.168.0.0/16)` or `dip(224.0.0.0/3)`',
@@ -233,7 +229,7 @@ const FUNCTION_DOCS: Record<string, string> = {
 }
 
 // Documentation for outbounds
-const OUTBOUND_DOCS: Record<string, string> = {
+export const OUTBOUND_DOCS: Record<string, string> = {
   direct: 'Connect directly without proxy.\n\nTraffic will bypass all proxies and connect to the destination directly.',
   proxy: 'Use proxy (default group).\n\nTraffic will be sent through the configured proxy group.',
   block: 'Block the connection.\n\nThe connection will be rejected/dropped.',
@@ -245,95 +241,14 @@ const OUTBOUND_DOCS: Record<string, string> = {
     'Accept the DNS response (used in DNS routing).\n\nUsed in DNS response routing to accept the current DNS response.',
 }
 
-export class DaeHoverProvider implements vscode.HoverProvider {
-  constructor(private parser: DocumentParser) {}
-
-  provideHover(
-    document: vscode.TextDocument,
-    position: vscode.Position,
-    _token: vscode.CancellationToken,
-  ): vscode.ProviderResult<vscode.Hover> {
-    const parseResult = this.parser.parse(document)
-    const line = document.lineAt(position.line)
-    const wordRange = document.getWordRangeAtPosition(position, /[\w-]+/)
-
-    if (!wordRange) return null
-
-    const word = document.getText(wordRange)
-
-    // Check if hovering over a section name
-    if (SECTION_DOCS[word]) {
-      return new vscode.Hover(new vscode.MarkdownString(SECTION_DOCS[word]), wordRange)
-    }
-
-    // Check if hovering over a parameter
-    if (PARAM_DOCS[word]) {
-      const md = new vscode.MarkdownString()
-      md.appendMarkdown(`**${word}**\n\n`)
-      md.appendMarkdown(PARAM_DOCS[word])
-      return new vscode.Hover(md, wordRange)
-    }
-
-    // Check if hovering over a function
-    if (RULE_FUNCTIONS.includes(word)) {
-      const doc = FUNCTION_DOCS[word] || `Rule function: ${word}`
-      const md = new vscode.MarkdownString()
-      md.appendMarkdown(`**${word}()**\n\n`)
-      md.appendMarkdown(doc)
-      return new vscode.Hover(md, wordRange)
-    }
-
-    // Check if hovering over an outbound constant
-    if (OUTBOUND_DOCS[word]) {
-      const md = new vscode.MarkdownString()
-      md.appendMarkdown(`**${word}**\n\n`)
-      md.appendMarkdown(OUTBOUND_DOCS[word])
-      return new vscode.Hover(md, wordRange)
-    }
-
-    // Check if hovering over a symbol definition
-    const symbol = findSymbolAtPosition(parseResult.symbols, position)
-    if (symbol) {
-      const md = new vscode.MarkdownString()
-      md.appendMarkdown(`**${symbol.kind}**: \`${symbol.name}\``)
-      return new vscode.Hover(md, wordRange)
-    }
-
-    // Check if hovering over a reference
-    const reference = findReferenceAtPosition(parseResult.references, position)
-    if (reference) {
-      const md = new vscode.MarkdownString()
-      const refSymbol = findSymbolByName(parseResult.symbols, reference.name)
-      if (refSymbol) {
-        md.appendMarkdown(`**${refSymbol.kind}**: \`${refSymbol.name}\`\n\n`)
-        md.appendMarkdown(`Defined at line ${refSymbol.nameRange.start.line + 1}`)
-      } else {
-        md.appendMarkdown(`Reference to ${reference.kind}: \`${reference.name}\``)
-      }
-      return new vscode.Hover(md, wordRange)
-    }
-
-    // Check for type prefixes (geosite:, geoip:, etc.)
-    const lineText = line.text
-    const colonMatch = lineText.match(/(geosite|geoip|full|contains|regexp|ext):(\w+)/)
-    if (colonMatch) {
-      const prefix = colonMatch[1]
-      const prefixDocs: Record<string, string> = {
-        geosite: 'Match using geosite database',
-        geoip: 'Match using geoip database',
-        full: 'Full domain match (exact)',
-        contains: 'Domain contains keyword',
-        regexp: 'Match using regular expression',
-        ext: 'Match using external data file',
-      }
-      if (word === prefix || word === colonMatch[2]) {
-        const md = new vscode.MarkdownString()
-        md.appendMarkdown(`**${prefix}:${colonMatch[2]}**\n\n`)
-        md.appendMarkdown(prefixDocs[prefix] || '')
-        return new vscode.Hover(md, wordRange)
-      }
-    }
-
-    return null
-  }
+// Documentation for type prefixes
+export const PREFIX_DOCS: Record<string, string> = {
+  geosite: 'Match using geosite database',
+  geoip: 'Match using geoip database',
+  full: 'Full domain match (exact)',
+  contains: 'Domain contains keyword',
+  keyword: 'Match by keyword',
+  regexp: 'Match using regular expression',
+  regex: 'Match using regular expression',
+  ext: 'Match using external data file',
 }

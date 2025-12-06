@@ -1,0 +1,14 @@
+# Deno cache
+.deno/
+deno.lock
+
+# Build output
+dist/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

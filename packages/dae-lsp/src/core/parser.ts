@@ -3,9 +3,9 @@
  *
  * Parses dae configuration files and builds an AST with symbol information
  * for use by LSP features like go-to-definition, find-references, etc.
+ *
+ * This module is platform-agnostic and doesn't depend on VS Code APIs.
  */
-
-import * as vscode from 'vscode'
 
 // AST Node Types
 export interface Position {
@@ -113,48 +113,9 @@ export const RULE_FUNCTIONS = [
 export const OUTBOUNDS = ['proxy', 'direct', 'block', 'must_direct', 'must_proxy', 'accept']
 
 /**
- * Document parser that caches parse results
- */
-export class DocumentParser {
-  private cache = new Map<string, { version: number; result: ParseResult }>()
-
-  /**
-   * Parse a document and return the result
-   */
-  parse(document: vscode.TextDocument): ParseResult {
-    const cached = this.cache.get(document.uri.toString())
-    if (cached && cached.version === document.version) {
-      return cached.result
-    }
-
-    const result = parseDocument(document.getText())
-    this.cache.set(document.uri.toString(), {
-      version: document.version,
-      result,
-    })
-
-    return result
-  }
-
-  /**
-   * Clear cache for a document
-   */
-  invalidate(uri: vscode.Uri): void {
-    this.cache.delete(uri.toString())
-  }
-
-  /**
-   * Clear all cached results
-   */
-  clearAll(): void {
-    this.cache.clear()
-  }
-}
-
-/**
  * Parse document text and build AST
  */
-function parseDocument(text: string): ParseResult {
+export function parseDocument(text: string): ParseResult {
   const lines = text.split('\n')
   const symbols: Symbol[] = []
   const references: Reference[] = []
@@ -523,7 +484,7 @@ function collectDefinedSymbols(symbols: Symbol[]): Map<string, Symbol> {
 /**
  * Find symbol at a given position
  */
-export function findSymbolAtPosition(symbols: Symbol[], position: vscode.Position): Symbol | undefined {
+export function findSymbolAtPosition(symbols: Symbol[], position: Position): Symbol | undefined {
   function search(syms: Symbol[]): Symbol | undefined {
     for (const sym of syms) {
       if (isPositionInRange(position, sym.nameRange)) {
@@ -543,7 +504,7 @@ export function findSymbolAtPosition(symbols: Symbol[], position: vscode.Positio
 /**
  * Find reference at a given position
  */
-export function findReferenceAtPosition(references: Reference[], position: vscode.Position): Reference | undefined {
+export function findReferenceAtPosition(references: Reference[], position: Position): Reference | undefined {
   for (const ref of references) {
     if (isPositionInRange(position, ref.range)) {
       return ref
@@ -582,7 +543,7 @@ export function findAllReferences(references: Reference[], name: string, kind?: 
 /**
  * Check if position is within range
  */
-function isPositionInRange(position: vscode.Position, range: Range): boolean {
+function isPositionInRange(position: Position, range: Range): boolean {
   if (position.line < range.start.line || position.line > range.end.line) {
     return false
   }
@@ -593,14 +554,4 @@ function isPositionInRange(position: vscode.Position, range: Range): boolean {
     return false
   }
   return true
-}
-
-/**
- * Convert internal range to VS Code range
- */
-export function toVSCodeRange(range: Range): vscode.Range {
-  return new vscode.Range(
-    new vscode.Position(range.start.line, range.start.character),
-    new vscode.Position(range.end.line, range.end.character),
-  )
 }

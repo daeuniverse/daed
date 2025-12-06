@@ -7,6 +7,7 @@ export default antfu({
   stylistic: false,
   ignores: ['wing', 'apps/web/src/schemas/**'],
   rules: {
+    'no-template-curly-in-string': 'off',
     // Allow exporting variants alongside components (shadcn pattern)
     'react-refresh/only-export-components': 'off',
     // Allow array index as key when items have no stable ID

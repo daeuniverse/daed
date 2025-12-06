@@ -1,0 +1,59 @@
+{
+  "name": "@daeuniverse/dae-lsp",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Language Server Protocol implementation for DAE configuration language",
+  "author": "daeuniverse <dae@v2raya.org>",
+  "license": "MIT",
+  "homepage": "https://github.com/daeuniverse/daed/tree/main/packages/dae-lsp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daeuniverse/daed.git",
+    "directory": "packages/dae-lsp"
+  },
+  "bugs": {
+    "url": "https://github.com/daeuniverse/daed/issues"
+  },
+  "keywords": [
+    "dae",
+    "lsp",
+    "language-server",
+    "routingA"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/mod.d.mts",
+      "import": "./dist/mod.mjs",
+      "require": "./dist/mod.cjs"
+    },
+    "./server": {
+      "types": "./dist/server.d.mts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.cjs"
+    }
+  },
+  "main": "./dist/mod.cjs",
+  "module": "./dist/mod.mjs",
+  "types": "./dist/mod.d.mts",
+  "bin": {
+    "dae-lsp": "./dist/server.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "start": "node dist/server.cjs --stdio",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "vscode-languageserver": "catalog:",
+    "vscode-languageserver-textdocument": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build: dae-lsp",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["-F", "@daeuniverse/dae-lsp", "build"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "build: dae-vscode",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["-F", "dae-routinga", "build"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": ["build: dae-lsp"],
+      "problemMatcher": []
+    },
+    {
+      "label": "watch: dae-lsp",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["-F", "@daeuniverse/dae-lsp", "dev"],
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Build start.*$",
+          "endsPattern": "^.*Build complete.*$"
+        }
+      }
+    },
+    {
+      "label": "watch: dae-vscode",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["-F", "dae-routinga", "dev"],
+      "isBackground": true,
+      "dependsOn": ["build: dae-lsp"],
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Build start.*$",
+          "endsPattern": "^.*Build complete.*$"
+        }
+      }
+    }
+  ]
+}

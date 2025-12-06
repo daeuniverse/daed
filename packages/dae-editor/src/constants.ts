@@ -52,9 +52,7 @@ export const EDITOR_OPTIONS: EditorProps['options'] = {
 
 /**
  * Completion items for routingA language autocomplete
- * Monaco snippet syntax uses ${1:placeholder} which triggers no-template-curly-in-string
  */
-/* eslint-disable no-template-curly-in-string */
 export const ROUTINGA_COMPLETION_ITEMS: RoutingACompletionItem[] = [
   // Rule functions (matching conditions)
   {
@@ -365,7 +363,6 @@ export const ROUTINGA_COMPLETION_ITEMS: RoutingACompletionItem[] = [
     insertTextRules: 'InsertAsSnippet',
   },
 ]
-/* eslint-enable no-template-curly-in-string */
 
 /**
  * Monarch language definition for routingA
