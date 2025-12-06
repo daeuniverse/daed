@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/daeuniverse/daed/compare/dae-editor-v1.17.0...dae-editor-v1.18.0) (2025-12-06)
+
+
+### Features
+
+* trigger release ([e6618d5](https://github.com/daeuniverse/daed/commit/e6618d5cfb721dec3633278018e2f254c23daff9))
+
 ## [1.17.0](https://github.com/daeuniverse/daed/compare/dae-editor-v1.16.0...dae-editor-v1.17.0) (2025-12-04)
 
 
