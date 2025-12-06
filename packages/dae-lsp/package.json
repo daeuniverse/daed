@@ -1,7 +1,7 @@
 {
   "name": "@daeuniverse/dae-lsp",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Language Server Protocol implementation for DAE configuration language",
   "author": "daeuniverse <dae@v2raya.org>",
   "license": "MIT",
