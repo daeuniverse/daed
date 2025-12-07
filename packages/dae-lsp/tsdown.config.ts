@@ -6,14 +6,14 @@ export default defineConfig([
     entry: ['src/mod.ts'],
     format: ['cjs', 'esm'],
     dts: true,
-    clean: true,
     sourcemap: true,
     shims: true,
     outDir: 'dist',
+    clean: false,
   },
-  // Server build (bundled, for VS Code extension)
+  // Node.js server build (bundled, for VS Code extension)
   {
-    entry: { 'server.bundled': 'src/server.ts' },
+    entry: { 'server.bundled': 'src/server-node.ts' },
     format: ['cjs'],
     dts: false,
     sourcemap: true,
@@ -23,14 +23,30 @@ export default defineConfig([
     noExternal: [/.*/],
     platform: 'node',
     target: 'node18',
+    clean: false,
   },
-  // Server build (external dependencies, for npm bin)
+  // Node.js server build (external dependencies, for npm bin)
   {
-    entry: ['src/server.ts'],
+    entry: { server: 'src/server-node.ts' },
     format: ['cjs', 'esm'],
     dts: true,
     sourcemap: true,
     shims: true,
     outDir: 'dist',
+    clean: false,
+  },
+  // Browser server build (bundled, for web worker)
+  {
+    entry: { 'server.browser': 'src/browser-server.ts' },
+    format: ['esm'],
+    dts: false,
+    sourcemap: true,
+    shims: true,
+    outDir: 'dist',
+    // Bundle all dependencies for standalone browser worker
+    noExternal: [/.*/],
+    platform: 'browser',
+    target: 'es2022',
+    clean: false,
   },
 ])

@@ -123,6 +123,7 @@ export function parseDocument(text: string): ParseResult {
 
   const symbolStack: Symbol[] = []
   let currentSection: string | null = null
+  let hasUpstreamSection = false // Track if document has upstream section (DNS config)
 
   for (let lineNum = 0; lineNum < lines.length; lineNum++) {
     const line = lines[lineNum]
@@ -160,8 +161,14 @@ export function parseDocument(text: string): ParseResult {
         children: [],
       }
 
-      if (SECTION_NAMES.includes(name)) {
+      // Only set currentSection for top-level sections (when stack is empty)
+      if (SECTION_NAMES.includes(name) && symbolStack.length === 0) {
         currentSection = name
+      }
+
+      // Track if document has upstream section (indicates DNS config)
+      if (name === 'upstream') {
+        hasUpstreamSection = true
       }
 
       if (hasOpenBrace) {
@@ -175,6 +182,28 @@ export function parseDocument(text: string): ParseResult {
         symbols.push(symbol)
       }
 
+      continue
+    }
+
+    // Check for fallback: outbound (must be before general key:value check)
+    const fallbackMatch = content.match(/^fallback:\s*(\w+)$/)
+    if (fallbackMatch) {
+      const outbound = fallbackMatch[1]
+      const outboundStart = line.lastIndexOf(outbound)
+
+      if (!OUTBOUNDS.includes(outbound)) {
+        // If document has upstream section or is in dns section, references are to upstreams
+        const isDnsContext = currentSection === 'dns' || hasUpstreamSection
+        const refKind = isDnsContext ? 'upstream' : 'group'
+        references.push({
+          name: outbound,
+          kind: refKind,
+          range: {
+            start: { line: lineNum, character: outboundStart },
+            end: { line: lineNum, character: outboundStart + outbound.length },
+          },
+        })
+      }
       continue
     }
 
@@ -234,9 +263,12 @@ export function parseDocument(text: string): ParseResult {
 
         // Check if outbound is a known constant or a group reference
         if (!OUTBOUNDS.includes(outbound)) {
+          // If document has upstream section or is in dns section, references are to upstreams
+          const isDnsContext = currentSection === 'dns' || hasUpstreamSection
+          const refKind = isDnsContext ? 'upstream' : 'group'
           references.push({
             name: outbound,
-            kind: 'group',
+            kind: refKind,
             range: {
               start: { line: lineNum, character: outboundStart },
               end: { line: lineNum, character: outboundStart + outbound.length },
@@ -255,28 +287,10 @@ export function parseDocument(text: string): ParseResult {
       if (symbolStack.length > 0) {
         const symbol = symbolStack.pop()!
         symbol.range.end = { line: lineNum, character: line.length }
-        if (SECTION_NAMES.includes(symbol.name)) {
+        // Only clear currentSection when closing a top-level section (stack becomes empty)
+        if (SECTION_NAMES.includes(symbol.name) && symbolStack.length === 0) {
           currentSection = null
         }
-      }
-      continue
-    }
-
-    // Check for fallback: outbound
-    const fallbackMatch = content.match(/^fallback:\s*(\w+)$/)
-    if (fallbackMatch) {
-      const outbound = fallbackMatch[1]
-      const outboundStart = line.lastIndexOf(outbound)
-
-      if (!OUTBOUNDS.includes(outbound)) {
-        references.push({
-          name: outbound,
-          kind: 'group',
-          range: {
-            start: { line: lineNum, character: outboundStart },
-            end: { line: lineNum, character: outboundStart + outbound.length },
-          },
-        })
       }
       continue
     }
@@ -292,14 +306,20 @@ export function parseDocument(text: string): ParseResult {
   for (const ref of references) {
     const defined = definedSymbols.get(ref.name)
     if (!defined) {
-      // Skip if it's a built-in or might be defined elsewhere
-      if (!OUTBOUNDS.includes(ref.name)) {
-        diagnostics.push({
-          message: `Undefined ${ref.kind}: '${ref.name}'`,
-          range: ref.range,
-          severity: 'warning',
-        })
+      // Skip if it's a built-in outbound
+      if (OUTBOUNDS.includes(ref.name)) {
+        continue
       }
+      // Skip group references - groups are defined in web UI, not in config text
+      // This applies to routing rules like "domain(...) -> mygroup"
+      if (ref.kind === 'group') {
+        continue
+      }
+      diagnostics.push({
+        message: `Undefined ${ref.kind}: '${ref.name}'`,
+        range: ref.range,
+        severity: 'warning',
+      })
     }
   }
 
@@ -554,4 +574,92 @@ function isPositionInRange(position: Position, range: Range): boolean {
     return false
   }
   return true
+}
+
+/**
+ * Context information for a given position in the document
+ */
+export interface PositionContext {
+  /** Current section name (e.g., 'dns', 'routing', 'global') */
+  section: string | null
+  /** Current subsection name (e.g., 'upstream', 'request', 'response') */
+  subsection: string | null
+  /** Whether we're in a DNS context (dns section or document with upstream section) */
+  isDnsContext: boolean
+  /** Whether we're in a routing rules context */
+  isRoutingContext: boolean
+  /** Symbol stack from root to current position */
+  symbolPath: string[]
+}
+
+/**
+ * Get context information for a given position in the document
+ */
+export function getPositionContext(text: string, position: Position): PositionContext {
+  const lines = text.split('\n')
+  let currentSection: string | null = null
+  let currentSubsection: string | null = null
+  let hasUpstreamSection = false
+  let braceDepth = 0
+  const symbolPath: string[] = []
+
+  for (let lineNum = 0; lineNum <= position.line && lineNum < lines.length; lineNum++) {
+    const line = lines[lineNum]
+    const trimmed = line.trim()
+
+    // Skip comments and empty lines
+    if (trimmed.startsWith('#') || trimmed === '') continue
+
+    // Track braces
+    const openBraces = (line.match(/\{/g) || []).length
+    const closeBraces = (line.match(/\}/g) || []).length
+
+    // Check for section start
+    const sectionMatch = trimmed.match(/^(\w+)\s*\{/)
+    if (sectionMatch) {
+      const name = sectionMatch[1]
+      if (SECTION_NAMES.includes(name) && braceDepth === 0) {
+        currentSection = name
+        symbolPath.push(name)
+      } else if (SUBSECTION_NAMES.includes(name)) {
+        currentSubsection = name
+        symbolPath.push(name)
+        if (name === 'upstream') {
+          hasUpstreamSection = true
+        }
+      } else {
+        symbolPath.push(name)
+      }
+    }
+
+    braceDepth += openBraces - closeBraces
+
+    // Handle closing braces - pop from symbol path
+    if (closeBraces > 0) {
+      for (let i = 0; i < closeBraces && symbolPath.length > 0; i++) {
+        const popped = symbolPath.pop()
+        if (popped && SUBSECTION_NAMES.includes(popped)) {
+          currentSubsection = null
+        }
+        if (popped && SECTION_NAMES.includes(popped) && braceDepth === 0) {
+          currentSection = null
+        }
+      }
+    }
+  }
+
+  const isDnsContext = currentSection === 'dns' || hasUpstreamSection
+  const isRoutingContext =
+    currentSection === 'routing' ||
+    currentSubsection === 'routing' ||
+    currentSubsection === 'request' ||
+    currentSubsection === 'response'
+
+  return {
+    section: currentSection,
+    subsection: currentSubsection,
+    isDnsContext,
+    isRoutingContext,
+    symbolPath,
+  }
 }

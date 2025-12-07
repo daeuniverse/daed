@@ -14,6 +14,20 @@ export type { RoutingACompletionItem } from './constants'
 export { formatRoutingA } from './formatter'
 
 export type { FormatOptions } from './formatter'
+// LSP Client
+export { MonacoLspClient } from './lsp-client'
+
+export type {
+  CompletionItem,
+  ConfigContext,
+  Diagnostic,
+  Hover,
+  Location,
+  Position,
+  Range,
+  TextEdit,
+} from './lsp-client'
+export { CompletionItemKind, DiagnosticSeverity, InsertTextFormat } from './lsp-client'
 // Monaco utilities
 export {
   applyShikiThemes,
@@ -22,6 +36,7 @@ export {
   handleEditorBeforeMount,
   initShikiHighlighter,
   isShikiReady,
+  registerRoutingALanguage,
   setDynamicCompletionItems,
   SHIKI_THEMES,
 } from './monaco'

@@ -91,6 +91,7 @@ export function Routing() {
         title={t('routing')}
         opened={openedCreateRoutingFormModal}
         onClose={closeCreateRoutingFormModal}
+        configType="routing"
         handleSubmit={async (values) => {
           await createRoutingMutation.mutateAsync({
             name: values.name,
@@ -104,6 +105,7 @@ export function Routing() {
         title={t('routing')}
         opened={openedUpdateRoutingFormModal}
         onClose={closeUpdateRoutingFormModal}
+        configType="routing"
         handleSubmit={async (values) => {
           if (updateRoutingFormModalRef.current) {
             await updateRoutingMutation.mutateAsync({

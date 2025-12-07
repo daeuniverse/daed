@@ -27,6 +27,10 @@
     "Formatters",
     "Snippets"
   ],
+  "exports": {
+    ".": "./dist/extension.cjs",
+    "./package.json": "./package.json"
+  },
   "main": "./dist/extension.cjs",
   "icon": "images/icon.png",
   "engines": {

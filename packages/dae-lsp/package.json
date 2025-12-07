@@ -21,16 +21,18 @@
     "routingA"
   ],
   "exports": {
-    ".": {
-      "types": "./dist/mod.d.mts",
+    "./mod": {
       "import": "./dist/mod.mjs",
       "require": "./dist/mod.cjs"
     },
     "./server": {
-      "types": "./dist/server.d.mts",
       "import": "./dist/server.mjs",
       "require": "./dist/server.cjs"
-    }
+    },
+    "./server/browser": "./dist/server.browser.js",
+    "./server.browser": "./dist/server.browser.js",
+    "./server.bundled": "./dist/server.bundled.cjs",
+    "./package.json": "./package.json"
   },
   "main": "./dist/mod.cjs",
   "module": "./dist/mod.mjs",
@@ -43,7 +45,7 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "dev": "tsdown --watch",
+    "dev": "tsdown && tsdown --watch",
     "start": "node dist/server.cjs --stdio",
     "typecheck": "tsc --noEmit"
   },

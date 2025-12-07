@@ -79,6 +79,7 @@ export function DNS() {
         title={t('dns')}
         opened={openedCreateDNSFormModal}
         onClose={closeCreateDNSFormModal}
+        configType="dns"
         handleSubmit={async (values) => {
           await createDNSMutation.mutateAsync({
             name: values.name,
@@ -92,6 +93,7 @@ export function DNS() {
         title={t('dns')}
         opened={openedUpdateDNSFormModal}
         onClose={closeUpdateDNSFormModal}
+        configType="dns"
         handleSubmit={async (values) => {
           if (updateDNSFormModalRef.current) {
             await updateDNSMutation.mutateAsync({

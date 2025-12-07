@@ -48,6 +48,9 @@ export const EDITOR_OPTIONS: EditorProps['options'] = {
     top: 8,
     bottom: 8,
   },
+  // Render widgets (autocomplete, hover) in a fixed position outside the editor
+  // This prevents them from being clipped by parent containers with overflow: hidden
+  fixedOverflowWidgets: true,
 }
 
 /**

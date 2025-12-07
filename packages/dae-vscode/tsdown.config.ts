@@ -16,6 +16,7 @@ export default defineConfig({
   external: ['vscode'],
   platform: 'node',
   target: 'node18',
+  exports: true,
   outExtensions: () => ({ js: '.cjs' }),
   onSuccess: async () => {
     // Copy bundled dae-lsp server to dist/server

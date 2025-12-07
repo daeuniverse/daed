@@ -6,5 +6,6 @@ export default defineConfig({
   dts: true,
   clean: true,
   sourcemap: true,
+  exports: true,
   external: ['@monaco-editor/react', 'monaco-editor', 'shiki', '@shikijs/monaco'],
 })

@@ -1,9 +1,10 @@
 import dayjs from 'dayjs'
+
 import duration from 'dayjs/plugin/duration'
 import ReactDOM from 'react-dom/client'
-
 import { App } from '~/App'
 import { i18nInit } from '~/i18n'
+import '~/suppress-monaco-errors'
 
 import '~/index.css'
 import '~/monaco'

@@ -56,6 +56,19 @@ export function getAllCompletionItems(): RoutingACompletionItem[] {
 }
 
 /**
+ * Register routingA language definition only (without providers)
+ * Use this when LSP will provide completion, formatting, etc.
+ */
+export function registerRoutingALanguage(monacoInstance: Monaco): void {
+  if (routingARegistered) return
+  routingARegistered = true
+
+  // Register custom routingA language
+  monacoInstance.languages.register({ id: 'routingA', extensions: ['dae'] })
+  monacoInstance.languages.setMonarchTokensProvider('routingA', EDITOR_LANGUAGE_ROUTINGA)
+}
+
+/**
  * Handler for beforeMount prop in Editor component
  * Registers routingA language and completion provider
  */

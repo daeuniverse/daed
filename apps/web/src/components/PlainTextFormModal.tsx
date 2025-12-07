@@ -1,8 +1,6 @@
-import type { Monaco } from '@monaco-editor/react'
+import type { DaeConfigType } from './DaeEditor'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Editor } from '@monaco-editor/react'
-import { useStore } from '@nanostores/react'
-import { useCallback, useImperativeHandle, useRef, useState } from 'react'
+import { useCallback, useImperativeHandle, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -13,11 +11,9 @@ import {
   ScrollableDialogContent,
   ScrollableDialogHeader,
 } from '~/components/ui/scrollable-dialog'
-import { EDITOR_OPTIONS, EDITOR_THEME_DARK, EDITOR_THEME_LIGHT } from '~/constants'
 import { useSetValue } from '~/hooks/useSetValue'
-import { applyShikiThemes, handleEditorBeforeMount, isShikiReady } from '~/monaco'
-import { colorSchemeAtom } from '~/store'
 
+import { DaeEditor } from './DaeEditor'
 import { FormActions } from './FormActions'
 
 const schema = z.object({
@@ -51,27 +47,19 @@ export function PlainTextFormModal({
   opened,
   onClose,
   handleSubmit: onSubmitProp,
+  configType = 'routing',
 }: {
   ref?: React.Ref<PlainTextFormModalRef>
   title: string
   opened: boolean
   onClose: () => void
   handleSubmit: (values: FormValues) => Promise<void>
+  /** Type of config being edited - affects completion filtering */
+  configType?: DaeConfigType
 }) {
   const { t } = useTranslation()
-  const colorScheme = useStore(colorSchemeAtom)
   const [editingID, setEditingID] = useState<string>()
   const [origins, setOrigins] = useState<FormValues>()
-  const [, forceUpdate] = useState({})
-  const monacoRef = useRef<Monaco | null>(null)
-
-  const handleEditorDidMount = async (_editor: unknown, monacoInstance: Monaco) => {
-    monacoRef.current = monacoInstance
-    if (!isShikiReady()) {
-      await applyShikiThemes(monacoInstance)
-      forceUpdate({}) // Trigger re-render to update theme
-    }
-  }
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -151,25 +139,13 @@ export function PlainTextFormModal({
             className="shrink-0"
           />
 
-          <div className="flex-1 flex flex-col gap-1 min-h-0 overflow-hidden">
-            <div className="flex-1 rounded overflow-hidden border min-h-[200px]">
-              <Editor
+          <div className="flex-1 flex flex-col gap-1 min-h-0">
+            <div className="flex-1 rounded border min-h-[200px] relative">
+              <DaeEditor
+                value={formValues.text || ''}
+                onChange={(value) => setValue('text', value)}
+                configType={configType}
                 height="100%"
-                theme={
-                  isShikiReady()
-                    ? colorScheme === 'dark'
-                      ? EDITOR_THEME_DARK
-                      : EDITOR_THEME_LIGHT
-                    : colorScheme === 'dark'
-                      ? 'vs-dark'
-                      : 'vs'
-                }
-                options={EDITOR_OPTIONS}
-                language="routingA"
-                value={formValues.text}
-                onChange={(value) => setValue('text', value || '')}
-                beforeMount={handleEditorBeforeMount}
-                onMount={handleEditorDidMount}
               />
             </div>
 

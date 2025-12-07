@@ -817,3 +817,58 @@ export const PROPERTY_VALUES: Record<string, { values: string[]; type: 'boolean'
   check_tolerance: { values: ['50ms', '100ms', '150ms', '200ms'], type: 'duration' },
   sniffing_timeout: { values: ['100ms', '200ms', '300ms', '500ms'], type: 'duration' },
 }
+
+/**
+ * DNS routing specific completion items
+ * These are shown when inside a DNS routing context (dns section or document with upstream)
+ */
+export const DNS_ROUTING_COMPLETIONS: DaeCompletionItem[] = [
+  {
+    label: 'qname',
+    kind: 'function',
+    detail: 'Query Name',
+    documentation: 'Match DNS query name. Used in DNS routing section.\n\nExample: `qname(geosite:cn) -> alidns`',
+    insertText: 'qname(${1:domain})',
+    isSnippet: true,
+  },
+  {
+    label: 'qtype',
+    kind: 'function',
+    detail: 'Query Type',
+    documentation: 'Match DNS query type.\n\nExample: `qtype(aaaa) -> reject`',
+    insertText: 'qtype(${1|a,aaaa,cname,mx,txt|})',
+    isSnippet: true,
+  },
+  {
+    label: 'fallback',
+    kind: 'keyword',
+    detail: 'Fallback Upstream',
+    documentation: 'Default DNS upstream when no other rules match.\n\nExample: `fallback: googledns`',
+    insertText: 'fallback: ${1:upstream}',
+    isSnippet: true,
+  },
+  {
+    label: 'upstream',
+    kind: 'function',
+    detail: 'Upstream',
+    documentation: 'Match specific upstream.\n\nExample: `upstream(alidns)`',
+    insertText: 'upstream(${1:name})',
+    isSnippet: true,
+  },
+  {
+    label: 'request',
+    kind: 'keyword',
+    detail: 'Request Section',
+    documentation: 'DNS request routing rules section',
+    insertText: 'request {\n\t${0}\n}',
+    isSnippet: true,
+  },
+  {
+    label: 'response',
+    kind: 'keyword',
+    detail: 'Response Section',
+    documentation: 'DNS response routing rules section',
+    insertText: 'response {\n\t${0}\n}',
+    isSnippet: true,
+  },
+]

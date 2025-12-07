@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@daeuniverse/dae-editor": "workspace:*",
+    "@daeuniverse/dae-lsp": "workspace:*",
     "@daeuniverse/dae-node-parser": "workspace:*",
     "@dnd-kit/core": "catalog:",
     "@dnd-kit/modifiers": "catalog:",
