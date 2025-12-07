@@ -168,7 +168,7 @@ function formatLineContent(content: string): string {
 
   // Normalize colon spacing in declarations (e.g., fallback: proxy)
   // But preserve colons in type prefixes like geosite:cn, geoip:private
-  formatted = formatted.replace(/(\w+):\s+(\w+)/g, (match, key, value) => {
+  formatted = formatted.replace(/(\w+):\s+(\w+)/g, (_match, key, value) => {
     // Check if this is a type prefix (followed by value, not a block)
     const typeKeywords = ['geosite', 'geoip', 'full', 'contains', 'regexp', 'ext']
     if (typeKeywords.includes(key.toLowerCase())) {

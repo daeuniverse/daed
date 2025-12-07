@@ -4,6 +4,11 @@ packages:
 
 neverBuiltDependencies: []
 
+catalogMode: prefer
+cleanupUnusedCatalogs: true
+shellEmulator: true
+trustPolicy: no-downgrade
+
 catalog:
   '@antfu/eslint-config': ^6.4.1
   '@commitlint/cli': ^20.1.0
