@@ -2,9 +2,6 @@
   "$schema": "https://turborepo.com/schema.json",
   "globalDependencies": ["tsconfig.json"],
   "globalPassThroughEnv": ["CI", "VERCEL", "NODE_ENV", "VITE_MOCK_MODE", "SCHEMA_PATH"],
-  "remoteCache": {
-    "enabled": false
-  },
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

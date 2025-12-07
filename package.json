@@ -18,7 +18,7 @@
     "dev": "turbo run dev",
     "dev:mock": "turbo run dev --env-mode=loose -- --mode mock",
     "lint": "eslint --fix .",
-    "prepare": "husky install",
+    "prepare": "husky",
     "screenshot": "pnpm build:mock && npx tsx scripts/screenshot.ts",
     "test": "turbo run test",
     "check-types": "turbo run check-types"
