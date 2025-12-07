@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/daeuniverse/daed/compare/v1.21.0...v1.21.1) (2025-12-07)
+
+
+### Bug Fixes
+
+* remove rolldownOptions from build configuration ([632c33d](https://github.com/daeuniverse/daed/commit/632c33d620522c9d960321aa0ad6690f6b3fc2a2))
+
 ## [1.21.0](https://github.com/daeuniverse/daed/compare/v1.20.0...v1.21.0) (2025-12-07)
 
 
