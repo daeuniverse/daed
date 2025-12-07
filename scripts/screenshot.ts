@@ -79,6 +79,36 @@ function startServer(): ChildProcess {
   return server
 }
 
+// Build the app with mock mode enabled
+async function buildWithMockMode(): Promise<void> {
+  console.log('Building app with mock mode enabled...')
+
+  return new Promise((resolve, reject) => {
+    const build = spawn('npx', ['vite', 'build'], {
+      stdio: 'inherit',
+      shell: true,
+      cwd: 'apps/web',
+      env: {
+        ...process.env,
+        VITE_MOCK_MODE: 'true',
+      },
+    })
+
+    build.on('close', (code) => {
+      if (code === 0) {
+        console.log('Build complete!')
+        resolve()
+      } else {
+        reject(new Error(`Build failed with code ${code}`))
+      }
+    })
+
+    build.on('error', (err) => {
+      reject(err)
+    })
+  })
+}
+
 // Stop the server gracefully
 function stopServer(server: ChildProcess): Promise<void> {
   return new Promise((resolve) => {
@@ -218,6 +248,9 @@ async function main() {
   let server: ChildProcess | null = null
 
   try {
+    // Build with mock mode enabled first
+    await buildWithMockMode()
+
     // Start the preview server
     server = startServer()
 
