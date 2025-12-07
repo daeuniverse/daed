@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/daeuniverse/daed/compare/v1.20.0...v1.21.0) (2025-12-07)
+
+
+### Features
+
+* **dae-lsp:** add browser LSP support and fix completions ([32b5b49](https://github.com/daeuniverse/daed/commit/32b5b49abd58b8f16c72a2f2dd188bc7c2cf7877))
+
 ## [1.20.0](https://github.com/daeuniverse/daed/compare/v1.19.0...v1.20.0) (2025-12-06)
 
 
