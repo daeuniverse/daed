@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/daeuniverse/daed/compare/dae-editor-v1.18.0...dae-editor-v1.19.0) (2025-12-07)
+
+
+### Features
+
+* **dae-lsp:** add browser LSP support and fix completions ([32b5b49](https://github.com/daeuniverse/daed/commit/32b5b49abd58b8f16c72a2f2dd188bc7c2cf7877))
+
 ## [1.18.0](https://github.com/daeuniverse/daed/compare/dae-editor-v1.17.0...dae-editor-v1.18.0) (2025-12-06)
 
 
