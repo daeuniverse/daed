@@ -140,8 +140,18 @@ export const hysteria2Schema = z.object({
   obfs: z.string(),
   obfsPassword: z.string(),
   sni: z.string(),
+  ports: z.string().optional(),
   allowInsecure: z.boolean(),
   pinSHA256: z.string(),
+})
+
+export const anytlsSchema = z.object({
+  name: z.string(),
+  server: z.string().nonempty(),
+  port: z.number().min(0).max(65535),
+  auth: z.string(),
+  sni: z.string(),
+  allowInsecure: z.boolean(),
 })
 
 export const httpSchema = z.object({

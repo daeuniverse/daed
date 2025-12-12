@@ -55,6 +55,35 @@ let pendingDynamicCompletionItems: RoutingACompletionItem[] = []
 export { formatRoutingA, GITHUB_THEMES, initShikiHighlighter, isShikiReady, SHIKI_THEMES }
 
 /**
+ * Register a lightweight DNS config language for Monaco.
+ * dae-editor currently only ships routingA, so we define dnsA here for syntax highlighting.
+ */
+function registerDnsALanguage(monacoInstance: Monaco): void {
+  const id = 'dnsA'
+  // Avoid double registration
+  if ((monacoInstance.languages as any).getLanguages?.().some((l: any) => l.id === id)) return
+
+  monacoInstance.languages.register({ id })
+  monacoInstance.languages.setMonarchTokensProvider(id, {
+    tokenizer: {
+      root: [
+        [/#[^\n]*/, 'comment'],
+        [/'[^']*'/, 'string'],
+        [/"[^"]*"/, 'string'],
+        [/\b(upstream|routing|request|response|fallback|accept|reject|asis)\b/, 'keyword'],
+        [/\b(qname|qtype|rcode|qclass)\b/, 'keyword'],
+        [/\b(geosite|geoip)\b/, 'type.identifier'],
+        [/[{}()]/, '@brackets'],
+        [/->/, 'operator'],
+        [/:/, 'delimiter'],
+        [/[\w.-]+/, 'identifier'],
+        [/\s+/, 'white'],
+      ],
+    },
+  })
+}
+
+/**
  * Initialize the DAE LSP client
  */
 async function initLspClient(monacoInstance: Monaco): Promise<void> {
@@ -120,6 +149,7 @@ async function initLspClient(monacoInstance: Monaco): Promise<void> {
 // Registers routingA language definition (LSP provides all providers)
 export function handleEditorBeforeMount(monacoInstance: Monaco) {
   registerRoutingALanguage(monacoInstance)
+  registerDnsALanguage(monacoInstance)
 }
 
 // Apply Shiki themes to Monaco (call after editor is mounted)

@@ -115,7 +115,7 @@ export function DaeEditor({ value, onChange, configType = 'routing', height = '1
         ...EDITOR_OPTIONS,
         readOnly: disabled,
       }}
-      language="routingA"
+      language={configType === 'dns' ? 'dnsA' : 'routingA'}
       value={value}
       onChange={(v) => onChange(v || '')}
       beforeMount={handleEditorBeforeMount}
