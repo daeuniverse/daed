@@ -1,7 +1,6 @@
-import type { PlainTextFormModalRef } from '~/components/PlainTextFormModal'
 import { useStore } from '@nanostores/react'
 import { Route, Settings2 } from 'lucide-react'
-import { useRef } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useCreateDNSMutation,
@@ -11,7 +10,7 @@ import {
   useSelectDNSMutation,
   useUpdateDNSMutation,
 } from '~/apis'
-import { PlainTextFormModal } from '~/components/PlainTextFormModal'
+import { DNSFormModal } from '~/components/DNSFormModal'
 import { Section } from '~/components/Section'
 import { SimpleCard } from '~/components/SimpleCard'
 import { Button } from '~/components/ui/button'
@@ -28,8 +27,9 @@ export function DNS() {
   const removeDNSMutation = useRemoveDNSMutation()
   const renameDNSMutation = useRenameDNSMutation()
   const createDNSMutation = useCreateDNSMutation()
-  const updateDNSFormModalRef = useRef<PlainTextFormModalRef>(null)
   const updateDNSMutation = useUpdateDNSMutation()
+
+  const [editingDNS, setEditingDNS] = useState<{ id: string; name: string; text: string } | null>(null)
 
   const [openedCreateDNSFormModal, { open: openCreateDNSFormModal, close: closeCreateDNSFormModal }] =
     useDisclosure(false)
@@ -48,13 +48,11 @@ export function DNS() {
                 variant="ghost"
                 size="xs"
                 onClick={() => {
-                  updateDNSFormModalRef.current?.setEditingID(dns.id)
-
-                  updateDNSFormModalRef.current?.initOrigins({
+                  setEditingDNS({
+                    id: dns.id,
                     name: dns.name,
                     text: dns.dns.string,
                   })
-
                   openUpdateDNSFormModal()
                 }}
               >
@@ -75,11 +73,11 @@ export function DNS() {
         />
       ))}
 
-      <PlainTextFormModal
+      <DNSFormModal
         title={t('dns')}
         opened={openedCreateDNSFormModal}
         onClose={closeCreateDNSFormModal}
-        configType="dns"
+        initialValues={{ name: '', text: '' }}
         handleSubmit={async (values) => {
           await createDNSMutation.mutateAsync({
             name: values.name,
@@ -88,16 +86,21 @@ export function DNS() {
         }}
       />
 
-      <PlainTextFormModal
-        ref={updateDNSFormModalRef}
+      <DNSFormModal
         title={t('dns')}
         opened={openedUpdateDNSFormModal}
-        onClose={closeUpdateDNSFormModal}
-        configType="dns"
+        onClose={() => {
+          setEditingDNS(null)
+          closeUpdateDNSFormModal()
+        }}
+        initialValues={editingDNS ? { name: editingDNS.name, text: editingDNS.text } : undefined}
         handleSubmit={async (values) => {
-          if (updateDNSFormModalRef.current) {
+          if (editingDNS) {
+            if (editingDNS.name !== values.name) {
+              await renameDNSMutation.mutateAsync({ id: editingDNS.id, name: values.name })
+            }
             await updateDNSMutation.mutateAsync({
-              id: updateDNSFormModalRef.current.editingID,
+              id: editingDNS.id,
               dns: values.text,
             })
           }

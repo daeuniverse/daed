@@ -12,6 +12,7 @@ export type ProxyProtocol =
   | 'tuic'
   | 'juicity'
   | 'hysteria2'
+  | 'anytls'
   | 'vmess'
   | 'vless'
 
@@ -182,8 +183,21 @@ export interface Hysteria2Config {
   obfs: string
   obfsPassword: string
   sni: string
+  ports?: string
   allowInsecure: boolean
   pinSHA256: string
+}
+
+/**
+ * AnyTLS schema
+ */
+export interface AnytlsConfig {
+  name: string
+  server: string
+  port: number
+  auth: string
+  sni: string
+  allowInsecure: boolean
 }
 
 /**
@@ -246,4 +260,5 @@ export type ParseResult =
   | { type: 'tuic'; data: Partial<TuicConfig> }
   | { type: 'juicity'; data: Partial<JuicityConfig> }
   | { type: 'hysteria2'; data: Partial<Hysteria2Config> }
+  | { type: 'anytls'; data: Partial<AnytlsConfig> }
   | { type: 'v2ray'; data: Partial<V2rayConfig> & { protocol: 'vmess' | 'vless' } }

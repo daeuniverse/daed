@@ -80,3 +80,11 @@ export function generateHysteria2URL({ protocol, auth, host, port, params }: Gen
 
   return uri.toString()
 }
+
+/**
+ * Generate AnyTLS URL
+ */
+export function generateAnytlsURL({ protocol, auth, host, port, params }: GenerateHysteria2URLParams): string {
+  // Use Hysteria2 generator structure as they are similar
+  return generateHysteria2URL({ protocol, auth, host, port, params })
+}
