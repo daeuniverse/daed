@@ -1,6 +1,7 @@
 import type { z } from 'zod'
 
 import type {
+  anytlsSchema,
   httpSchema,
   hysteria2Schema,
   juicitySchema,
@@ -206,8 +207,18 @@ export const DEFAULT_HYSTERIA2_FORM_VALUES: z.infer<typeof hysteria2Schema> = {
   obfs: '',
   obfsPassword: '',
   sni: '',
+  ports: '',
   allowInsecure: false,
   pinSHA256: '',
+}
+
+export const DEFAULT_ANYTLS_FORM_VALUES: z.infer<typeof anytlsSchema> = {
+  name: '',
+  port: 443,
+  server: '',
+  auth: '',
+  sni: '',
+  allowInsecure: false,
 }
 
 export const DEFAULT_HTTP_FORM_VALUES: z.infer<typeof httpSchema> = {

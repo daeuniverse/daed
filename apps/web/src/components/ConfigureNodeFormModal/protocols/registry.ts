@@ -1,6 +1,7 @@
 import type { ProtocolConfig, ProtocolRegistry } from './types'
 
 import {
+  anytlsProtocol,
   hysteria2Protocol,
   juicityProtocol,
   ssProtocol,
@@ -51,6 +52,7 @@ protocolRegistry.register(ssrProtocol as unknown as ProtocolConfig)
 protocolRegistry.register(trojanProtocol as unknown as ProtocolConfig)
 protocolRegistry.register(juicityProtocol as unknown as ProtocolConfig)
 protocolRegistry.register(hysteria2Protocol as unknown as ProtocolConfig)
+protocolRegistry.register(anytlsProtocol as unknown as ProtocolConfig)
 protocolRegistry.register(tuicProtocol as unknown as ProtocolConfig)
 protocolRegistry.register(httpProtocol as unknown as ProtocolConfig)
 protocolRegistry.register(socks5Protocol as unknown as ProtocolConfig)

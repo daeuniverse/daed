@@ -102,6 +102,16 @@ describe('parseHysteria2Url', () => {
       port: 443,
     })
   })
+
+  it('should parse Hysteria2 with ports (hopping)', () => {
+    const result = parseHysteria2Url('hysteria2://auth@example.com:443/?ports=10000-20000#hopping')
+    expect(result).toMatchObject({
+      auth: 'auth',
+      server: 'example.com',
+      port: 443,
+      ports: '10000-20000',
+    })
+  })
 })
 
 describe('parseV2rayUrl', () => {

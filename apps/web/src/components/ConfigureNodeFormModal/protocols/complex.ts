@@ -1,7 +1,9 @@
 import type { ProtocolConfig } from './types'
 import {
+  generateAnytlsURL,
   generateHysteria2URL,
   generateURL,
+  parseAnytlsUrl,
   parseHysteria2Url,
   parseJuicityUrl,
   parseSSRUrl,
@@ -14,6 +16,8 @@ import { Base64 } from 'js-base64'
 import { z } from 'zod'
 
 import {
+  anytlsSchema,
+  DEFAULT_ANYTLS_FORM_VALUES,
   DEFAULT_HYSTERIA2_FORM_VALUES,
   DEFAULT_JUICITY_FORM_VALUES,
   DEFAULT_SS_FORM_VALUES,
@@ -30,6 +34,7 @@ import {
   v2raySchema,
 } from '~/constants'
 
+import { AnyTLSForm } from '../AnyTLSForm'
 import { Hysteria2Form } from '../Hysteria2Form'
 import { JuicityForm } from '../JuicityForm'
 import { SSForm } from '../SSForm'
@@ -399,4 +404,35 @@ export const hysteria2Protocol: ProtocolConfig<Hysteria2FormValues> = {
   generateLink: generateHysteria2Link,
   parseLink: parseHysteria2Url,
   FormComponent: Hysteria2Form,
+}
+
+// ============================================================================
+// AnyTLS Protocol
+// ============================================================================
+
+type AnytlsFormValues = z.infer<typeof anytlsSchema>
+
+function generateAnytlsLink(data: AnytlsFormValues): string {
+  const query = {
+    sni: data.sni,
+    insecure: data.allowInsecure ? 1 : 0,
+  }
+
+  return generateAnytlsURL({
+    protocol: 'anytls',
+    auth: data.auth,
+    host: data.server,
+    port: data.port,
+    params: query,
+  })
+}
+
+export const anytlsProtocol: ProtocolConfig<AnytlsFormValues> = {
+  id: 'anytls',
+  label: 'AnyTLS',
+  schema: anytlsSchema,
+  defaultValues: DEFAULT_ANYTLS_FORM_VALUES,
+  generateLink: generateAnytlsLink,
+  parseLink: parseAnytlsUrl,
+  FormComponent: AnyTLSForm,
 }

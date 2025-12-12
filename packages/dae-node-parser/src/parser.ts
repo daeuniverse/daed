@@ -1,4 +1,5 @@
 import type {
+  AnytlsConfig,
   HTTPConfig,
   Hysteria2Config,
   JuicityConfig,
@@ -389,8 +390,35 @@ export function parseHysteria2Url(url: string): Partial<Hysteria2Config> | null 
       obfs: params.get('obfs') || '',
       obfsPassword: params.get('obfs-password') || params.get('obfsPassword') || '',
       sni: params.get('sni') || '',
+      ports: params.get('ports') || params.get('mport') || '',
       allowInsecure: params.get('insecure') === '1' || params.get('insecure') === 'true',
       pinSHA256: params.get('pinSHA256') || '',
+    }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Parse AnyTLS protocol URL
+ * Format: anytls://auth@hostname:port/?...
+ */
+export function parseAnytlsUrl(url: string): Partial<AnytlsConfig> | null {
+  try {
+    if (!url.startsWith('anytls://')) {
+      return null
+    }
+
+    const parsed = new URL(url)
+    const params = parsed.searchParams
+
+    return {
+      auth: decodeURIComponent(parsed.username),
+      server: parsed.hostname,
+      port: parsed.port ? Number.parseInt(parsed.port, 10) : 443,
+      name: decodeURIComponent(parsed.hash.slice(1) || ''),
+      sni: params.get('sni') || params.get('peer') || '',
+      allowInsecure: params.get('insecure') === '1' || params.get('insecure') === 'true',
     }
   } catch {
     return null
@@ -646,6 +674,7 @@ export function parseNodeUrl(
   | { type: 'tuic'; data: ReturnType<typeof parseTuicUrl> }
   | { type: 'juicity'; data: ReturnType<typeof parseJuicityUrl> }
   | { type: 'hysteria2'; data: ReturnType<typeof parseHysteria2Url> }
+  | { type: 'anytls'; data: ReturnType<typeof parseAnytlsUrl> }
   | { type: 'v2ray'; data: ReturnType<typeof parseV2rayUrl> }
   | null {
   const trimmedUrl = url.trim()
@@ -688,6 +717,11 @@ export function parseNodeUrl(
   if (trimmedUrl.startsWith('hysteria2://') || trimmedUrl.startsWith('hy2://')) {
     const data = parseHysteria2Url(trimmedUrl)
     return data ? { type: 'hysteria2', data } : null
+  }
+
+  if (trimmedUrl.startsWith('anytls://')) {
+    const data = parseAnytlsUrl(trimmedUrl)
+    return data ? { type: 'anytls', data } : null
   }
 
   if (trimmedUrl.startsWith('vmess://') || trimmedUrl.startsWith('vless://')) {
