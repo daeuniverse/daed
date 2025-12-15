@@ -1,6 +1,6 @@
+import type { AnytlsFormValues } from './ConfigureNodeFormModal/AnyTLSForm.tsx'
 import type { HTTPFormValues } from './ConfigureNodeFormModal/HTTPForm.tsx'
 import type { Hysteria2FormValues } from './ConfigureNodeFormModal/Hysteria2Form.tsx'
-
 import type { JuicityFormValues } from './ConfigureNodeFormModal/JuicityForm.tsx'
 import type { Socks5FormValues } from './ConfigureNodeFormModal/Socks5Form.tsx'
 import type { SSFormValues } from './ConfigureNodeFormModal/SSForm.tsx'
@@ -12,6 +12,7 @@ import { parseNodeUrl } from '@daeuniverse/dae-node-parser'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTagNodeMutation, useUpdateNodeMutation } from '../apis/index.ts'
+import { AnyTLSForm } from './ConfigureNodeFormModal/AnyTLSForm.tsx'
 import { HTTPForm } from './ConfigureNodeFormModal/HTTPForm.tsx'
 import { Hysteria2Form } from './ConfigureNodeFormModal/Hysteria2Form.tsx'
 import { JuicityForm } from './ConfigureNodeFormModal/JuicityForm.tsx'
@@ -31,7 +32,18 @@ import {
 } from './ui/scrollable-dialog.tsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs.tsx'
 
-type NodeType = 'v2ray' | 'ss' | 'ssr' | 'trojan' | 'juicity' | 'hysteria2' | 'tuic' | 'http' | 'socks5' | 'unknown'
+type NodeType =
+  | 'v2ray'
+  | 'ss'
+  | 'ssr'
+  | 'trojan'
+  | 'juicity'
+  | 'hysteria2'
+  | 'anytls'
+  | 'tuic'
+  | 'http'
+  | 'socks5'
+  | 'unknown'
 
 export interface EditNodeFormModalProps {
   opened: boolean
@@ -138,9 +150,9 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
                   <TabsTrigger value="trojan">Trojan</TabsTrigger>
                   <TabsTrigger value="juicity">Juicity</TabsTrigger>
                   <TabsTrigger value="hysteria2">Hysteria2</TabsTrigger>
+                  <TabsTrigger value="anytls">AnyTLS</TabsTrigger>
                   <TabsTrigger value="tuic">Tuic</TabsTrigger>
-                  <TabsTrigger value="http">HTTP</TabsTrigger>
-                  <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
+                  <TabsTrigger value="http">HTTP</TabsTrigger> <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
                 </TabsList>
               </div>
 
@@ -186,12 +198,18 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
 
               <TabsContent value="hysteria2" className="space-y-2 pt-2">
                 <Hysteria2Form
-                  onLinkGeneration={onLinkGeneration}
-                  initialValues={nodeType === 'hysteria2' ? (initialValues as Hysteria2FormValues) : undefined}
                   actionsPortal={actionsPortal}
+                  initialValues={nodeType === 'hysteria2' ? (initialValues as Hysteria2FormValues) : undefined}
+                  onLinkGeneration={onLinkGeneration}
                 />
               </TabsContent>
-
+              <TabsContent value="anytls" className="space-y-2 pt-2">
+                <AnyTLSForm
+                  actionsPortal={actionsPortal}
+                  initialValues={nodeType === 'anytls' ? (initialValues as AnytlsFormValues) : undefined}
+                  onLinkGeneration={onLinkGeneration}
+                />
+              </TabsContent>
               <TabsContent value="tuic" className="space-y-2 pt-2">
                 <TuicForm
                   onLinkGeneration={onLinkGeneration}

@@ -1,8 +1,9 @@
 // Generators
-export { generateHysteria2URL, generateURL } from './generator'
+export { generateAnytlsURL, generateHysteria2URL, generateURL } from './generator'
 
 // Parsers
 export {
+  parseAnytlsUrl,
   parseHTTPUrl,
   parseHysteria2Url,
   parseJuicityUrl,
@@ -19,6 +20,7 @@ export {
 
 // Types
 export type {
+  AnytlsConfig,
   GenerateHysteria2URLParams,
   GenerateURLParams,
   HTTPConfig,
