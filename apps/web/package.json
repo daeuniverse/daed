@@ -1,7 +1,7 @@
 {
   "name": "daed",
   "type": "module",
-  "version": "1.21.1",
+  "version": "1.22.0",
   "private": true,
   "description": "A Web Dashboard For dae",
   "scripts": {
