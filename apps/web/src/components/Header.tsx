@@ -274,22 +274,31 @@ export function HeaderWithActions() {
   }
 
   return (
-    <header className="sticky top-0 z-50 h-[60px] border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 flex items-center shadow-sm">
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80">
-            <img src="/logo.webp" alt="daed" className="w-8 h-8 rounded-sm" />
-            <h1 className={cn('font-bold', matchSmallScreen ? 'text-lg' : 'text-2xl')}>daed</h1>
+    <header className="sticky top-0 z-50 h-16 border-b header-blur flex items-center shadow-sm">
+      <div className="container mx-auto px-4 lg:px-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity group">
+            <div className="relative">
+              <img
+                src="/logo.webp"
+                alt="daed"
+                className="w-9 h-9 rounded-lg shadow-sm group-hover:shadow-md transition-shadow"
+              />
+              <div className="absolute inset-0 rounded-lg ring-1 ring-black/5 dark:ring-white/10" />
+            </div>
+            <h1 className={cn('font-semibold tracking-tight', matchSmallScreen ? 'text-lg' : 'text-xl')}>daed</h1>
           </Link>
 
           {!matchSmallScreen && (
             <SimpleTooltip label={endpointURL}>
-              <Code className="text-xs font-bold">{import.meta.env.APP_VERSION}</Code>
+              <Code className="text-xs font-semibold px-2 py-1 rounded-md bg-secondary/80 hover:bg-secondary transition-colors">
+                {import.meta.env.APP_VERSION}
+              </Code>
             </SimpleTooltip>
           )}
         </div>
 
-        <div className={cn('flex items-center', matchSmallScreen ? 'gap-1' : 'gap-3')}>
+        <div className={cn('flex items-center', matchSmallScreen ? 'gap-1' : 'gap-2')}>
           {!matchSmallScreen && <ProfileSwitcher />}
 
           <DropdownMenu open={userMenuOpened} onOpenChange={setUserMenuOpened}>
@@ -297,19 +306,24 @@ export function HeaderWithActions() {
               <button
                 type="button"
                 className={cn(
-                  'flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-accent',
+                  'flex items-center gap-2 rounded-lg px-2.5 py-2 transition-all hover:bg-accent/80',
                   userMenuOpened && 'bg-accent',
                 )}
               >
                 <Avatar
                   src={userQuery?.user?.avatar || 'https://avatars.githubusercontent.com/u/126714249?s=200&v=4'}
                   alt="avatar"
-                  size={20}
+                  size={22}
                 />
                 <span className="text-sm font-medium leading-none">
                   {userQuery?.user?.name || userQuery?.user?.username || 'unknown'}
                 </span>
-                <ChevronDown className="h-3 w-3" />
+                <ChevronDown
+                  className={cn(
+                    'h-3.5 w-3.5 text-muted-foreground transition-transform',
+                    userMenuOpened && 'rotate-180',
+                  )}
+                />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[200px]">

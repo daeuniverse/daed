@@ -28,21 +28,23 @@ export function MainLayout() {
   }, [endpointURL, navigate, token])
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-pattern">
       <HeaderWithActions />
       <main className="flex-1">
-        <div className="container mx-auto max-w-7xl px-4 py-4 lg:px-8">
-          <Outlet />
+        <div className="container mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8">
+          <div className="animate-fade-in">
+            <Outlet />
+          </div>
         </div>
       </main>
-      <footer className="h-[50px] border-t flex items-center justify-center">
-        <p className="text-xs text-muted-foreground font-light">
-          Made with passion 🔥 by{' '}
+      <footer className="h-14 border-t bg-card/50 backdrop-blur-sm flex items-center justify-center">
+        <p className="text-xs text-muted-foreground font-light tracking-wide">
+          Made with <span className="inline-block animate-pulse text-primary">●</span> by{' '}
           <a
             href="https://github.com/daeuniverse"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary hover:underline"
+            className="text-primary hover:underline underline-offset-4 transition-colors hover:text-primary/80"
           >
             @daeuniverse
           </a>

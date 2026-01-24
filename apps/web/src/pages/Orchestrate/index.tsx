@@ -160,6 +160,61 @@ export function OrchestratePage() {
     }
   }, [draggingResource, groupsQuery?.groups, nodes, subscriptions])
 
+  // Get full dragging resource data for overlay display
+  const draggingResourceData = useMemo(() => {
+    if (!draggingResource) return null
+
+    const { type, nodeID, groupID, subscriptionID } = draggingResource
+
+    if (type === DraggableResourceType.node) {
+      const node = nodes.find((n: NodesQuery['nodes']['edges'][number]) => n.id === nodeID)
+      if (node) {
+        return { name: node.tag || node.name, protocol: node.protocol, address: node.address }
+      }
+    }
+
+    if (type === DraggableResourceType.subscription) {
+      const subscription = subscriptions.find(
+        (s: SubscriptionsQuery['subscriptions'][number]) => s.id === subscriptionID,
+      )
+      if (subscription) {
+        return { name: subscription.tag || subscription.link, protocol: null, address: null }
+      }
+    }
+
+    if (type === DraggableResourceType.subscription_node) {
+      const subscription = subscriptions.find(
+        (s: SubscriptionsQuery['subscriptions'][number]) => s.id === subscriptionID,
+      )
+      const node = subscription?.nodes.edges.find(
+        (n: SubscriptionsQuery['subscriptions'][number]['nodes']['edges'][number]) => n.id === nodeID,
+      )
+      if (node) {
+        return { name: node.name, protocol: node.protocol, address: null }
+      }
+    }
+
+    if (type === DraggableResourceType.groupNode) {
+      const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === groupID)
+      const node = group?.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === nodeID)
+      if (node) {
+        return { name: node.tag || node.name, protocol: node.protocol, address: node.address }
+      }
+    }
+
+    if (type === DraggableResourceType.groupSubscription) {
+      const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === groupID)
+      const subscription = group?.subscriptions.find(
+        (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === subscriptionID,
+      )
+      if (subscription) {
+        return { name: subscription.tag || subscription.link, protocol: null, address: null }
+      }
+    }
+
+    return { name: draggingResourceDisplayName || '', protocol: null, address: null }
+  }, [draggingResource, groupsQuery?.groups, nodes, subscriptions, draggingResourceDisplayName])
+
   const onDragStart = (e: DragStartEvent) => {
     const rect = e.active.rect.current.initial
     setDraggingResource({
@@ -406,14 +461,14 @@ export function OrchestratePage() {
   const matchSmallScreen = useMediaQuery('(max-width: 640px)')
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className={`grid gap-4 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
+    <div className="flex flex-col gap-8">
+      <div className={`grid gap-5 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
         <Config />
         <DNS />
         <Routing />
       </div>
 
-      <div ref={dndAreaRef} className={`grid gap-4 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
+      <div ref={dndAreaRef} className={`grid gap-5 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
         <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <GroupResource highlight={!!draggingResource} draggingResource={draggingResource} />
           <NodeResource
@@ -423,10 +478,24 @@ export function OrchestratePage() {
           <SubscriptionResource sortedSubscriptions={sortedSubscriptions} />
 
           <DragOverlay zIndex={9999} modifiers={[snapCenterToCursor]}>
-            {draggingResource && (
-              <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg border bg-card shadow-lg cursor-grabbing">
-                <GripVertical className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
-                <span className="text-sm font-medium truncate max-w-[200px]">{draggingResourceDisplayName}</span>
+            {draggingResource && draggingResourceData && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-card shadow-xl cursor-grabbing ring-2 ring-primary/30 min-w-[180px] max-w-[280px]">
+                <GripVertical className="h-3.5 w-3.5 text-primary/60 shrink-0" />
+
+                {draggingResourceData.protocol && (
+                  <span className="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded bg-primary/15 text-primary">
+                    {draggingResourceData.protocol}
+                  </span>
+                )}
+
+                <div className="flex-1 min-w-0">
+                  <span className="text-xs font-medium truncate block">{draggingResourceData.name}</span>
+                  {draggingResourceData.address && (
+                    <span className="text-[10px] text-muted-foreground truncate block mt-0.5">
+                      {draggingResourceData.address}
+                    </span>
+                  )}
+                </div>
               </div>
             )}
           </DragOverlay>

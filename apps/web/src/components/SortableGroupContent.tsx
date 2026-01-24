@@ -11,6 +11,8 @@ interface GroupNode {
   id: string
   tag?: string | null
   name: string
+  protocol?: string | null
+  address?: string | null
   subscriptionID?: string | null
 }
 
@@ -120,8 +122,8 @@ export function SortableGroupContent({
 
         <AccordionContent>
           <SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
-            <div className="flex flex-col gap-1.5">
-              {sortedNodes.map(({ id: nodeId, tag, name, subscriptionID }) => (
+            <div className="flex flex-col gap-2">
+              {sortedNodes.map(({ id: nodeId, tag, name, protocol, address, subscriptionID }) => (
                 <SortableResourceBadge
                   key={nodeId}
                   id={`${groupId}-node-${nodeId}`}
@@ -129,12 +131,14 @@ export function SortableGroupContent({
                   groupID={groupId}
                   type={DraggableResourceType.groupNode}
                   name={tag || name}
+                  protocol={protocol}
+                  address={address}
                   onRemove={() => onDelNode(nodeId)}
                 >
                   {subscriptionID && allSubscriptions?.find((s) => s.id === subscriptionID)?.tag}
                 </SortableResourceBadge>
               ))}
-              {nodes.length === 0 && <p className="text-xs text-muted-foreground text-center py-2">{t('empty')}</p>}
+              {nodes.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">{t('empty')}</p>}
             </div>
           </SortableContext>
         </AccordionContent>
