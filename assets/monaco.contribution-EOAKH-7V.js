@@ -1,0 +1,1 @@
+import"./mouseTarget-Be5NSDwg.js";import"./editor.api-B_5Gk3Iv.js";import{n as e,t}from"./monaco.contribution-BerfcIDL.js";export{t as getWorker,e as jsonDefaults};
