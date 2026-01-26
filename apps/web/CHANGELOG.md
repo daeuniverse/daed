@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.0](https://github.com/daeuniverse/daed/compare/v1.21.1...v1.22.0) (2026-01-24)
+
+
+### Features
+
+* **ui:** enhance layout and visual design system ([1bc9280](https://github.com/daeuniverse/daed/commit/1bc928076986884658551f5634a80b86d10c3a26))
+
 ## [1.21.1](https://github.com/daeuniverse/daed/compare/v1.21.0...v1.21.1) (2025-12-07)
 
 
