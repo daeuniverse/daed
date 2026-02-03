@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.1](https://github.com/daeuniverse/daed/compare/v1.22.0...v1.22.1) (2026-02-03)
+
+
+### Bug Fixes
+
+* **dnd:** migrate to @hello-pangea/dnd and fix drag issues in modals ([76d4492](https://github.com/daeuniverse/daed/commit/76d4492793236d73a897657cafdcbf09b9d46c1f))
+
 ## [1.22.0](https://github.com/daeuniverse/daed/compare/v1.21.1...v1.22.0) (2026-01-24)
 
 
