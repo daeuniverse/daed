@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.23.0](https://github.com/daeuniverse/daed/compare/v1.22.1...v1.23.0) (2026-02-03)
+
+
+### Features
+
+* **dae-lsp:** add browser LSP support and fix completions ([32b5b49](https://github.com/daeuniverse/daed/commit/32b5b49abd58b8f16c72a2f2dd188bc7c2cf7877))
+* **parser:** add parser for dae language with AST and symbol information ([12b5754](https://github.com/daeuniverse/daed/commit/12b5754b8f53b5dbac00b9aac0839f5d52113736))
+* re-trigger release-please ([4febcf7](https://github.com/daeuniverse/daed/commit/4febcf7ebba807474e8215510669e0a756c31585))
+* trigger release ([e6618d5](https://github.com/daeuniverse/daed/commit/e6618d5cfb721dec3633278018e2f254c23daff9))
+* **ui:** enhance layout and visual design system ([1bc9280](https://github.com/daeuniverse/daed/commit/1bc928076986884658551f5634a80b86d10c3a26))
+* update pnpm workspace and add turbo configuration ([4484dc4](https://github.com/daeuniverse/daed/commit/4484dc43be6f1d229053bcc7bd589c528707024f))
+
+
+### Bug Fixes
+
+* **dnd:** migrate to @hello-pangea/dnd and fix drag issues in modals ([76d4492](https://github.com/daeuniverse/daed/commit/76d4492793236d73a897657cafdcbf09b9d46c1f))
+* remove rolldownOptions from build configuration ([632c33d](https://github.com/daeuniverse/daed/commit/632c33d620522c9d960321aa0ad6690f6b3fc2a2))
+
 ## [1.22.1](https://github.com/daeuniverse/daed/compare/v1.22.0...v1.22.1) (2026-02-03)
 
 
