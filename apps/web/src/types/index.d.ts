@@ -1,8 +1,6 @@
-import type { UniqueIdentifier } from '@dnd-kit/core'
-
 import type { defaultNS, resources } from '~/i18n'
 
-declare type SortableList = Array<{ id: UniqueIdentifier } & Record<string, unknown>>
+declare type SortableList = Array<{ id: string } & Record<string, unknown>>
 
 declare type SimpleDisplayable = number | string
 

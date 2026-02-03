@@ -1,12 +1,9 @@
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
+import type { DropResult } from '@hello-pangea/dnd'
 import type { DraggingResource } from '~/constants'
 import type { GroupsQuery, NodesQuery, SubscriptionsQuery } from '~/schemas/gql/graphql'
-import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { snapCenterToCursor } from '@dnd-kit/modifiers'
-import { arrayMove } from '@dnd-kit/sortable'
+import { DragDropContext } from '@hello-pangea/dnd'
 import { useStore } from '@nanostores/react'
-import { GripVertical } from 'lucide-react'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   useGroupAddNodesMutation,
   useGroupAddSubscriptionsMutation,
@@ -24,6 +21,13 @@ import { GroupResource } from './Group'
 import { NODE_DROPPABLE_ID, NodeResource } from './Node'
 import { Routing } from './Routing'
 import { SubscriptionResource } from './Subscription'
+
+function arrayMove<T>(array: T[], from: number, to: number): T[] {
+  const newArray = [...array]
+  const [removed] = newArray.splice(from, 1)
+  newArray.splice(to, 0, removed)
+  return newArray
+}
 
 export function OrchestratePage() {
   const { data: nodesQuery } = useNodesQuery()
@@ -48,14 +52,6 @@ export function OrchestratePage() {
   const setSubscriptionSortOrder = useCallback((order: string[]) => {
     appStateAtom.setKey('subscriptionSortableKeys', order)
   }, [])
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 3,
-      },
-    }),
-  )
 
   // Get nodes from query (memoized to avoid dependency issues)
   const nodes = useMemo(() => nodesQuery?.nodes.edges ?? [], [nodesQuery?.nodes.edges])
@@ -111,118 +107,6 @@ export function OrchestratePage() {
     return sortedSubscriptionIds.map((id) => subMap.get(id)).filter(Boolean) as typeof subscriptions
   }, [subscriptions, sortedSubscriptionIds])
 
-  const draggingResourceDisplayName = useMemo(() => {
-    if (draggingResource) {
-      const { type, nodeID, groupID, subscriptionID } = draggingResource
-
-      if (type === DraggableResourceType.node) {
-        const node = nodes.find((n: NodesQuery['nodes']['edges'][number]) => n.id === nodeID)
-
-        return node?.tag || node?.name
-      }
-
-      if (type === DraggableResourceType.subscription) {
-        const subscription = subscriptions.find(
-          (s: SubscriptionsQuery['subscriptions'][number]) => s.id === subscriptionID,
-        )
-
-        return subscription?.tag || subscription?.link
-      }
-
-      if (type === DraggableResourceType.subscription_node) {
-        const subscription = subscriptions.find(
-          (s: SubscriptionsQuery['subscriptions'][number]) => s.id === subscriptionID,
-        )
-        const node = subscription?.nodes.edges.find(
-          (n: SubscriptionsQuery['subscriptions'][number]['nodes']['edges'][number]) => n.id === nodeID,
-        )
-
-        return node?.name
-      }
-
-      if (type === DraggableResourceType.groupNode) {
-        const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === groupID)
-
-        const node = group?.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === nodeID)
-
-        return node?.tag || node?.name
-      }
-
-      if (type === DraggableResourceType.groupSubscription) {
-        const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === groupID)
-
-        const subscription = group?.subscriptions.find(
-          (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === subscriptionID,
-        )
-
-        return subscription?.tag
-      }
-    }
-  }, [draggingResource, groupsQuery?.groups, nodes, subscriptions])
-
-  // Get full dragging resource data for overlay display
-  const draggingResourceData = useMemo(() => {
-    if (!draggingResource) return null
-
-    const { type, nodeID, groupID, subscriptionID } = draggingResource
-
-    if (type === DraggableResourceType.node) {
-      const node = nodes.find((n: NodesQuery['nodes']['edges'][number]) => n.id === nodeID)
-      if (node) {
-        return { name: node.tag || node.name, protocol: node.protocol, address: node.address }
-      }
-    }
-
-    if (type === DraggableResourceType.subscription) {
-      const subscription = subscriptions.find(
-        (s: SubscriptionsQuery['subscriptions'][number]) => s.id === subscriptionID,
-      )
-      if (subscription) {
-        return { name: subscription.tag || subscription.link, protocol: null, address: null }
-      }
-    }
-
-    if (type === DraggableResourceType.subscription_node) {
-      const subscription = subscriptions.find(
-        (s: SubscriptionsQuery['subscriptions'][number]) => s.id === subscriptionID,
-      )
-      const node = subscription?.nodes.edges.find(
-        (n: SubscriptionsQuery['subscriptions'][number]['nodes']['edges'][number]) => n.id === nodeID,
-      )
-      if (node) {
-        return { name: node.name, protocol: node.protocol, address: null }
-      }
-    }
-
-    if (type === DraggableResourceType.groupNode) {
-      const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === groupID)
-      const node = group?.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === nodeID)
-      if (node) {
-        return { name: node.tag || node.name, protocol: node.protocol, address: node.address }
-      }
-    }
-
-    if (type === DraggableResourceType.groupSubscription) {
-      const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === groupID)
-      const subscription = group?.subscriptions.find(
-        (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === subscriptionID,
-      )
-      if (subscription) {
-        return { name: subscription.tag || subscription.link, protocol: null, address: null }
-      }
-    }
-
-    return { name: draggingResourceDisplayName || '', protocol: null, address: null }
-  }, [draggingResource, groupsQuery?.groups, nodes, subscriptions, draggingResourceDisplayName])
-
-  const onDragStart = (e: DragStartEvent) => {
-    const rect = e.active.rect.current.initial
-    setDraggingResource({
-      ...(e.active.data.current as DraggingResource),
-      rect: rect ? { width: rect.width, height: rect.height } : undefined,
-    })
-  }
-
   // Helper to parse group item IDs (format: groupId-node-nodeId or groupId-sub-subId)
   const parseGroupItemId = useCallback(
     (id: string): { groupId: string; type: 'node' | 'sub'; itemId: string } | null => {
@@ -269,195 +153,168 @@ export function OrchestratePage() {
     return result
   }, [])
 
-  const onDragEnd = (e: DragEndEvent) => {
-    const { active, over } = e
+  const onDragStart = (start: { draggableId: string; source: { droppableId: string } }) => {
+    const draggableId = start.draggableId
+    const droppableId = start.source.droppableId
 
-    if (over?.id && draggingResource) {
-      const overId = String(over.id)
-      const activeId = String(active.id)
-
-      // Check if sorting nodes (both are node-* IDs)
-      if (
-        draggingResource.type === DraggableResourceType.node &&
-        activeId.startsWith('node-') &&
-        overId.startsWith('node-')
-      ) {
-        const activeNodeId = activeId.replace('node-', '')
-        const overNodeId = overId.replace('node-', '')
-
-        if (activeNodeId !== overNodeId) {
-          const oldIndex = sortedNodeIds.indexOf(activeNodeId)
-          const newIndex = sortedNodeIds.indexOf(overNodeId)
-
-          if (oldIndex !== -1 && newIndex !== -1) {
-            setNodeSortOrder(arrayMove(sortedNodeIds, oldIndex, newIndex))
-          }
-        }
-
-        setDraggingResource(null)
-        return
+    // Determine the type based on droppableId
+    if (droppableId === 'node-list') {
+      const nodeId = draggableId.replace('node-', '')
+      setDraggingResource({ type: DraggableResourceType.node, nodeID: nodeId })
+    } else if (droppableId === 'subscription-list') {
+      const subId = draggableId.replace('subscription-', '')
+      setDraggingResource({ type: DraggableResourceType.subscription, subscriptionID: subId })
+    } else if (droppableId.endsWith('-nodes')) {
+      const groupId = droppableId.replace('-nodes', '')
+      const parsed = parseGroupItemId(draggableId)
+      if (parsed) {
+        setDraggingResource({ type: DraggableResourceType.groupNode, nodeID: parsed.itemId, groupID: groupId })
       }
-
-      // Check if sorting subscriptions (both are subscription-* IDs)
-      if (
-        draggingResource.type === DraggableResourceType.subscription &&
-        activeId.startsWith('subscription-') &&
-        overId.startsWith('subscription-')
-      ) {
-        const activeSubId = activeId.replace('subscription-', '')
-        const overSubId = overId.replace('subscription-', '')
-
-        if (activeSubId !== overSubId) {
-          const oldIndex = sortedSubscriptionIds.indexOf(activeSubId)
-          const newIndex = sortedSubscriptionIds.indexOf(overSubId)
-
-          if (oldIndex !== -1 && newIndex !== -1) {
-            setSubscriptionSortOrder(arrayMove(sortedSubscriptionIds, oldIndex, newIndex))
-          }
-        }
-
-        setDraggingResource(null)
-        return
-      }
-
-      // Handle group item dragging (groupId-node-nodeId or groupId-sub-subId)
-      const activeParsed = parseGroupItemId(activeId)
-      const overParsed = parseGroupItemId(overId)
-
-      if (activeParsed && overParsed) {
-        const sourceGroupId = activeParsed.groupId
-        const targetGroupId = overParsed.groupId
-
-        // Same group - handle sorting within group
-        if (sourceGroupId === targetGroupId && activeParsed.type === overParsed.type) {
-          const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === sourceGroupId)
-          if (group) {
-            if (activeParsed.type === 'node') {
-              const currentIds = group.nodes.map((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id)
-              const sortedIds = getGroupSortedIds(sourceGroupId, 'nodes', currentIds)
-
-              const oldIndex = sortedIds.indexOf(activeParsed.itemId)
-              const newIndex = sortedIds.indexOf(overParsed.itemId)
-
-              if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-                updateGroupSortOrder(sourceGroupId, 'nodes', arrayMove(sortedIds, oldIndex, newIndex))
-              }
-            } else {
-              const currentIds = group.subscriptions.map(
-                (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id,
-              )
-              const sortedIds = getGroupSortedIds(sourceGroupId, 'subscriptions', currentIds)
-
-              const oldIndex = sortedIds.indexOf(activeParsed.itemId)
-              const newIndex = sortedIds.indexOf(overParsed.itemId)
-
-              if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-                updateGroupSortOrder(sourceGroupId, 'subscriptions', arrayMove(sortedIds, oldIndex, newIndex))
-              }
-            }
-          }
-          setDraggingResource(null)
-          return
-        }
-
-        // Different groups - add to target group
-        const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === targetGroupId)
-        if (targetGroup) {
-          if (activeParsed.type === 'node') {
-            const nodeAlreadyInGroup = targetGroup.nodes.find(
-              (n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === activeParsed.itemId,
-            )
-            if (!nodeAlreadyInGroup) {
-              groupAddNodesMutation.mutate({ id: targetGroupId, nodeIDs: [activeParsed.itemId] })
-            }
-          } else {
-            const subAlreadyInGroup = targetGroup.subscriptions.find(
-              (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === activeParsed.itemId,
-            )
-            if (!subAlreadyInGroup) {
-              groupAddSubscriptionsMutation.mutate({ id: targetGroupId, subscriptionIDs: [activeParsed.itemId] })
-            }
-          }
-        }
-        setDraggingResource(null)
-        return
-      }
-
-      // Handle dropping group item to group card (overId is a group ID)
-      if (activeParsed) {
-        // Handle dropping group node back to Node section - remove from group
-        // Check for NODE_DROPPABLE_ID or node items (node-xxx format)
-        if (activeParsed.type === 'node' && (overId === NODE_DROPPABLE_ID || overId.startsWith('node-'))) {
-          groupDelNodesMutation.mutate({ id: activeParsed.groupId, nodeIDs: [activeParsed.itemId] })
-          setDraggingResource(null)
-          return
-        }
-
-        const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === overId)
-        if (targetGroup) {
-          if (activeParsed.type === 'node') {
-            const nodeAlreadyInGroup = targetGroup.nodes.find(
-              (n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === activeParsed.itemId,
-            )
-            if (!nodeAlreadyInGroup) {
-              groupAddNodesMutation.mutate({ id: overId, nodeIDs: [activeParsed.itemId] })
-            }
-          } else {
-            const subAlreadyInGroup = targetGroup.subscriptions.find(
-              (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === activeParsed.itemId,
-            )
-            if (!subAlreadyInGroup) {
-              groupAddSubscriptionsMutation.mutate({ id: overId, subscriptionIDs: [activeParsed.itemId] })
-            }
-          }
-          setDraggingResource(null)
-          return
-        }
-      }
-
-      // Handle dropping to group (from node/subscription panels)
-      // Try to find group directly, or extract group ID from group item ID
-      const overItemParsed = parseGroupItemId(overId)
-      const targetGroupId = overItemParsed ? overItemParsed.groupId : overId
-      const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === targetGroupId)
-
-      if (
-        [DraggableResourceType.node, DraggableResourceType.groupNode].includes(draggingResource.type) &&
-        draggingResource?.nodeID &&
-        group &&
-        !group.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === draggingResource.nodeID)
-      ) {
-        groupAddNodesMutation.mutate({ id: targetGroupId, nodeIDs: [draggingResource.nodeID] })
-      }
-
-      if (
-        [DraggableResourceType.subscription, DraggableResourceType.groupSubscription].includes(draggingResource.type) &&
-        draggingResource.subscriptionID &&
-        group &&
-        !group.subscriptions.find(
-          (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === draggingResource.subscriptionID,
-        )
-      ) {
-        groupAddSubscriptionsMutation.mutate({
-          id: targetGroupId,
-          subscriptionIDs: [draggingResource.subscriptionID],
+    } else if (droppableId.endsWith('-subscriptions')) {
+      const groupId = droppableId.replace('-subscriptions', '')
+      const parsed = parseGroupItemId(draggableId)
+      if (parsed) {
+        setDraggingResource({
+          type: DraggableResourceType.groupSubscription,
+          subscriptionID: parsed.itemId,
+          groupID: groupId,
         })
       }
-
-      if (
-        draggingResource.type === DraggableResourceType.subscription_node &&
-        draggingResource.nodeID &&
-        group &&
-        !group.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === draggingResource.nodeID)
-      ) {
-        groupAddNodesMutation.mutate({ id: targetGroupId, nodeIDs: [draggingResource.nodeID] })
-      }
     }
-
-    setDraggingResource(null)
   }
 
-  const dndAreaRef = useRef<HTMLDivElement>(null)
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination, draggableId } = result
+
+    setDraggingResource(null)
+
+    if (!destination) return
+
+    const sourceDroppableId = source.droppableId
+    const destDroppableId = destination.droppableId
+
+    // Handle node list sorting
+    if (sourceDroppableId === 'node-list' && destDroppableId === 'node-list') {
+      if (source.index !== destination.index) {
+        setNodeSortOrder(arrayMove(sortedNodeIds, source.index, destination.index))
+      }
+      return
+    }
+
+    // Handle subscription list sorting
+    if (sourceDroppableId === 'subscription-list' && destDroppableId === 'subscription-list') {
+      if (source.index !== destination.index) {
+        setSubscriptionSortOrder(arrayMove(sortedSubscriptionIds, source.index, destination.index))
+      }
+      return
+    }
+
+    // Handle group node sorting within same group OR cross-group drag
+    if (sourceDroppableId.endsWith('-nodes') && destDroppableId.endsWith('-nodes')) {
+      const sourceGroupId = sourceDroppableId.replace('-nodes', '')
+      const destGroupId = destDroppableId.replace('-nodes', '')
+
+      if (sourceGroupId === destGroupId) {
+        // Same group sorting
+        if (source.index !== destination.index) {
+          const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === sourceGroupId)
+          if (group) {
+            const currentIds = group.nodes.map((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id)
+            const sortedIds = getGroupSortedIds(sourceGroupId, 'nodes', currentIds)
+            updateGroupSortOrder(sourceGroupId, 'nodes', arrayMove(sortedIds, source.index, destination.index))
+          }
+        }
+      } else {
+        // Cross-group drag - add node to target group
+        const parsed = parseGroupItemId(draggableId)
+        if (parsed) {
+          const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === destGroupId)
+          if (
+            targetGroup &&
+            !targetGroup.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === parsed.itemId)
+          ) {
+            groupAddNodesMutation.mutate({ id: destGroupId, nodeIDs: [parsed.itemId] })
+          }
+        }
+      }
+      return
+    }
+
+    // Handle group subscription sorting within same group OR cross-group drag
+    if (sourceDroppableId.endsWith('-subscriptions') && destDroppableId.endsWith('-subscriptions')) {
+      const sourceGroupId = sourceDroppableId.replace('-subscriptions', '')
+      const destGroupId = destDroppableId.replace('-subscriptions', '')
+
+      if (sourceGroupId === destGroupId) {
+        // Same group sorting
+        if (source.index !== destination.index) {
+          const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === sourceGroupId)
+          if (group) {
+            const currentIds = group.subscriptions.map(
+              (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id,
+            )
+            const sortedIds = getGroupSortedIds(sourceGroupId, 'subscriptions', currentIds)
+            updateGroupSortOrder(sourceGroupId, 'subscriptions', arrayMove(sortedIds, source.index, destination.index))
+          }
+        }
+      } else {
+        // Cross-group drag - add subscription to target group
+        const parsed = parseGroupItemId(draggableId)
+        if (parsed) {
+          const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === destGroupId)
+          if (
+            targetGroup &&
+            !targetGroup.subscriptions.find(
+              (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === parsed.itemId,
+            )
+          ) {
+            groupAddSubscriptionsMutation.mutate({ id: destGroupId, subscriptionIDs: [parsed.itemId] })
+          }
+        }
+      }
+      return
+    }
+
+    // Handle dropping node from node-list to group
+    if (sourceDroppableId === 'node-list' && destDroppableId.endsWith('-nodes')) {
+      const nodeId = draggableId.replace('node-', '')
+      const targetGroupId = destDroppableId.replace('-nodes', '')
+      const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === targetGroupId)
+
+      if (
+        targetGroup &&
+        !targetGroup.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === nodeId)
+      ) {
+        groupAddNodesMutation.mutate({ id: targetGroupId, nodeIDs: [nodeId] })
+      }
+      return
+    }
+
+    // Handle dropping subscription from subscription-list to group
+    if (sourceDroppableId === 'subscription-list' && destDroppableId.endsWith('-subscriptions')) {
+      const subId = draggableId.replace('subscription-', '')
+      const targetGroupId = destDroppableId.replace('-subscriptions', '')
+      const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === targetGroupId)
+
+      if (
+        targetGroup &&
+        !targetGroup.subscriptions.find((s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === subId)
+      ) {
+        groupAddSubscriptionsMutation.mutate({ id: targetGroupId, subscriptionIDs: [subId] })
+      }
+      return
+    }
+
+    // Handle dropping group node back to node list (remove from group)
+    if (sourceDroppableId.endsWith('-nodes') && destDroppableId === NODE_DROPPABLE_ID) {
+      const sourceGroupId = sourceDroppableId.replace('-nodes', '')
+      const parsed = parseGroupItemId(draggableId)
+      if (parsed) {
+        groupDelNodesMutation.mutate({ id: sourceGroupId, nodeIDs: [parsed.itemId] })
+      }
+    }
+  }
+
   const matchSmallScreen = useMediaQuery('(max-width: 640px)')
 
   return (
@@ -468,39 +325,16 @@ export function OrchestratePage() {
         <Routing />
       </div>
 
-      <div ref={dndAreaRef} className={`grid gap-5 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
-        <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
+      <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+        <div className={`grid gap-5 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
           <GroupResource highlight={!!draggingResource} draggingResource={draggingResource} />
           <NodeResource
             sortedNodes={sortedNodes}
             highlight={draggingResource?.type === DraggableResourceType.groupNode}
           />
           <SubscriptionResource sortedSubscriptions={sortedSubscriptions} />
-
-          <DragOverlay zIndex={9999} modifiers={[snapCenterToCursor]}>
-            {draggingResource && draggingResourceData && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-card shadow-xl cursor-grabbing ring-2 ring-primary/30 min-w-[180px] max-w-[280px]">
-                <GripVertical className="h-3.5 w-3.5 text-primary/60 shrink-0" />
-
-                {draggingResourceData.protocol && (
-                  <span className="shrink-0 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded bg-primary/15 text-primary">
-                    {draggingResourceData.protocol}
-                  </span>
-                )}
-
-                <div className="flex-1 min-w-0">
-                  <span className="text-xs font-medium truncate block">{draggingResourceData.name}</span>
-                  {draggingResourceData.address && (
-                    <span className="text-[10px] text-muted-foreground truncate block mt-0.5">
-                      {draggingResourceData.address}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-          </DragOverlay>
-        </DndContext>
-      </div>
+        </div>
+      </DragDropContext>
     </div>
   )
 }

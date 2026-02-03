@@ -1,4 +1,3 @@
-import { useDroppable } from '@dnd-kit/core'
 import { Check, Trash2, Type, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -8,10 +7,8 @@ import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { SimpleTooltip } from '~/components/ui/tooltip'
-import { cn } from '~/lib/utils'
 
 export function DroppableGroupCard({
-  id,
   name,
   onRemove,
   onRename,
@@ -26,7 +23,6 @@ export function DroppableGroupCard({
   children?: React.ReactNode
 }) {
   const { t } = useTranslation()
-  const { isOver, setNodeRef } = useDroppable({ id })
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState(name)
@@ -73,7 +69,7 @@ export function DroppableGroupCard({
 
   return (
     <>
-      <Card ref={setNodeRef} withBorder shadow="sm" padding="sm" className={cn(isOver && 'opacity-50')}>
+      <Card withBorder shadow="sm" padding="sm">
         <div className="border-b pb-2">
           <div className="flex items-center justify-between">
             {isEditing ? (

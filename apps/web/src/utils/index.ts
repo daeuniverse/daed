@@ -1,2 +1,2 @@
-export * from './dnd-kit'
+export * from './dnd'
 export * from './helper'

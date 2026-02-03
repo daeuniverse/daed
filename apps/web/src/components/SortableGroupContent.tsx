@@ -1,10 +1,9 @@
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { Droppable } from '@hello-pangea/dnd'
 import { useStore } from '@nanostores/react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
-import { DraggableResourceType } from '~/constants'
 import { groupSortOrdersAtom } from '~/store'
 
 interface GroupNode {
@@ -110,9 +109,6 @@ export function SortableGroupContent({
     return sortedSubscriptionIds.map((id) => subMap.get(id)).filter(Boolean) as GroupSubscription[]
   }, [subscriptions, sortedSubscriptionIds])
 
-  const nodeIds = sortedNodes.map((n) => `${groupId}-node-${n.id}`)
-  const subscriptionIds = sortedSubscriptions.map((s) => `${groupId}-sub-${s.id}`)
-
   return (
     <Accordion type="multiple" className="w-full" value={effectiveExpandedSections} onValueChange={setExpandedSections}>
       <AccordionItem value="node" className="border-none">
@@ -121,26 +117,27 @@ export function SortableGroupContent({
         </AccordionTrigger>
 
         <AccordionContent>
-          <SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
-            <div className="flex flex-col gap-2">
-              {sortedNodes.map(({ id: nodeId, tag, name, protocol, address, subscriptionID }) => (
-                <SortableResourceBadge
-                  key={nodeId}
-                  id={`${groupId}-node-${nodeId}`}
-                  nodeID={nodeId}
-                  groupID={groupId}
-                  type={DraggableResourceType.groupNode}
-                  name={tag || name}
-                  protocol={protocol}
-                  address={address}
-                  onRemove={() => onDelNode(nodeId)}
-                >
-                  {subscriptionID && allSubscriptions?.find((s) => s.id === subscriptionID)?.tag}
-                </SortableResourceBadge>
-              ))}
-              {nodes.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">{t('empty')}</p>}
-            </div>
-          </SortableContext>
+          <Droppable droppableId={`${groupId}-nodes`} type="NODE">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps} className="flex flex-col gap-2 min-h-[40px]">
+                {sortedNodes.map(({ id: nodeId, tag, name, protocol, address, subscriptionID }, index) => (
+                  <SortableResourceBadge
+                    key={nodeId}
+                    id={`${groupId}-node-${nodeId}`}
+                    index={index}
+                    name={tag || name}
+                    protocol={protocol}
+                    address={address}
+                    onRemove={() => onDelNode(nodeId)}
+                  >
+                    {subscriptionID && allSubscriptions?.find((s) => s.id === subscriptionID)?.tag}
+                  </SortableResourceBadge>
+                ))}
+                {provided.placeholder}
+                {nodes.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">{t('empty')}</p>}
+              </div>
+            )}
+          </Droppable>
         </AccordionContent>
       </AccordionItem>
 
@@ -150,24 +147,25 @@ export function SortableGroupContent({
         </AccordionTrigger>
 
         <AccordionContent>
-          <SortableContext items={subscriptionIds} strategy={verticalListSortingStrategy}>
-            <div className="flex flex-col gap-1.5">
-              {sortedSubscriptions.map(({ id: subscriptionId, tag, link }) => (
-                <SortableResourceBadge
-                  key={subscriptionId}
-                  id={`${groupId}-sub-${subscriptionId}`}
-                  groupID={groupId}
-                  subscriptionID={subscriptionId}
-                  type={DraggableResourceType.groupSubscription}
-                  name={tag || link}
-                  onRemove={() => onDelSubscription(subscriptionId)}
-                />
-              ))}
-              {subscriptions.length === 0 && (
-                <p className="text-xs text-muted-foreground text-center py-2">{t('empty')}</p>
-              )}
-            </div>
-          </SortableContext>
+          <Droppable droppableId={`${groupId}-subscriptions`} type="SUBSCRIPTION">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps} className="flex flex-col gap-1.5 min-h-[40px]">
+                {sortedSubscriptions.map(({ id: subscriptionId, tag, link }, index) => (
+                  <SortableResourceBadge
+                    key={subscriptionId}
+                    id={`${groupId}-sub-${subscriptionId}`}
+                    index={index}
+                    name={tag || link}
+                    onRemove={() => onDelSubscription(subscriptionId)}
+                  />
+                ))}
+                {provided.placeholder}
+                {subscriptions.length === 0 && (
+                  <p className="text-xs text-muted-foreground text-center py-2">{t('empty')}</p>
+                )}
+              </div>
+            )}
+          </Droppable>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

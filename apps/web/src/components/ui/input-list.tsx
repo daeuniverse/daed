@@ -1,15 +1,15 @@
-import type { DragEndEvent } from '@dnd-kit/core'
-import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import type { DraggableProvided, DraggableStateSnapshot, DropResult } from '@hello-pangea/dnd'
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 import { GripVertical, Minus, Plus } from 'lucide-react'
 import { useCallback, useId, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
+import { getInstantDropStyle } from '~/utils'
 
 interface InputListProps {
   label: string
@@ -22,69 +22,99 @@ interface InputListProps {
   errors?: (string | undefined)[]
 }
 
-interface SortableInputItemProps {
-  id: string
-  value: string
-  placeholder?: string
-  error?: string
-  onChange: (value: string) => void
-  onRemove: () => void
-  removeLabel: string
-  dragLabel: string
-}
-
-function SortableInputItem({
-  id,
+// Render the draggable item content (shared between normal and clone)
+/* eslint-disable react-hooks/refs -- provided object from @hello-pangea/dnd is not a React ref */
+function DraggableItemContent({
+  provided,
+  snapshot,
   value,
   placeholder,
   error,
   onChange,
   onRemove,
   removeLabel,
-  dragLabel,
-}: SortableInputItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
-
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-  }
-
+}: {
+  provided: DraggableProvided
+  snapshot: DraggableStateSnapshot
+  value: string
+  placeholder?: string
+  error?: string
+  onChange?: (value: string) => void
+  onRemove?: () => void
+  removeLabel?: string
+}) {
   return (
-    <div ref={setNodeRef} style={style} className="flex flex-col gap-1">
-      <div className={cn('flex items-center gap-2 rounded-lg transition-all', isDragging && 'opacity-50 z-10')}>
+    <div
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      style={getInstantDropStyle(provided, snapshot)}
+      className="flex flex-col gap-1"
+    >
+      <div
+        className={cn(
+          'flex items-center gap-2 px-2 py-1.5 rounded-lg border bg-card',
+          'transition-[shadow,border-color,opacity] duration-200',
+          'hover:border-primary/30',
+          snapshot.isDragging && 'opacity-95 shadow-lg border-primary/50 z-[9999]',
+        )}
+      >
         <div
-          className="flex items-center justify-center h-8 w-6 cursor-grab active:cursor-grabbing touch-none shrink-0"
-          aria-label={dragLabel}
-          {...listeners}
-          {...attributes}
+          className="flex items-center justify-center h-6 w-5 cursor-grab active:cursor-grabbing touch-none shrink-0"
+          {...provided.dragHandleProps}
         >
-          <GripVertical className="h-4 w-4 text-muted-foreground/50" />
+          <GripVertical className="h-4 w-4 text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors" />
         </div>
 
         <div className="min-w-0 flex-1">
           <Input
             value={value}
             placeholder={placeholder}
-            className={cn(error && 'border-destructive')}
-            onChange={(e) => onChange(e.target.value)}
+            className={cn('h-8', error && 'border-destructive')}
+            onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+            readOnly={!onChange}
           />
         </div>
 
-        <Button
-          type="button"
-          variant="destructive"
-          size="icon"
-          className="h-8 w-8 shrink-0"
-          onClick={onRemove}
-          aria-label={removeLabel}
-        >
-          <Minus className="h-3 w-3" />
-        </Button>
+        {onRemove && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            onClick={onRemove}
+            aria-label={removeLabel}
+          >
+            <Minus className="h-3.5 w-3.5" />
+          </Button>
+        )}
       </div>
       {error && <p className="text-xs text-destructive pl-8">{error}</p>}
     </div>
   )
+}
+/* eslint-enable react-hooks/refs */
+
+// Helper function to reorder array
+function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
+  const result = Array.from(list)
+  const [removed] = result.splice(startIndex, 1)
+  result.splice(endIndex, 0, removed)
+  return result
+}
+
+// Portal wrapper for dragging items (fixes position:fixed issues in modals with transforms)
+function PortalAwareItem({
+  snapshot,
+  children,
+}: {
+  provided: DraggableProvided
+  snapshot: DraggableStateSnapshot
+  children: React.ReactNode
+}) {
+  if (snapshot.isDragging) {
+    return createPortal(children, document.body)
+  }
+  return <>{children}</>
 }
 
 export function InputList({
@@ -99,13 +129,6 @@ export function InputList({
 }: InputListProps) {
   const { t } = useTranslation()
   const baseId = useId()
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    }),
-  )
 
   // Track stable IDs for each item
   const [idCounter, setIdCounter] = useState(values.length)
@@ -122,21 +145,23 @@ export function InputList({
 
   const currentIds = getItemIds()
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-
-    if (over && active.id !== over.id) {
-      const oldIndex = currentIds.indexOf(String(active.id))
-      const newIndex = currentIds.indexOf(String(over.id))
-
-      if (oldIndex !== -1 && newIndex !== -1) {
-        // Reorder both values and IDs together
-        const newValues = arrayMove(values, oldIndex, newIndex)
-        const newItemIds = arrayMove(currentIds, oldIndex, newIndex)
-        setItemIds(newItemIds)
-        onChange(newValues)
-      }
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) {
+      return
     }
+
+    const sourceIndex = result.source.index
+    const destIndex = result.destination.index
+
+    if (sourceIndex === destIndex) {
+      return
+    }
+
+    // Reorder both values and IDs together
+    const newValues = reorder(values, sourceIndex, destIndex)
+    const newItemIds = reorder(currentIds, sourceIndex, destIndex)
+    setItemIds(newItemIds)
+    onChange(newValues)
   }
 
   const handleRemove = (index: number) => {
@@ -173,27 +198,44 @@ export function InputList({
 
       {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={currentIds} strategy={verticalListSortingStrategy}>
-          {values.map((value, index) => (
-            <SortableInputItem
-              key={currentIds[index]}
-              id={currentIds[index]}
-              value={value}
-              placeholder={placeholder}
-              error={errors?.[index]}
-              onChange={(newValue) => {
-                const newValues = [...values]
-                newValues[index] = newValue
-                onChange(newValues)
-              }}
-              onRemove={() => handleRemove(index)}
-              removeLabel={t('a11y.removeItem')}
-              dragLabel={t('a11y.dragToReorder')}
-            />
-          ))}
-        </SortableContext>
-      </DndContext>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="input-list">
+          {(droppableProvided, droppableSnapshot) => (
+            <div
+              ref={droppableProvided.innerRef}
+              {...droppableProvided.droppableProps}
+              className={cn(
+                'flex flex-col gap-2 min-h-[40px] rounded-lg p-1 -m-1',
+                droppableSnapshot.isDraggingOver && 'bg-primary/5',
+              )}
+            >
+              {values.map((value, index) => (
+                <Draggable key={currentIds[index]} draggableId={currentIds[index]} index={index}>
+                  {(provided, snapshot) => (
+                    <PortalAwareItem provided={provided} snapshot={snapshot}>
+                      <DraggableItemContent
+                        provided={provided}
+                        snapshot={snapshot}
+                        value={value}
+                        placeholder={placeholder}
+                        error={errors?.[index]}
+                        onChange={(newValue) => {
+                          const newValues = [...values]
+                          newValues[index] = newValue
+                          onChange(newValues)
+                        }}
+                        onRemove={() => handleRemove(index)}
+                        removeLabel={t('a11y.removeItem')}
+                      />
+                    </PortalAwareItem>
+                  )}
+                </Draggable>
+              ))}
+              {droppableProvided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>

@@ -1,7 +1,6 @@
 import type { QRCodeModalRef } from '~/components/QRCodeModal.tsx'
 import type { NodesQuery } from '~/schemas/gql/graphql.ts'
-import { useDroppable } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { Droppable } from '@hello-pangea/dnd'
 import { Cloud, CloudUpload, Eye, FileInput, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,10 +12,9 @@ import { QRCodeModal } from '~/components/QRCodeModal.tsx'
 import { Section } from '~/components/Section.tsx'
 import { Button } from '~/components/ui/button.tsx'
 import { SimpleTooltip } from '~/components/ui/tooltip.tsx'
-import { DraggableResourceType } from '~/constants/index.ts'
 import { cn } from '~/lib/utils'
 
-export const NODE_DROPPABLE_ID = 'node-section-droppable'
+export const NODE_DROPPABLE_ID = 'node-list'
 
 export function NodeResource({
   sortedNodes,
@@ -41,35 +39,34 @@ export function NodeResource({
   const removeNodesMutation = useRemoveNodesMutation()
   const importNodesMutation = useImportNodesMutation()
 
-  const { isOver, setNodeRef } = useDroppable({ id: NODE_DROPPABLE_ID })
-
-  const nodeIds = sortedNodes.map((n) => `node-${n.id}`)
-
   return (
-    <div ref={setNodeRef} className={cn('transition-colors rounded-sm', isOver && 'bg-primary/10')}>
-      <Section
-        title={t('node')}
-        icon={<Cloud className="h-5 w-5" />}
-        iconPlus={<CloudUpload className="h-4 w-4" />}
-        onCreate={() => setOpenedImportNodeFormModal(true)}
-        actions={
-          <SimpleTooltip label={t('actions.configureNode')}>
-            <Button variant="ghost" size="icon" onClick={() => setOpenedConfigureNodeFormModal(true)}>
-              <FileInput className="h-4 w-4" />
-            </Button>
-          </SimpleTooltip>
-        }
-        bordered
-        highlight={highlight}
-      >
-        <SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
-          <div className="flex flex-col gap-3">
-            {sortedNodes.map(({ id, name, tag, protocol, link }) => (
+    <Section
+      title={t('node')}
+      icon={<Cloud className="h-5 w-5" />}
+      iconPlus={<CloudUpload className="h-4 w-4" />}
+      onCreate={() => setOpenedImportNodeFormModal(true)}
+      actions={
+        <SimpleTooltip label={t('actions.configureNode')}>
+          <Button variant="ghost" size="icon" onClick={() => setOpenedConfigureNodeFormModal(true)}>
+            <FileInput className="h-4 w-4" />
+          </Button>
+        </SimpleTooltip>
+      }
+      bordered
+      highlight={highlight}
+    >
+      <Droppable droppableId={NODE_DROPPABLE_ID} type="NODE">
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={cn('flex flex-col gap-3 min-h-[100px]', snapshot.isDraggingOver && 'bg-primary/5 rounded-lg')}
+          >
+            {sortedNodes.map(({ id, name, tag, protocol, link }, index) => (
               <SortableNodeCard
                 key={id}
                 id={`node-${id}`}
-                nodeID={id}
-                type={DraggableResourceType.node}
+                index={index}
                 name={tag || name}
                 leftSection={protocol}
                 actions={
@@ -116,32 +113,33 @@ export function NodeResource({
                 <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
               </SortableNodeCard>
             ))}
+            {provided.placeholder}
           </div>
-        </SortableContext>
+        )}
+      </Droppable>
 
-        <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={() => setOpenedQRCodeModal(false)} />
+      <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={() => setOpenedQRCodeModal(false)} />
 
-        <ImportResourceFormModal
-          title={t('node')}
-          opened={openedImportNodeFormModal}
-          onClose={() => setOpenedImportNodeFormModal(false)}
-          handleSubmit={async (values) => {
-            await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
-          }}
-        />
+      <ImportResourceFormModal
+        title={t('node')}
+        opened={openedImportNodeFormModal}
+        onClose={() => setOpenedImportNodeFormModal(false)}
+        handleSubmit={async (values) => {
+          await importNodesMutation.mutateAsync(values.resources.map(({ link, tag }) => ({ link, tag })))
+        }}
+      />
 
-        <ConfigureNodeFormModal
-          opened={openedConfigureNodeFormModal}
-          onClose={() => setOpenedConfigureNodeFormModal(false)}
-        />
+      <ConfigureNodeFormModal
+        opened={openedConfigureNodeFormModal}
+        onClose={() => setOpenedConfigureNodeFormModal(false)}
+      />
 
-        <EditNodeFormModal
-          opened={openedEditNodeFormModal}
-          onClose={() => setOpenedEditNodeFormModal(false)}
-          node={editingNode}
-        />
-      </Section>
-    </div>
+      <EditNodeFormModal
+        opened={openedEditNodeFormModal}
+        onClose={() => setOpenedEditNodeFormModal(false)}
+        node={editingNode}
+      />
+    </Section>
   )
 }
 

@@ -1,4 +1,3 @@
-import type { UniqueIdentifier } from '@dnd-kit/core'
 import type { MODE, ThemeId } from '~/constants'
 import { persistentAtom, persistentMap } from '@nanostores/persistent'
 import { atom, map } from 'nanostores'
@@ -9,12 +8,12 @@ export type ColorScheme = 'light' | 'dark'
 export type ThemeMode = 'system' | 'light' | 'dark'
 
 export interface PersistentSortableKeys {
-  nodeSortableKeys: UniqueIdentifier[]
-  subscriptionSortableKeys: UniqueIdentifier[]
-  configSortableKeys: UniqueIdentifier[]
-  routingSortableKeys: UniqueIdentifier[]
-  dnsSortableKeys: UniqueIdentifier[]
-  groupSortableKeys: UniqueIdentifier[]
+  nodeSortableKeys: string[]
+  subscriptionSortableKeys: string[]
+  configSortableKeys: string[]
+  routingSortableKeys: string[]
+  dnsSortableKeys: string[]
+  groupSortableKeys: string[]
 }
 
 // Group-specific sort order storage (groupId -> { nodes: string[], subscriptions: string[] })

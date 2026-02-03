@@ -1,65 +1,40 @@
-import type { DraggableResourceType } from '~/constants'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-
+import type { DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd'
+import { Draggable } from '@hello-pangea/dnd'
 import { GripVertical, X } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { SimpleTooltip } from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
+import { getInstantDropStyle } from '~/utils'
 
 export function SortableResourceBadge({
   id,
+  index,
   name,
-  type,
-  nodeID,
-  groupID,
-  subscriptionID,
   protocol,
   address,
   onRemove,
-  disabled,
   children,
 }: {
   id: string
+  index: number
   name: string
-  type: DraggableResourceType
-  nodeID?: string
-  groupID?: string
-  subscriptionID?: string
   protocol?: string | null
   address?: string | null
   onRemove?: () => void
-  disabled?: boolean
   children?: React.ReactNode
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id,
-    data: {
-      type,
-      nodeID,
-      groupID,
-      subscriptionID,
-    },
-    disabled,
-  })
-
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-  }
-
-  const card = (
+  const card = (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
     <div
-      ref={setNodeRef}
-      style={style}
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      style={getInstantDropStyle(provided, snapshot)}
       className={cn(
-        'group relative flex items-center gap-2 px-3 py-2 rounded-lg border bg-card',
-        'transition-all duration-200 touch-none select-none',
+        'group relative flex items-center gap-2 px-3 py-2 rounded-lg border bg-card select-none',
+        'transition-[shadow,border-color,opacity,background-color] duration-200',
         'hover:shadow-sm hover:border-primary/30 hover:bg-accent/50',
-        isDragging ? 'opacity-50 z-10 cursor-grabbing shadow-lg ring-2 ring-primary/20' : 'cursor-grab',
+        snapshot.isDragging ? 'opacity-90 z-10 cursor-grabbing shadow-lg ring-2 ring-primary/20' : 'cursor-grab',
       )}
-      {...listeners}
-      {...attributes}
     >
       {/* Drag handle */}
       <GripVertical className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0 group-hover:text-muted-foreground/70 transition-colors" />
@@ -95,9 +70,15 @@ export function SortableResourceBadge({
     </div>
   )
 
-  if (children) {
-    return <SimpleTooltip label={<span className="text-xs">{children}</span>}>{card}</SimpleTooltip>
-  }
-
-  return card
+  return (
+    <Draggable draggableId={id} index={index}>
+      {(provided, snapshot) => {
+        const cardElement = card(provided, snapshot)
+        if (children) {
+          return <SimpleTooltip label={<span className="text-xs">{children}</span>}>{cardElement}</SimpleTooltip>
+        }
+        return cardElement
+      }}
+    </Draggable>
+  )
 }

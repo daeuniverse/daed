@@ -1,54 +1,36 @@
-import type { DraggableResourceType } from '~/constants'
-import { useDraggable } from '@dnd-kit/core'
-
+import type { DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd'
+import { Draggable } from '@hello-pangea/dnd'
 import { GripVertical, X } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { SimpleTooltip } from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
+import { getInstantDropStyle } from '~/utils'
 
 export function DraggableResourceBadge({
   id,
+  index,
   name,
-  type,
-  nodeID,
-  groupID,
-  subscriptionID,
   onRemove,
-  dragDisabled,
   children,
 }: {
   id: string
+  index: number
   name: string
-  type: DraggableResourceType
-  nodeID?: string
-  groupID?: string
-  subscriptionID?: string
   onRemove?: () => void
-  dragDisabled?: boolean
   children?: React.ReactNode
 }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id,
-    data: {
-      type,
-      nodeID,
-      groupID,
-      subscriptionID,
-    },
-    disabled: dragDisabled,
-  })
-
-  const card = (
+  const card = (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
     <div
-      ref={setNodeRef}
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      style={getInstantDropStyle(provided, snapshot)}
       className={cn(
-        'group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border bg-card',
-        'transition-all duration-150 touch-none select-none',
+        'group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border bg-card select-none',
+        'transition-[shadow,border-color,opacity] duration-150',
         'hover:shadow-sm hover:border-primary/30',
-        isDragging ? 'opacity-50 z-10 cursor-grabbing shadow-md' : 'cursor-grab',
+        snapshot.isDragging ? 'opacity-90 z-10 cursor-grabbing shadow-md' : 'cursor-grab',
       )}
-      {...listeners}
-      {...attributes}
     >
       {/* Drag handle */}
       <GripVertical className="h-3 w-3 text-muted-foreground/50 shrink-0" />
@@ -74,9 +56,15 @@ export function DraggableResourceBadge({
     </div>
   )
 
-  if (children) {
-    return <SimpleTooltip label={<span className="text-xs">{children}</span>}>{card}</SimpleTooltip>
-  }
-
-  return card
+  return (
+    <Draggable draggableId={id} index={index}>
+      {(provided, snapshot) => {
+        const cardElement = card(provided, snapshot)
+        if (children) {
+          return <SimpleTooltip label={<span className="text-xs">{children}</span>}>{cardElement}</SimpleTooltip>
+        }
+        return cardElement
+      }}
+    </Draggable>
+  )
 }

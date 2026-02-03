@@ -1,6 +1,6 @@
 import type { QRCodeModalRef } from '~/components/QRCodeModal'
 import type { SubscriptionsQuery } from '~/schemas/gql/graphql'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { Droppable } from '@hello-pangea/dnd'
 import dayjs from 'dayjs'
 import { CloudCog, CloudUpload, Download, Eye, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
@@ -24,8 +24,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/
 import { Button } from '~/components/ui/button'
 import { SimpleTooltip } from '~/components/ui/tooltip'
 import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
-import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
+import { cn } from '~/lib/utils'
 
 export function SubscriptionResource({
   sortedSubscriptions,
@@ -60,8 +60,6 @@ export function SubscriptionResource({
 
   const updateSubscriptionCronMutation = useUpdateSubscriptionCronMutation()
 
-  const subscriptionIds = sortedSubscriptions.map((s) => `subscription-${s.id}`)
-
   return (
     <Section
       title={t('subscription')}
@@ -86,97 +84,103 @@ export function SubscriptionResource({
         )
       }
     >
-      <SortableContext items={subscriptionIds} strategy={verticalListSortingStrategy}>
-        <div className="flex flex-col gap-3">
-          {sortedSubscriptions.map(({ id: subscriptionID, tag, link, updatedAt, cronExp, cronEnable, nodes }) => (
-            <SortableSubscriptionCard
-              key={subscriptionID}
-              id={`subscription-${subscriptionID}`}
-              subscriptionID={subscriptionID}
-              type={DraggableResourceType.subscription}
-              name={tag || link}
-              leftSection={`${nodes.edges.length} ${t('node')}`}
-              actions={
-                <Fragment>
-                  <SimpleTooltip label={t('actions.edit')}>
-                    <Button
-                      variant="ghost"
-                      size="xs"
-                      className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                      onClick={() => {
-                        setEditingSubscription({
-                          id: subscriptionID,
-                          link,
-                          tag: tag || '',
-                          cronExp,
-                          cronEnable,
-                        })
-                        openEditSubscriptionFormModal()
-                      }}
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                  </SimpleTooltip>
-                  <SimpleTooltip label={t('actions.viewQRCode')}>
-                    <Button
-                      variant="ghost"
-                      size="xs"
-                      className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                      onClick={() => {
-                        qrCodeModalRef.current?.setProps({
-                          name: tag!,
-                          link,
-                        })
-                        openQRCodeModal()
-                      }}
-                    >
-                      <Eye className="h-3.5 w-3.5" />
-                    </Button>
-                  </SimpleTooltip>
-                  <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
-                </Fragment>
-              }
-              onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
-            >
-              <div className="flex flex-wrap items-center gap-2 text-xs opacity-70">
-                <span>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</span>
-                {cronEnable && (
-                  <span className="inline-flex items-center gap-1 text-primary">
-                    <span>⏱</span>
-                    <span>{cronExp}</span>
-                  </span>
-                )}
-              </div>
-
-              <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
-
-              <Accordion type="single" collapsible defaultValue="node" className="w-full mt-2">
-                <AccordionItem value="node" className="border-none">
-                  <AccordionTrigger className="text-xs py-1 hover:no-underline">
-                    {t('actions.show content')}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {nodes.edges.map(({ id, name }) => (
-                        <DraggableResourceBadge
-                          key={id}
-                          name={name}
-                          id={`subscription-node-${id}`}
-                          nodeID={id}
-                          type={DraggableResourceType.subscription_node}
-                          subscriptionID={subscriptionID}
+      <Droppable droppableId="subscription-list" type="SUBSCRIPTION">
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={cn('flex flex-col gap-3 min-h-[100px]', snapshot.isDraggingOver && 'bg-primary/5 rounded-lg')}
+          >
+            {sortedSubscriptions.map(
+              ({ id: subscriptionID, tag, link, updatedAt, cronExp, cronEnable, nodes }, index) => (
+                <SortableSubscriptionCard
+                  key={subscriptionID}
+                  id={`subscription-${subscriptionID}`}
+                  index={index}
+                  name={tag || link}
+                  leftSection={`${nodes.edges.length} ${t('node')}`}
+                  actions={
+                    <Fragment>
+                      <SimpleTooltip label={t('actions.edit')}>
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                          onClick={() => {
+                            setEditingSubscription({
+                              id: subscriptionID,
+                              link,
+                              tag: tag || '',
+                              cronExp,
+                              cronEnable,
+                            })
+                            openEditSubscriptionFormModal()
+                          }}
                         >
-                          {name}
-                        </DraggableResourceBadge>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </SortableSubscriptionCard>
-          ))}
-        </div>
-      </SortableContext>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                      </SimpleTooltip>
+                      <SimpleTooltip label={t('actions.viewQRCode')}>
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                          onClick={() => {
+                            qrCodeModalRef.current?.setProps({
+                              name: tag!,
+                              link,
+                            })
+                            openQRCodeModal()
+                          }}
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </Button>
+                      </SimpleTooltip>
+                      <UpdateSubscriptionAction id={subscriptionID} loading={updateSubscriptionsMutation.isPending} />
+                    </Fragment>
+                  }
+                  onRemove={() => removeSubscriptionsMutation.mutate([subscriptionID])}
+                >
+                  <div className="flex flex-wrap items-center gap-2 text-xs opacity-70">
+                    <span>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</span>
+                    {cronEnable && (
+                      <span className="inline-flex items-center gap-1 text-primary">
+                        <span>⏱</span>
+                        <span>{cronExp}</span>
+                      </span>
+                    )}
+                  </div>
+
+                  <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
+
+                  <Accordion type="single" collapsible defaultValue="node" className="w-full mt-2">
+                    <AccordionItem value="node" className="border-none">
+                      <AccordionTrigger className="text-xs py-1 hover:no-underline">
+                        {t('actions.show content')}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {nodes.edges.map(({ id, name }, nodeIndex) => (
+                            <DraggableResourceBadge
+                              key={id}
+                              id={`subscription-node-${id}`}
+                              index={nodeIndex}
+                              name={name}
+                            >
+                              {name}
+                            </DraggableResourceBadge>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </SortableSubscriptionCard>
+              ),
+            )}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
 
       <QRCodeModal ref={qrCodeModalRef} opened={openedQRCodeModal} onClose={closeQRCodeModal} />
 

@@ -32,9 +32,7 @@ export function MainLayout() {
       <HeaderWithActions />
       <main className="flex-1">
         <div className="container mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8">
-          <div className="animate-fade-in">
-            <Outlet />
-          </div>
+          <Outlet />
         </div>
       </main>
       <footer className="h-14 border-t bg-card/50 backdrop-blur-sm flex items-center justify-center">
