@@ -9,6 +9,7 @@ permissions:
   contents: write
   pull-requests: write
   pages: write
+  packages: write
 
 jobs:
   release-please:
