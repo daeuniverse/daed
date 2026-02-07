@@ -412,7 +412,7 @@ export const hysteria2Protocol: ProtocolConfig<Hysteria2FormValues> = {
 
 type AnytlsFormValues = z.infer<typeof anytlsSchema>
 
-function generateAnytlsLink(data: AnytlsFormValues): string {
+export function generateAnytlsLink(data: AnytlsFormValues): string {
   const query = {
     sni: data.sni,
     insecure: data.allowInsecure ? 1 : 0,

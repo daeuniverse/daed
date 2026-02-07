@@ -152,7 +152,8 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
                   <TabsTrigger value="hysteria2">Hysteria2</TabsTrigger>
                   <TabsTrigger value="anytls">AnyTLS</TabsTrigger>
                   <TabsTrigger value="tuic">Tuic</TabsTrigger>
-                  <TabsTrigger value="http">HTTP</TabsTrigger> <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
+                  <TabsTrigger value="http">HTTP</TabsTrigger>
+                  <TabsTrigger value="socks5">SOCKS5</TabsTrigger>
                 </TabsList>
               </div>
 

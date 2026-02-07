@@ -25,9 +25,6 @@ export default defineConfig(() => {
     define: {
       'import.meta.env.APP_VERSION': JSON.stringify(version),
     },
-    server: {
-      host: '0.0.0.0',
-    },
     test: { globals: true },
   }
 })

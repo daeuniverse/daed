@@ -1,6 +1,6 @@
 import type { z } from 'zod'
 import type { NodeFormProps } from './types'
-import { generateAnytlsURL, parseAnytlsUrl } from '@daeuniverse/dae-node-parser'
+import { parseAnytlsUrl } from '@daeuniverse/dae-node-parser'
 import { createPortal } from 'react-dom'
 
 import { FormActions } from '~/components/FormActions'
@@ -9,24 +9,9 @@ import { Input } from '~/components/ui/input'
 import { NumberInput } from '~/components/ui/number-input'
 import { anytlsSchema, DEFAULT_ANYTLS_FORM_VALUES } from '~/constants'
 import { useNodeForm } from '~/hooks'
+import { generateAnytlsLink } from './protocols/complex'
 
 export type AnytlsFormValues = z.infer<typeof anytlsSchema>
-
-function generateAnytlsLink(data: AnytlsFormValues): string {
-  /* anytls://[auth@]hostname[:port]/?[key=value]&[key=value]... */
-  const query = {
-    sni: data.sni,
-    insecure: data.allowInsecure ? 1 : 0,
-  }
-
-  return generateAnytlsURL({
-    protocol: 'anytls',
-    auth: data.auth,
-    host: data.server,
-    port: data.port,
-    params: query,
-  })
-}
 
 export function AnyTLSForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<AnytlsFormValues>) {
   const { formValues, setValue, handleSubmit, onSubmit, submit, resetForm, isDirty, isValid, errors, t } = useNodeForm({
