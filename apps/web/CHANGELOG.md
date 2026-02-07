@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.1](https://github.com/daeuniverse/daed/compare/v1.23.0...v1.23.1) (2026-02-07)
+
+
+### Bug Fixes
+
+* **dnd:** allow dragging subscription nodes into groups ([605ad48](https://github.com/daeuniverse/daed/commit/605ad4847232fdc882ccf1304e8c6417b7645b6b))
+
 ## [1.23.0](https://github.com/daeuniverse/daed/compare/v1.22.1...v1.23.0) (2026-02-03)
 
 
