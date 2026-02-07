@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/daeuniverse/daed/compare/dae-node-parser-v1.19.0...dae-node-parser-v1.20.0) (2026-02-07)
+
+
+### Features
+
+* optimize user experience ([7013499](https://github.com/daeuniverse/daed/commit/701349900e004eafa8c3e4c4326059c63fb8057a))
+
 ## [1.19.0](https://github.com/daeuniverse/daed/compare/dae-node-parser-v1.18.0...dae-node-parser-v1.19.0) (2025-12-07)
 
 
