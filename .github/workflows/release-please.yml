@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
@@ -51,8 +55,8 @@ jobs:
 
       - uses: peter-evans/create-pull-request@v8
         with:
-          commit-message: "chore: update screenshots for ${{ needs.release-please.outputs.tag_name }} [skip ci]"
-          title: "chore: update screenshots for ${{ needs.release-please.outputs.tag_name }} [skip ci]"
+          commit-message: 'chore: update screenshots for ${{ needs.release-please.outputs.tag_name }} [skip ci]'
+          title: 'chore: update screenshots for ${{ needs.release-please.outputs.tag_name }} [skip ci]'
           body: |
             Auto-generated screenshots update for ${{ needs.release-please.outputs.tag_name }}
 
@@ -83,7 +87,7 @@ jobs:
 
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.24"
+          go-version: '1.24'
           cache: false
 
       - run: go version
@@ -215,7 +219,7 @@ jobs:
 
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.24"
+          go-version: '1.24'
           cache: false
 
       - run: go version
