@@ -159,18 +159,27 @@ export function SubscriptionResource({
                         {t('actions.show content')}
                       </AccordionTrigger>
                       <AccordionContent>
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          {nodes.edges.map(({ id, name }, nodeIndex) => (
-                            <DraggableResourceBadge
-                              key={id}
-                              id={`subscription-node-${id}`}
-                              index={nodeIndex}
-                              name={name}
+                        <Droppable droppableId={`subscription-${subscriptionID}-nodes`} type="NODE" isDropDisabled>
+                          {(droppableProvided) => (
+                            <div
+                              ref={droppableProvided.innerRef}
+                              {...droppableProvided.droppableProps}
+                              className="flex flex-wrap gap-2 pt-2"
                             >
-                              {name}
-                            </DraggableResourceBadge>
-                          ))}
-                        </div>
+                              {nodes.edges.map(({ id, name }, nodeIndex) => (
+                                <DraggableResourceBadge
+                                  key={id}
+                                  id={`subscription-node-${id}`}
+                                  index={nodeIndex}
+                                  name={name}
+                                >
+                                  {name}
+                                </DraggableResourceBadge>
+                              ))}
+                              {droppableProvided.placeholder}
+                            </div>
+                          )}
+                        </Droppable>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>

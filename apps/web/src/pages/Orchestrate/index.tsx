@@ -164,6 +164,10 @@ export function OrchestratePage() {
     } else if (droppableId === 'subscription-list') {
       const subId = draggableId.replace('subscription-', '')
       setDraggingResource({ type: DraggableResourceType.subscription, subscriptionID: subId })
+    } else if (droppableId.startsWith('subscription-') && droppableId.endsWith('-nodes')) {
+      // Subscription node dragged from a subscription's node list
+      const nodeId = draggableId.replace('subscription-node-', '')
+      setDraggingResource({ type: DraggableResourceType.subscription_node, nodeID: nodeId })
     } else if (droppableId.endsWith('-nodes')) {
       const groupId = droppableId.replace('-nodes', '')
       const parsed = parseGroupItemId(draggableId)
@@ -205,6 +209,27 @@ export function OrchestratePage() {
     if (sourceDroppableId === 'subscription-list' && destDroppableId === 'subscription-list') {
       if (source.index !== destination.index) {
         setSubscriptionSortOrder(arrayMove(sortedSubscriptionIds, source.index, destination.index))
+      }
+      return
+    }
+
+    // Check if source is a subscription's node list (format: subscription-{id}-nodes)
+    const isFromSubscriptionNodes =
+      sourceDroppableId.startsWith('subscription-') &&
+      sourceDroppableId.endsWith('-nodes') &&
+      sourceDroppableId !== 'subscription-list'
+
+    // Handle dropping subscription node to group
+    if (isFromSubscriptionNodes && destDroppableId.endsWith('-nodes')) {
+      const nodeId = draggableId.replace('subscription-node-', '')
+      const targetGroupId = destDroppableId.replace('-nodes', '')
+      const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === targetGroupId)
+
+      if (
+        targetGroup &&
+        !targetGroup.nodes.find((n: GroupsQuery['groups'][number]['nodes'][number]) => n.id === nodeId)
+      ) {
+        groupAddNodesMutation.mutate({ id: targetGroupId, nodeIDs: [nodeId] })
       }
       return
     }
