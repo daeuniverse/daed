@@ -97,8 +97,8 @@ catalog:
   react-hook-form: ^7.68.0
   react-i18next: ^16.3.5
   react-resizable-panels: ^3.0.6
-  react-router: ^7.10.0
-  react-router-dom: ^7.10.0
+  react-router: ^7.13.0
+  react-router-dom: ^7.13.0
   recharts: 3.5.1
   shiki: ^3.19.0
   simple-git: ^3.30.0
@@ -129,3 +129,8 @@ neverBuiltDependencies: []
 
 overrides:
   vite: ^7.3.1
+  lodash: ^4.17.23
+  qs: ^6.14.1
+  jws: ^3.2.3
+  undici: ^7.18.2
+  '@isaacs/brace-expansion': ^5.0.1
