@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.24.0](https://github.com/daeuniverse/daed/compare/v1.23.1...v1.24.0) (2026-02-07)
+
+
+### Features
+
+* optimize user experience ([7013499](https://github.com/daeuniverse/daed/commit/701349900e004eafa8c3e4c4326059c63fb8057a))
+
+
+### Bug Fixes
+
+* **pr-677:** address review feedback ([ebd7b7c](https://github.com/daeuniverse/daed/commit/ebd7b7c379e85e49feb986f7d1da99f1fa30d2d0))
+
 ## [1.23.1](https://github.com/daeuniverse/daed/compare/v1.23.0...v1.23.1) (2026-02-07)
 
 
