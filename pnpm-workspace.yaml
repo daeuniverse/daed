@@ -3,16 +3,16 @@ packages:
   - packages/*
 
 catalog:
-  '@antfu/eslint-config': ^7.2.0
-  '@commitlint/cli': ^20.4.1
-  '@commitlint/config-conventional': ^20.4.1
+  '@antfu/eslint-config': ^7.6.1
+  '@commitlint/cli': ^20.4.2
+  '@commitlint/config-conventional': ^20.4.2
   '@emotion/react': ^11.14.0
-  '@eslint-react/eslint-plugin': ^2.11.2
+  '@eslint-react/eslint-plugin': ^2.13.0
   '@fontsource/fira-sans': ^5.2.7
   '@fontsource/source-code-pro': ^5.2.7
   '@graphiql/toolkit': ^0.11.3
-  '@graphql-codegen/cli': 6.1.1
-  '@graphql-codegen/client-preset': 5.2.2
+  '@graphql-codegen/cli': 6.1.2
+  '@graphql-codegen/client-preset': 5.2.3
   '@graphql-codegen/introspection': 5.0.0
   '@graphql-typed-document-node/core': ^3.2.0
   '@hello-pangea/dnd': ^18.0.1
@@ -47,18 +47,18 @@ catalog:
   '@radix-ui/react-toggle': ^1.1.10
   '@radix-ui/react-toggle-group': ^1.1.11
   '@radix-ui/react-tooltip': ^1.2.8
-  '@shikijs/monaco': ^3.22.0
-  '@tailwindcss/vite': ^4.1.18
+  '@shikijs/monaco': ^4.0.0
+  '@tailwindcss/vite': ^4.2.1
   '@tanstack/eslint-plugin-query': ^5.91.4
-  '@tanstack/react-query': ^5.90.20
+  '@tanstack/react-query': ^5.90.21
   '@tanstack/react-query-devtools': ^5.91.3
-  '@types/node': ^25.2.1
-  '@types/react': ^19.2.13
+  '@types/node': ^25.3.2
+  '@types/react': ^19.2.14
   '@types/react-copy-to-clipboard': ^5.0.7
   '@types/react-dom': ^19.2.3
   '@types/urijs': ^1.19.26
   '@types/vscode': ^1.109.0
-  '@vitejs/plugin-react': ^5.1.3
+  '@vitejs/plugin-react': ^5.1.4
   '@vitest/ui': ^4.0.18
   '@vscode/vsce': ^3.7.1
   class-variance-authority: ^0.7.1
@@ -67,48 +67,48 @@ catalog:
   date-fns: ^4.1.0
   dayjs: ^1.11.19
   embla-carousel-react: 8.6.0
-  eslint: ^10.0.0
+  eslint: ^10.0.2
   eslint-plugin-react-hooks: ^7.0.1
-  eslint-plugin-react-refresh: ^0.5.0
+  eslint-plugin-react-refresh: ^0.5.2
   execa: ^9.6.1
-  framer-motion: ^12.33.0
-  globals: ^16.5.0
+  framer-motion: ^12.34.3
+  globals: ^17.3.0
   graphiql: ^5.2.2
-  graphql: ^16.12.0
+  graphql: ^16.13.0
   graphql-request: ^7.4.0
   husky: ^9.1.7
-  i18next: ^25.8.4
-  i18next-browser-languagedetector: ^8.2.0
-  immer: ^11.1.3
+  i18next: ^25.8.13
+  i18next-browser-languagedetector: ^8.2.1
+  immer: ^11.1.4
   input-otp: ^1.4.2
   js-base64: ^3.7.8
   lint-staged: ^16.2.7
-  lucide-react: ^0.563.0
+  lucide-react: ^0.575.0
   monaco-editor: ^0.55.1
-  nanostores: ^1.1.0
+  nanostores: ^1.1.1
   next-themes: ^0.4.6
   playwright: ^1.58.2
   prettier: ^3.8.1
   qrcode.react: ^4.2.0
   react: ^19.2.4
   react-copy-to-clipboard: ^5.1.0
-  react-day-picker: ^9.13.1
+  react-day-picker: ^9.14.0
   react-dom: ^19.2.4
-  react-hook-form: ^7.71.1
+  react-hook-form: ^7.71.2
   react-i18next: ^16.5.4
-  react-resizable-panels: ^4.6.2
-  react-router: ^7.13.0
-  react-router-dom: ^7.13.0
+  react-resizable-panels: ^4.6.5
+  react-router: ^7.13.1
+  react-router-dom: ^7.13.1
   recharts: 3.7.0
-  shiki: ^3.22.0
-  simple-git: ^3.30.0
+  shiki: ^4.0.0
+  simple-git: ^3.32.3
   sonner: ^2.0.7
   sort-package-json: ^3.6.1
-  tailwind-merge: ^3.4.0
-  tailwindcss: ^4.1.18
+  tailwind-merge: ^3.5.0
+  tailwindcss: ^4.2.1
   tsdown: ^0.20.3
   tsx: ^4.21.0
-  turbo: ^2.8.3
+  turbo: ^2.8.12
   tw-animate-css: ^1.4.0
   typescript: ^5.9.3
   urijs: ^1.19.11
