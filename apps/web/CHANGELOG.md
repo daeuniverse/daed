@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.1](https://github.com/daeuniverse/daed/compare/v1.24.0...v1.24.1) (2026-02-28)
+
+
+### Bug Fixes
+
+* 节点行域名过长时删除按钮被挤出可视区域 ([55030d3](https://github.com/daeuniverse/daed/commit/55030d340da11a0e55cb8bb95caf314b42c23386))
+
 ## [1.24.0](https://github.com/daeuniverse/daed/compare/v1.23.1...v1.24.0) (2026-02-07)
 
 
