@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.1](https://github.com/daeuniverse/daed/compare/dae-editor-v1.19.0...dae-editor-v1.19.1) (2026-02-28)
+
+
+### Bug Fixes
+
+* 节点行域名过长时删除按钮被挤出可视区域 ([55030d3](https://github.com/daeuniverse/daed/commit/55030d340da11a0e55cb8bb95caf314b42c23386))
+
 ## [1.19.0](https://github.com/daeuniverse/daed/compare/dae-editor-v1.18.0...dae-editor-v1.19.0) (2025-12-07)
 
 
