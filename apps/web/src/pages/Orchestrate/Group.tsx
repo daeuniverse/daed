@@ -2,11 +2,12 @@ import type { GroupFormModalRef } from '~/components/GroupFormModal'
 import type { DraggingResource } from '~/constants'
 import type { GroupsQuery } from '~/schemas/gql/graphql'
 import { useStore } from '@nanostores/react'
-import { Settings2, Table2 } from 'lucide-react'
+import { ListPlus, Settings2, Table2 } from 'lucide-react'
 
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  useGroupAddNodesMutation,
   useGroupDelNodesMutation,
   useGroupDelSubscriptionsMutation,
   useGroupsQuery,
@@ -14,6 +15,7 @@ import {
   useRenameGroupMutation,
   useSubscriptionsQuery,
 } from '~/apis'
+import { BatchAddNodesModal } from '~/components/BatchAddNodesModal'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { GroupFormModal } from '~/components/GroupFormModal'
 import { Section } from '~/components/Section'
@@ -42,8 +44,10 @@ export function GroupResource({
   const renameGroupMutation = useRenameGroupMutation()
   const groupDelNodesMutation = useGroupDelNodesMutation()
   const groupDelSubscriptionsMutation = useGroupDelSubscriptionsMutation()
+  const groupAddNodesMutation = useGroupAddNodesMutation()
   const updateGroupFormModalRef = useRef<GroupFormModalRef>(null)
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
+  const [batchAddGroupId, setBatchAddGroupId] = useState<string | null>(null)
 
   // Determine which accordion sections should be auto-expanded based on drag type
   const autoExpandValue = useMemo(() => {
@@ -86,24 +90,32 @@ export function GroupResource({
             onRemove={defaultGroupID !== groupId ? () => removeGroupMutation.mutate(groupId) : undefined}
             onRename={(newName) => renameGroupMutation.mutate({ id: groupId, name: newName })}
             actions={
-              <SimpleTooltip label={t('actions.settings')}>
-                <Button
-                  variant="ghost"
-                  size="xs"
-                  onClick={() => {
-                    updateGroupFormModalRef.current?.setEditingID(groupId)
+              <>
+                <SimpleTooltip label={t('batchAddNodes.title')}>
+                  <Button variant="ghost" size="xs" onClick={() => setBatchAddGroupId(groupId)}>
+                    <ListPlus className="h-4 w-4" />
+                  </Button>
+                </SimpleTooltip>
 
-                    updateGroupFormModalRef.current?.initOrigins({
-                      name,
-                      policy,
-                    })
+                <SimpleTooltip label={t('actions.settings')}>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    onClick={() => {
+                      updateGroupFormModalRef.current?.setEditingID(groupId)
 
-                    openUpdateGroupFormModal()
-                  }}
-                >
-                  <Settings2 className="h-4 w-4" />
-                </Button>
-              </SimpleTooltip>
+                      updateGroupFormModalRef.current?.initOrigins({
+                        name,
+                        policy,
+                      })
+
+                      openUpdateGroupFormModal()
+                    }}
+                  >
+                    <Settings2 className="h-4 w-4" />
+                  </Button>
+                </SimpleTooltip>
+              </>
             }
           >
             <p className="text-sm font-semibold">{policy}</p>
@@ -138,6 +150,22 @@ export function GroupResource({
         ref={updateGroupFormModalRef}
         opened={openedUpdateGroupFormModal}
         onClose={closeUpdateGroupFormModal}
+      />
+
+      <BatchAddNodesModal
+        opened={batchAddGroupId !== null}
+        onClose={() => setBatchAddGroupId(null)}
+        existingNodeIDs={groupsQuery?.groups.find((g) => g.id === batchAddGroupId)?.nodes.map((n) => n.id) ?? []}
+        onSubmit={(nodeIDs) => {
+          if (batchAddGroupId) {
+            groupAddNodesMutation.mutate({ id: batchAddGroupId, nodeIDs })
+          }
+        }}
+        onRemove={(nodeIDs) => {
+          if (batchAddGroupId) {
+            groupDelNodesMutation.mutate({ id: batchAddGroupId, nodeIDs })
+          }
+        }}
       />
     </Section>
   )

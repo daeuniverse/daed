@@ -252,6 +252,13 @@
   "subscription": "Subscription",
   "editNode": "Edit Node",
   "editSubscription": "Edit Subscription",
+  "batchAddNodes": {
+    "title": "Add Nodes",
+    "searchPlaceholder": "Search nodes by name",
+    "source": "Source",
+    "selectAll": "Select all",
+    "selectedCount": "{{ count }} selected"
+  },
   "autoUpdate": "Auto Update",
   "cronExpression": "Cron Expression",
   "subscriptionInfo": "Subscription Info",

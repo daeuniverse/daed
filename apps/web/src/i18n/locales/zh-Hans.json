@@ -252,6 +252,13 @@
   "subscription": "订阅",
   "editNode": "编辑节点",
   "editSubscription": "编辑订阅",
+  "batchAddNodes": {
+    "title": "添加节点",
+    "searchPlaceholder": "按名称搜索节点",
+    "source": "来源",
+    "selectAll": "全选",
+    "selectedCount": "已选 {{ count }} 个"
+  },
   "autoUpdate": "自动更新",
   "cronExpression": "Cron 表达式",
   "subscriptionInfo": "订阅信息",

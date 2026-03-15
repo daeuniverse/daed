@@ -1,3 +1,4 @@
+export * from './BatchAddNodesModal'
 export * from './CommandPalette'
 export * from './ConfigDetailView'
 export * from './ConfigFormModal'
