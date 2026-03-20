@@ -34,7 +34,17 @@ export const v2raySchema = z.object({
 })
 
 export const ssSchema = z.object({
-  method: z.enum(['aes-128-gcm', 'aes-256-gcm', 'chacha20-poly1305', 'chacha20-ietf-poly1305', 'plain', 'none']),
+  method: z.enum([
+    'aes-128-gcm',
+    'aes-256-gcm',
+    'chacha20-poly1305',
+    'chacha20-ietf-poly1305',
+    '2022-blake3-aes-128-gcm',
+    '2022-blake3-aes-256-gcm',
+    '2022-blake3-chacha20-poly1305',
+    'plain',
+    'none',
+  ]),
   plugin: z.enum(['', 'simple-obfs', 'v2ray-plugin']),
   obfs: z.enum(['http', 'tls']),
   tls: z.enum(['', 'tls']),
