@@ -69,7 +69,7 @@ function MultiSelect({
         </Label>
       )}
       {description && <p className="text-sm text-muted-foreground">{description}</p>}
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover modal={true} open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <button
             type="button"
