@@ -488,7 +488,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.QUAY_PASS }}
 
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: .
           build-args: DAED_VERSION=${{ steps.prep.outputs.TAG }}
