@@ -1,7 +1,7 @@
 {
   "name": "@daeuniverse/dae-node-parser",
   "type": "module",
-  "version": "1.20.1",
+  "version": "1.21.0",
   "description": "Node protocol URL parser and generator for dae proxy protocols",
   "license": "MIT",
   "repository": {

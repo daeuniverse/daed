@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.25.0](https://github.com/daeuniverse/daed/compare/v1.24.1...v1.25.0) (2026-03-31)
+
+
+### Features
+
+* **dae-lsp:** add browser LSP support and fix completions ([32b5b49](https://github.com/daeuniverse/daed/commit/32b5b49abd58b8f16c72a2f2dd188bc7c2cf7877))
+* optimize user experience ([7013499](https://github.com/daeuniverse/daed/commit/701349900e004eafa8c3e4c4326059c63fb8057a))
+* **parser:** add parser for dae language with AST and symbol information ([12b5754](https://github.com/daeuniverse/daed/commit/12b5754b8f53b5dbac00b9aac0839f5d52113736))
+* re-trigger release-please ([4febcf7](https://github.com/daeuniverse/daed/commit/4febcf7ebba807474e8215510669e0a756c31585))
+* trigger release ([e6618d5](https://github.com/daeuniverse/daed/commit/e6618d5cfb721dec3633278018e2f254c23daff9))
+* **ui:** enhance layout and visual design system ([1bc9280](https://github.com/daeuniverse/daed/commit/1bc928076986884658551f5634a80b86d10c3a26))
+* update pnpm workspace and add turbo configuration ([4484dc4](https://github.com/daeuniverse/daed/commit/4484dc43be6f1d229053bcc7bd589c528707024f))
+
+
+### Bug Fixes
+
+* **dnd:** allow dragging subscription nodes into groups ([605ad48](https://github.com/daeuniverse/daed/commit/605ad4847232fdc882ccf1304e8c6417b7645b6b))
+* **dnd:** migrate to @hello-pangea/dnd and fix drag issues in modals ([76d4492](https://github.com/daeuniverse/daed/commit/76d4492793236d73a897657cafdcbf09b9d46c1f))
+* **pr-677:** address review feedback ([ebd7b7c](https://github.com/daeuniverse/daed/commit/ebd7b7c379e85e49feb986f7d1da99f1fa30d2d0))
+* remove rolldownOptions from build configuration ([632c33d](https://github.com/daeuniverse/daed/commit/632c33d620522c9d960321aa0ad6690f6b3fc2a2))
+* **ui:** fix scrolling issue of multi-select component ([#726](https://github.com/daeuniverse/daed/issues/726)) ([a8fe086](https://github.com/daeuniverse/daed/commit/a8fe08601dc1e5c4b34932a1bd95960c6c20c77d))
+* 节点行域名过长时删除按钮被挤出可视区域 ([55030d3](https://github.com/daeuniverse/daed/commit/55030d340da11a0e55cb8bb95caf314b42c23386))
+
 ## [1.24.1](https://github.com/daeuniverse/daed/compare/v1.24.0...v1.24.1) (2026-02-28)
 
 
