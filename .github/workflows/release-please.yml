@@ -456,7 +456,7 @@ jobs:
           echo "IMAGE=daeuniverse/daed" >> $GITHUB_OUTPUT
           echo "TAG=$tag" >> $GITHUB_OUTPUT
 
-      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v4
 
       - uses: docker/setup-docker-action@v5
         with:
