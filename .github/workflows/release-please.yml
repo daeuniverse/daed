@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag name (e.g. v1.26.0)'
+        required: true
 
 concurrency:
   group: release-please
@@ -19,9 +24,8 @@ jobs:
   release-please:
     runs-on: macos-latest
     outputs:
-      # Main package (apps/web - daed)
-      tag_name: ${{ steps.release.outputs['apps/web--tag_name'] }}
-      release_created: ${{ steps.release.outputs['apps/web--release_created'] }}
+      tag_name: ${{ steps.release.outputs['apps/web--tag_name'] || github.event.inputs.tag_name }}
+      release_created: ${{ steps.release.outputs['apps/web--release_created'] || (github.event_name == 'workflow_dispatch' && 'true') }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
