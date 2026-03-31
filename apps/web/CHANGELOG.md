@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.1](https://github.com/daeuniverse/daed/compare/v1.25.0...v1.25.1) (2026-03-31)
+
+
+### Bug Fixes
+
+* resolve CI failures from dependency upgrade breakages ([e46053f](https://github.com/daeuniverse/daed/commit/e46053f3f809cc632c9550720cbf41e9df423f90))
+
 ## [1.25.0](https://github.com/daeuniverse/daed/compare/v1.24.1...v1.25.0) (2026-03-31)
 
 
