@@ -47,15 +47,18 @@
     "build": "tsdown",
     "dev": "tsdown && tsdown --watch",
     "start": "node dist/server.cjs --stdio",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@daeuniverse/dae-lang-core": "workspace:*",
     "vscode-languageserver": "catalog:",
     "vscode-languageserver-textdocument": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
     "tsdown": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

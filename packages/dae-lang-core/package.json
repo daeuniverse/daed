@@ -1,0 +1,40 @@
+{
+  "name": "@daeuniverse/dae-lang-core",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Shared RoutingA language utilities for dae (formatter, parser helpers)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daeuniverse/daed.git",
+    "directory": "packages/dae-lang-core"
+  },
+  "keywords": [
+    "dae",
+    "routingA",
+    "formatter",
+    "language"
+  ],
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -36,6 +36,7 @@
     "shiki": ">=1.0.0"
   },
   "dependencies": {
+    "@daeuniverse/dae-lang-core": "workspace:*",
     "@shikijs/monaco": "catalog:"
   },
   "devDependencies": {
