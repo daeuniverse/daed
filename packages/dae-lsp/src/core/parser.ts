@@ -347,8 +347,12 @@ export function parseDocument(text: string): ParseResult {
  * Uses indexOf instead of regex to avoid polynomial ReDoS (CodeQL js/polynomial-redos).
  * When wordBoundary is true, ensures the character before the prefix is not a word char.
  */
-function findFuncCalls(value: string, prefix: string, wordBoundary = false): { index: number; args: string }[] {
-  const results: { index: number; args: string }[] = []
+function findFuncCalls(
+  value: string,
+  prefix: string,
+  wordBoundary = false,
+): { index: number; args: string; argsStart: number }[] {
+  const results: { index: number; args: string; argsStart: number }[] = []
   let searchFrom = 0
 
   while (searchFrom < value.length) {
@@ -365,7 +369,7 @@ function findFuncCalls(value: string, prefix: string, wordBoundary = false): { i
     const closeIdx = value.indexOf(')', argsStart)
     if (closeIdx === -1) break
 
-    results.push({ index: start, args: value.slice(argsStart, closeIdx) })
+    results.push({ index: start, args: value.slice(argsStart, closeIdx), argsStart })
     searchFrom = closeIdx + 1
   }
 
@@ -383,44 +387,59 @@ function parseReferences(
   currentSection: string | null,
 ): void {
   // Look for subtag(name) pattern
-  for (const { index: matchIndex, args } of findFuncCalls(value, 'subtag(')) {
+  for (const { argsStart, args } of findFuncCalls(value, 'subtag(')) {
     // Parse arguments - can be comma-separated
-    const argList = args.split(',').map((a) => a.trim())
-    for (const arg of argList) {
+    const argList = args.split(',')
+    let argOffset = 0
+    for (const rawArg of argList) {
+      const trimmedArg = rawArg.trim()
+      const argTrimOffset = rawArg.indexOf(trimmedArg)
       // Remove quotes if present
-      const cleanArg = arg.replace(RE_STRIP_QUOTES, '').replace(RE_STRIP_REGEX_PREFIX, '').replace(RE_STRIP_CARET, '')
+      const cleanArg = trimmedArg
+        .replace(RE_STRIP_QUOTES, '')
+        .replace(RE_STRIP_REGEX_PREFIX, '')
+        .replace(RE_STRIP_CARET, '')
       if (cleanArg && !cleanArg.includes(':')) {
-        const argStart = value.indexOf(arg, matchIndex)
+        const argStart = argsStart + argOffset + argTrimOffset
         references.push({
           name: cleanArg,
           kind: 'subscription',
           range: {
             start: { line: lineNum, character: startOffset + argStart },
-            end: { line: lineNum, character: startOffset + argStart + arg.length },
+            end: { line: lineNum, character: startOffset + argStart + trimmedArg.length },
           },
         })
       }
+      // +1 for the comma separator
+      argOffset += rawArg.length + 1
     }
   }
 
   // Look for name(nodeName) pattern - use word boundary to avoid matching pname()
-  for (const { index: matchIndex, args } of findFuncCalls(value, 'name(', true)) {
-    const argList = args.split(',').map((a) => a.trim())
-    for (const arg of argList) {
+  for (const { argsStart, args } of findFuncCalls(value, 'name(', true)) {
+    const argList = args.split(',')
+    let argOffset = 0
+    for (const rawArg of argList) {
+      const trimmedArg = rawArg.trim()
+      const argTrimOffset = rawArg.indexOf(trimmedArg)
       // Skip keyword: or regex: prefixed args
-      if (arg.includes(':')) continue
-      const cleanArg = arg.replace(RE_STRIP_QUOTES, '')
+      if (trimmedArg.includes(':')) {
+        argOffset += rawArg.length + 1
+        continue
+      }
+      const cleanArg = trimmedArg.replace(RE_STRIP_QUOTES, '')
       if (cleanArg) {
-        const argStart = value.indexOf(arg, matchIndex)
+        const argStart = argsStart + argOffset + argTrimOffset
         references.push({
           name: cleanArg,
           kind: 'node',
           range: {
             start: { line: lineNum, character: startOffset + argStart },
-            end: { line: lineNum, character: startOffset + argStart + arg.length },
+            end: { line: lineNum, character: startOffset + argStart + trimmedArg.length },
           },
         })
       }
+      argOffset += rawArg.length + 1
     }
   }
 
@@ -433,7 +452,9 @@ function parseReferences(
       const name = match[1]
       // Skip built-in outbounds
       if (!OUTBOUNDS.includes(name)) {
-        const nameStart = value.indexOf(name, match.index)
+        // The capture group starts after "-> " (with possible whitespace),
+        // compute position arithmetically from the match
+        const nameStart = match.index + match[0].indexOf(name)
         references.push({
           name,
           kind: 'upstream',
@@ -447,21 +468,25 @@ function parseReferences(
     }
 
     // Match upstream(name) function pattern in DNS response routing
-    for (const { index: matchIndex, args } of findFuncCalls(value, 'upstream(')) {
-      const argList = args.split(',').map((a) => a.trim())
-      for (const arg of argList) {
-        const cleanArg = arg.replace(RE_STRIP_QUOTES, '')
+    for (const { argsStart, args } of findFuncCalls(value, 'upstream(')) {
+      const argList = args.split(',')
+      let argOffset = 0
+      for (const rawArg of argList) {
+        const trimmedArg = rawArg.trim()
+        const argTrimOffset = rawArg.indexOf(trimmedArg)
+        const cleanArg = trimmedArg.replace(RE_STRIP_QUOTES, '')
         if (cleanArg && !OUTBOUNDS.includes(cleanArg)) {
-          const argStart = value.indexOf(arg, matchIndex)
+          const argStart = argsStart + argOffset + argTrimOffset
           references.push({
             name: cleanArg,
             kind: 'upstream',
             range: {
               start: { line: lineNum, character: startOffset + argStart },
-              end: { line: lineNum, character: startOffset + argStart + arg.length },
+              end: { line: lineNum, character: startOffset + argStart + trimmedArg.length },
             },
           })
         }
+        argOffset += rawArg.length + 1
       }
     }
   }
