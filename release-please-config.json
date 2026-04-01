@@ -9,6 +9,7 @@
     },
     "packages/dae-editor": {},
     "packages/dae-node-parser": {},
-    "packages/dae-lsp": {}
+    "packages/dae-lsp": {},
+    "packages/dae-lang-core": {}
   }
 }
