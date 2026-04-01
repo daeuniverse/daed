@@ -336,9 +336,6 @@ catalogs:
     vaul:
       specifier: ^1.1.2
       version: 1.1.2
-    vite:
-      specifier: ^8.0.3
-      version: 8.0.3
     vite-plugin-environment:
       specifier: ^1.1.3
       version: 1.1.3
@@ -359,18 +356,24 @@ catalogs:
       version: 4.3.6
 
 overrides:
-  minimatch@<3.1.4: '>=3.1.4'
-  minimatch@>=5.0.0 <5.1.8: '>=5.1.8'
-  minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
+  ajv@>=8.0.0 <8.18.0: '>=8.18.0'
   brace-expansion@<1.1.13: '>=1.1.13'
   brace-expansion@>=2.0.0 <2.0.3: '>=2.0.3'
   brace-expansion@>=5.0.0 <5.0.5: '>=5.0.5'
-  undici@<7.24.0: '>=7.24.0'
   dompurify@<3.3.2: '>=3.3.2'
-  underscore@<1.13.8: '>=1.13.8'
-  ajv@>=8.0.0 <8.18.0: '>=8.18.0'
-  qs@<6.14.2: '>=6.14.2'
   markdown-it@<14.1.1: '>=14.1.1'
+  minimatch@<3.1.4: '>=3.1.4'
+  minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
+  minimatch@>=5.0.0 <5.1.8: '>=5.1.8'
+  qs@<6.14.2: '>=6.14.2'
+  underscore@<1.13.8: '>=1.13.8'
+  undici@<7.24.0: '>=7.24.0'
+  vite: ^8.0.3
+  lodash: ^4.17.23
+  qs: ^6.14.1
+  jws: ^3.2.3
+  undici: ^7.18.2
+  '@isaacs/brace-expansion': ^5.0.1
 
 importers:
 
@@ -717,7 +720,7 @@ importers:
         specifier: 'catalog:'
         version: 6.0.2
       vite:
-        specifier: 'catalog:'
+        specifier: ^8.0.3
         version: 8.0.3(@types/node@25.5.0)(esbuild@0.27.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3)
       vite-plugin-environment:
         specifier: 'catalog:'
@@ -3185,7 +3188,7 @@ packages:
   '@tailwindcss/vite@4.2.2':
     resolution: {integrity: sha512-mEiF5HO1QqCLXoNEfXVA1Tzo+cYsrqV7w9Juj2wdUFyW07JRenqMG225MvPwr3ZD9N1bFQj46X7r33iHxLUW0w==}
     peerDependencies:
-      vite: ^5.2.0 || ^6 || ^7 || ^8
+      vite: ^8.0.3
 
   '@tanstack/eslint-plugin-query@5.95.2':
     resolution: {integrity: sha512-EYUFRaqjBep4EHMPpZR12sXP7Kr5qv9iDIlq93NfbhHwhITaW6Txu3ROO6dLFz5r84T8p+oZXBG77pa2Wuok7A==}
@@ -3490,7 +3493,7 @@ packages:
     peerDependencies:
       '@rolldown/plugin-babel': ^0.1.7 || ^0.2.0
       babel-plugin-react-compiler: ^1.0.0
-      vite: ^8.0.0
+      vite: ^8.0.3
     peerDependenciesMeta:
       '@rolldown/plugin-babel':
         optional: true
@@ -3520,7 +3523,7 @@ packages:
     resolution: {integrity: sha512-Ize4iQtEALHDttPRCmN+FKqOl2vxTiNUhzobQFFt/BM1lRUTG7zRCLOykG/6Vo4E4hnUdfVLo5/eqKPukcWW7Q==}
     peerDependencies:
       msw: ^2.4.9
-      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
+      vite: ^8.0.3
     peerDependenciesMeta:
       msw:
         optional: true
@@ -6887,7 +6890,7 @@ packages:
   vite-plugin-environment@1.1.3:
     resolution: {integrity: sha512-9LBhB0lx+2lXVBEWxFZC+WO7PKEyE/ykJ7EPWCq95NEcCpblxamTbs5Dm3DLBGzwODpJMEnzQywJU8fw6XGGGA==}
     peerDependencies:
-      vite: '>= 2.7'
+      vite: ^8.0.3
 
   vite@8.0.3:
     resolution: {integrity: sha512-B9ifbFudT1TFhfltfaIPgjo9Z3mDynBTJSUYxTjOQruf/zHH+ezCQKcoqO+h7a9Pw9Nm/OtlXAiGT1axBgwqrQ==}
@@ -6946,7 +6949,7 @@ packages:
       '@vitest/ui': 4.1.2
       happy-dom: '*'
       jsdom: '*'
-      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
+      vite: ^8.0.3
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
