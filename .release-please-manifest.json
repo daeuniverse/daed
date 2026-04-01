@@ -2,6 +2,6 @@
   "apps/web": "1.26.0",
   "packages/dae-editor": "1.20.0",
   "packages/dae-node-parser": "1.21.0",
-  "packages/dae-lsp": "0.0.1",
+  "packages/dae-lsp": "0.1.0",
   "packages/dae-lang-core": "0.1.0"
 }

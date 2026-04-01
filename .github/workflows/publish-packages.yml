@@ -6,6 +6,7 @@ on:
       - 'dae-editor-v*'
       - 'dae-node-parser-v*'
       - 'dae-lsp-v*'
+      - 'dae-lang-core-v*'
 
 permissions:
   contents: read
@@ -48,6 +49,13 @@ jobs:
       - name: Publish dae-lsp
         if: startsWith(github.ref, 'refs/tags/dae-lsp-v')
         working-directory: packages/dae-lsp
+        run: pnpm publish --access public --no-git-checks || echo "Package may already be published, continuing..."
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish dae-lang-core
+        if: startsWith(github.ref, 'refs/tags/dae-lang-core-v')
+        working-directory: packages/dae-lang-core
         run: pnpm publish --access public --no-git-checks || echo "Package may already be published, continuing..."
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
