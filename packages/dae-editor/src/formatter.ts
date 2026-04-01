@@ -5,6 +5,18 @@
  * It handles proper indentation, whitespace normalization, and code structure.
  */
 
+// Pre-compiled regexes (eslint e18e/prefer-static-regex)
+const RE_MULTI_SPACE = /\s{2,}/g
+const RE_ARROW = / ?-> ?/g
+const RE_AND = / ?&& ?/g
+const RE_NOT = /! /g
+const RE_COMMA = / ?, ?/g
+const RE_COLON_DECL = /(\w+):\s+(\w+)/g
+const RE_PAREN_OPEN = /\(\s+/g
+const RE_PAREN_CLOSE = /\s+\)/g
+const RE_BRACE_OPEN = /\{\s+/g
+const RE_BRACE_CLOSE = /\s+\}/g
+
 export interface FormatOptions {
   tabSize?: number
   insertSpaces?: boolean
@@ -41,7 +53,7 @@ export function formatRoutingA(text: string, options: FormatOptions = {}): strin
 
     // Skip consecutive blank lines (keep only one)
     if (parsed.isBlank) {
-      const prevLine = formattedLines[formattedLines.length - 1]
+      const prevLine = formattedLines.at(-1)
       if (prevLine === '' || prevLine === undefined) {
         continue
       }
@@ -67,7 +79,7 @@ export function formatRoutingA(text: string, options: FormatOptions = {}): strin
   }
 
   // Remove trailing blank lines but ensure file ends with newline
-  while (formattedLines.length > 0 && formattedLines[formattedLines.length - 1] === '') {
+  while (formattedLines.length > 0 && formattedLines.at(-1) === '') {
     formattedLines.pop()
   }
 
@@ -151,24 +163,26 @@ function findCommentStart(line: string): number {
 function formatLineContent(content: string): string {
   if (!content) return ''
 
-  // Normalize spaces around operators
-  let formatted = content
+  // Collapse multiple spaces first so subsequent patterns only need to handle
+  // zero-or-one space. This avoids O(n²) backtracking with \s* quantifiers
+  // (polynomial ReDoS — see CodeQL js/polynomial-redos).
+  let formatted = content.replace(RE_MULTI_SPACE, ' ')
 
   // Normalize arrow operator spacing: ensure space before and after ->
-  formatted = formatted.replace(/\s*->\s*/g, ' -> ')
+  formatted = formatted.replace(RE_ARROW, ' -> ')
 
   // Normalize && operator spacing
-  formatted = formatted.replace(/\s*&&\s*/g, ' && ')
+  formatted = formatted.replace(RE_AND, ' && ')
 
   // Normalize ! operator (no space after for unary)
-  formatted = formatted.replace(/!\s+/g, '!')
+  formatted = formatted.replace(RE_NOT, '!')
 
   // Normalize comma spacing (space after, not before)
-  formatted = formatted.replace(/\s*,\s*/g, ', ')
+  formatted = formatted.replace(RE_COMMA, ', ')
 
   // Normalize colon spacing in declarations (e.g., fallback: proxy)
   // But preserve colons in type prefixes like geosite:cn, geoip:private
-  formatted = formatted.replace(/(\w+):\s+(\w+)/g, (_match, key, value) => {
+  formatted = formatted.replace(RE_COLON_DECL, (_match, key, value) => {
     // Check if this is a type prefix (followed by value, not a block)
     const typeKeywords = ['geosite', 'geoip', 'full', 'contains', 'regexp', 'ext']
     if (typeKeywords.includes(key.toLowerCase())) {
@@ -179,15 +193,12 @@ function formatLineContent(content: string): string {
   })
 
   // Normalize parentheses spacing (no space inside)
-  formatted = formatted.replace(/\(\s+/g, '(')
-  formatted = formatted.replace(/\s+\)/g, ')')
+  formatted = formatted.replace(RE_PAREN_OPEN, '(')
+  formatted = formatted.replace(RE_PAREN_CLOSE, ')')
 
   // Normalize brace spacing
-  formatted = formatted.replace(/\{\s+/g, '{ ')
-  formatted = formatted.replace(/\s+\}/g, ' }')
-
-  // Collapse multiple spaces
-  formatted = formatted.replace(/\s{2,}/g, ' ')
+  formatted = formatted.replace(RE_BRACE_OPEN, '{ ')
+  formatted = formatted.replace(RE_BRACE_CLOSE, ' }')
 
   // Trim any leading/trailing whitespace
   formatted = formatted.trim()

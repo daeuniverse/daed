@@ -8,6 +8,21 @@
  */
 
 // AST Node Types
+
+// Pre-compiled regexes (eslint e18e/prefer-static-regex)
+const RE_BLOCK_START = /^(\w[\w-]*)(\s*\{)?$/
+const RE_FALLBACK = /^fallback:\s*(\w+)$/
+const RE_KEY_NAME = /^(\w[\w-]*)$/
+const RE_OUTBOUND = /^(\w+)$/
+const RE_WORD_CHAR = /\w/
+const RE_STRIP_QUOTES = /^['"]|['"]$/g
+const RE_STRIP_REGEX_PREFIX = /^regex:\s*/
+const RE_STRIP_CARET = /^\^/
+const RE_UPSTREAM_ARROW = /->\s*(\w+)/g
+const RE_OPEN_BRACE = /\{/g
+const RE_CLOSE_BRACE = /\}/g
+const RE_SECTION_START = /^(\w+)\s*\{/
+
 export interface Position {
   line: number
   character: number
@@ -141,7 +156,7 @@ export function parseDocument(text: string): ParseResult {
     if (!content) continue
 
     // Check for section/block start
-    const blockMatch = content.match(/^(\w[\w-]*)(\s*\{)?$/)
+    const blockMatch = content.match(RE_BLOCK_START)
     if (blockMatch) {
       const name = blockMatch[1]
       const hasOpenBrace = !!blockMatch[2]
@@ -186,7 +201,7 @@ export function parseDocument(text: string): ParseResult {
     }
 
     // Check for fallback: outbound (must be before general key:value check)
-    const fallbackMatch = content.match(/^fallback:\s*(\w+)$/)
+    const fallbackMatch = content.match(RE_FALLBACK)
     if (fallbackMatch) {
       const outbound = fallbackMatch[1]
       const outboundStart = line.lastIndexOf(outbound)
@@ -211,12 +226,12 @@ export function parseDocument(text: string): ParseResult {
     const colonIdx = content.indexOf(':')
     if (colonIdx !== -1 && symbolStack.length > 0) {
       const keyPart = content.substring(0, colonIdx)
-      const keyMatch = keyPart.match(/^(\w[\w-]*)$/)
+      const keyMatch = keyPart.match(RE_KEY_NAME)
       if (keyMatch) {
         const name = keyMatch[1]
         const value = content.substring(colonIdx + 1).trim()
         const nameStart = line.indexOf(name)
-        const parent = symbolStack[symbolStack.length - 1]
+        const parent = symbolStack.at(-1)
 
         // Determine the kind based on parent section
         let kind: Symbol['kind'] = 'parameter'
@@ -255,7 +270,7 @@ export function parseDocument(text: string): ParseResult {
     if (arrowIndex !== -1) {
       const beforeArrow = content.substring(0, arrowIndex).trimEnd()
       const afterArrow = content.substring(arrowIndex + 2).trim()
-      const outboundMatch = afterArrow.match(/^(\w+)$/)
+      const outboundMatch = afterArrow.match(RE_OUTBOUND)
       if (beforeArrow && outboundMatch) {
         const condition = beforeArrow
         const outbound = outboundMatch[1]
@@ -327,6 +342,37 @@ export function parseDocument(text: string): ParseResult {
 }
 
 /**
+ * Find all occurrences of a function call pattern like "funcName(...)" in a string.
+ * Returns an array of { index, args } where args is the content between parens.
+ * Uses indexOf instead of regex to avoid polynomial ReDoS (CodeQL js/polynomial-redos).
+ * When wordBoundary is true, ensures the character before the prefix is not a word char.
+ */
+function findFuncCalls(value: string, prefix: string, wordBoundary = false): { index: number; args: string }[] {
+  const results: { index: number; args: string }[] = []
+  let searchFrom = 0
+
+  while (searchFrom < value.length) {
+    const start = value.indexOf(prefix, searchFrom)
+    if (start === -1) break
+
+    // Optional word boundary check: char before prefix must not be \w
+    if (wordBoundary && start > 0 && RE_WORD_CHAR.test(value[start - 1])) {
+      searchFrom = start + 1
+      continue
+    }
+
+    const argsStart = start + prefix.length
+    const closeIdx = value.indexOf(')', argsStart)
+    if (closeIdx === -1) break
+
+    results.push({ index: start, args: value.slice(argsStart, closeIdx) })
+    searchFrom = closeIdx + 1
+  }
+
+  return results
+}
+
+/**
  * Parse references in a value string
  */
 function parseReferences(
@@ -337,20 +383,14 @@ function parseReferences(
   currentSection: string | null,
 ): void {
   // Look for subtag(name) pattern
-  const subtagRegex = /subtag\(([^)]+)\)/g
-  let match = subtagRegex.exec(value)
-  while (match !== null) {
-    const args = match[1]
+  for (const { index: matchIndex, args } of findFuncCalls(value, 'subtag(')) {
     // Parse arguments - can be comma-separated
     const argList = args.split(',').map((a) => a.trim())
     for (const arg of argList) {
       // Remove quotes if present
-      const cleanArg = arg
-        .replace(/^['"]|['"]$/g, '')
-        .replace(/^regex:\s*/, '')
-        .replace(/^\^/, '')
+      const cleanArg = arg.replace(RE_STRIP_QUOTES, '').replace(RE_STRIP_REGEX_PREFIX, '').replace(RE_STRIP_CARET, '')
       if (cleanArg && !cleanArg.includes(':')) {
-        const argStart = value.indexOf(arg, match.index)
+        const argStart = value.indexOf(arg, matchIndex)
         references.push({
           name: cleanArg,
           kind: 'subscription',
@@ -361,21 +401,17 @@ function parseReferences(
         })
       }
     }
-    match = subtagRegex.exec(value)
   }
 
   // Look for name(nodeName) pattern - use word boundary to avoid matching pname()
-  const nameRegex = /\bname\(([^)]+)\)/g
-  match = nameRegex.exec(value)
-  while (match !== null) {
-    const args = match[1]
+  for (const { index: matchIndex, args } of findFuncCalls(value, 'name(', true)) {
     const argList = args.split(',').map((a) => a.trim())
     for (const arg of argList) {
       // Skip keyword: or regex: prefixed args
       if (arg.includes(':')) continue
-      const cleanArg = arg.replace(/^['"]|['"]$/g, '')
+      const cleanArg = arg.replace(RE_STRIP_QUOTES, '')
       if (cleanArg) {
-        const argStart = value.indexOf(arg, match.index)
+        const argStart = value.indexOf(arg, matchIndex)
         references.push({
           name: cleanArg,
           kind: 'node',
@@ -386,14 +422,13 @@ function parseReferences(
         })
       }
     }
-    match = nameRegex.exec(value)
   }
 
   // Look for upstream references in DNS routing
   if (currentSection === 'dns') {
     // Match -> upstreamName pattern
-    const upstreamRegex = /->\s*(\w+)/g
-    match = upstreamRegex.exec(value)
+    RE_UPSTREAM_ARROW.lastIndex = 0
+    let match = RE_UPSTREAM_ARROW.exec(value)
     while (match !== null) {
       const name = match[1]
       // Skip built-in outbounds
@@ -408,19 +443,16 @@ function parseReferences(
           },
         })
       }
-      match = upstreamRegex.exec(value)
+      match = RE_UPSTREAM_ARROW.exec(value)
     }
 
     // Match upstream(name) function pattern in DNS response routing
-    const upstreamFuncRegex = /upstream\(([^)]+)\)/g
-    match = upstreamFuncRegex.exec(value)
-    while (match !== null) {
-      const args = match[1]
+    for (const { index: matchIndex, args } of findFuncCalls(value, 'upstream(')) {
       const argList = args.split(',').map((a) => a.trim())
       for (const arg of argList) {
-        const cleanArg = arg.replace(/^['"]|['"]$/g, '')
+        const cleanArg = arg.replace(RE_STRIP_QUOTES, '')
         if (cleanArg && !OUTBOUNDS.includes(cleanArg)) {
-          const argStart = value.indexOf(arg, match.index)
+          const argStart = value.indexOf(arg, matchIndex)
           references.push({
             name: cleanArg,
             kind: 'upstream',
@@ -431,7 +463,6 @@ function parseReferences(
           })
         }
       }
-      match = upstreamFuncRegex.exec(value)
     }
   }
 }
@@ -444,7 +475,7 @@ function getSectionKind(name: string, stack: Symbol[]): Symbol['kind'] {
     return 'section'
   }
   if (stack.length > 0) {
-    const parent = stack[stack.length - 1]
+    const parent = stack.at(-1)
     if (parent.name === 'group') {
       return 'group'
     }
@@ -611,11 +642,11 @@ export function getPositionContext(text: string, position: Position): PositionCo
     if (trimmed.startsWith('#') || trimmed === '') continue
 
     // Track braces
-    const openBraces = (line.match(/\{/g) || []).length
-    const closeBraces = (line.match(/\}/g) || []).length
+    const openBraces = (line.match(RE_OPEN_BRACE) || []).length
+    const closeBraces = (line.match(RE_CLOSE_BRACE) || []).length
 
     // Check for section start
-    const sectionMatch = trimmed.match(/^(\w+)\s*\{/)
+    const sectionMatch = trimmed.match(RE_SECTION_START)
     if (sectionMatch) {
       const name = sectionMatch[1]
       if (SECTION_NAMES.includes(name) && braceDepth === 0) {
