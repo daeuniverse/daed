@@ -3,7 +3,7 @@ packages:
   - packages/*
 
 catalog:
-  '@antfu/eslint-config': ^8.0.0
+  '@antfu/eslint-config': ^8.1.1
   '@commitlint/cli': ^20.5.0
   '@commitlint/config-conventional': ^20.5.0
   '@emotion/react': ^11.14.0
@@ -49,17 +49,17 @@ catalog:
   '@radix-ui/react-tooltip': ^1.2.8
   '@shikijs/monaco': ^4.0.2
   '@tailwindcss/vite': ^4.2.2
-  '@tanstack/eslint-plugin-query': ^5.96.2
-  '@tanstack/react-query': ^5.96.2
-  '@tanstack/react-query-devtools': ^5.96.2
-  '@types/node': ^25.5.2
+  '@tanstack/eslint-plugin-query': ^5.97.0
+  '@tanstack/react-query': ^5.97.0
+  '@tanstack/react-query-devtools': ^5.97.0
+  '@types/node': ^25.6.0
   '@types/react': ^19.2.14
   '@types/react-copy-to-clipboard': ^5.0.7
   '@types/react-dom': ^19.2.3
   '@types/urijs': ^1.19.26
-  '@types/vscode': ^1.110.0
+  '@types/vscode': ^1.115.0
   '@vitejs/plugin-react': ^6.0.1
-  '@vitest/ui': ^4.1.2
+  '@vitest/ui': ^4.1.4
   '@vscode/vsce': ^3.7.1
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
@@ -77,23 +77,23 @@ catalog:
   graphql: ^16.13.2
   graphql-request: ^7.4.0
   husky: ^9.1.7
-  i18next: ^26.0.3
+  i18next: ^26.0.4
   i18next-browser-languagedetector: ^8.2.1
   immer: ^11.1.4
   input-otp: ^1.4.2
   js-base64: ^3.7.8
   lint-staged: ^16.4.0
-  lucide-react: ^1.7.0
+  lucide-react: ^1.8.0
   monaco-editor: ^0.55.1
   nanostores: ^1.2.0
   next-themes: ^0.4.6
   playwright: ^1.59.1
-  prettier: ^3.8.1
+  prettier: ^3.8.2
   qrcode.react: ^4.2.0
-  react: ^19.2.4
+  react: ^19.2.5
   react-copy-to-clipboard: ^5.1.1
   react-day-picker: ^9.14.0
-  react-dom: ^19.2.4
+  react-dom: ^19.2.5
   react-hook-form: ^7.72.1
   react-i18next: ^17.0.2
   react-resizable-panels: ^4.9.0
@@ -101,21 +101,21 @@ catalog:
   react-router-dom: ^7.14.0
   recharts: 3.8.1
   shiki: ^4.0.2
-  simple-git: ^3.33.0
+  simple-git: ^3.35.2
   sonner: ^2.0.7
   sort-package-json: ^3.6.1
   tailwind-merge: ^3.5.0
   tailwindcss: ^4.2.2
   tsdown: ^0.21.7
   tsx: ^4.21.0
-  turbo: ^2.9.3
+  turbo: ^2.9.6
   tw-animate-css: ^1.4.0
   typescript: ^6.0.2
   urijs: ^1.19.11
   vaul: ^1.1.2
-  vite: ^8.0.5
+  vite: ^8.0.8
   vite-plugin-environment: ^1.1.3
-  vitest: ^4.1.2
+  vitest: ^4.1.4
   vscode-languageclient: ^9.0.1
   vscode-languageserver: ^9.0.1
   vscode-languageserver-textdocument: ^1.0.12
@@ -140,7 +140,7 @@ overrides:
   qs@<6.14.2: '>=6.14.2'
   underscore@<1.13.8: '>=1.13.8'
   undici@<7.24.0: '>=7.24.0'
-  vite: ^8.0.5
+  vite: ^8.0.8
   lodash: ^4.17.23
   qs: ^6.14.1
   jws: ^3.2.3
