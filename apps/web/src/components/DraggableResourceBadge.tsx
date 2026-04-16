@@ -23,17 +23,21 @@ export function DraggableResourceBadge({
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
-      {...provided.dragHandleProps}
       style={getInstantDropStyle(provided, snapshot)}
       className={cn(
-        'group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border bg-card select-none',
+        'group relative flex min-h-10 items-center gap-2 rounded-lg border bg-card px-3 py-2 select-none',
         'transition-[shadow,border-color,opacity] duration-150',
         'hover:shadow-sm hover:border-primary/30',
-        snapshot.isDragging ? 'opacity-90 z-10 cursor-grabbing shadow-md' : 'cursor-grab',
+        snapshot.isDragging && 'opacity-90 z-10 shadow-md',
       )}
     >
       {/* Drag handle */}
-      <GripVertical className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+      <div
+        className="flex shrink-0 cursor-grab items-center justify-center rounded-md p-1.5 touch-none active:cursor-grabbing"
+        {...provided.dragHandleProps}
+      >
+        <GripVertical className="h-3.5 w-3.5 text-muted-foreground/50" />
+      </div>
 
       {/* Name */}
       <span className="text-xs font-medium truncate flex-1">{name}</span>

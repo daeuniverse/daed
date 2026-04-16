@@ -1,4 +1,5 @@
-import { Check, Trash2, Type, X } from 'lucide-react'
+import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
+import { Check, ChevronDown, GripVertical, Trash2, Type, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -7,9 +8,14 @@ import { Card } from '~/components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { SimpleTooltip } from '~/components/ui/tooltip'
+import { cn } from '~/lib/utils'
 
 export function DroppableGroupCard({
   name,
+  summary,
+  collapsed,
+  dragHandleProps,
+  onToggleCollapsed,
   onRemove,
   onRename,
   actions,
@@ -17,6 +23,10 @@ export function DroppableGroupCard({
 }: {
   id: string
   name: string
+  summary?: React.ReactNode
+  collapsed?: boolean
+  dragHandleProps?: DraggableProvidedDragHandleProps | null
+  onToggleCollapsed?: () => void
   onRemove?: () => void
   onRename?: (newName: string) => void
   actions?: React.ReactNode
@@ -71,7 +81,7 @@ export function DroppableGroupCard({
     <>
       <Card withBorder shadow="sm" padding="sm">
         <div className="border-b pb-2">
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between gap-3">
             {isEditing ? (
               <div className="flex-1 flex items-center gap-2 mr-2">
                 <Input
@@ -100,10 +110,26 @@ export function DroppableGroupCard({
                 </SimpleTooltip>
               </div>
             ) : (
-              <h5 className="font-semibold">{name}</h5>
+              <div className="min-w-0 flex-1">
+                <h5 className="truncate font-semibold">{name}</h5>
+                {summary && <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">{summary}</div>}
+              </div>
             )}
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              {!isEditing && dragHandleProps && (
+                <SimpleTooltip label={t('a11y.dragToReorder')}>
+                  <div
+                    className={cn(
+                      'flex h-7 w-7 shrink-0 cursor-grab items-center justify-center rounded-md text-muted-foreground transition-colors',
+                      'hover:bg-accent hover:text-foreground active:cursor-grabbing',
+                    )}
+                    {...dragHandleProps}
+                  >
+                    <GripVertical className="h-4 w-4" />
+                  </div>
+                </SimpleTooltip>
+              )}
               {!isEditing && onRename && (
                 <SimpleTooltip label={t('actions.rename')}>
                   <Button variant="ghost" size="xs" onClick={handleStartEdit}>
@@ -112,6 +138,13 @@ export function DroppableGroupCard({
                 </SimpleTooltip>
               )}
               {actions}
+              {!isEditing && onToggleCollapsed && (
+                <SimpleTooltip label={collapsed ? t('actions.expand') : t('collapse')}>
+                  <Button variant="ghost" size="xs" onClick={onToggleCollapsed}>
+                    <ChevronDown className={cn('h-4 w-4 transition-transform', collapsed && '-rotate-90')} />
+                  </Button>
+                </SimpleTooltip>
+              )}
 
               {onRemove && (
                 <SimpleTooltip label={t('actions.remove')}>

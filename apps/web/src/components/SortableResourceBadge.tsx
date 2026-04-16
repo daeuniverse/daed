@@ -27,17 +27,21 @@ export function SortableResourceBadge({
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
-      {...provided.dragHandleProps}
       style={getInstantDropStyle(provided, snapshot)}
       className={cn(
-        'group relative flex items-center gap-2 px-3 py-2 rounded-lg border bg-card select-none overflow-hidden',
+        'group relative flex min-h-11 items-center gap-2 overflow-hidden rounded-lg border bg-card px-3.5 py-2.5 select-none',
         'transition-[shadow,border-color,opacity,background-color] duration-200',
         'hover:shadow-sm hover:border-primary/30 hover:bg-accent/50',
-        snapshot.isDragging ? 'opacity-90 z-10 cursor-grabbing shadow-lg ring-2 ring-primary/20' : 'cursor-grab',
+        snapshot.isDragging && 'opacity-90 z-10 shadow-lg ring-2 ring-primary/20',
       )}
     >
       {/* Drag handle */}
-      <GripVertical className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0 group-hover:text-muted-foreground/70 transition-colors" />
+      <div
+        className="flex shrink-0 cursor-grab items-center justify-center rounded-md p-1.5 touch-none active:cursor-grabbing"
+        {...provided.dragHandleProps}
+      >
+        <GripVertical className="h-4 w-4 text-muted-foreground/40 transition-colors group-hover:text-muted-foreground/70" />
+      </div>
 
       {/* Protocol badge */}
       {protocol && (
