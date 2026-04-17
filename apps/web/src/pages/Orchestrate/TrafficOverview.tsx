@@ -154,7 +154,7 @@ function TrafficRangeButton({
 
 export function TrafficOverview() {
   const { t } = useTranslation()
-  const [selectedRange, setSelectedRange] = useState<TimeRangeKey>('30m')
+  const [selectedRange, setSelectedRange] = useState<TimeRangeKey>('1m')
 
   const chartConfig = useMemo(
     () =>
