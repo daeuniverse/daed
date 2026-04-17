@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.1](https://github.com/daeuniverse/daed/compare/dae-editor-v1.20.0...dae-editor-v1.20.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* **security:** mitigate polynomial ReDoS in formatter and parser ([589b5d2](https://github.com/daeuniverse/daed/commit/589b5d2fcc1d5745be390fbdc2602e11e6c964c6))
+
 ## [1.20.0](https://github.com/daeuniverse/daed/compare/dae-editor-v1.19.1...dae-editor-v1.20.0) (2026-03-31)
 
 

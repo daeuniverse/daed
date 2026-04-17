@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/daeuniverse/daed/compare/v1.26.0...v1.27.0) (2026-04-17)
+
+
+### Features
+
+* **web:** add group resource pickers and improve drag UX ([#736](https://github.com/daeuniverse/daed/issues/736)) ([cfb0ec5](https://github.com/daeuniverse/daed/commit/cfb0ec528cc8bc3bfeed1dd1a9353bf9fa62de03))
+
 ## [1.26.0](https://github.com/daeuniverse/daed/compare/v1.25.1...v1.26.0) (2026-03-31)
 
 
