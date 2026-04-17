@@ -156,6 +156,7 @@ export function GroupResource({
           meta: [t('groupPicker.manualNode'), formatLatencyMeta(nodeLatencies?.[node.id])]
             .filter(Boolean)
             .join(' · '),
+          metaTone: nodeLatencies?.[node.id] ? 'primary' : 'default',
           badge: node.protocol || undefined,
           keywords: [node.name, node.tag, node.address, node.protocol].filter(Boolean) as string[],
         }
@@ -179,6 +180,7 @@ export function GroupResource({
             meta: [t('groupPicker.fromSubscription', { name: subscriptionName }), formatLatencyMeta(nodeLatencies?.[node.id])]
               .filter(Boolean)
               .join(' · '),
+            metaTone: nodeLatencies?.[node.id] ? 'primary' : 'default',
             badge: node.protocol || undefined,
             keywords: [node.name, node.tag, node.address, node.protocol, subscriptionName].filter(Boolean) as string[],
           }
