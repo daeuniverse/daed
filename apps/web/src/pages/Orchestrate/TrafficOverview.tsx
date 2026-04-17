@@ -30,7 +30,7 @@ import {
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 
-type TimeRangeKey = '10m' | '30m' | '1h'
+type TimeRangeKey = '1m' | '10m' | '30m' | '1h'
 
 interface TimeRangeOption {
   key: TimeRangeKey
@@ -40,6 +40,7 @@ interface TimeRangeOption {
 }
 
 const TIME_RANGE_OPTIONS: TimeRangeOption[] = [
+  { key: '1m', seconds: 60, maxPoints: 120, label: '1m' },
   { key: '10m', seconds: 10 * 60, maxPoints: 240, label: '10m' },
   { key: '30m', seconds: 30 * 60, maxPoints: 360, label: '30m' },
   { key: '1h', seconds: 60 * 60, maxPoints: 480, label: '1h' },
@@ -105,20 +106,20 @@ function TrafficMetricCard({
 }) {
   return (
     <div
-      className="rounded-2xl border bg-card px-4 py-3 shadow-sm transition-colors"
+      className="rounded-2xl border bg-card px-4 py-2.5 shadow-sm transition-colors"
       style={createTintStyle(colorVar)}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-center gap-3">
         <div
-          className="flex h-11 w-11 items-center justify-center rounded-2xl transition-colors"
+          className="flex h-10 w-10 items-center justify-center rounded-2xl transition-colors"
           style={createIconTintStyle(colorVar)}
         >
           {icon}
         </div>
         <div className="min-w-0">
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold tracking-tight text-foreground">{amount}</span>
+          <div className="mt-0.5 flex items-baseline gap-1.5">
+            <span className="text-[1.55rem] font-extrabold leading-none tracking-tight text-foreground">{amount}</span>
             <span className="text-sm text-muted-foreground">{unit}</span>
           </div>
         </div>
@@ -211,7 +212,7 @@ export function TrafficOverview() {
       padding="none"
       className="overflow-hidden border-border/80 bg-card/90 backdrop-blur-sm"
     >
-      <CardHeader className="gap-3 border-b border-border/70 px-6 py-5 sm:px-7">
+      <CardHeader className="gap-3 border-b border-border/70 px-6 py-4 sm:px-7">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 rounded-full border border-primary/15 bg-primary/8 p-2 text-primary">
             <Activity className="h-5 w-5" />
@@ -234,11 +235,11 @@ export function TrafficOverview() {
         </div>
       </CardHeader>
 
-      <CardContent className="px-4 py-4 sm:px-5 sm:py-5">
+      <CardContent className="px-4 py-4 sm:px-5 sm:py-4">
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1.85fr)_minmax(340px,1fr)]">
           <div className="grid gap-4">
-            <div className="rounded-2xl border border-border/70 bg-background/70 p-4 shadow-sm">
-              <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
+              <div className="mb-2.5 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-foreground">{t('trafficOverview.uploadChart')}</p>
                   <p className="text-xs text-muted-foreground">{t('trafficOverview.liveWindow')}</p>
@@ -247,7 +248,7 @@ export function TrafficOverview() {
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="aspect-auto h-32 w-full"
+                className="aspect-auto h-28 w-full"
               >
                 <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 4 }}>
                   <defs>
@@ -293,8 +294,8 @@ export function TrafficOverview() {
               </ChartContainer>
             </div>
 
-            <div className="rounded-2xl border border-border/70 bg-background/70 p-4 shadow-sm">
-              <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
+              <div className="mb-2.5 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-foreground">{t('trafficOverview.downloadChart')}</p>
                   <p className="text-xs text-muted-foreground">{t('trafficOverview.liveWindow')}</p>
@@ -303,7 +304,7 @@ export function TrafficOverview() {
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="aspect-auto h-32 w-full"
+                className="aspect-auto h-28 w-full"
               >
                 <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 4 }}>
                   <defs>

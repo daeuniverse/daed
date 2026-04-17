@@ -263,6 +263,7 @@
     "connectionsUnit": "连接",
     "sessionsUnit": "会话",
     "ranges": {
+      "1m": "1 分钟",
       "10m": "10 分钟",
       "30m": "30 分钟",
       "1h": "1 小时"

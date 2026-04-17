@@ -263,6 +263,7 @@
     "connectionsUnit": "conn",
     "sessionsUnit": "sessions",
     "ranges": {
+      "1m": "1m",
       "10m": "10m",
       "30m": "30m",
       "1h": "1h"
