@@ -596,6 +596,7 @@ export function OrchestratePage() {
             draggingResource={draggingResource}
             dragDestinationDroppableId={dragDestinationDroppableId}
             hoveredGroupId={hoveredGroupId}
+            nodeLatencies={nodeLatencies}
           />
           <NodeResource
             sortedNodes={sortedNodes}
