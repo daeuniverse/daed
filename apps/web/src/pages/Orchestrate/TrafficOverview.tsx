@@ -106,7 +106,7 @@ function TrafficMetricCard({
 }) {
   return (
     <div
-      className="rounded-2xl border bg-card px-4 py-2.5 shadow-sm transition-colors"
+      className="h-full rounded-2xl border bg-card px-4 py-2.5 shadow-sm transition-colors"
       style={createTintStyle(colorVar)}
     >
       <div className="flex items-center gap-3">
@@ -243,8 +243,8 @@ export function TrafficOverview() {
       </CardHeader>
 
       <CardContent className="px-4 py-4 sm:px-5 sm:py-4">
-        <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(340px,1fr)]">
-          <div className="grid self-start gap-4 md:grid-cols-2">
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(340px,1fr)]">
+          <div className="grid h-full gap-4 md:grid-cols-2">
             <div className="flex h-full flex-col rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
               <div className="mb-2 flex items-center justify-between gap-3">
                 <div>
@@ -253,7 +253,7 @@ export function TrafficOverview() {
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="mt-auto aspect-auto h-28 w-full"
+                className="mt-2 flex-1 aspect-auto min-h-[180px] w-full"
               >
                 <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 2 }}>
                   <defs>
@@ -313,7 +313,7 @@ export function TrafficOverview() {
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="mt-auto aspect-auto h-28 w-full"
+                className="mt-2 flex-1 aspect-auto min-h-[180px] w-full"
               >
                 <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 2 }}>
                   <defs>
@@ -366,7 +366,7 @@ export function TrafficOverview() {
             </div>
           </div>
 
-          <div className="grid auto-rows-min content-start self-start grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-2">
+          <div className="grid h-full auto-rows-fr grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-2">
             <TrafficMetricCard
               title={t('trafficOverview.uploadSpeed')}
               amount={uploadRateDisplay.amount}
