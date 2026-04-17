@@ -172,6 +172,14 @@ export function TrafficOverview() {
 
   const trafficOverviewQuery = useTrafficOverviewQuery(selectedWindow.seconds, selectedWindow.maxPoints)
   const runtimeOverview = trafficOverviewQuery.data
+  const chartWindowEnd = useMemo(
+    () => (runtimeOverview?.updatedAt ? dayjs(runtimeOverview.updatedAt).valueOf() : Date.now()),
+    [runtimeOverview?.updatedAt],
+  )
+  const chartWindowStart = useMemo(
+    () => chartWindowEnd - selectedWindow.seconds * 1000,
+    [chartWindowEnd, selectedWindow.seconds],
+  )
 
   const latestSample = useMemo(
     () => ({
@@ -236,8 +244,8 @@ export function TrafficOverview() {
       </CardHeader>
 
       <CardContent className="px-4 py-4 sm:px-5 sm:py-4">
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.85fr)_minmax(340px,1fr)]">
-          <div className="grid gap-4">
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(340px,1fr)]">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
               <div className="mb-2.5 flex items-center justify-between gap-3">
                 <div>
@@ -248,7 +256,7 @@ export function TrafficOverview() {
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="aspect-auto h-28 w-full"
+                className="aspect-auto h-24 w-full"
               >
                 <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 4 }}>
                   <defs>
@@ -259,10 +267,14 @@ export function TrafficOverview() {
                   </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis
+                    type="number"
+                    scale="time"
                     dataKey="timestamp"
                     axisLine={false}
                     tickLine={false}
                     minTickGap={24}
+                    domain={[chartWindowStart, chartWindowEnd]}
+                    allowDataOverflow
                     tickFormatter={(value) => dayjs(value).format('HH:mm')}
                   />
                   <YAxis
@@ -304,7 +316,7 @@ export function TrafficOverview() {
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="aspect-auto h-28 w-full"
+                className="aspect-auto h-24 w-full"
               >
                 <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 4 }}>
                   <defs>
@@ -315,10 +327,14 @@ export function TrafficOverview() {
                   </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis
+                    type="number"
+                    scale="time"
                     dataKey="timestamp"
                     axisLine={false}
                     tickLine={false}
                     minTickGap={24}
+                    domain={[chartWindowStart, chartWindowEnd]}
+                    allowDataOverflow
                     tickFormatter={(value) => dayjs(value).format('HH:mm')}
                   />
                   <YAxis
@@ -351,7 +367,7 @@ export function TrafficOverview() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-2">
+          <div className="grid auto-rows-min content-start self-start grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-2">
             <TrafficMetricCard
               title={t('trafficOverview.uploadSpeed')}
               amount={uploadRateDisplay.amount}
