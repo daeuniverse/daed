@@ -246,6 +246,28 @@
   "name": "名字",
   "node": "节点",
   "node connectivity check": "节点连通性检测",
+  "trafficOverview": {
+    "title": "流量统计",
+    "description": "实时滚动展示上下行流量，并支持切换时间窗口。",
+    "uploadChart": "上行流量",
+    "downloadChart": "下行流量",
+    "uploadLegend": "上传",
+    "downloadLegend": "下载",
+    "liveWindow": "自动滚动的实时窗口",
+    "uploadSpeed": "上传速度",
+    "downloadSpeed": "下载速度",
+    "activeConnections": "活跃连接",
+    "totalUpload": "累计上传",
+    "totalDownload": "累计下载",
+    "udpSessions": "UDP 会话",
+    "connectionsUnit": "连接",
+    "sessionsUnit": "会话",
+    "ranges": {
+      "10m": "10 分钟",
+      "30m": "30 分钟",
+      "1h": "1 小时"
+    }
+  },
   "notifications": {
     "login succeeded": "登录成功",
     "success": "成功"

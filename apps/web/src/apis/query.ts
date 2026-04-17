@@ -10,6 +10,7 @@ import {
   QUERY_KEY_ROUTING,
   QUERY_KEY_STORAGE,
   QUERY_KEY_SUBSCRIPTION,
+  QUERY_KEY_TRAFFIC,
   QUERY_KEY_USER,
 } from '~/constants'
 import { useGQLQueryClient } from '~/contexts'
@@ -145,6 +146,65 @@ export function useGeneralQuery() {
           up: true,
         },
       ),
+  })
+}
+
+export interface TrafficOverviewQueryData {
+  updatedAt: string
+  uploadRate: number
+  downloadRate: number
+  uploadTotal: string
+  downloadTotal: string
+  activeConnections: number
+  udpSessions: number
+  samples: Array<{
+    timestamp: string
+    uploadRate: number
+    downloadRate: number
+  }>
+}
+
+export function useTrafficOverviewQuery(windowSec: number, maxPoints: number) {
+  const gqlClient = useGQLQueryClient()
+
+  return useQuery({
+    queryKey: [...QUERY_KEY_TRAFFIC, windowSec, maxPoints],
+    queryFn: async () => {
+      const data = await gqlClient.request<
+        { general: { runtimeOverview: TrafficOverviewQueryData } },
+        { windowSec: number; maxPoints: number }
+      >(
+        `
+          query TrafficOverview($windowSec: Int!, $maxPoints: Int!) {
+            general {
+              runtimeOverview(windowSec: $windowSec, maxPoints: $maxPoints) {
+                updatedAt
+                uploadRate
+                downloadRate
+                uploadTotal
+                downloadTotal
+                activeConnections
+                udpSessions
+                samples {
+                  timestamp
+                  uploadRate
+                  downloadRate
+                }
+              }
+            }
+          }
+        `,
+        {
+          windowSec,
+          maxPoints,
+        },
+      )
+
+      return data.general.runtimeOverview
+    },
+    placeholderData: (previousData) => previousData,
+    refetchInterval: 1000,
+    refetchIntervalInBackground: true,
   })
 }
 

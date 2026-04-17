@@ -99,6 +99,7 @@ export const QUERY_KEY_ROUTING = ['routing']
 export const QUERY_KEY_DNS = ['dns']
 export const QUERY_KEY_GROUP = ['group']
 export const QUERY_KEY_STORAGE = ['storage']
+export const QUERY_KEY_TRAFFIC = ['traffic']
 
 export enum DraggableResourceType {
   node = 'node',

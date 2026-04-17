@@ -21,6 +21,7 @@ import { GroupResource } from './Group'
 import { NODE_DROPPABLE_ID, NodeResource } from './Node'
 import { Routing } from './Routing'
 import { SubscriptionResource } from './Subscription'
+import { TrafficOverview } from './TrafficOverview'
 
 function arrayMove<T>(array: T[], from: number, to: number): T[] {
   const newArray = [...array]
@@ -574,6 +575,8 @@ export function OrchestratePage() {
         <DNS />
         <Routing />
       </div>
+
+      <TrafficOverview />
 
       <DragDropContext onDragStart={onDragStart} onDragUpdate={onDragUpdate} onDragEnd={onDragEnd}>
         <div className={`grid gap-5 ${matchSmallScreen ? 'grid-cols-1' : 'grid-cols-3'}`}>
