@@ -223,7 +223,7 @@
     "addSelectedSubscriptions": "添加所选订阅组",
     "subscriptionRegexLabel": "节点名称正则",
     "subscriptionRegexPlaceholder": "可选，留空则添加整个订阅组",
-    "subscriptionRegexHint": "填写后会对当前选中的所有订阅组统一应用该正则规则。",
+    "subscriptionRegexHint": "填写后会对当前选中的所有订阅组统一应用该正则规则。后端使用 Go 的 RE2 语法，不支持前后预查和反向引用。",
     "invalidRegex": "正则表达式无效",
     "subscriptionPreviewTitle": "匹配节点预览",
     "subscriptionPreviewSummary": "当前共匹配 {{count}} 个节点",

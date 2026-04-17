@@ -19,6 +19,7 @@ export interface GroupPickerItem {
   title: string
   description?: string
   meta?: string
+  metaTone?: 'default' | 'primary'
   badge?: string
   keywords?: string[]
   previewNodes?: GroupPickerPreviewNode[]
@@ -265,11 +266,13 @@ export function GroupAddSubscriptionsModal({
   const [query, setQuery] = useState('')
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [nameFilterRegex, setNameFilterRegex] = useState('')
+  const [serverRegexError, setServerRegexError] = useState<string | null>(null)
 
   useEffect(() => {
     setQuery('')
     setSelectedIds([])
     setNameFilterRegex('')
+    setServerRegexError(null)
   }, [opened, resetKey])
 
   const filteredItems = useMemo(() => {
@@ -290,7 +293,7 @@ export function GroupAddSubscriptionsModal({
 
   const trimmedRegex = nameFilterRegex.trim()
 
-  const regexError = useMemo(() => {
+  const clientRegexError = useMemo(() => {
     if (!trimmedRegex) return null
     try {
       // Validate user input before sending it to the backend.
@@ -300,6 +303,8 @@ export function GroupAddSubscriptionsModal({
       return error instanceof Error ? error.message : t('groupPicker.invalidRegex')
     }
   }, [trimmedRegex, t])
+
+  const regexError = clientRegexError || serverRegexError
 
   const previewGroups = useMemo(() => {
     const regex = trimmedRegex && !regexError ? new RegExp(trimmedRegex) : null
@@ -318,6 +323,7 @@ export function GroupAddSubscriptionsModal({
   const totalMatchedNodes = previewGroups.reduce((sum, group) => sum + group.matchedNodes.length, 0)
 
   const toggleItem = (id: string) => {
+    setServerRegexError(null)
     setSelectedIds((current) => (current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id]))
   }
 
@@ -326,20 +332,30 @@ export function GroupAddSubscriptionsModal({
     setQuery('')
     setSelectedIds([])
     setNameFilterRegex('')
-  }
-
-  const handleSubmit = async () => {
-    if (selectedIds.length === 0 || regexError) return
-
-    await onSubmit({
-      ids: selectedIds,
-      nameFilterRegex: trimmedRegex || null,
-    })
-    handleClose()
+    setServerRegexError(null)
   }
 
   const submitDisabled =
-    selectedIds.length === 0 || !!regexError || loading || (trimmedRegex.length > 0 && totalMatchedNodes === 0)
+    selectedIds.length === 0 || !!regexError || !!loading || (trimmedRegex.length > 0 && totalMatchedNodes === 0)
+
+  const handleSubmit = async () => {
+    if (submitDisabled) return
+
+    try {
+      await onSubmit({
+        ids: selectedIds,
+        nameFilterRegex: trimmedRegex || null,
+      })
+      handleClose()
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t('groupPicker.invalidRegex')
+      if (trimmedRegex) {
+        setServerRegexError(message)
+        return
+      }
+      throw error
+    }
+  }
 
   return (
     <Dialog open={opened} onOpenChange={(nextOpen) => !nextOpen && handleClose()}>
@@ -422,7 +438,10 @@ export function GroupAddSubscriptionsModal({
             <Input
               label={t('groupPicker.subscriptionRegexLabel')}
               value={nameFilterRegex}
-              onChange={(e) => setNameFilterRegex(e.target.value)}
+              onChange={(e) => {
+                setNameFilterRegex(e.target.value)
+                setServerRegexError(null)
+              }}
               placeholder={t('groupPicker.subscriptionRegexPlaceholder')}
               error={regexError || undefined}
             />
@@ -444,7 +463,9 @@ export function GroupAddSubscriptionsModal({
             {selectedItems.length === 0 ? (
               <p className="mt-4 text-sm text-muted-foreground">{t('groupPicker.subscriptionPreviewSelectFirst')}</p>
             ) : previewGroups.every((group) => group.matchedNodes.length === 0) ? (
-              <p className="mt-4 text-sm text-muted-foreground">{t('groupPicker.subscriptionPreviewEmpty')}</p>
+              <p className="mt-4 text-sm text-muted-foreground">
+                {trimmedRegex ? t('groupPicker.subscriptionPreviewEmpty') : t('groupPicker.subscriptionPreviewUnfiltered')}
+              </p>
             ) : (
               <div className="mt-4 flex flex-col gap-3">
                 {previewGroups.map(({ item, matchedNodes }) => (

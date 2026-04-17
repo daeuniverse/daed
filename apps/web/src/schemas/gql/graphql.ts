@@ -835,6 +835,7 @@ export type GroupDelNodesMutation = { __typename?: 'Mutation'; groupDelNodes: nu
 
 export type GroupAddSubscriptionsMutationVariables = Exact<{
   id: Scalars['ID']['input']
+  nameFilterRegex?: InputMaybe<Scalars['String']['input']>
   subscriptionIDs: Array<Scalars['ID']['input']> | Scalars['ID']['input']
 }>
 
@@ -2147,6 +2148,11 @@ export const GroupAddNodesDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'nameFilterRegex' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -2245,6 +2251,11 @@ export const GroupAddSubscriptionsDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'nameFilterRegex' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -2262,6 +2273,11 @@ export const GroupAddSubscriptionsDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'subscriptionIDs' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'subscriptionIDs' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'nameFilterRegex' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'nameFilterRegex' } },
               },
             ],
           },
@@ -3404,34 +3420,36 @@ export const GroupsDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'link' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'info' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'nameFilterRegex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'matchedCount' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'nodes' },
+                        name: { kind: 'Name', value: 'subscription' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'edges' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'link' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'protocol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'subscriptionID' } },
-                                ],
-                              },
-                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'info' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'matchedNodes' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'link' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'protocol' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'tag' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'subscriptionID' } },
                           ],
                         },
                       },

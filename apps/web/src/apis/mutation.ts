@@ -597,12 +597,12 @@ export function useGroupAddSubscriptionsMutation() {
       subscriptionIDs: string[]
       nameFilterRegex?: string | null
     }) => {
-      return gqlClient.request<{ groupAddSubscriptions: number }>(
-        `
+      return gqlClient.request(
+        graphql(`
           mutation GroupAddSubscriptions($id: ID!, $subscriptionIDs: [ID!]!, $nameFilterRegex: String) {
             groupAddSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs, nameFilterRegex: $nameFilterRegex)
           }
-        `,
+        `),
         {
           id,
           subscriptionIDs,

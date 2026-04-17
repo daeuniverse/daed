@@ -266,14 +266,21 @@ export function SortableGroupContent({
             id={`${groupId}-sub-${subscription.id}`}
             index={index}
             name={subscription.tag || subscription.link}
-            meta={nameFilterRegex ? `${matchedCount} ${t('node')} · /${nameFilterRegex}/` : `${matchedCount} ${t('node')}`}
+            meta={
+              nameFilterRegex
+                ? `${t('groupPicker.subscriptionPreviewMatchedCount', { count: matchedCount })} · /${nameFilterRegex}/`
+                : t('groupPicker.subscriptionPreviewMatchedCount', { count: matchedCount })
+            }
             onRemove={() => onDelSubscription(subscription.id)}
           >
             <div className="flex flex-col gap-1 text-xs">
               {nameFilterRegex && <span>{t('groupPicker.subscriptionRegexTooltip', { regex: nameFilterRegex })}</span>}
               <span>{t('groupPicker.subscriptionPreviewMatchedCount', { count: matchedCount })}</span>
               {matchedNodes.length > 0 && (
-                <span className="opacity-80">{matchedNodes.map((node) => node.name).join(', ')}</span>
+                <span className="opacity-80">
+                  {matchedNodes.slice(0, 5).map((node) => node.name).join(', ')}
+                  {matchedNodes.length > 5 && ` +${matchedNodes.length - 5}`}
+                </span>
               )}
             </div>
           </SortableResourceBadge>

@@ -14,7 +14,6 @@ import {
 } from '~/constants'
 import { useGQLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
-import type { GroupsQuery } from '~/schemas/gql/graphql'
 
 export function getModeRequest(gqlClient: GQLClientInterface) {
   return async () => {
@@ -259,32 +258,13 @@ export function useGroupsQuery() {
   return useQuery({
     queryKey: QUERY_KEY_GROUP,
     queryFn: async () =>
-      gqlClient.request<GroupsQuery>(`
-        query Groups {
-          groups {
-            id
-            name
-            nodes {
+      gqlClient.request(
+        graphql(`
+          query Groups {
+            groups {
               id
-              link
               name
-              address
-              protocol
-              tag
-              subscriptionID
-            }
-            subscriptions {
-              nameFilterRegex
-              matchedCount
-              subscription {
-                id
-                updatedAt
-                tag
-                link
-                status
-                info
-              }
-              matchedNodes {
+              nodes {
                 id
                 link
                 name
@@ -293,15 +273,36 @@ export function useGroupsQuery() {
                 tag
                 subscriptionID
               }
-            }
-            policy
-            policyParams {
-              key
-              val
+              subscriptions {
+                nameFilterRegex
+                matchedCount
+                subscription {
+                  id
+                  updatedAt
+                  tag
+                  link
+                  status
+                  info
+                }
+                matchedNodes {
+                  id
+                  link
+                  name
+                  address
+                  protocol
+                  tag
+                  subscriptionID
+                }
+              }
+              policy
+              policyParams {
+                key
+                val
+              }
             }
           }
-        }
-      `),
+        `),
+      ),
   })
 }
 

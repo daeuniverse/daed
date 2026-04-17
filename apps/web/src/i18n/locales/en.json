@@ -223,7 +223,7 @@
     "addSelectedSubscriptions": "Add Selected Subscription Groups",
     "subscriptionRegexLabel": "Node Name Regex",
     "subscriptionRegexPlaceholder": "Optional. Leave empty to add the whole subscription group",
-    "subscriptionRegexHint": "When provided, the same regex will be applied to every selected subscription group.",
+    "subscriptionRegexHint": "When provided, the same regex will be applied to every selected subscription group. Backend matching uses Go RE2 syntax, so lookahead/lookbehind and backreferences are not supported.",
     "invalidRegex": "Invalid regular expression",
     "subscriptionPreviewTitle": "Matched Node Preview",
     "subscriptionPreviewSummary": "{{count}} nodes will be added with the current rule",
