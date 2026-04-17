@@ -267,12 +267,14 @@ export function GroupAddSubscriptionsModal({
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [nameFilterRegex, setNameFilterRegex] = useState('')
   const [serverRegexError, setServerRegexError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   useEffect(() => {
     setQuery('')
     setSelectedIds([])
     setNameFilterRegex('')
     setServerRegexError(null)
+    setSubmitError(null)
   }, [opened, resetKey])
 
   const filteredItems = useMemo(() => {
@@ -324,6 +326,7 @@ export function GroupAddSubscriptionsModal({
 
   const toggleItem = (id: string) => {
     setServerRegexError(null)
+    setSubmitError(null)
     setSelectedIds((current) => (current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id]))
   }
 
@@ -333,6 +336,7 @@ export function GroupAddSubscriptionsModal({
     setSelectedIds([])
     setNameFilterRegex('')
     setServerRegexError(null)
+    setSubmitError(null)
   }
 
   const submitDisabled =
@@ -353,12 +357,12 @@ export function GroupAddSubscriptionsModal({
         setServerRegexError(message)
         return
       }
-      throw error
+      setSubmitError(message)
     }
   }
 
   return (
-    <Dialog open={opened} onOpenChange={(nextOpen) => !nextOpen && handleClose()}>
+    <Dialog open={opened} onOpenChange={(nextOpen) => !nextOpen && !loading && handleClose()}>
       <ScrollableDialogContent size="xl">
         <ScrollableDialogHeader>
           <div className="pr-8">
@@ -372,7 +376,10 @@ export function GroupAddSubscriptionsModal({
         <ScrollableDialogBody className="flex flex-col gap-4">
           <Input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setSubmitError(null)
+            }}
             placeholder={t('groupPicker.searchSubscriptionsPlaceholder')}
             icon={<Search className="h-4 w-4" />}
           />
@@ -441,6 +448,7 @@ export function GroupAddSubscriptionsModal({
               onChange={(e) => {
                 setNameFilterRegex(e.target.value)
                 setServerRegexError(null)
+                setSubmitError(null)
               }}
               placeholder={t('groupPicker.subscriptionRegexPlaceholder')}
               error={regexError || undefined}
@@ -504,6 +512,7 @@ export function GroupAddSubscriptionsModal({
         </ScrollableDialogBody>
 
         <ScrollableDialogFooter>
+          {submitError && <p className="mr-auto text-xs text-destructive">{submitError}</p>}
           <Button variant="ghost" onClick={handleClose} disabled={loading}>
             {t('actions.cancel')}
           </Button>
