@@ -243,9 +243,9 @@ export function TrafficOverview() {
       </CardHeader>
 
       <CardContent className="px-4 py-4 sm:px-5 sm:py-4">
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(340px,1fr)]">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
+        <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(340px,1fr)]">
+          <div className="grid self-start gap-4 md:grid-cols-2">
+            <div className="flex h-full flex-col rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
               <div className="mb-2 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-foreground">{t('trafficOverview.uploadChart')}</p>
@@ -253,7 +253,7 @@ export function TrafficOverview() {
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="aspect-auto h-28 w-full"
+                className="mt-auto aspect-auto h-28 w-full"
               >
                 <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 2 }}>
                   <defs>
@@ -305,7 +305,7 @@ export function TrafficOverview() {
               </ChartContainer>
             </div>
 
-            <div className="rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
+            <div className="flex h-full flex-col rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
               <div className="mb-2 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-foreground">{t('trafficOverview.downloadChart')}</p>
@@ -313,7 +313,7 @@ export function TrafficOverview() {
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="aspect-auto h-28 w-full"
+                className="mt-auto aspect-auto h-28 w-full"
               >
                 <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 2 }}>
                   <defs>
