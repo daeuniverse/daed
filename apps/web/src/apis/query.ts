@@ -6,6 +6,7 @@ import {
   QUERY_KEY_DNS,
   QUERY_KEY_GENERAL,
   QUERY_KEY_GROUP,
+  QUERY_KEY_NODE_LATENCY,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
   QUERY_KEY_STORAGE,
@@ -15,6 +16,7 @@ import {
 } from '~/constants'
 import { useGQLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
+import type { NodeLatencyProbeResult } from './mutation'
 
 export function getModeRequest(gqlClient: GQLClientInterface) {
   return async () => {
@@ -204,6 +206,34 @@ export function useTrafficOverviewQuery(windowSec: number, maxPoints: number) {
     },
     placeholderData: (previousData) => previousData,
     refetchInterval: 500,
+    refetchIntervalInBackground: true,
+  })
+}
+
+export function useNodeLatenciesQuery(refetchIntervalMs: number) {
+  const gqlClient = useGQLQueryClient()
+
+  return useQuery({
+    queryKey: QUERY_KEY_NODE_LATENCY,
+    queryFn: async () => {
+      const data = await gqlClient.request<{ nodeLatencies: NodeLatencyProbeResult[] }>(
+        `
+          query NodeLatencies {
+            nodeLatencies {
+              id
+              latencyMs
+              alive
+              testedAt
+              message
+            }
+          }
+        `,
+      )
+
+      return data.nodeLatencies
+    },
+    placeholderData: (previousData) => previousData,
+    refetchInterval: refetchIntervalMs,
     refetchIntervalInBackground: true,
   })
 }

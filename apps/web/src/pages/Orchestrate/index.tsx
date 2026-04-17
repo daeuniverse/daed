@@ -3,20 +3,24 @@ import type { DraggingResource } from '~/constants'
 import type { GroupsQuery, NodesQuery, SubscriptionsQuery } from '~/schemas/gql/graphql'
 import { DragDropContext } from '@hello-pangea/dnd'
 import { useStore } from '@nanostores/react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
+  useConfigsQuery,
   useGroupAddNodesMutation,
   useGroupAddSubscriptionsMutation,
   useGroupDelNodesMutation,
   useGroupsQuery,
+  useNodeLatenciesQuery,
   useNodesQuery,
   useSubscriptionsQuery,
   useTestNodeLatenciesMutation,
 } from '~/apis'
 import type { NodeLatencyProbeResult } from '~/apis'
-import { DraggableResourceType } from '~/constants'
+import { DraggableResourceType, QUERY_KEY_NODE_LATENCY } from '~/constants'
 import { useMediaQuery } from '~/hooks'
 import { appStateAtom, groupSortOrdersAtom } from '~/store'
+import { deriveTime } from '~/utils'
 import { Config } from './Config'
 import { DNS } from './DNS'
 import { GroupResource } from './Group'
@@ -33,6 +37,8 @@ function arrayMove<T>(array: T[], from: number, to: number): T[] {
 }
 
 export function OrchestratePage() {
+  const queryClient = useQueryClient()
+  const { data: configsQuery } = useConfigsQuery()
   const { data: nodesQuery } = useNodesQuery()
   const { data: groupsQuery } = useGroupsQuery()
   const { data: subscriptionsQuery } = useSubscriptionsQuery()
@@ -46,7 +52,6 @@ export function OrchestratePage() {
   const [isDragging, setIsDragging] = useState(false)
   const [dragDestinationDroppableId, setDragDestinationDroppableId] = useState<string | null>(null)
   const [hoveredGroupId, setHoveredGroupId] = useState<string | null>(null)
-  const [nodeLatencies, setNodeLatencies] = useState<Record<string, NodeLatencyProbeResult>>({})
   const autoScrollFrameRef = useRef<number | null>(null)
   const draggingActiveRef = useRef(false)
   const edgeAutoScrollEnabledRef = useRef(false)
@@ -88,6 +93,22 @@ export function OrchestratePage() {
   const hasGroupSubscription = useCallback(
     (groupId: string, subscriptionId: string) => !!getGroupSubscriptionBinding(groupId, subscriptionId),
     [getGroupSubscriptionBinding],
+  )
+  const selectedConfig = useMemo(
+    () => configsQuery?.configs.find((config) => config.selected),
+    [configsQuery?.configs],
+  )
+  const nodeLatencyRefetchIntervalMs = useMemo(() => {
+    const configuredInterval = selectedConfig?.global.checkInterval
+    if (!configuredInterval) return 30_000
+
+    const ms = deriveTime(configuredInterval, 'ms')
+    return Math.max(1_000, Number.isFinite(ms) ? ms : 30_000)
+  }, [selectedConfig?.global.checkInterval])
+  const nodeLatenciesQuery = useNodeLatenciesQuery(nodeLatencyRefetchIntervalMs)
+  const nodeLatencies = useMemo<Record<string, NodeLatencyProbeResult>>(
+    () => Object.fromEntries((nodeLatenciesQuery.data ?? []).map((result) => [result.id, result])),
+    [nodeLatenciesQuery.data],
   )
   const lastLatencyProbeAt = useMemo(() => {
     const testedAtList = Object.values(nodeLatencies)
@@ -609,10 +630,9 @@ export function OrchestratePage() {
             testingLatencies={testNodeLatenciesMutation.isPending}
             lastLatencyProbeAt={lastLatencyProbeAt}
             onTestAllNodeLatencies={async () => {
-              const results = await testNodeLatenciesMutation.mutateAsync()
-              setNodeLatencies(
-                Object.fromEntries(results.map((result) => [result.id, result])),
-              )
+              await testNodeLatenciesMutation.mutateAsync()
+              await queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE_LATENCY })
+              await nodeLatenciesQuery.refetch()
             }}
           />
         </div>
