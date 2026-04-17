@@ -227,7 +227,6 @@ export function TrafficOverview() {
           </div>
           <div>
             <CardTitle className="text-lg text-primary">{t('trafficOverview.title')}</CardTitle>
-            <CardDescription>{t('trafficOverview.description')}</CardDescription>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -247,18 +246,16 @@ export function TrafficOverview() {
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(340px,1fr)]">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
-              <div className="mb-2.5 flex items-center justify-between gap-3">
+              <div className="mb-2 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-foreground">{t('trafficOverview.uploadChart')}</p>
-                  <p className="text-xs text-muted-foreground">{t('trafficOverview.liveWindow')}</p>
                 </div>
-                <span className="text-xs font-medium text-[var(--chart-1)]">{t('trafficOverview.uploadLegend')}</span>
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="aspect-auto h-24 w-full"
+                className="aspect-auto h-28 w-full"
               >
-                <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 18 }}>
+                <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 2 }}>
                   <defs>
                     <linearGradient id="traffic-upload-fill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="var(--color-upload)" stopOpacity={0.22} />
@@ -273,8 +270,8 @@ export function TrafficOverview() {
                     axisLine={false}
                     tickLine={false}
                     minTickGap={24}
-                    tickMargin={14}
-                    height={28}
+                    tickMargin={18}
+                    height={34}
                     domain={[chartWindowStart, chartWindowEnd]}
                     allowDataOverflow
                     tickFormatter={(value) => dayjs(value).format('HH:mm')}
@@ -309,18 +306,16 @@ export function TrafficOverview() {
             </div>
 
             <div className="rounded-2xl border border-border/70 bg-background/70 p-3.5 shadow-sm">
-              <div className="mb-2.5 flex items-center justify-between gap-3">
+              <div className="mb-2 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-foreground">{t('trafficOverview.downloadChart')}</p>
-                  <p className="text-xs text-muted-foreground">{t('trafficOverview.liveWindow')}</p>
                 </div>
-                <span className="text-xs font-medium text-[var(--chart-2)]">{t('trafficOverview.downloadLegend')}</span>
               </div>
               <ChartContainer
                 config={chartConfig}
-                className="aspect-auto h-24 w-full"
+                className="aspect-auto h-28 w-full"
               >
-                <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 18 }}>
+                <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 2 }}>
                   <defs>
                     <linearGradient id="traffic-download-fill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="var(--color-download)" stopOpacity={0.2} />
@@ -335,8 +330,8 @@ export function TrafficOverview() {
                     axisLine={false}
                     tickLine={false}
                     minTickGap={24}
-                    tickMargin={14}
-                    height={28}
+                    tickMargin={18}
+                    height={34}
                     domain={[chartWindowStart, chartWindowEnd]}
                     allowDataOverflow
                     tickFormatter={(value) => dayjs(value).format('HH:mm')}
