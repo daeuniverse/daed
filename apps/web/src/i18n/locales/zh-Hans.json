@@ -64,6 +64,7 @@
     "switchLanguage": "切换语言",
     "switchRunning": "运行开关",
     "switchTheme": "切换主题",
+    "testLatency": "测试延迟",
     "update": "更新",
     "updateAll": "更新全部",
     "viewDetails": "查看详情",
@@ -239,6 +240,13 @@
   "ip": "IP 地址",
   "lanInterface": "LAN 接口",
   "lanNatDirect": "LAN NAT 直连",
+  "latency": {
+    "label": "延迟",
+    "lastTested": "最近测速时间 {{ time }}",
+    "testAllNodes": "测试所有节点延迟",
+    "nodesMeasured": "已测速 {{ count }} 个节点",
+    "unavailable": "不可用"
+  },
   "link": "链接",
   "logLevel": "日志等级",
   "login account": "使用帐号密码登录",

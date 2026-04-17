@@ -64,6 +64,7 @@
     "switchLanguage": "Switch Language",
     "switchRunning": "Switch Running",
     "switchTheme": "Switch Theme",
+    "testLatency": "Test Latency",
     "update": "Update",
     "updateAll": "Update All",
     "viewDetails": "View Details",
@@ -239,6 +240,13 @@
   "ip": "IP Address",
   "lanInterface": "LAN Interface",
   "lanNatDirect": "LAN NAT Direct connection",
+  "latency": {
+    "label": "Latency",
+    "lastTested": "Last tested at {{ time }}",
+    "testAllNodes": "Test all node latencies",
+    "nodesMeasured": "{{ count }} nodes measured",
+    "unavailable": "Unavailable"
+  },
   "link": "Link",
   "logLevel": "Log Level",
   "login account": "Login via username & password",

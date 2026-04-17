@@ -1,5 +1,6 @@
 import type { QRCodeModalRef } from '~/components/QRCodeModal.tsx'
 import type { NodesQuery } from '~/schemas/gql/graphql.ts'
+import type { NodeLatencyProbeResult } from '~/apis'
 import { Droppable } from '@hello-pangea/dnd'
 import { Cloud, CloudUpload, Eye, FileInput, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
@@ -19,9 +20,11 @@ export const NODE_DROPPABLE_ID = 'node-list'
 export function NodeResource({
   sortedNodes,
   highlight,
+  nodeLatencies,
 }: {
   sortedNodes: NodesQuery['nodes']['edges']
   highlight?: boolean
+  nodeLatencies?: Record<string, NodeLatencyProbeResult>
 }) {
   const { t } = useTranslation()
 
@@ -109,6 +112,11 @@ export function NodeResource({
                 }
                 onRemove={() => removeNodesMutation.mutate([id])}
               >
+                {nodeLatencies?.[id] && (
+                  <p className="text-xs font-medium text-primary">
+                    {formatLatencyDisplay(nodeLatencies[id], t('latency.unavailable'))}
+                  </p>
+                )}
                 {name && name !== tag && <p className="text-xs opacity-70">{name}</p>}
                 <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
               </SortableNodeCard>
@@ -141,6 +149,13 @@ export function NodeResource({
       />
     </Section>
   )
+}
+
+function formatLatencyDisplay(result: NodeLatencyProbeResult, unavailableLabel: string) {
+  if (typeof result.latencyMs === 'number') {
+    return `${result.latencyMs} ms`
+  }
+  return result.message || unavailableLabel
 }
 
 function Spoiler({ label, showLabel, hideLabel }: { label: string; showLabel: string; hideLabel: string }) {

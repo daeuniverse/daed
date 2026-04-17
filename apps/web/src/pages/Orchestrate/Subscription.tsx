@@ -2,10 +2,11 @@ import type { QRCodeModalRef } from '~/components/QRCodeModal'
 import type { SubscriptionsQuery } from '~/schemas/gql/graphql'
 import { Droppable } from '@hello-pangea/dnd'
 import dayjs from 'dayjs'
-import { CloudCog, CloudUpload, Download, Eye, Pencil } from 'lucide-react'
+import { CloudCog, CloudUpload, Download, Eye, Gauge, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  type NodeLatencyProbeResult,
   useImportSubscriptionsMutation,
   useRemoveSubscriptionsMutation,
   useSubscriptionsQuery,
@@ -29,8 +30,16 @@ import { cn } from '~/lib/utils'
 
 export function SubscriptionResource({
   sortedSubscriptions,
+  nodeLatencies,
+  testingLatencies,
+  lastLatencyProbeAt,
+  onTestAllNodeLatencies,
 }: {
   sortedSubscriptions: SubscriptionsQuery['subscriptions']
+  nodeLatencies?: Record<string, NodeLatencyProbeResult>
+  testingLatencies?: boolean
+  lastLatencyProbeAt?: string | null
+  onTestAllNodeLatencies: () => Promise<void>
 }) {
   const { t } = useTranslation()
 
@@ -68,20 +77,42 @@ export function SubscriptionResource({
       onCreate={openImportSubscriptionFormModal}
       bordered
       actions={
-        sortedSubscriptions.length > 2 && (
-          <SimpleTooltip label={t('actions.updateAll')}>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                updateSubscriptionsMutation.mutate(sortedSubscriptions.map(({ id }) => id))
-              }}
-              loading={updateSubscriptionsMutation.isPending}
+        <Fragment>
+          {sortedSubscriptions.length > 0 && (
+            <SimpleTooltip
+              label={
+                lastLatencyProbeAt
+                  ? `${t('latency.testAllNodes')} · ${t('latency.lastTested', { time: dayjs(lastLatencyProbeAt).format('HH:mm:ss') })} · ${t('latency.nodesMeasured', { count: Object.keys(nodeLatencies || {}).length })}`
+                  : t('latency.testAllNodes')
+              }
             >
-              <Download className="h-4 w-4" />
-            </Button>
-          </SimpleTooltip>
-        )
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  void onTestAllNodeLatencies()
+                }}
+                loading={testingLatencies}
+              >
+                <Gauge className="h-4 w-4" />
+              </Button>
+            </SimpleTooltip>
+          )}
+          {sortedSubscriptions.length > 2 && (
+            <SimpleTooltip label={t('actions.updateAll')}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  updateSubscriptionsMutation.mutate(sortedSubscriptions.map(({ id }) => id))
+                }}
+                loading={updateSubscriptionsMutation.isPending}
+              >
+                <Download className="h-4 w-4" />
+              </Button>
+            </SimpleTooltip>
+          )}
+        </Fragment>
       }
     >
       <Droppable droppableId="subscription-list" type="SUBSCRIPTION">
@@ -172,6 +203,7 @@ export function SubscriptionResource({
                                   id={`subscription-node-${id}`}
                                   index={nodeIndex}
                                   name={name}
+                                  meta={formatLatencyMeta(nodeLatencies?.[id])}
                                 >
                                   {name}
                                 </DraggableResourceBadge>
@@ -241,6 +273,19 @@ export function SubscriptionResource({
       />
     </Section>
   )
+}
+
+function formatLatencyMeta(result?: NodeLatencyProbeResult) {
+  if (!result) {
+    return undefined
+  }
+  if (typeof result.latencyMs === 'number') {
+    return `${result.latencyMs}ms`
+  }
+  if (result.message) {
+    return result.message === 'no latency result' ? 'N/A' : 'Fail'
+  }
+  return 'N/A'
 }
 
 function Spoiler({ label, showLabel, hideLabel }: { label: string; showLabel: string; hideLabel: string }) {
