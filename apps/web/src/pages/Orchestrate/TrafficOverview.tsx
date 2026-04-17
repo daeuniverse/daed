@@ -40,9 +40,9 @@ interface TimeRangeOption {
 }
 
 const TIME_RANGE_OPTIONS: TimeRangeOption[] = [
-  { key: '10m', seconds: 10 * 60, maxPoints: 120, label: '10m' },
-  { key: '30m', seconds: 30 * 60, maxPoints: 150, label: '30m' },
-  { key: '1h', seconds: 60 * 60, maxPoints: 180, label: '1h' },
+  { key: '10m', seconds: 10 * 60, maxPoints: 240, label: '10m' },
+  { key: '30m', seconds: 30 * 60, maxPoints: 360, label: '30m' },
+  { key: '1h', seconds: 60 * 60, maxPoints: 480, label: '1h' },
 ]
 
 function formatBytes(value: number) {

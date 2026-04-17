@@ -203,7 +203,7 @@ export function useTrafficOverviewQuery(windowSec: number, maxPoints: number) {
       return data.general.runtimeOverview
     },
     placeholderData: (previousData) => previousData,
-    refetchInterval: 1000,
+    refetchInterval: 500,
     refetchIntervalInBackground: true,
   })
 }
