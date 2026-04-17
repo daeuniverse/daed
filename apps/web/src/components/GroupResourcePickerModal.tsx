@@ -349,7 +349,7 @@ export function GroupAddSubscriptionsModal({
       handleClose()
     } catch (error) {
       const message = error instanceof Error ? error.message : t('groupPicker.invalidRegex')
-      if (trimmedRegex) {
+      if (trimmedRegex && /regex|regexp|pattern/i.test(message)) {
         setServerRegexError(message)
         return
       }

@@ -275,7 +275,6 @@ export function SortableGroupContent({
           >
             <div className="flex flex-col gap-1 text-xs">
               {nameFilterRegex && <span>{t('groupPicker.subscriptionRegexTooltip', { regex: nameFilterRegex })}</span>}
-              <span>{t('groupPicker.subscriptionPreviewMatchedCount', { count: matchedCount })}</span>
               {matchedNodes.length > 0 && (
                 <span className="opacity-80">
                   {matchedNodes.slice(0, 5).map((node) => node.name).join(', ')}
