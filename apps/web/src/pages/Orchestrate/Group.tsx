@@ -184,7 +184,9 @@ export function GroupResource({
   const addableSubscriptionItems = useMemo<GroupPickerItem[]>(() => {
     if (!addingSubscriptionsGroup) return []
 
-    const existingSubscriptionIds = new Set(addingSubscriptionsGroup.subscriptions.map((subscription) => subscription.id))
+    const existingSubscriptionIds = new Set(
+      addingSubscriptionsGroup.subscriptions.map((subscriptionBinding) => subscriptionBinding.subscription.id),
+    )
 
     return subscriptions
       .filter((subscription) => !existingSubscriptionIds.has(subscription.id))
@@ -197,6 +199,11 @@ export function GroupResource({
           title,
           description,
           meta: `${subscription.nodes.edges.length} ${t('node')}`,
+          previewNodes: subscription.nodes.edges.map((node) => ({
+            id: node.id,
+            title: node.name,
+            protocol: node.protocol || undefined,
+          })),
           keywords: [subscription.tag, subscription.link, subscription.status, subscription.info].filter(Boolean) as string[],
         }
       })
@@ -380,12 +387,13 @@ export function GroupResource({
         items={addableSubscriptionItems}
         loading={groupAddSubscriptionsMutation.isPending}
         resetKey={addingSubscriptionsGroupId || ''}
-        onSubmit={async (subscriptionIDs) => {
+        onSubmit={async ({ ids: subscriptionIDs, nameFilterRegex }) => {
           if (!addingSubscriptionsGroupId) return
 
           await groupAddSubscriptionsMutation.mutateAsync({
             id: addingSubscriptionsGroupId,
             subscriptionIDs,
+            nameFilterRegex,
           })
         }}
       />

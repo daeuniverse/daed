@@ -588,16 +588,25 @@ export function useGroupAddSubscriptionsMutation() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, subscriptionIDs }: { id: string; subscriptionIDs: string[] }) => {
-      return gqlClient.request(
-        graphql(`
-          mutation GroupAddSubscriptions($id: ID!, $subscriptionIDs: [ID!]!) {
-            groupAddSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs)
+    mutationFn: ({
+      id,
+      subscriptionIDs,
+      nameFilterRegex,
+    }: {
+      id: string
+      subscriptionIDs: string[]
+      nameFilterRegex?: string | null
+    }) => {
+      return gqlClient.request<{ groupAddSubscriptions: number }>(
+        `
+          mutation GroupAddSubscriptions($id: ID!, $subscriptionIDs: [ID!]!, $nameFilterRegex: String) {
+            groupAddSubscriptions(id: $id, subscriptionIDs: $subscriptionIDs, nameFilterRegex: $nameFilterRegex)
           }
-        `),
+        `,
         {
           id,
           subscriptionIDs,
+          nameFilterRegex,
         },
       )
     },

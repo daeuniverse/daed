@@ -147,7 +147,15 @@ export type Group = {
   nodes: Array<Node>
   policy: Policy
   policyParams: Array<Param>
-  subscriptions: Array<Subscription>
+  subscriptions: Array<GroupSubscription>
+}
+
+export type GroupSubscription = {
+  __typename?: 'GroupSubscription'
+  matchedCount: Scalars['Int']['output']
+  matchedNodes: Array<Node>
+  nameFilterRegex?: Maybe<Scalars['String']['output']>
+  subscription: Subscription
 }
 
 export type ImportArgument = {
@@ -292,6 +300,7 @@ export type MutationGroupAddNodesArgs = {
 
 export type MutationGroupAddSubscriptionsArgs = {
   id: Scalars['ID']['input']
+  nameFilterRegex?: InputMaybe<Scalars['String']['input']>
   subscriptionIDs: Array<Scalars['ID']['input']>
 }
 
@@ -1117,26 +1126,28 @@ export type GroupsQuery = {
       subscriptionID?: string | null
     }>
     subscriptions: Array<{
-      __typename?: 'Subscription'
-      id: string
-      updatedAt: any
-      tag?: string | null
-      link: string
-      status: string
-      info: string
-      nodes: {
-        __typename?: 'NodesConnection'
-        edges: Array<{
-          __typename?: 'Node'
-          id: string
-          link: string
-          name: string
-          address: string
-          protocol: string
-          tag?: string | null
-          subscriptionID?: string | null
-        }>
+      __typename?: 'GroupSubscription'
+      matchedCount: number
+      nameFilterRegex?: string | null
+      subscription: {
+        __typename?: 'Subscription'
+        id: string
+        updatedAt: any
+        tag?: string | null
+        link: string
+        status: string
+        info: string
       }
+      matchedNodes: Array<{
+        __typename?: 'Node'
+        id: string
+        link: string
+        name: string
+        address: string
+        protocol: string
+        tag?: string | null
+        subscriptionID?: string | null
+      }>
     }>
     policyParams: Array<{ __typename?: 'Param'; key: string; val: string }>
   }>
