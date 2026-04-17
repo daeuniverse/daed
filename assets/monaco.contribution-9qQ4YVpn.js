@@ -1,1 +1,0 @@
-import{n as e,t}from"./monaco.contribution-BNPO4ucI.js";export{t as getWorker,e as jsonDefaults};
