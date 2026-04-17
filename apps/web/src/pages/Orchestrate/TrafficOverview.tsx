@@ -258,7 +258,7 @@ export function TrafficOverview() {
                 config={chartConfig}
                 className="aspect-auto h-24 w-full"
               >
-                <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 4 }}>
+                <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 18 }}>
                   <defs>
                     <linearGradient id="traffic-upload-fill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="var(--color-upload)" stopOpacity={0.22} />
@@ -273,6 +273,8 @@ export function TrafficOverview() {
                     axisLine={false}
                     tickLine={false}
                     minTickGap={24}
+                    tickMargin={14}
+                    height={28}
                     domain={[chartWindowStart, chartWindowEnd]}
                     allowDataOverflow
                     tickFormatter={(value) => dayjs(value).format('HH:mm')}
@@ -318,7 +320,7 @@ export function TrafficOverview() {
                 config={chartConfig}
                 className="aspect-auto h-24 w-full"
               >
-                <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 4 }}>
+                <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 18 }}>
                   <defs>
                     <linearGradient id="traffic-download-fill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="var(--color-download)" stopOpacity={0.2} />
@@ -333,6 +335,8 @@ export function TrafficOverview() {
                     axisLine={false}
                     tickLine={false}
                     minTickGap={24}
+                    tickMargin={14}
+                    height={28}
                     domain={[chartWindowStart, chartWindowEnd]}
                     allowDataOverflow
                     tickFormatter={(value) => dayjs(value).format('HH:mm')}
