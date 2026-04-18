@@ -2148,11 +2148,6 @@ export const GroupAddNodesDocument = {
             },
           },
         },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'nameFilterRegex' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
