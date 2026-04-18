@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.0](https://github.com/daeuniverse/daed/compare/v1.27.0...v1.28.0) (2026-04-18)
+
+
+### Features
+
+* **web:** add regex-filtered group subscriptions ([#738](https://github.com/daeuniverse/daed/issues/738)) ([3b62c11](https://github.com/daeuniverse/daed/commit/3b62c111172a906edc9d79335527f8206819cb8c))
+
 ## [1.27.0](https://github.com/daeuniverse/daed/compare/v1.26.0...v1.27.0) (2026-04-17)
 
 
