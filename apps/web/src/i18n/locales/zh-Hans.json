@@ -64,6 +64,7 @@
     "switchLanguage": "切换语言",
     "switchRunning": "运行开关",
     "switchTheme": "切换主题",
+    "testLatency": "测试延迟",
     "update": "更新",
     "updateAll": "更新全部",
     "viewDetails": "查看详情",
@@ -239,6 +240,15 @@
   "ip": "IP 地址",
   "lanInterface": "LAN 接口",
   "lanNatDirect": "LAN NAT 直连",
+  "latency": {
+    "label": "延迟",
+    "lastTested": "最近测速时间 {{ time }}",
+    "testAllNodes": "测试所有节点延迟",
+    "testAllNodesWithStatus": "测试所有节点延迟 · 最近测速时间 {{ time }} · 已测速 {{ count }} 个节点",
+    "nodesMeasured": "已测速 {{ count }} 个节点",
+    "failed": "失败",
+    "unavailable": "不可用"
+  },
   "link": "链接",
   "logLevel": "日志等级",
   "login account": "使用帐号密码登录",
@@ -246,6 +256,29 @@
   "name": "名字",
   "node": "节点",
   "node connectivity check": "节点连通性检测",
+  "trafficOverview": {
+    "title": "流量统计",
+    "description": "实时滚动展示上下行流量，并支持切换时间窗口。",
+    "uploadChart": "上行流量",
+    "downloadChart": "下行流量",
+    "uploadLegend": "上传",
+    "downloadLegend": "下载",
+    "liveWindow": "自动滚动的实时窗口",
+    "uploadSpeed": "上传速度",
+    "downloadSpeed": "下载速度",
+    "activeConnections": "活跃连接",
+    "totalUpload": "累计上传",
+    "totalDownload": "累计下载",
+    "udpSessions": "UDP 会话",
+    "connectionsUnit": "连接",
+    "sessionsUnit": "会话",
+    "ranges": {
+      "1m": "1 分钟",
+      "10m": "10 分钟",
+      "30m": "30 分钟",
+      "1h": "1 小时"
+    }
+  },
   "notifications": {
     "login succeeded": "登录成功",
     "success": "成功"

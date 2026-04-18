@@ -1,5 +1,6 @@
 import type { QRCodeModalRef } from '~/components/QRCodeModal.tsx'
 import type { NodesQuery } from '~/schemas/gql/graphql.ts'
+import type { NodeLatencyProbeResult } from '~/apis'
 import { Droppable } from '@hello-pangea/dnd'
 import { Cloud, CloudUpload, Eye, FileInput, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
@@ -13,15 +14,18 @@ import { Section } from '~/components/Section.tsx'
 import { Button } from '~/components/ui/button.tsx'
 import { SimpleTooltip } from '~/components/ui/tooltip.tsx'
 import { cn } from '~/lib/utils'
+import { formatLatencyLabel } from '~/utils/latency'
 
 export const NODE_DROPPABLE_ID = 'node-list'
 
 export function NodeResource({
   sortedNodes,
   highlight,
+  nodeLatencies,
 }: {
   sortedNodes: NodesQuery['nodes']['edges']
   highlight?: boolean
+  nodeLatencies?: Record<string, NodeLatencyProbeResult>
 }) {
   const { t } = useTranslation()
 
@@ -109,6 +113,11 @@ export function NodeResource({
                 }
                 onRemove={() => removeNodesMutation.mutate([id])}
               >
+                {nodeLatencies?.[id] && (
+                  <p className="text-xs font-medium text-primary">
+                    {formatLatencyLabel(nodeLatencies[id], t)}
+                  </p>
+                )}
                 {name && name !== tag && <p className="text-xs opacity-70">{name}</p>}
                 <Spoiler label={link} showLabel={t('actions.show sensitive')} hideLabel={t('actions.hide')} />
               </SortableNodeCard>

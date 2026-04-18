@@ -64,6 +64,7 @@
     "switchLanguage": "Switch Language",
     "switchRunning": "Switch Running",
     "switchTheme": "Switch Theme",
+    "testLatency": "Test Latency",
     "update": "Update",
     "updateAll": "Update All",
     "viewDetails": "View Details",
@@ -239,6 +240,15 @@
   "ip": "IP Address",
   "lanInterface": "LAN Interface",
   "lanNatDirect": "LAN NAT Direct connection",
+  "latency": {
+    "label": "Latency",
+    "lastTested": "Last tested at {{ time }}",
+    "testAllNodes": "Test all node latencies",
+    "testAllNodesWithStatus": "Test all node latencies · Last tested at {{ time }} · {{ count }} nodes measured",
+    "nodesMeasured": "{{ count }} nodes measured",
+    "failed": "Failed",
+    "unavailable": "Unavailable"
+  },
   "link": "Link",
   "logLevel": "Log Level",
   "login account": "Login via username & password",
@@ -246,6 +256,29 @@
   "name": "Name",
   "node": "Node",
   "node connectivity check": "Node Connectivity Check",
+  "trafficOverview": {
+    "title": "Traffic Statistics",
+    "description": "Rolling uplink and downlink overview with a switchable time window.",
+    "uploadChart": "Uplink Traffic",
+    "downloadChart": "Downlink Traffic",
+    "uploadLegend": "Upload",
+    "downloadLegend": "Download",
+    "liveWindow": "Auto-scrolling live window",
+    "uploadSpeed": "Upload Speed",
+    "downloadSpeed": "Download Speed",
+    "activeConnections": "Active Connections",
+    "totalUpload": "Total Upload",
+    "totalDownload": "Total Download",
+    "udpSessions": "UDP Sessions",
+    "connectionsUnit": "conn",
+    "sessionsUnit": "sessions",
+    "ranges": {
+      "1m": "1m",
+      "10m": "10m",
+      "30m": "30m",
+      "1h": "1h"
+    }
+  },
   "notifications": {
     "login succeeded": "Login Succeeded",
     "success": "Success"

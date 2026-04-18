@@ -1,4 +1,5 @@
 import type { GroupFormModalRef } from '~/components/GroupFormModal'
+import type { NodeLatencyProbeResult } from '~/apis'
 import type { DraggingResource } from '~/constants'
 import type { GroupsQuery, NodesQuery, SubscriptionsQuery } from '~/schemas/gql/graphql'
 import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
@@ -35,6 +36,7 @@ import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { cn } from '~/lib/utils'
 import { getInstantDropStyle } from '~/utils'
+import { formatLatencyLabel, hasMeasuredLatency } from '~/utils/latency'
 import { appStateAtom, defaultResourcesAtom } from '~/store'
 
 const GROUP_DROPPABLE_ID = 'group-list'
@@ -44,11 +46,13 @@ export function GroupResource({
   draggingResource,
   dragDestinationDroppableId,
   hoveredGroupId,
+  nodeLatencies,
 }: {
   highlight?: boolean
   draggingResource?: DraggingResource | null
   dragDestinationDroppableId?: string | null
   hoveredGroupId?: string | null
+  nodeLatencies?: Record<string, NodeLatencyProbeResult>
 }) {
   const { t } = useTranslation()
   const { data: groupsQuery } = useGroupsQuery()
@@ -150,7 +154,10 @@ export function GroupResource({
           id: node.id,
           title,
           description: description || undefined,
-          meta: t('groupPicker.manualNode'),
+          meta: [t('groupPicker.manualNode'), formatLatencyLabel(nodeLatencies?.[node.id], t)]
+            .filter(Boolean)
+            .join(' · '),
+          metaTone: hasMeasuredLatency(nodeLatencies?.[node.id]) ? 'primary' : 'default',
           badge: node.protocol || undefined,
           keywords: [node.name, node.tag, node.address, node.protocol].filter(Boolean) as string[],
         }
@@ -171,7 +178,10 @@ export function GroupResource({
             id: node.id,
             title,
             description: description || undefined,
-            meta: t('groupPicker.fromSubscription', { name: subscriptionName }),
+            meta: [t('groupPicker.fromSubscription', { name: subscriptionName }), formatLatencyLabel(nodeLatencies?.[node.id], t)]
+              .filter(Boolean)
+              .join(' · '),
+            metaTone: hasMeasuredLatency(nodeLatencies?.[node.id]) ? 'primary' : 'default',
             badge: node.protocol || undefined,
             keywords: [node.name, node.tag, node.address, node.protocol, subscriptionName].filter(Boolean) as string[],
           }
@@ -179,7 +189,7 @@ export function GroupResource({
     })
 
     return [...manualNodeItems, ...subscriptionNodeItems]
-  }, [addingNodesGroup, nodes, subscriptions, t])
+  }, [addingNodesGroup, nodeLatencies, nodes, subscriptions, t])
 
   const addableSubscriptionItems = useMemo<GroupPickerItem[]>(() => {
     if (!addingSubscriptionsGroup) return []
@@ -290,6 +300,7 @@ export function GroupResource({
           groupId={groupId}
           nodes={groupNodes}
           subscriptions={groupSubscriptions}
+          nodeLatencies={nodeLatencies}
           allSubscriptions={subscriptionsQuery?.subscriptions}
           autoExpandValue={autoExpandValue}
           collapsed={!expandedGroupIds.has(groupId)}

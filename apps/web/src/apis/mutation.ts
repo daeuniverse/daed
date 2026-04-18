@@ -7,6 +7,7 @@ import {
   QUERY_KEY_DNS,
   QUERY_KEY_GENERAL,
   QUERY_KEY_GROUP,
+  QUERY_KEY_NODE_LATENCY,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
   QUERY_KEY_SUBSCRIPTION,
@@ -790,6 +791,46 @@ export function useUpdateSubscriptionsMutation() {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_SUBSCRIPTION })
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GROUP })
       queryClient.invalidateQueries({ queryKey: QUERY_KEY_GENERAL })
+    },
+  })
+}
+
+export interface NodeLatencyProbeResult {
+  id: string
+  latencyMs?: number | null
+  alive: boolean
+  testedAt: string
+  message?: string | null
+}
+
+export function useTestNodeLatenciesMutation() {
+  const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (ids?: string[]) => {
+      const data = await gqlClient.request<
+        { testNodeLatencies: NodeLatencyProbeResult[] },
+        { ids?: string[] }
+      >(
+        `
+          mutation TestNodeLatencies($ids: [ID!]) {
+            testNodeLatencies(ids: $ids) {
+              id
+              latencyMs
+              alive
+              testedAt
+              message
+            }
+          }
+        `,
+        ids && ids.length > 0 ? { ids } : {},
+      )
+
+      return data.testNodeLatencies
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE_LATENCY })
     },
   })
 }
