@@ -244,7 +244,9 @@
     "label": "延迟",
     "lastTested": "最近测速时间 {{ time }}",
     "testAllNodes": "测试所有节点延迟",
+    "testAllNodesWithStatus": "测试所有节点延迟 · 最近测速时间 {{ time }} · 已测速 {{ count }} 个节点",
     "nodesMeasured": "已测速 {{ count }} 个节点",
+    "failed": "失败",
     "unavailable": "不可用"
   },
   "link": "链接",

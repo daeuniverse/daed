@@ -36,6 +36,7 @@ import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { cn } from '~/lib/utils'
 import { getInstantDropStyle } from '~/utils'
+import { formatLatencyLabel, hasMeasuredLatency } from '~/utils/latency'
 import { appStateAtom, defaultResourcesAtom } from '~/store'
 
 const GROUP_DROPPABLE_ID = 'group-list'
@@ -153,10 +154,10 @@ export function GroupResource({
           id: node.id,
           title,
           description: description || undefined,
-          meta: [t('groupPicker.manualNode'), formatLatencyMeta(nodeLatencies?.[node.id])]
+          meta: [t('groupPicker.manualNode'), formatLatencyLabel(nodeLatencies?.[node.id], t)]
             .filter(Boolean)
             .join(' · '),
-          metaTone: nodeLatencies?.[node.id] ? 'primary' : 'default',
+          metaTone: hasMeasuredLatency(nodeLatencies?.[node.id]) ? 'primary' : 'default',
           badge: node.protocol || undefined,
           keywords: [node.name, node.tag, node.address, node.protocol].filter(Boolean) as string[],
         }
@@ -177,10 +178,10 @@ export function GroupResource({
             id: node.id,
             title,
             description: description || undefined,
-            meta: [t('groupPicker.fromSubscription', { name: subscriptionName }), formatLatencyMeta(nodeLatencies?.[node.id])]
+            meta: [t('groupPicker.fromSubscription', { name: subscriptionName }), formatLatencyLabel(nodeLatencies?.[node.id], t)]
               .filter(Boolean)
               .join(' · '),
-            metaTone: nodeLatencies?.[node.id] ? 'primary' : 'default',
+            metaTone: hasMeasuredLatency(nodeLatencies?.[node.id]) ? 'primary' : 'default',
             badge: node.protocol || undefined,
             keywords: [node.name, node.tag, node.address, node.protocol, subscriptionName].filter(Boolean) as string[],
           }
@@ -409,17 +410,4 @@ export function GroupResource({
       />
     </Section>
   )
-}
-
-function formatLatencyMeta(result?: NodeLatencyProbeResult) {
-  if (!result) {
-    return undefined
-  }
-  if (typeof result.latencyMs === 'number') {
-    return `${result.latencyMs}ms`
-  }
-  if (result.message) {
-    return result.message === 'no latency result' ? 'N/A' : 'Fail'
-  }
-  return 'N/A'
 }

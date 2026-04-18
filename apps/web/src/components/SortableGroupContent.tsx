@@ -1,3 +1,4 @@
+import type { NodeLatencyProbeResult } from '~/apis'
 import { Droppable } from '@hello-pangea/dnd'
 import { ChevronDown, Plus } from 'lucide-react'
 import { useStore } from '@nanostores/react'
@@ -6,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { SortableResourceBadge } from '~/components/SortableResourceBadge'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
+import { formatLatencyLabel } from '~/utils/latency'
 import { groupSortOrdersAtom } from '~/store'
 
 interface GroupNode {
@@ -35,13 +37,6 @@ interface GroupSubscription {
 interface Subscription {
   id: string
   tag?: string | null
-}
-
-interface NodeLatencyProbeResult {
-  latencyMs?: number | null
-  alive: boolean
-  testedAt: string
-  message?: string | null
 }
 
 function GroupDropZone({
@@ -249,7 +244,7 @@ export function SortableGroupContent({
             name={tag || name}
             protocol={protocol}
             address={address}
-            meta={formatLatencyMeta(nodeLatencies?.[nodeId])}
+            meta={formatLatencyLabel(nodeLatencies?.[nodeId], t)}
             onRemove={() => onDelNode(nodeId)}
           >
             {subscriptionID && allSubscriptions?.find((subscription) => subscription.id === subscriptionID)?.tag}
@@ -297,17 +292,4 @@ export function SortableGroupContent({
       </GroupDropZone>
     </div>
   )
-}
-
-function formatLatencyMeta(result?: NodeLatencyProbeResult) {
-  if (!result) {
-    return undefined
-  }
-  if (typeof result.latencyMs === 'number') {
-    return `${result.latencyMs}ms`
-  }
-  if (result.message) {
-    return result.message === 'no latency result' ? 'N/A' : 'Fail'
-  }
-  return 'N/A'
 }

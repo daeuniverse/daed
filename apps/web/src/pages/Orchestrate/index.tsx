@@ -3,7 +3,6 @@ import type { DraggingResource } from '~/constants'
 import type { GroupsQuery, NodesQuery, SubscriptionsQuery } from '~/schemas/gql/graphql'
 import { DragDropContext } from '@hello-pangea/dnd'
 import { useStore } from '@nanostores/react'
-import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   useConfigsQuery,
@@ -17,7 +16,7 @@ import {
   useTestNodeLatenciesMutation,
 } from '~/apis'
 import type { NodeLatencyProbeResult } from '~/apis'
-import { DraggableResourceType, QUERY_KEY_NODE_LATENCY } from '~/constants'
+import { DraggableResourceType } from '~/constants'
 import { useMediaQuery } from '~/hooks'
 import { appStateAtom, groupSortOrdersAtom } from '~/store'
 import { deriveTime } from '~/utils'
@@ -37,7 +36,6 @@ function arrayMove<T>(array: T[], from: number, to: number): T[] {
 }
 
 export function OrchestratePage() {
-  const queryClient = useQueryClient()
   const { data: configsQuery } = useConfigsQuery()
   const { data: nodesQuery } = useNodesQuery()
   const { data: groupsQuery } = useGroupsQuery()
@@ -111,11 +109,19 @@ export function OrchestratePage() {
     [nodeLatenciesQuery.data],
   )
   const lastLatencyProbeAt = useMemo(() => {
-    const testedAtList = Object.values(nodeLatencies)
-      .map((item) => item.testedAt)
-      .filter(Boolean)
-      .sort()
-    return testedAtList[testedAtList.length - 1] ?? null
+    let latest: string | null = null
+    let latestMs = -Infinity
+
+    for (const { testedAt } of Object.values(nodeLatencies)) {
+      if (!testedAt) continue
+      const ms = Date.parse(testedAt)
+      if (Number.isFinite(ms) && ms > latestMs) {
+        latestMs = ms
+        latest = testedAt
+      }
+    }
+
+    return latest
   }, [nodeLatencies])
 
   // Get sorted node IDs
@@ -631,8 +637,6 @@ export function OrchestratePage() {
             lastLatencyProbeAt={lastLatencyProbeAt}
             onTestAllNodeLatencies={async () => {
               await testNodeLatenciesMutation.mutateAsync()
-              await queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE_LATENCY })
-              await nodeLatenciesQuery.refetch()
             }}
           />
         </div>

@@ -244,7 +244,9 @@
     "label": "Latency",
     "lastTested": "Last tested at {{ time }}",
     "testAllNodes": "Test all node latencies",
+    "testAllNodesWithStatus": "Test all node latencies · Last tested at {{ time }} · {{ count }} nodes measured",
     "nodesMeasured": "{{ count }} nodes measured",
+    "failed": "Failed",
     "unavailable": "Unavailable"
   },
   "link": "Link",

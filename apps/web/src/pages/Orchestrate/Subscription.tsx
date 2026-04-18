@@ -27,6 +27,7 @@ import { SimpleTooltip } from '~/components/ui/tooltip'
 import { UpdateSubscriptionAction } from '~/components/UpdateSubscriptionAction'
 import { useDisclosure } from '~/hooks'
 import { cn } from '~/lib/utils'
+import { formatLatencyLabel } from '~/utils/latency'
 
 export function SubscriptionResource({
   sortedSubscriptions,
@@ -82,7 +83,10 @@ export function SubscriptionResource({
             <SimpleTooltip
               label={
                 lastLatencyProbeAt
-                  ? `${t('latency.testAllNodes')} · ${t('latency.lastTested', { time: dayjs(lastLatencyProbeAt).format('HH:mm:ss') })} · ${t('latency.nodesMeasured', { count: Object.keys(nodeLatencies || {}).length })}`
+                  ? t('latency.testAllNodesWithStatus', {
+                      time: dayjs(lastLatencyProbeAt).format('HH:mm:ss'),
+                      count: Object.keys(nodeLatencies || {}).length,
+                    })
                   : t('latency.testAllNodes')
               }
             >
@@ -90,7 +94,9 @@ export function SubscriptionResource({
                 variant="ghost"
                 size="icon"
                 onClick={() => {
-                  void onTestAllNodeLatencies()
+                  onTestAllNodeLatencies().catch((error) => {
+                    console.error('Failed to test node latencies', error)
+                  })
                 }}
                 loading={testingLatencies}
               >
@@ -203,7 +209,7 @@ export function SubscriptionResource({
                                   id={`subscription-node-${id}`}
                                   index={nodeIndex}
                                   name={name}
-                                  meta={formatLatencyMeta(nodeLatencies?.[id])}
+                                  meta={formatLatencyLabel(nodeLatencies?.[id], t)}
                                 >
                                   {name}
                                 </DraggableResourceBadge>
@@ -273,19 +279,6 @@ export function SubscriptionResource({
       />
     </Section>
   )
-}
-
-function formatLatencyMeta(result?: NodeLatencyProbeResult) {
-  if (!result) {
-    return undefined
-  }
-  if (typeof result.latencyMs === 'number') {
-    return `${result.latencyMs}ms`
-  }
-  if (result.message) {
-    return result.message === 'no latency result' ? 'N/A' : 'Fail'
-  }
-  return 'N/A'
 }
 
 function Spoiler({ label, showLabel, hideLabel }: { label: string; showLabel: string; hideLabel: string }) {

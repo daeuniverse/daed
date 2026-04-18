@@ -168,6 +168,7 @@ export interface TrafficOverviewQueryData {
 
 export function useTrafficOverviewQuery(windowSec: number, maxPoints: number) {
   const gqlClient = useGQLQueryClient()
+  const refetchInterval = Math.max(500, Math.min(5_000, Math.round(windowSec / 60) * 500))
 
   return useQuery({
     queryKey: [...QUERY_KEY_TRAFFIC, windowSec, maxPoints],
@@ -205,13 +206,13 @@ export function useTrafficOverviewQuery(windowSec: number, maxPoints: number) {
       return data.general.runtimeOverview
     },
     placeholderData: (previousData) => previousData,
-    refetchInterval: 500,
-    refetchIntervalInBackground: true,
+    refetchInterval,
   })
 }
 
 export function useNodeLatenciesQuery(refetchIntervalMs: number) {
   const gqlClient = useGQLQueryClient()
+  const safeInterval = Math.max(1_000, refetchIntervalMs)
 
   return useQuery({
     queryKey: QUERY_KEY_NODE_LATENCY,
@@ -233,7 +234,7 @@ export function useNodeLatenciesQuery(refetchIntervalMs: number) {
       return data.nodeLatencies
     },
     placeholderData: (previousData) => previousData,
-    refetchInterval: refetchIntervalMs,
+    refetchInterval: safeInterval,
     refetchIntervalInBackground: true,
   })
 }

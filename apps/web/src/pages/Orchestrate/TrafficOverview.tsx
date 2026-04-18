@@ -77,6 +77,25 @@ function splitFormattedRate(value: number) {
   }
 }
 
+function splitFormattedBytes(value: number) {
+  const formatted = formatBytes(value)
+  const spaceIndex = formatted.indexOf(' ')
+
+  if (spaceIndex === -1) {
+    return { amount: formatted, unit: '' }
+  }
+
+  return {
+    amount: formatted.slice(0, spaceIndex),
+    unit: formatted.slice(spaceIndex + 1),
+  }
+}
+
+function safeParseMetricTotal(value?: string) {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
 function createTintStyle(colorVar: string): CSSProperties {
   return {
     backgroundColor: `color-mix(in oklab, ${colorVar} 8%, var(--card))`,
@@ -166,7 +185,7 @@ export function TrafficOverview() {
   )
 
   const selectedWindow = useMemo(
-    () => TIME_RANGE_OPTIONS.find((option) => option.key === selectedRange) ?? TIME_RANGE_OPTIONS[1],
+    () => TIME_RANGE_OPTIONS.find((option) => option.key === selectedRange) ?? TIME_RANGE_OPTIONS[0],
     [selectedRange],
   )
 
@@ -185,8 +204,8 @@ export function TrafficOverview() {
     () => ({
       uploadRate: runtimeOverview?.uploadRate ?? 0,
       downloadRate: runtimeOverview?.downloadRate ?? 0,
-      uploadTotal: Number(runtimeOverview?.uploadTotal ?? 0),
-      downloadTotal: Number(runtimeOverview?.downloadTotal ?? 0),
+      uploadTotal: safeParseMetricTotal(runtimeOverview?.uploadTotal),
+      downloadTotal: safeParseMetricTotal(runtimeOverview?.downloadTotal),
       activeConnections: runtimeOverview?.activeConnections ?? 0,
       udpSessions: runtimeOverview?.udpSessions ?? 0,
     }),
@@ -212,6 +231,8 @@ export function TrafficOverview() {
 
   const uploadRateDisplay = splitFormattedRate(latestSample.uploadRate)
   const downloadRateDisplay = splitFormattedRate(latestSample.downloadRate)
+  const uploadTotalDisplay = splitFormattedBytes(latestSample.uploadTotal)
+  const downloadTotalDisplay = splitFormattedBytes(latestSample.downloadTotal)
 
   return (
     <Card
@@ -390,15 +411,15 @@ export function TrafficOverview() {
             />
             <TrafficMetricCard
               title={t('trafficOverview.totalUpload')}
-              amount={formatBytes(latestSample.uploadTotal).split(' ')[0]}
-              unit={formatBytes(latestSample.uploadTotal).split(' ')[1] ?? ''}
+              amount={uploadTotalDisplay.amount}
+              unit={uploadTotalDisplay.unit}
               icon={<Upload className="h-5 w-5" />}
               colorVar="var(--chart-1)"
             />
             <TrafficMetricCard
               title={t('trafficOverview.totalDownload')}
-              amount={formatBytes(latestSample.downloadTotal).split(' ')[0]}
-              unit={formatBytes(latestSample.downloadTotal).split(' ')[1] ?? ''}
+              amount={downloadTotalDisplay.amount}
+              unit={downloadTotalDisplay.unit}
               icon={<Download className="h-5 w-5" />}
               colorVar="var(--chart-2)"
             />

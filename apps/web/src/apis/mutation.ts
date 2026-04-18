@@ -7,6 +7,7 @@ import {
   QUERY_KEY_DNS,
   QUERY_KEY_GENERAL,
   QUERY_KEY_GROUP,
+  QUERY_KEY_NODE_LATENCY,
   QUERY_KEY_NODE,
   QUERY_KEY_ROUTING,
   QUERY_KEY_SUBSCRIPTION,
@@ -804,6 +805,7 @@ export interface NodeLatencyProbeResult {
 
 export function useTestNodeLatenciesMutation() {
   const gqlClient = useGQLQueryClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (ids?: string[]) => {
@@ -826,6 +828,9 @@ export function useTestNodeLatenciesMutation() {
       )
 
       return data.testNodeLatencies
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY_NODE_LATENCY })
     },
   })
 }
