@@ -69,6 +69,21 @@ export function OrchestratePage() {
   const nodes = useMemo(() => nodesQuery?.nodes.edges ?? [], [nodesQuery?.nodes.edges])
   const groups = useMemo(() => groupsQuery?.groups ?? [], [groupsQuery?.groups])
   const subscriptions = useMemo(() => subscriptionsQuery?.subscriptions ?? [], [subscriptionsQuery?.subscriptions])
+  const getGroupById = useCallback(
+    (groupId: string) => groupsQuery?.groups.find((group: GroupsQuery['groups'][number]) => group.id === groupId),
+    [groupsQuery?.groups],
+  )
+  const getGroupSubscriptionBinding = useCallback(
+    (groupId: string, subscriptionId: string) =>
+      getGroupById(groupId)?.subscriptions.find(
+        (binding: GroupsQuery['groups'][number]['subscriptions'][number]) => binding.subscription.id === subscriptionId,
+      ),
+    [getGroupById],
+  )
+  const hasGroupSubscription = useCallback(
+    (groupId: string, subscriptionId: string) => !!getGroupSubscriptionBinding(groupId, subscriptionId),
+    [getGroupSubscriptionBinding],
+  )
 
   // Get sorted node IDs
   const sortedNodeIds = useMemo(() => {
@@ -341,11 +356,8 @@ export function OrchestratePage() {
       if (fallbackGroupId) {
         if (sourceDroppableId === 'subscription-list') {
           const subId = draggableId.replace('subscription-', '')
-          const targetGroup = groupsQuery?.groups.find((group: GroupsQuery['groups'][number]) => group.id === fallbackGroupId)
-          if (
-            targetGroup &&
-            !targetGroup.subscriptions.find((subscription: GroupsQuery['groups'][number]['subscriptions'][number]) => subscription.id === subId)
-          ) {
+          const targetGroup = getGroupById(fallbackGroupId)
+          if (targetGroup && !hasGroupSubscription(fallbackGroupId, subId)) {
             groupAddSubscriptionsMutation.mutate({ id: fallbackGroupId, subscriptionIDs: [subId] })
             return
           }
@@ -394,14 +406,14 @@ export function OrchestratePage() {
           const sourceGroupId = sourceDroppableId.replace('-subscriptions', '')
           const parsed = parseGroupItemId(draggableId)
           if (parsed && sourceGroupId !== fallbackGroupId) {
-            const targetGroup = groupsQuery?.groups.find((group: GroupsQuery['groups'][number]) => group.id === fallbackGroupId)
-            if (
-              targetGroup &&
-              !targetGroup.subscriptions.find(
-                (subscription: GroupsQuery['groups'][number]['subscriptions'][number]) => subscription.id === parsed.itemId,
-              )
-            ) {
-              groupAddSubscriptionsMutation.mutate({ id: fallbackGroupId, subscriptionIDs: [parsed.itemId] })
+            const targetGroup = getGroupById(fallbackGroupId)
+            const sourceBinding = getGroupSubscriptionBinding(sourceGroupId, parsed.itemId)
+            if (targetGroup && !hasGroupSubscription(fallbackGroupId, parsed.itemId)) {
+              groupAddSubscriptionsMutation.mutate({
+                id: fallbackGroupId,
+                subscriptionIDs: [parsed.itemId],
+                nameFilterRegex: sourceBinding?.nameFilterRegex ?? null,
+              })
               return
             }
           }
@@ -492,7 +504,7 @@ export function OrchestratePage() {
           const group = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === sourceGroupId)
           if (group) {
             const currentIds = group.subscriptions.map(
-              (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id,
+              (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.subscription.id,
             )
             const sortedIds = getGroupSortedIds(sourceGroupId, 'subscriptions', currentIds)
             updateGroupSortOrder(sourceGroupId, 'subscriptions', arrayMove(sortedIds, source.index, destination.index))
@@ -502,14 +514,14 @@ export function OrchestratePage() {
         // Cross-group drag - add subscription to target group
         const parsed = parseGroupItemId(draggableId)
         if (parsed) {
-          const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === destGroupId)
-          if (
-            targetGroup &&
-            !targetGroup.subscriptions.find(
-              (s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === parsed.itemId,
-            )
-          ) {
-            groupAddSubscriptionsMutation.mutate({ id: destGroupId, subscriptionIDs: [parsed.itemId] })
+          const targetGroup = getGroupById(destGroupId)
+          const sourceBinding = getGroupSubscriptionBinding(sourceGroupId, parsed.itemId)
+          if (targetGroup && !hasGroupSubscription(destGroupId, parsed.itemId)) {
+            groupAddSubscriptionsMutation.mutate({
+              id: destGroupId,
+              subscriptionIDs: [parsed.itemId],
+              nameFilterRegex: sourceBinding?.nameFilterRegex ?? null,
+            })
           }
         }
       }
@@ -535,12 +547,9 @@ export function OrchestratePage() {
     if (sourceDroppableId === 'subscription-list' && confirmedDestDroppableId.endsWith('-subscriptions')) {
       const subId = draggableId.replace('subscription-', '')
       const targetGroupId = confirmedDestDroppableId.replace('-subscriptions', '')
-      const targetGroup = groupsQuery?.groups.find((g: GroupsQuery['groups'][number]) => g.id === targetGroupId)
+      const targetGroup = getGroupById(targetGroupId)
 
-      if (
-        targetGroup &&
-        !targetGroup.subscriptions.find((s: GroupsQuery['groups'][number]['subscriptions'][number]) => s.id === subId)
-      ) {
+      if (targetGroup && !hasGroupSubscription(targetGroupId, subId)) {
         groupAddSubscriptionsMutation.mutate({ id: targetGroupId, subscriptionIDs: [subId] })
       }
       return

@@ -274,23 +274,24 @@ export function useGroupsQuery() {
                 subscriptionID
               }
               subscriptions {
-                id
-                updatedAt
-                tag
-                link
-                status
-                info
-
-                nodes {
-                  edges {
-                    id
-                    link
-                    name
-                    address
-                    protocol
-                    tag
-                    subscriptionID
-                  }
+                nameFilterRegex
+                matchedCount
+                subscription {
+                  id
+                  updatedAt
+                  tag
+                  link
+                  status
+                  info
+                }
+                matchedNodes {
+                  id
+                  link
+                  name
+                  address
+                  protocol
+                  tag
+                  subscriptionID
                 }
               }
               policy
