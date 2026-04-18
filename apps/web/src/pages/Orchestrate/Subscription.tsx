@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { CloudCog, CloudUpload, Download, Eye, Gauge, Pencil } from 'lucide-react'
 import { Fragment, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import {
   type NodeLatencyProbeResult,
   useImportSubscriptionsMutation,
@@ -96,6 +97,7 @@ export function SubscriptionResource({
                 onClick={() => {
                   onTestAllNodeLatencies().catch((error) => {
                     console.error('Failed to test node latencies', error)
+                    toast.error(error instanceof Error ? error.message : t('latency.unavailable'))
                   })
                 }}
                 loading={testingLatencies}

@@ -2,7 +2,7 @@ import type { TFunction } from 'i18next'
 import type { NodeLatencyProbeResult } from '~/apis'
 
 export function hasMeasuredLatency(result?: NodeLatencyProbeResult) {
-  return typeof result?.latencyMs === 'number'
+  return Number.isFinite(result?.latencyMs)
 }
 
 export function formatLatencyLabel(result: NodeLatencyProbeResult | undefined, t: TFunction) {
