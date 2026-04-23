@@ -27,7 +27,7 @@ jobs:
       tag_name: ${{ steps.release.outputs['apps/web--tag_name'] || github.event.inputs.tag_name }}
       release_created: ${{ steps.release.outputs['apps/web--release_created'] || (github.event_name == 'workflow_dispatch' && 'true') }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release
         if: ${{ github.event_name == 'push' }}
         with:
