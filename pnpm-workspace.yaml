@@ -4,16 +4,16 @@ packages:
 
 catalog:
   '@antfu/eslint-config': ^8.2.0
-  '@commitlint/cli': ^20.5.0
-  '@commitlint/config-conventional': ^20.5.0
+  '@commitlint/cli': ^20.5.3
+  '@commitlint/config-conventional': ^20.5.3
   '@emotion/react': ^11.14.0
-  '@eslint-react/eslint-plugin': ^4.2.3
+  '@eslint-react/eslint-plugin': ^5.7.0
   '@fontsource/fira-sans': ^5.2.7
   '@fontsource/source-code-pro': ^5.2.7
   '@graphiql/toolkit': ^0.11.3
-  '@graphql-codegen/cli': 6.3.1
-  '@graphql-codegen/client-preset': 5.3.0
-  '@graphql-codegen/introspection': 5.0.2
+  '@graphql-codegen/cli': 7.0.0
+  '@graphql-codegen/client-preset': 6.0.0
+  '@graphql-codegen/introspection': 6.0.0
   '@graphql-typed-document-node/core': ^3.2.0
   '@hello-pangea/dnd': ^18.0.1
   '@hookform/resolvers': ^5.2.2
@@ -49,15 +49,15 @@ catalog:
   '@radix-ui/react-tooltip': ^1.2.8
   '@shikijs/monaco': ^4.0.2
   '@tailwindcss/vite': ^4.2.4
-  '@tanstack/eslint-plugin-query': ^5.100.1
-  '@tanstack/react-query': ^5.100.1
-  '@tanstack/react-query-devtools': ^5.100.1
+  '@tanstack/eslint-plugin-query': ^5.100.8
+  '@tanstack/react-query': ^5.100.8
+  '@tanstack/react-query-devtools': ^5.100.8
   '@types/node': ^25.6.0
   '@types/react': ^19.2.14
   '@types/react-copy-to-clipboard': ^5.0.7
   '@types/react-dom': ^19.2.3
   '@types/urijs': ^1.19.26
-  '@types/vscode': ^1.116.0
+  '@types/vscode': ^1.118.0
   '@vitejs/plugin-react': ^6.0.1
   '@vitest/ui': ^4.1.5
   '@vscode/vsce': ^3.9.1
@@ -67,12 +67,12 @@ catalog:
   date-fns: ^4.1.0
   dayjs: ^1.11.20
   embla-carousel-react: 8.6.0
-  eslint: ^10.2.1
+  eslint: ^10.3.0
   eslint-plugin-react-hooks: ^7.1.1
   eslint-plugin-react-refresh: ^0.5.2
   execa: ^9.6.1
   framer-motion: ^12.38.0
-  globals: ^17.5.0
+  globals: ^17.6.0
   graphiql: ^5.2.2
   graphql: ^16.13.2
   graphql-request: ^7.4.0
@@ -83,7 +83,7 @@ catalog:
   input-otp: ^1.4.2
   js-base64: ^3.7.8
   lint-staged: ^16.4.0
-  lucide-react: ^1.11.0
+  lucide-react: ^1.14.0
   monaco-editor: ^0.55.1
   nanostores: ^1.3.0
   next-themes: ^0.4.6
@@ -94,8 +94,8 @@ catalog:
   react-copy-to-clipboard: ^5.1.1
   react-day-picker: ^9.14.0
   react-dom: ^19.2.5
-  react-hook-form: ^7.73.1
-  react-i18next: ^17.0.4
+  react-hook-form: ^7.75.0
+  react-i18next: ^17.0.6
   react-resizable-panels: ^4.10.0
   react-router: ^7.14.2
   react-router-dom: ^7.14.2
@@ -108,7 +108,7 @@ catalog:
   tailwindcss: ^4.2.4
   tsdown: ^0.21.10
   tsx: ^4.21.0
-  turbo: ^2.9.6
+  turbo: ^2.9.7
   tw-animate-css: ^1.4.0
   typescript: ^6.0.3
   urijs: ^1.19.11
@@ -119,7 +119,7 @@ catalog:
   vscode-languageclient: ^9.0.1
   vscode-languageserver: ^9.0.1
   vscode-languageserver-textdocument: ^1.0.12
-  zod: ^4.3.6
+  zod: ^4.4.2
 
 catalogMode: prefer
 
