@@ -5,7 +5,8 @@
     "baseUrl": "./",
     "paths": { "~/*": ["src/*"] },
     "types": ["vitest/globals"],
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "ignoreDeprecations": "6.0"
   },
   "references": [{ "path": "./tsconfig.node.json" }],
   "include": ["src"]

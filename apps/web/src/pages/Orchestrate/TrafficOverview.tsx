@@ -1,33 +1,15 @@
-import type { ChartConfig } from '~/components/ui/chart'
 import type { CSSProperties, ReactNode } from 'react'
+import type { ChartConfig } from '~/components/ui/chart'
 import dayjs from 'dayjs'
-import {
-  Activity,
-  ArrowDown,
-  ArrowUp,
-  Download,
-  Link2,
-  Radio,
-  Upload,
-} from 'lucide-react'
+import { Activity, ArrowDown, ArrowUp, Download, Link2, Radio, Upload } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 
 import { useTrafficOverviewQuery } from '~/apis'
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '~/components/ui/chart'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '~/components/ui/chart'
 import { cn } from '~/lib/utils'
 
 type TimeRangeKey = '1m' | '10m' | '30m' | '1h'
@@ -147,15 +129,7 @@ function TrafficMetricCard({
   )
 }
 
-function TrafficRangeButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: string
-}) {
+function TrafficRangeButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: string }) {
   return (
     <Button
       variant="outline"
@@ -272,10 +246,7 @@ export function TrafficOverview() {
                   <p className="text-sm font-semibold text-foreground">{t('trafficOverview.uploadChart')}</p>
                 </div>
               </div>
-              <ChartContainer
-                config={chartConfig}
-                className="mt-2 flex-1 aspect-auto min-h-[180px] w-full"
-              >
+              <ChartContainer config={chartConfig} className="mt-2 flex-1 aspect-auto min-h-[180px] w-full">
                 <AreaChart data={uploadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 2 }}>
                   <defs>
                     <linearGradient id="traffic-upload-fill" x1="0" y1="0" x2="0" y2="1">
@@ -332,10 +303,7 @@ export function TrafficOverview() {
                   <p className="text-sm font-semibold text-foreground">{t('trafficOverview.downloadChart')}</p>
                 </div>
               </div>
-              <ChartContainer
-                config={chartConfig}
-                className="mt-2 flex-1 aspect-auto min-h-[180px] w-full"
-              >
+              <ChartContainer config={chartConfig} className="mt-2 flex-1 aspect-auto min-h-[180px] w-full">
                 <AreaChart data={downloadChartData} margin={{ left: 4, right: 4, top: 4, bottom: 2 }}>
                   <defs>
                     <linearGradient id="traffic-download-fill" x1="0" y1="0" x2="0" y2="1">
