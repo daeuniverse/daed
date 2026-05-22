@@ -134,6 +134,7 @@
     "config": {
       "allowInsecure": "允许使用不安全的TLS证书。除非迫不得已，否则不建议打开它。",
       "autoConfigKernelParameter": "自动配置 Linux 内核参数，如 ip_forward（路由转发）和 send_redirects（发送重定向）。",
+      "bootstrapResolver": "指定在其他解析器可用前用于解析备用解析器域名的 DNS 解析器。留空则使用 dae 默认的引导解析器。",
       "checkTolerance": "只有当新的延迟 <= 旧的延迟 - 公差时，群组才会切换节点。",
       "dialMode": {
         "domain": "通过嗅探使用域名拨号代理。如果 DNS 环境不纯净，这将在很大程度上缓解 DNS 污染问题。通常，这种模式会带来更快的代理响应时间，因为代理会在远程重新解析域名，从而获得更好的 IP 连接结果。此策略不影响路由。也就是说，域重写将在流量拆分后进行路由，dae 不会对其进行重新路由。",
@@ -342,6 +343,7 @@
   "mptcp": "MPTCP",
   "bandwidthMaxTx": "最大上行带宽",
   "bandwidthMaxRx": "最大下行带宽",
+  "bootstrapResolver": "引导解析器",
   "fallbackResolver": "备用解析器",
   "trace": "跟踪",
   "udpCheckDns": "UDP 检测 DNS",
