@@ -1,13 +1,14 @@
+import type { NodeLatencyProbeResult } from './mutation'
 import type { GQLClientInterface } from '~/contexts'
-import { useQuery } from '@tanstack/react-query'
 
+import { useQuery } from '@tanstack/react-query'
 import {
   QUERY_KEY_CONFIG,
   QUERY_KEY_DNS,
   QUERY_KEY_GENERAL,
   QUERY_KEY_GROUP,
-  QUERY_KEY_NODE_LATENCY,
   QUERY_KEY_NODE,
+  QUERY_KEY_NODE_LATENCY,
   QUERY_KEY_ROUTING,
   QUERY_KEY_STORAGE,
   QUERY_KEY_SUBSCRIPTION,
@@ -16,7 +17,6 @@ import {
 } from '~/constants'
 import { useGQLQueryClient } from '~/contexts'
 import { graphql } from '~/schemas/gql'
-import type { NodeLatencyProbeResult } from './mutation'
 
 export function getModeRequest(gqlClient: GQLClientInterface) {
   return async () => {
@@ -320,6 +320,7 @@ export function useConfigsQuery() {
                 wanInterface
                 udpCheckDns
                 tcpCheckUrl
+                bootstrapResolver
                 fallbackResolver
                 dialMode
                 tcpCheckHttpMethod
