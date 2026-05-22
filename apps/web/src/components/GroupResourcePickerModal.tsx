@@ -109,7 +109,9 @@ function SelectionDialog({
         <ScrollableDialogHeader>
           <div className="pr-8">
             <DialogTitle>{title}</DialogTitle>
-            <p className="mt-2 text-sm text-muted-foreground">{t('groupPicker.selectedCount', { count: selectedCount })}</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t('groupPicker.selectedCount', { count: selectedCount })}
+            </p>
           </div>
         </ScrollableDialogHeader>
 
@@ -150,7 +152,9 @@ function SelectionDialog({
                       }
                     }}
                   >
-                    <div className={cn('flex min-w-0 gap-3', isSubscriptionChipLayout ? 'items-center' : 'items-start')}>
+                    <div
+                      className={cn('flex min-w-0 gap-3', isSubscriptionChipLayout ? 'items-center' : 'items-start')}
+                    >
                       <Checkbox
                         checked={checked}
                         className={cn('shrink-0', !isSubscriptionChipLayout && 'mt-0.5')}
@@ -186,7 +190,9 @@ function SelectionDialog({
                             )}
                           </div>
 
-                          {item.description && <p className="mt-1 truncate text-xs text-muted-foreground">{item.description}</p>}
+                          {item.description && (
+                            <p className="mt-1 truncate text-xs text-muted-foreground">{item.description}</p>
+                          )}
                           {item.meta && (
                             <p
                               className={cn(
@@ -304,10 +310,7 @@ export function GroupAddSubscriptionsModal({
     )
   }, [items, query])
 
-  const selectedItems = useMemo(
-    () => items.filter((item) => selectedIds.includes(item.id)),
-    [items, selectedIds],
-  )
+  const selectedItems = useMemo(() => items.filter((item) => selectedIds.includes(item.id)), [items, selectedIds])
 
   const trimmedRegex = nameFilterRegex.trim()
 
@@ -315,7 +318,7 @@ export function GroupAddSubscriptionsModal({
     if (!trimmedRegex) return null
     try {
       // Validate user input before sending it to the backend.
-      new RegExp(trimmedRegex)
+      new RegExp(trimmedRegex).test('')
       return null
     } catch (error) {
       return error instanceof Error ? error.message : t('groupPicker.invalidRegex')
@@ -369,7 +372,13 @@ export function GroupAddSubscriptionsModal({
       handleClose()
     } catch (error) {
       const message = error instanceof Error ? error.message : t('groupPicker.invalidRegex')
-      if (trimmedRegex && /regex|regexp|pattern/i.test(message)) {
+      const normalizedMessage = message.toLowerCase()
+      if (
+        trimmedRegex &&
+        (normalizedMessage.includes('regex') ||
+          normalizedMessage.includes('regexp') ||
+          normalizedMessage.includes('pattern'))
+      ) {
         setServerRegexError(message)
         return
       }
@@ -440,7 +449,9 @@ export function GroupAddSubscriptionsModal({
                         <span
                           className={cn(
                             'shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium',
-                            item.metaTone === 'primary' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground',
+                            item.metaTone === 'primary'
+                              ? 'bg-primary/10 text-primary'
+                              : 'bg-muted text-muted-foreground',
                           )}
                         >
                           {item.meta}
@@ -488,7 +499,9 @@ export function GroupAddSubscriptionsModal({
               <p className="mt-4 text-sm text-muted-foreground">{t('groupPicker.subscriptionPreviewSelectFirst')}</p>
             ) : previewGroups.every((group) => group.matchedNodes.length === 0) ? (
               <p className="mt-4 text-sm text-muted-foreground">
-                {trimmedRegex ? t('groupPicker.subscriptionPreviewEmpty') : t('groupPicker.subscriptionPreviewUnfiltered')}
+                {trimmedRegex
+                  ? t('groupPicker.subscriptionPreviewEmpty')
+                  : t('groupPicker.subscriptionPreviewUnfiltered')}
               </p>
             ) : (
               <div className="mt-4 flex flex-col gap-3">
@@ -518,7 +531,9 @@ export function GroupAddSubscriptionsModal({
                         ))}
                       </div>
                     ) : (
-                      <p className="mt-3 text-xs text-muted-foreground">{t('groupPicker.subscriptionPreviewNoMatchForItem')}</p>
+                      <p className="mt-3 text-xs text-muted-foreground">
+                        {t('groupPicker.subscriptionPreviewNoMatchForItem')}
+                      </p>
                     )}
                   </div>
                 ))}

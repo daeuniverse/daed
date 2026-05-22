@@ -92,10 +92,7 @@ export function OrchestratePage() {
     (groupId: string, subscriptionId: string) => !!getGroupSubscriptionBinding(groupId, subscriptionId),
     [getGroupSubscriptionBinding],
   )
-  const selectedConfig = useMemo(
-    () => configsQuery?.configs.find((config) => config.selected),
-    [configsQuery?.configs],
-  )
+  const selectedConfig = useMemo(() => configsQuery?.configs.find((config) => config.selected), [configsQuery?.configs])
   const nodeLatencyRefetchIntervalMs = useMemo(() => {
     const configuredInterval = selectedConfig?.global.checkInterval
     if (!configuredInterval) return 30_000
@@ -404,7 +401,9 @@ export function OrchestratePage() {
 
         if (sourceDroppableId === 'node-list') {
           const nodeId = draggableId.replace('node-', '')
-          const targetGroup = groupsQuery?.groups.find((group: GroupsQuery['groups'][number]) => group.id === fallbackGroupId)
+          const targetGroup = groupsQuery?.groups.find(
+            (group: GroupsQuery['groups'][number]) => group.id === fallbackGroupId,
+          )
           if (
             targetGroup &&
             !targetGroup.nodes.find((node: GroupsQuery['groups'][number]['nodes'][number]) => node.id === nodeId)
@@ -414,9 +413,15 @@ export function OrchestratePage() {
           }
         }
 
-        if (sourceDroppableId.startsWith('subscription-') && sourceDroppableId.endsWith('-nodes') && sourceDroppableId !== 'subscription-list') {
+        if (
+          sourceDroppableId.startsWith('subscription-') &&
+          sourceDroppableId.endsWith('-nodes') &&
+          sourceDroppableId !== 'subscription-list'
+        ) {
           const nodeId = draggableId.replace('subscription-node-', '')
-          const targetGroup = groupsQuery?.groups.find((group: GroupsQuery['groups'][number]) => group.id === fallbackGroupId)
+          const targetGroup = groupsQuery?.groups.find(
+            (group: GroupsQuery['groups'][number]) => group.id === fallbackGroupId,
+          )
           if (
             targetGroup &&
             !targetGroup.nodes.find((node: GroupsQuery['groups'][number]['nodes'][number]) => node.id === nodeId)
@@ -430,10 +435,14 @@ export function OrchestratePage() {
           const sourceGroupId = sourceDroppableId.replace('-nodes', '')
           const parsed = parseGroupItemId(draggableId)
           if (parsed && sourceGroupId !== fallbackGroupId) {
-            const targetGroup = groupsQuery?.groups.find((group: GroupsQuery['groups'][number]) => group.id === fallbackGroupId)
+            const targetGroup = groupsQuery?.groups.find(
+              (group: GroupsQuery['groups'][number]) => group.id === fallbackGroupId,
+            )
             if (
               targetGroup &&
-              !targetGroup.nodes.find((node: GroupsQuery['groups'][number]['nodes'][number]) => node.id === parsed.itemId)
+              !targetGroup.nodes.find(
+                (node: GroupsQuery['groups'][number]['nodes'][number]) => node.id === parsed.itemId,
+              )
             ) {
               groupAddNodesMutation.mutate({ id: fallbackGroupId, nodeIDs: [parsed.itemId] })
               return
@@ -636,7 +645,7 @@ export function OrchestratePage() {
             testingLatencies={testNodeLatenciesMutation.isPending}
             lastLatencyProbeAt={lastLatencyProbeAt}
             onTestAllNodeLatencies={async () => {
-              await testNodeLatenciesMutation.mutateAsync()
+              await testNodeLatenciesMutation.mutateAsync(undefined)
             }}
           />
         </div>

@@ -119,6 +119,7 @@ export type Global = {
   dialMode: Scalars['String']['output']
   disableWaitingNetwork: Scalars['Boolean']['output']
   enableLocalTcpFastRedirect: Scalars['Boolean']['output']
+  bootstrapResolver: Scalars['String']['output']
   fallbackResolver: Scalars['String']['output']
   lanInterface: Array<Scalars['String']['output']>
   logLevel: Scalars['String']['output']
@@ -656,6 +657,7 @@ export type GlobalInput = {
   dialMode?: InputMaybe<Scalars['String']['input']>
   disableWaitingNetwork?: InputMaybe<Scalars['Boolean']['input']>
   enableLocalTcpFastRedirect?: InputMaybe<Scalars['Boolean']['input']>
+  bootstrapResolver?: InputMaybe<Scalars['String']['input']>
   fallbackResolver?: InputMaybe<Scalars['String']['input']>
   lanInterface?: InputMaybe<Array<Scalars['String']['input']>>
   logLevel?: InputMaybe<Scalars['String']['input']>
@@ -1088,6 +1090,7 @@ export type ConfigsQuery = {
       wanInterface: Array<string>
       udpCheckDns: Array<string>
       tcpCheckUrl: Array<string>
+      bootstrapResolver: string
       fallbackResolver: string
       dialMode: string
       tcpCheckHttpMethod: string
@@ -3349,6 +3352,7 @@ export const ConfigsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'wanInterface' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'udpCheckDns' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'tcpCheckUrl' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'bootstrapResolver' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'fallbackResolver' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'dialMode' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'tcpCheckHttpMethod' } },

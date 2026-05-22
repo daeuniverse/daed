@@ -27,6 +27,7 @@ import {
   DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
   DEFAULT_BANDWIDTH_MAX_RX,
   DEFAULT_BANDWIDTH_MAX_TX,
+  DEFAULT_BOOTSTRAP_RESOLVER,
   DEFAULT_CHECK_INTERVAL_SECONDS,
   DEFAULT_CHECK_TOLERANCE_MS,
   DEFAULT_DIAL_MODE,
@@ -77,6 +78,7 @@ const schema = z.object({
   enableLocalTcpFastRedirect: z.boolean(),
   bandwidthMaxTx: z.string(),
   bandwidthMaxRx: z.string(),
+  bootstrapResolver: z.string(),
   fallbackResolver: z.string(),
 })
 
@@ -106,6 +108,7 @@ const defaultValues: FormValues = {
   autoConfigKernelParameter: DEFAULT_AUTO_CONFIG_KERNEL_PARAMETER,
   tlsImplementation: DEFAULT_TLS_IMPLEMENTATION,
   utlsImitate: DEFAULT_UTLS_IMITATE,
+  bootstrapResolver: DEFAULT_BOOTSTRAP_RESOLVER,
   fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
 }
 
@@ -398,6 +401,13 @@ export function ConfigFormDrawer({
                         errors={(formValues.udpCheckDns || []).map((v) =>
                           v.trim() === '' ? t('form.required') : undefined,
                         )}
+                      />
+
+                      <Input
+                        label={t('bootstrapResolver')}
+                        description={t('descriptions.config.bootstrapResolver')}
+                        value={formValues.bootstrapResolver}
+                        onChange={(e) => setValue('bootstrapResolver', e.target.value)}
                       />
 
                       <Input

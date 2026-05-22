@@ -40,6 +40,7 @@ export const DEFAULT_ENABLE_LOCAL_TCP_FAST_REDIRECT = false
 export const DEFAULT_PPROF_PORT = 0
 export const DEFAULT_BANDWIDTH_MAX_TX = '200 mbps'
 export const DEFAULT_BANDWIDTH_MAX_RX = '1 gbps'
+export const DEFAULT_BOOTSTRAP_RESOLVER = ''
 export const DEFAULT_FALLBACK_RESOLVER = '8.8.8.8:53'
 
 export const DEFAULT_CONFIG_NAME = 'global'
@@ -72,6 +73,7 @@ export function DEFAULT_CONFIG_WITH_LAN_INTERFACEs(interfaces: string[] = []): G
     mptcp: DEFAULT_MPTCP,
     bandwidthMaxTx: DEFAULT_BANDWIDTH_MAX_TX,
     bandwidthMaxRx: DEFAULT_BANDWIDTH_MAX_RX,
+    bootstrapResolver: DEFAULT_BOOTSTRAP_RESOLVER,
     fallbackResolver: DEFAULT_FALLBACK_RESOLVER,
   }
 }

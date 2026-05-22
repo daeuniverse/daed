@@ -134,6 +134,7 @@
     "config": {
       "allowInsecure": "Allow insecure TLS certificates. It is not recommended to turn it on unless you have to.",
       "autoConfigKernelParameter": "Automatically configure Linux kernel parameters like ip_forward and send_redirects.",
+      "bootstrapResolver": "Specify the DNS resolver used to resolve the fallback resolver domain before other resolvers are available. Leave empty to use dae's default bootstrap resolvers.",
       "checkTolerance": "Group will switch node only when new_latency <= old_latency - tolerance.",
       "dialMode": {
         "domain": "Dial proxy using the domain from sniffing. This will greatly relieve DNS pollution problem in an impure DNS environment. Generally, this mode brings faster proxy response time because proxy will re-resolve the domain remotely, contributing to better IP results. This policy does not impact routing. That is to say, domain rewrite will be routed after traffic split and dae will not re-route it.",
@@ -342,6 +343,7 @@
   "mptcp": "MPTCP",
   "bandwidthMaxTx": "Max Transmit Bandwidth",
   "bandwidthMaxRx": "Max Receive Bandwidth",
+  "bootstrapResolver": "Bootstrap Resolver",
   "fallbackResolver": "Fallback Resolver",
   "trace": "trace",
   "udpCheckDns": "DNS for UDP Check",

@@ -1,13 +1,13 @@
-import type { GroupFormModalRef } from '~/components/GroupFormModal'
+import type { DraggableProvidedDragHandleProps, DraggableStateSnapshot } from '@hello-pangea/dnd'
 import type { NodeLatencyProbeResult } from '~/apis'
+import type { GroupFormModalRef } from '~/components/GroupFormModal'
+import type { GroupPickerItem } from '~/components/GroupResourcePickerModal'
 import type { DraggingResource } from '~/constants'
 import type { GroupsQuery, NodesQuery, SubscriptionsQuery } from '~/schemas/gql/graphql'
-import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
-import type { DraggableStateSnapshot } from '@hello-pangea/dnd'
 import { Draggable, Droppable } from '@hello-pangea/dnd'
 import { useStore } from '@nanostores/react'
-import { Settings2, Table2 } from 'lucide-react'
 
+import { Settings2, Table2 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -23,11 +23,7 @@ import {
 } from '~/apis'
 import { DroppableGroupCard } from '~/components/DroppableGroupCard'
 import { GroupFormModal } from '~/components/GroupFormModal'
-import {
-  GroupAddNodesModal,
-  GroupAddSubscriptionsModal,
-  type GroupPickerItem,
-} from '~/components/GroupResourcePickerModal'
+import { GroupAddNodesModal, GroupAddSubscriptionsModal } from '~/components/GroupResourcePickerModal'
 import { Section } from '~/components/Section'
 import { SortableGroupContent } from '~/components/SortableGroupContent'
 import { Button } from '~/components/ui/button'
@@ -35,9 +31,9 @@ import { SimpleTooltip } from '~/components/ui/tooltip'
 import { DraggableResourceType } from '~/constants'
 import { useDisclosure } from '~/hooks'
 import { cn } from '~/lib/utils'
+import { appStateAtom, defaultResourcesAtom } from '~/store'
 import { getInstantDropStyle } from '~/utils'
 import { formatLatencyLabel, hasMeasuredLatency } from '~/utils/latency'
-import { appStateAtom, defaultResourcesAtom } from '~/store'
 
 const GROUP_DROPPABLE_ID = 'group-list'
 
@@ -148,7 +144,12 @@ export function GroupResource({
       .filter((node) => !existingNodeIds.has(node.id))
       .map((node) => {
         const title = node.tag || node.name || node.address || node.id
-        const description = [node.name && node.name !== title ? node.name : '', node.address].filter(Boolean).join(' · ')
+        const description = [node.name && node.name !== title ? node.name : '', node.address]
+          .filter(Boolean)
+          .join(' · ')
+        const metaTone: GroupPickerItem['metaTone'] = hasMeasuredLatency(nodeLatencies?.[node.id])
+          ? 'primary'
+          : 'default'
 
         return {
           id: node.id,
@@ -157,7 +158,7 @@ export function GroupResource({
           meta: [t('groupPicker.manualNode'), formatLatencyLabel(nodeLatencies?.[node.id], t)]
             .filter(Boolean)
             .join(' · '),
-          metaTone: hasMeasuredLatency(nodeLatencies?.[node.id]) ? 'primary' : 'default',
+          metaTone,
           badge: node.protocol || undefined,
           keywords: [node.name, node.tag, node.address, node.protocol].filter(Boolean) as string[],
         }
@@ -169,21 +170,24 @@ export function GroupResource({
       return subscription.nodes.edges
         .filter((node) => !existingNodeIds.has(node.id))
         .map((node) => {
-          const title = node.tag || node.name || node.address || node.id
-          const description = [node.name && node.name !== title ? node.name : '', node.address]
-            .filter(Boolean)
-            .join(' · ')
+          const title = node.name || node.id
+          const metaTone: GroupPickerItem['metaTone'] = hasMeasuredLatency(nodeLatencies?.[node.id])
+            ? 'primary'
+            : 'default'
 
           return {
             id: node.id,
             title,
-            description: description || undefined,
-            meta: [t('groupPicker.fromSubscription', { name: subscriptionName }), formatLatencyLabel(nodeLatencies?.[node.id], t)]
+            description: undefined,
+            meta: [
+              t('groupPicker.fromSubscription', { name: subscriptionName }),
+              formatLatencyLabel(nodeLatencies?.[node.id], t),
+            ]
               .filter(Boolean)
               .join(' · '),
-            metaTone: hasMeasuredLatency(nodeLatencies?.[node.id]) ? 'primary' : 'default',
+            metaTone,
             badge: node.protocol || undefined,
-            keywords: [node.name, node.tag, node.address, node.protocol, subscriptionName].filter(Boolean) as string[],
+            keywords: [node.name, node.link, node.protocol, subscriptionName].filter(Boolean) as string[],
           }
         })
     })
@@ -214,7 +218,9 @@ export function GroupResource({
             title: node.name,
             protocol: node.protocol || undefined,
           })),
-          keywords: [subscription.tag, subscription.link, subscription.status, subscription.info].filter(Boolean) as string[],
+          keywords: [subscription.tag, subscription.link, subscription.status, subscription.info].filter(
+            Boolean,
+          ) as string[],
         }
       })
   }, [addingSubscriptionsGroup, subscriptions, t])
@@ -237,35 +243,32 @@ export function GroupResource({
     return sortedGroupIds.map((id) => groupMap.get(id)).filter(Boolean) as GroupsQuery['groups']
   }, [groups, sortedGroupIds])
 
-  const renderGroupCard = (
-    {
-      groupId,
-      name,
-      policy,
-      groupNodes,
-      groupSubscriptions,
-      dragHandleProps,
-      snapshot,
-    }: {
-      groupId: string
-      name: string
-      policy: string
-      groupNodes: GroupsQuery['groups'][number]['nodes']
-      groupSubscriptions: GroupsQuery['groups'][number]['subscriptions']
-      dragHandleProps?: DraggableProvidedDragHandleProps | null
-      snapshot?: DraggableStateSnapshot
-    },
-  ) => (
-    <div
-      data-group-card-id={groupId}
-      className={cn(snapshot?.isDragging && 'z-50 opacity-90')}
-    >
+  const renderGroupCard = ({
+    groupId,
+    name,
+    policy,
+    groupNodes,
+    groupSubscriptions,
+    dragHandleProps,
+    snapshot,
+  }: {
+    groupId: string
+    name: string
+    policy: GroupsQuery['groups'][number]['policy']
+    groupNodes: GroupsQuery['groups'][number]['nodes']
+    groupSubscriptions: GroupsQuery['groups'][number]['subscriptions']
+    dragHandleProps?: DraggableProvidedDragHandleProps | null
+    snapshot?: DraggableStateSnapshot
+  }) => (
+    <div data-group-card-id={groupId} className={cn(snapshot?.isDragging && 'z-50 opacity-90')}>
       <DroppableGroupCard
         id={groupId}
         name={name}
         summary={
           <>
-            <span className="rounded bg-secondary px-2 py-0.5 text-[11px] font-medium text-foreground/80">{policy}</span>
+            <span className="rounded bg-secondary px-2 py-0.5 text-[11px] font-medium text-foreground/80">
+              {policy}
+            </span>
             <span>{t('groupPicker.nodesCount', { count: groupNodes.length })}</span>
             <span>{t('groupPicker.subscriptionGroupsCount', { count: groupSubscriptions.length })}</span>
           </>
@@ -341,27 +344,29 @@ export function GroupResource({
       <Droppable droppableId={GROUP_DROPPABLE_ID} type="GROUP">
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps} className="flex flex-col gap-3">
-            {sortedGroups.map(({ id: groupId, name, policy, nodes: groupNodes, subscriptions: groupSubscriptions }, index) => (
-              <Draggable key={groupId} draggableId={`group-${groupId}`} index={index}>
-                {(draggableProvided, snapshot) => (
-                  <div
-                    ref={draggableProvided.innerRef}
-                    {...draggableProvided.draggableProps}
-                    style={getInstantDropStyle(draggableProvided, snapshot)}
-                  >
-                    {renderGroupCard({
-                      groupId,
-                      name,
-                      policy,
-                      groupNodes,
-                      groupSubscriptions,
-                      dragHandleProps: draggableProvided.dragHandleProps,
-                      snapshot,
-                    })}
-                  </div>
-                )}
-              </Draggable>
-            ))}
+            {sortedGroups.map(
+              ({ id: groupId, name, policy, nodes: groupNodes, subscriptions: groupSubscriptions }, index) => (
+                <Draggable key={groupId} draggableId={`group-${groupId}`} index={index}>
+                  {(draggableProvided, snapshot) => (
+                    <div
+                      ref={draggableProvided.innerRef}
+                      {...draggableProvided.draggableProps}
+                      style={getInstantDropStyle(draggableProvided, snapshot)}
+                    >
+                      {renderGroupCard({
+                        groupId,
+                        name,
+                        policy,
+                        groupNodes,
+                        groupSubscriptions,
+                        dragHandleProps: draggableProvided.dragHandleProps,
+                        snapshot,
+                      })}
+                    </div>
+                  )}
+                </Draggable>
+              ),
+            )}
             {provided.placeholder}
           </div>
         )}
