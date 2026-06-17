@@ -97,7 +97,7 @@ catalog:
   react-hook-form: ^7.75.0
   react-i18next: ^17.0.7
   react-resizable-panels: ^4.11.0
-  react-router: ^7.15.0
+  react-router: ^7.15.1
   react-router-dom: ^7.15.0
   recharts: 3.8.1
   shiki: ^4.0.2
