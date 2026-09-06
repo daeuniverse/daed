@@ -1,0 +1,37 @@
+#!/bin/sh
+# daed-guard — thin wrapper around /usr/bin/daed that ensures stale
+# kernel state (network namespace, veth pair, pinned eBPF programs) is
+# reaped before the daemon starts AND on unexpected exit.
+#
+# Drop this at /usr/bin/daed-guard and make it executable:
+#   install -m 0755 daed-guard /usr/bin/daed-guard
+#
+# Companion file: cleanup.sh (must be installed at /usr/share/daed/cleanup.sh)
+#
+# The behaviour of this wrapper is documented in
+# https://github.com/daeuniverse/daed/issues (issue #33 + #34 +
+# process-exit eBPF leak observation in #1092).
+
+. /usr/share/daed/cleanup.sh
+
+# 1. Stale-state cleanup before the daemon starts. If anything in
+#    cleanup.sh fails we abort early so the operator can see the error.
+if ! daed_cleanup_runtime; then
+	echo "daed: stale network state could not be removed" >&2
+	exit 1
+fi
+
+# 2. Trap every reasonable signal so the same cleanup runs on
+#    SIGTERM/SIGINT/SIGHUP/SIGQUIT as well. The upstream daemon normally
+#    handles its own state, but on OOM-kill, kernel panic, or abort-before-
+#    logger-init this is the only place that can do anything.
+cleanup_on_exit() {
+	rc=$?
+	daed_cleanup_runtime 2>/dev/null
+	exit "$rc"
+}
+trap cleanup_on_exit EXIT INT TERM HUP QUIT
+
+# 3. Hand off to the real daemon. exec replaces this shell so the
+#    process tree is still a single /usr/bin/daed.
+exec /usr/bin/daed "$@"
