@@ -16,6 +16,7 @@ import { Policy } from '~/schemas/gql/graphql'
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   policy: z.nativeEnum(Policy),
+  policyParams: z.array(z.object({ key: z.string(), val: z.string() })),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -23,6 +24,7 @@ type FormValues = z.infer<typeof schema>
 const defaultValues: FormValues = {
   name: '',
   policy: DEFAULT_GROUP_POLICY,
+  policyParams: [],
 }
 
 export interface GroupFormModalRef {
@@ -123,7 +125,11 @@ export function GroupFormModal({
   ]
 
   const onSubmit = async (data: FormValues) => {
-    const policyParams = data.policy === Policy.Fixed ? [{ key: '', val: '0' }] : []
+    const policyParams = data.policy === Policy.Fixed
+      ? editingID && origins?.policy === Policy.Fixed
+        ? origins.policyParams
+        : [{ key: '', val: '0' }]
+      : []
 
     if (editingID) {
       await groupSetPolicyMutation.mutateAsync({

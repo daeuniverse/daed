@@ -247,6 +247,7 @@ export function GroupResource({
     groupId,
     name,
     policy,
+    policyParams,
     groupNodes,
     groupSubscriptions,
     dragHandleProps,
@@ -255,6 +256,7 @@ export function GroupResource({
     groupId: string
     name: string
     policy: GroupsQuery['groups'][number]['policy']
+    policyParams: GroupsQuery['groups'][number]['policyParams']
     groupNodes: GroupsQuery['groups'][number]['nodes']
     groupSubscriptions: GroupsQuery['groups'][number]['subscriptions']
     dragHandleProps?: DraggableProvidedDragHandleProps | null
@@ -289,6 +291,7 @@ export function GroupResource({
                 updateGroupFormModalRef.current?.initOrigins({
                   name,
                   policy,
+                  policyParams,
                 })
 
                 openUpdateGroupFormModal()
@@ -345,7 +348,7 @@ export function GroupResource({
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps} className="flex flex-col gap-3">
             {sortedGroups.map(
-              ({ id: groupId, name, policy, nodes: groupNodes, subscriptions: groupSubscriptions }, index) => (
+              ({ id: groupId, name, policy, policyParams, nodes: groupNodes, subscriptions: groupSubscriptions }, index) => (
                 <Draggable key={groupId} draggableId={`group-${groupId}`} index={index}>
                   {(draggableProvided, snapshot) => (
                     <div
@@ -357,6 +360,7 @@ export function GroupResource({
                         groupId,
                         name,
                         policy,
+                        policyParams,
                         groupNodes,
                         groupSubscriptions,
                         dragHandleProps: draggableProvided.dragHandleProps,
