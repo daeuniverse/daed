@@ -2,7 +2,7 @@ import { useStore } from '@nanostores/react'
 import request from 'graphql-request'
 import { Link2, LockKeyhole, User } from 'lucide-react'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -76,10 +76,10 @@ export function SetupPage() {
       return
     }
 
-    endpointURLAtom.set(endpointFormData.endpointURL)
-
     try {
       const numberUsers = await getNumberUsers(endpointFormData.endpointURL)
+
+      endpointURLAtom.set(endpointFormData.endpointURL)
 
       setNumberUsers(numberUsers)
 
@@ -182,15 +182,19 @@ export function SetupPage() {
       <div className="flex w-full max-w-2xl flex-col gap-4">
         <h1 className="text-center text-3xl font-bold">{t('welcome to', { name: 'daed' })}</h1>
         <p className="text-center text-muted-foreground">
-          {t('what for')}{' '}
-          <a
-            target="_blank"
-            href="https://github.com/daeuniverse/dae"
-            className="text-primary hover:underline"
-            rel="noreferrer"
-          >
-            dae
-          </a>
+          <Trans
+            i18nKey="what for"
+            components={{
+              dae: (
+                <a
+                  target="_blank"
+                  href="https://github.com/daeuniverse/dae"
+                  className="text-primary hover:underline"
+                  rel="noreferrer"
+                />
+              ),
+            }}
+          />
         </p>
 
         <div className="h-5" />
