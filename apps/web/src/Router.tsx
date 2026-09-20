@@ -4,10 +4,11 @@ import { GraphiQL } from 'graphiql'
 import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom'
 
 import { MainLayout, OrchestratePage, SetupPage } from '~/pages'
-import { endpointURLAtom } from '~/store'
+import { endpointURLAtom, tokenAtom } from '~/store'
 
 export function Router() {
   const endpointURL = useStore(endpointURLAtom)
+  const token = useStore(tokenAtom)
   const RouterType = import.meta.env.DEV ? BrowserRouter : HashRouter
 
   return (
@@ -26,6 +27,7 @@ export function Router() {
               <GraphiQL
                 fetcher={createGraphiQLFetcher({
                   url: endpointURL,
+                  headers: { authorization: `Bearer ${token}` },
                 })}
               />
             }
