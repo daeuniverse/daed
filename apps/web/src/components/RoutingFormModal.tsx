@@ -1,6 +1,6 @@
 import type { DaeConfigType } from './DaeEditor'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useImperativeHandle, useMemo, useState } from 'react'
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -174,6 +174,7 @@ export function RoutingFormModal({
   handleSubmit: onSubmitProp,
   configType = 'routing',
   proxyGroupName,
+  proxyGroupReady = true,
 }: {
   ref?: React.Ref<RoutingFormModalRef>
   title: string
@@ -182,6 +183,9 @@ export function RoutingFormModal({
   handleSubmit: (values: FormValues) => Promise<void>
   configType?: DaeConfigType
   proxyGroupName: string
+  // False while the default group is still loading, so a new routing is not
+  // generated with the placeholder group name.
+  proxyGroupReady?: boolean
 }) {
   const { t } = useTranslation()
   const [editingID, setEditingID] = useState<string>()
@@ -209,6 +213,20 @@ export function RoutingFormModal({
 
   const setValue = useSetValue(setValueOriginal)
   const formValues = useWatch({ control })
+
+  useEffect(() => {
+    if (opened && proxyGroupReady && !editingID && activeTab === 'simple' && formValues.text === '') {
+      setValue(
+        'text',
+        buildRoutingTemplate(
+          simpleMode,
+          proxyGroupName,
+          macControlEnabled ? cleanedMacList : undefined,
+          macAction,
+        ),
+      )
+    }
+  }, [opened, proxyGroupReady, editingID, activeTab, formValues.text, simpleMode, proxyGroupName, macControlEnabled, cleanedMacList, macAction, setValue])
 
   const initOrigins = useCallback(
     (nextOrigins: FormValues) => {
