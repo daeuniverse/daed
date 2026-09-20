@@ -135,7 +135,7 @@ export function HeaderWithActions() {
   // Toggle running state function
   const toggleRunning = useCallback(() => {
     if (generalQuery?.general.dae.running !== undefined) {
-      runMutation.mutate(!generalQuery.general.dae.running)
+      runMutation.mutate(generalQuery.general.dae.running)
     }
   }, [generalQuery, runMutation])
 
