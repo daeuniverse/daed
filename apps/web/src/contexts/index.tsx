@@ -3,7 +3,7 @@ import type { ClientError, RequestDocument, Variables } from 'graphql-request'
 import { useStore } from '@nanostores/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GraphQLClient } from 'graphql-request'
-import { createContext, use, useMemo } from 'react'
+import { createContext, use, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 
 import { isMockMode, MockGraphQLClient } from '~/mocks'
@@ -56,7 +56,13 @@ export function QueryProvider({ children, colorScheme, themeMode, setThemeMode }
   const endpointURL = useStore(endpointURLAtom)
   const token = useStore(tokenAtom)
 
-  const queryClient = useMemo(() => new QueryClient(), [])
+  // One cache per endpoint and token. Query observers keep the client they
+  // were created with, so the provider is keyed too: an identity change
+  // remounts the consumers instead of leaving them on the retired cache.
+  const identity = `${endpointURL}|${token}`
+  const queryClient = useMemo(() => new QueryClient(), [identity])
+
+  useEffect(() => () => queryClient.clear(), [queryClient])
 
   const gqlClient = useMemo<GQLClient>(() => {
     // Use mock client in mock mode
@@ -89,7 +95,7 @@ export function QueryProvider({ children, colorScheme, themeMode, setThemeMode }
 
   return (
     <ColorSchemeContext value={colorSchemeContextValue}>
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider key={identity} client={queryClient}>
         <GQLQueryClientProvider client={gqlClient}>{children}</GQLQueryClientProvider>
       </QueryClientProvider>
     </ColorSchemeContext>

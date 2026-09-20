@@ -121,9 +121,9 @@
     "spiderX": "Spider X"
   },
   "confirmModal": {
-    "cancel": "No, It's a mistake",
-    "confirm": "Yes, I'm sure",
-    "removeConfirmDescription": "Are you sure you want to remove this?"
+    "cancel": "Cancel",
+    "confirm": "Delete",
+    "removeConfirmDescription": "This action cannot be undone."
   },
   "connected": "connected",
   "connecting options": "Connecting Options",
@@ -356,7 +356,7 @@
   "warn": "warn",
   "welcome back": "Welcome Back!",
   "welcome to": "Welcome to {{ name }}",
-  "what for": "A modern web dashboard for",
+  "what for": "daed is a web dashboard for <dae>dae</dae>.",
   "shortcuts": {
     "title": "Keyboard Shortcuts",
     "categories": {

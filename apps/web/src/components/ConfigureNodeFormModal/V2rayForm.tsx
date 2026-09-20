@@ -1,6 +1,5 @@
 import type { NodeFormProps } from './types'
-import { generateURL, parseV2rayUrl } from '@daeuniverse/dae-node-parser'
-import { Base64 } from 'js-base64'
+import { parseV2rayUrl } from '@daeuniverse/dae-node-parser'
 import { createPortal } from 'react-dom'
 import { z } from 'zod'
 
@@ -11,6 +10,7 @@ import { NumberInput } from '~/components/ui/number-input'
 import { Select } from '~/components/ui/select'
 import { DEFAULT_V2RAY_FORM_VALUES, v2raySchema } from '~/constants'
 import { useNodeForm } from '~/hooks'
+import { generateV2rayLink } from './protocols/complex'
 
 const formSchema = v2raySchema.extend({
   protocol: z.enum(['vmess', 'vless']),
@@ -21,117 +21,6 @@ export type V2rayFormValues = z.infer<typeof formSchema>
 const defaultValues: V2rayFormValues = {
   protocol: 'vmess',
   ...DEFAULT_V2RAY_FORM_VALUES,
-}
-
-function generateV2rayLink(data: V2rayFormValues): string {
-  const {
-    protocol,
-    net,
-    tls,
-    path,
-    host,
-    type,
-    sni,
-    flow,
-    allowInsecure,
-    alpn,
-    ech,
-    id,
-    add,
-    port,
-    ps,
-    pbk,
-    fp,
-    sid,
-    spx,
-    pqv,
-    grpcMode,
-    grpcAuthority,
-    xhttpMode,
-    xhttpExtra,
-  } = data
-
-  if (protocol === 'vless') {
-    const params: Record<string, unknown> = {
-      type: net,
-      security: tls,
-      host,
-      headerType: type,
-      sni,
-      flow,
-      allowInsecure,
-    }
-
-    // Path handling based on network type
-    if (net === 'grpc') {
-      params.serviceName = path
-      if (grpcMode !== 'gun') params.mode = grpcMode
-      if (grpcAuthority) params.authority = grpcAuthority
-    } else if (net === 'kcp') {
-      params.seed = path
-    } else if (net === 'xhttp') {
-      params.path = path
-      if (xhttpMode) params.mode = xhttpMode
-      if (xhttpExtra) params.extra = xhttpExtra
-    } else {
-      params.path = path
-    }
-
-    if (alpn !== '') params.alpn = alpn
-    if (ech !== '') params.ech = ech
-
-    // Reality-specific parameters
-    if (tls === 'reality') {
-      params.pbk = pbk
-      params.fp = fp
-      if (sid) params.sid = sid
-      if (spx) params.spx = spx
-      if (pqv) params.pqv = pqv
-    }
-
-    return generateURL({
-      protocol,
-      username: id,
-      host: add,
-      port,
-      hash: ps,
-      params,
-    })
-  }
-
-  if (protocol === 'vmess') {
-    const body: Record<string, unknown> = structuredClone(data)
-
-    switch (net) {
-      case 'kcp':
-      case 'tcp':
-      default:
-        body.type = ''
-    }
-
-    switch (body.net) {
-      case 'ws':
-        // No operation, skip
-        break
-      case 'h2':
-      case 'grpc':
-      case 'kcp':
-      default:
-        if (body.net === 'tcp' && body.type === 'http') {
-          break
-        }
-
-        body.path = ''
-    }
-
-    if (!(body.protocol === 'vless' && body.tls === 'xtls')) {
-      delete body.flow
-    }
-
-    return `vmess://${Base64.encode(JSON.stringify(body))}`
-  }
-
-  return ''
 }
 
 export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: NodeFormProps<V2rayFormValues>) {
@@ -294,7 +183,7 @@ export function V2rayForm({ onLinkGeneration, initialValues, actionsPortal }: No
           label={t('configureNode.type')}
           data={[
             { label: t('configureNode.noObfuscation'), value: 'none' },
-            { label: t('configureNode.httpObfuscation'), value: 'srtp' },
+            { label: t('configureNode.httpObfuscation'), value: 'http' },
           ]}
           value={formValues.type}
           onChange={(val) => setValue('type', (val || 'none') as V2rayFormValues['type'])}

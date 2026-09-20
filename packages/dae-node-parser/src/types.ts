@@ -246,6 +246,7 @@ export interface GenerateHysteria2URLParams {
   host: string
   port: number
   params: Record<string, string | number | boolean>
+  hash?: string
 }
 
 /**

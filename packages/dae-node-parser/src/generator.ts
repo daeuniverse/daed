@@ -67,7 +67,7 @@ export function generateURL({
 /**
  * Generate Hysteria2 URL
  */
-export function generateHysteria2URL({ protocol, auth, host, port, params }: GenerateHysteria2URLParams): string {
+export function generateHysteria2URL({ protocol, auth, host, port, params, hash }: GenerateHysteria2URLParams): string {
   // Encode the auth field to handle special characters like '@'
   const encodedAuth = encodeURIComponent(auth)
   const uri = new URL(`${protocol}://${encodedAuth}@${host}:${port}/`)
@@ -78,13 +78,17 @@ export function generateHysteria2URL({ protocol, auth, host, port, params }: Gen
     }
   })
 
+  if (hash) {
+    uri.hash = encodeURIComponent(hash)
+  }
+
   return uri.toString()
 }
 
 /**
  * Generate AnyTLS URL
  */
-export function generateAnytlsURL({ protocol, auth, host, port, params }: GenerateHysteria2URLParams): string {
+export function generateAnytlsURL({ protocol, auth, host, port, params, hash }: GenerateHysteria2URLParams): string {
   // Use Hysteria2 generator structure as they are similar
-  return generateHysteria2URL({ protocol, auth, host, port, params })
+  return generateHysteria2URL({ protocol, auth, host, port, params, hash })
 }

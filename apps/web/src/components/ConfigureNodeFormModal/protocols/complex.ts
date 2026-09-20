@@ -53,7 +53,7 @@ const v2rayFormSchema = v2raySchema.extend({
 
 type V2rayFormValues = z.infer<typeof v2rayFormSchema>
 
-function generateV2rayLink(data: V2rayFormValues): string {
+export function generateV2rayLink(data: V2rayFormValues): string {
   const {
     protocol,
     net,
@@ -135,6 +135,7 @@ function generateV2rayLink(data: V2rayFormValues): string {
     switch (net) {
       case 'kcp':
       case 'tcp':
+        break
       default:
         body.type = ''
     }
@@ -143,10 +144,10 @@ function generateV2rayLink(data: V2rayFormValues): string {
       case 'ws':
       case 'httpupgrade':
       case 'xhttp':
-        break
       case 'h2':
       case 'grpc':
       case 'kcp':
+        break
       default:
         if (body.net === 'tcp' && body.type === 'http') {
           break
@@ -392,6 +393,7 @@ function generateHysteria2Link(data: Hysteria2FormValues): string {
     auth: data.auth,
     host: data.server,
     port: data.port,
+    hash: data.name,
     params: query,
   })
 }
@@ -423,6 +425,7 @@ export function generateAnytlsLink(data: AnytlsFormValues): string {
     auth: data.auth,
     host: data.server,
     port: data.port,
+    hash: data.name,
     params: query,
   })
 }

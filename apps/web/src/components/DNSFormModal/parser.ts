@@ -90,7 +90,7 @@ export function parseDNSConfig(config: string): DNSConfig {
 
         // fallback: upstream
         if (trimmed.startsWith('fallback:')) {
-          const target = trimmed.split(':')[1].trim()
+          const target = trimmed.slice('fallback:'.length).trim()
           requestRules.push({
             id: generateId(),
             matcher: 'fallback',
@@ -120,7 +120,7 @@ export function parseDNSConfig(config: string): DNSConfig {
 
         // fallback: upstream
         if (trimmed.startsWith('fallback:')) {
-          const target = trimmed.split(':')[1].trim()
+          const target = trimmed.slice('fallback:'.length).trim()
           responseRules.push({
             id: generateId(),
             matcher: 'fallback',

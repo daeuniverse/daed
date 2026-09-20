@@ -159,6 +159,16 @@ interface SimpleSelectProps {
   withAsterisk?: boolean
 }
 
+// Radix Select rejects the empty string as an item value. Every value gets a
+// prefix so the encoding is injective: '' and a literal 'empty' stay distinct.
+function encodeSelectValue(value: string) {
+  return value === '' ? 'empty' : `value:${value}`
+}
+
+function decodeSelectValue(encoded: string) {
+  return encoded === 'empty' ? '' : encoded.slice('value:'.length)
+}
+
 function SimpleSelect({
   data,
   value,
@@ -169,9 +179,6 @@ function SimpleSelect({
   description,
   withAsterisk,
 }: SimpleSelectProps) {
-  // Filter out items with empty string values as they are not allowed by Radix Select
-  const filteredData = data.filter((item) => item.value !== '')
-
   return (
     <div className="space-y-2">
       {label && (
@@ -181,13 +188,16 @@ function SimpleSelect({
         </Label>
       )}
       {description && <p className="text-sm text-muted-foreground">{description}</p>}
-      <Select value={value} onValueChange={onChange}>
+      <Select
+        value={value === undefined ? undefined : encodeSelectValue(value)}
+        onValueChange={(value) => onChange?.(decodeSelectValue(value))}
+      >
         <SelectTrigger className={cn('w-full', className)}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {filteredData.map((item) => (
-            <SelectItem key={item.value} value={item.value}>
+          {data.map((item) => (
+            <SelectItem key={item.value} value={encodeSelectValue(item.value)}>
               {item.label}
             </SelectItem>
           ))}

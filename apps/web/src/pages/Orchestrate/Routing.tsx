@@ -99,6 +99,7 @@ export function Routing() {
         onClose={closeCreateRoutingFormModal}
         configType="routing"
         proxyGroupName={proxyGroupName}
+        proxyGroupReady={!!groupsQuery?.groups && !!defaultGroupID}
         handleSubmit={async (values) => {
           await createRoutingMutation.mutateAsync({
             name: values.name,

@@ -94,10 +94,15 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
     setManualTab(val as NodeType)
   }
 
+  const handleClose = () => {
+    setCurrentTag('')
+    setManualTab(null)
+    onClose()
+  }
+
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      setCurrentTag('')
-      onClose()
+      handleClose()
     } else if (node) {
       // Initialize tag when opening
       setCurrentTag(node.tag || '')
@@ -119,8 +124,7 @@ export function EditNodeFormModal({ opened, onClose, node }: EditNodeFormModalPr
         })
       }
 
-      setCurrentTag('')
-      onClose()
+      handleClose()
     }
   }
 
