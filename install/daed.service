@@ -1,17 +1,30 @@
 [Unit]
-Description=daed is a integration solution of dae, API and UI.
+Description=daed — integration of dae + dae-wing API + Web UI
 Documentation=https://github.com/daeuniverse/daed
 After=network-online.target docker.service systemd-sysctl.service
 Wants=network-online.target
-Conflicts=dae.service 
+Conflicts=dae.service
 
 [Service]
 Type=simple
 User=root
-LimitNPROC=512
+
+# Resource limits aligned with dae.service in daeuniverse/dae.
+# On 4 GB-ram boards (typical OpenWrt box) the kernel OOM-killer will reach
+# for daed before any sibling workload if OOMScoreAdjust is not set.
+OOMScoreAdjust=-100
+MemoryHigh=512M
+
+# Parallel operations and connection-tracking for a transparent proxy need
+# generous FD / process limits.
+LimitNPROC=4096
 LimitNOFILE=1048576
+
 ExecStart=/usr/bin/daed run -c /etc/daed/
-Restart=on-abnormal
+Restart=on-failure
+RestartSec=5s
+TimeoutStartSec=120
+TimeoutStopSec=30
 
 [Install]
 WantedBy=multi-user.target
